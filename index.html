@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -50,6 +50,27 @@
             padding: 25px;
             border-bottom: 1px solid var(--border);
             background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.05), transparent 70%);
+            /* AJUSTE: Flexbox para alinhar botão de fechar */
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        /* AJUSTE: Estilo do botão de fechar interno */
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-code);
+            font-size: 1.1rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 5px;
+            transition: all 0.2s;
+        }
+        .close-btn:hover {
+            color: var(--highlight);
+            text-shadow: 0 0 8px var(--highlight);
         }
 
         .system-title {
@@ -171,6 +192,7 @@
                 <div class="system-title">A Versão de Você</div>
                 <div class="system-sub">>> SYSTEM_OS v7.0</div>
             </div>
+            <button class="close-btn" onclick="toggleSidebar()" title="Recolher Menu">[X]</button>
         </div>
 
         <nav class="nav-tree">
@@ -306,3 +328,4 @@
     </script>
 </body>
 </html>
+
