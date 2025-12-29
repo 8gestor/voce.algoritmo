@@ -1,9 +1,9 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A VERSÃO DE VOCÊ QUE OS ALGORITMOS ACREDITAM QUE VOCÊ É // SYSTEM CORE</title>
+    <title>A VERSÃO DE VOCÊ // SYSTEM CORE</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Consolas:wght@400;700&display=swap" rel="stylesheet">
 
@@ -50,13 +50,11 @@
             padding: 25px;
             border-bottom: 1px solid var(--border);
             background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.05), transparent 70%);
-            /* AJUSTE: Flexbox para alinhar botão de fechar */
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
         }
 
-        /* AJUSTE: Estilo do botão de fechar interno */
         .close-btn {
             background: transparent;
             border: none;
@@ -121,7 +119,7 @@
             padding: 0 25px; z-index: 10;
         }
 
-        .left-controls { display: flex; align-items: center; gap: 20px; }
+        .left-controls { display: flex; align-items: center; gap: 15px; }
 
         .toggle-btn {
             background: transparent; border: 1px solid var(--border); color: var(--accent);
@@ -130,6 +128,9 @@
             transition: 0.2s;
         }
         .toggle-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        /* Separação visual para os grupos de botões */
+        .btn-group { display: flex; gap: 5px; margin-right: 10px; }
 
         .book-identity { display: flex; flex-direction: column; }
         .static-title { font-family: var(--font-code); font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px; }
@@ -190,7 +191,7 @@
         <div class="brand-header">
             <div style="flex:1;">
                 <div class="system-title">A Versão de Você</div>
-                <div class="system-sub">>> SYSTEM_OS v7.0</div>
+                <div class="system-sub">>> MENU DE NAVEGAÇÃO</div>
             </div>
             <button class="close-btn" onclick="toggleSidebar()" title="Recolher Menu">[X]</button>
         </div>
@@ -232,9 +233,17 @@
     <main class="workspace">
         <header class="control-bar">
             <div class="left-controls">
-                <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+                <button class="toggle-btn" onclick="toggleSidebar()" title="Abrir Menu">☰</button>
+                
+                <div class="btn-group">
+                    <button class="toggle-btn" onclick="navigateChapter(-1)" title="Capítulo Anterior">◀</button>
+                    <button class="toggle-btn" onclick="navigateChapter(1)" title="Próximo Capítulo">▶</button>
+                </div>
+
+                <button class="toggle-btn" onclick="toggleNarration()" id="voice-btn" title="Iniciar Leitura Neural">🔈</button> 
+
                 <div class="book-identity">
-                    <span class="static-title">A VERSÃO DE VOCÊ QUE OS ALGORITMOS ACREDITAM QUE VOCÊ É // LEITURA ATIVA</span>
+                    <span class="static-title">A VERSÃO DE VOCÊ // LEITURA ATIVA</span>
                     <span class="dynamic-chapter" id="chapter-title">DIAGNÓSTICO INICIAL</span>
                 </div>
             </div>
@@ -271,17 +280,19 @@
     </main>
 
     <script>
-        // Total Estimated Reading Time (in minutes) - Sum of all chapters
+        // --- CONFIGURAÇÕES DO SISTEMA ---
         const TOTAL_BOOK_TIME = 190; 
+        let narrationActive = false;
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
 
-        // Relógio
+        // --- RELÓGIO & VISUAL ---
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // Simulação Cyber-Effect
         setInterval(() => {
             document.getElementById('mem-val').innerText = Math.floor(Math.random() * (45 - 20) + 20) + "%";
             document.getElementById('cpu-val').innerText = Math.floor(Math.random() * (15 - 5) + 5) + "%";
@@ -289,32 +300,55 @@
             document.getElementById('disk-val').innerText = diskState;
         }, 2000);
 
-        // Navegação e Estatísticas
+        // --- LÓGICA DE NAVEGAÇÃO ---
         function loadChapter(link, percent, chapterTime) {
-            // Atualiza Menu
+            // 1. Atualiza UI do Menu
             document.querySelectorAll('.chapter-link').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
             
-            // Atualiza Título
+            // 2. Atualiza Título
             const cleanTitle = link.innerText.replace(/^\d+\.\s*/, ''); 
             document.getElementById('chapter-title').innerText = cleanTitle;
 
-            // Fecha menu mobile
+            // 3. AUTO-COLLAPSE (Sidebar Recolhe Automaticamente)
+            const sidebar = document.getElementById('sidebar');
             if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.toggle('collapsed');
+                sidebar.classList.remove('open'); // Mobile
+            } else {
+                sidebar.classList.add('collapsed'); // Desktop
             }
 
-            // CALCULAR ESTATÍSTICAS DE LEITURA
-            // 1. Atualiza Barra de Progresso
+            // 4. Resetar Narração ao mudar de capítulo
+            stopNarration();
+
+            // 5. Estatísticas
             document.getElementById('progress-fill').style.width = percent + '%';
             document.getElementById('total-percent').innerText = percent + '%';
-
-            // 2. Calcula Tempo Restante (Estimativa Linear Inversa)
-            // Se estamos em X%, falta (100 - X)% do tempo total
+            
             const remainingPercent = 100 - percent;
             const minutesLeft = Math.round((TOTAL_BOOK_TIME * remainingPercent) / 100);
             
             document.getElementById('time-remaining').innerText = minutesLeft + " min";
+        }
+
+        // Função nova para navegar Anterior/Próximo
+        function navigateChapter(direction) {
+            const links = Array.from(document.querySelectorAll('.chapter-link'));
+            const activeLink = document.querySelector('.chapter-link.active');
+            
+            if (!activeLink) return;
+
+            const currentIndex = links.indexOf(activeLink);
+            let newIndex = currentIndex + direction;
+
+            // Evitar sair dos limites
+            if (newIndex < 0) newIndex = 0;
+            if (newIndex >= links.length) newIndex = links.length - 1;
+
+            if (newIndex !== currentIndex) {
+                // Simula o clique no novo link para rodar toda a lógica de loadChapter
+                links[newIndex].click();
+            }
         }
 
         function toggleSidebar() {
@@ -325,8 +359,74 @@
                 sidebar.classList.toggle('collapsed');
             }
         }
+
+        // --- SISTEMA DE NARRAÇÃO (TTS) ---
+        function toggleNarration() {
+            if (narrationActive) {
+                stopNarration();
+            } else {
+                startNarration();
+            }
+        }
+
+        function startNarration() {
+            const iframe = document.getElementById('main-frame');
+            const btn = document.getElementById('voice-btn');
+
+            try {
+                // Tenta pegar o texto dentro do iframe
+                const frameContent = iframe.contentWindow.document.body.innerText;
+                
+                if (!frameContent || frameContent.trim() === "") {
+                    alert("SYSTEM ERROR: Nenhum texto detectado para leitura.");
+                    return;
+                }
+
+                // Configura a voz
+                currentUtterance = new SpeechSynthesisUtterance(frameContent);
+                currentUtterance.lang = 'pt-BR';
+                currentUtterance.rate = 1.1; // Velocidade IA
+                currentUtterance.pitch = 0.9; // Tom Grave
+
+                // Eventos visuais
+                currentUtterance.onstart = () => {
+                    narrationActive = true;
+                    btn.innerText = "⏹"; // Ícone Stop
+                    btn.style.borderColor = "var(--bio)";
+                    btn.style.color = "var(--bio)";
+                    btn.style.boxShadow = "0 0 10px var(--bio)";
+                };
+
+                currentUtterance.onend = () => {
+                    stopNarration();
+                };
+
+                synth.speak(currentUtterance);
+
+            } catch (e) {
+                console.error(e);
+                alert("SYSTEM ERROR: Acesso ao conteúdo bloqueado. Use um servidor local (Live Server).");
+            }
+        }
+
+        function stopNarration() {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            narrationActive = false;
+            
+            // Resetar botão
+            const btn = document.getElementById('voice-btn');
+            if(btn) {
+                btn.innerText = "🔈";
+                btn.style.borderColor = "";
+                btn.style.color = "";
+                btn.style.boxShadow = "";
+            }
+        }
     </script>
 </body>
 </html>
+
 
 
