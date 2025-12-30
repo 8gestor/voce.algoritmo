@@ -1,240 +1,446 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Capítulo 1: O Cérebro Não é um Computador. Uma análise profunda sobre neurociência, psicanálise e a falácia da metáfora computacional.">
-    <title>Capítulo 1 - A Mente Biológica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Capítulo 01 // A Mente Biológica</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS ENGINE v5.4 (Deep Reading + Audio Sync) */
-        :root { --base-font-size: 18px; --transition: 0.3s ease; }
-        :root[data-theme="dark"] { --bg-color: #050505; --text-main: #e5e5e5; --text-muted: #888; --accent-tech: #0ea5e9; --accent-bio: #10b981; --highlight: #d946ef; --border-color: rgba(255, 255, 255, 0.15); --panel-bg: rgba(15, 15, 20, 0.98); --box-bg: rgba(255, 255, 255, 0.02); --table-head: rgba(14, 165, 233, 0.1); }
-        :root[data-theme="sepia"] { --bg-color: #f4ecd8; --text-main: #4a3b2a; --text-muted: #8d745e; --accent-tech: #a21caf; --accent-bio: #15803d; --highlight: #b45309; --border-color: rgba(91, 70, 54, 0.2); --panel-bg: #eaddcf; --box-bg: rgba(91, 70, 54, 0.05); --table-head: rgba(91, 70, 54, 0.1); }
-        :root[data-theme="light"] { --bg-color: #ffffff; --text-main: #111827; --text-muted: #4b5563; --accent-tech: #0284c7; --accent-bio: #16a34a; --highlight: #9333ea; --border-color: rgba(0, 0, 0, 0.1); --panel-bg: #f3f4f6; --box-bg: #f9fafb; --table-head: rgba(0,0,0,0.05); }
+        :root {
+            /* --- IDENTIDADE VISUAL (Mesma do Index) --- */
+            --bg-app: #050505;
+            --bg-panel: rgba(20, 20, 23, 0.95);
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            --text-primary: #ededed;
+            --text-secondary: #888888;
+            
+            --accent: #3b82f6;        /* Azul Tech */
+            --accent-bio: #10b981;    /* Verde Bio */
+            --accent-warn: #d946ef;   /* Rosa Alerta */
+            --accent-glow: 0 0 15px rgba(59, 130, 246, 0.25);
+            
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            
+            --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --blur: blur(12px);
+
+            /* Variável Dinâmica de Leitura (Controlada pelo JS) */
+            --reading-size: 18px; 
+        }
+
+        /* Tema Claro (Opcional, seguindo lógica do index) */
+        body.light-mode {
+            --bg-app: #f2f2f7;
+            --bg-panel: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #1c1c1e;
+            --text-secondary: #6c6c70;
+            --accent: #007aff;
+            --accent-bio: #16a34a;
+            --accent-warn: #af52de;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            height: 100vh;
+            overflow: hidden; /* O scroll será no container de texto */
+            display: flex; flex-direction: column;
+        }
+
+        /* --- PAINEL SUPERIOR (HUD) --- */
+        /* Req 4 e 6: Fixo, não aumenta com zoom de texto, dinâmico */
+        .reading-hud {
+            height: 70px; flex-shrink: 0;
+            background: var(--bg-panel); backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; z-index: 100;
+            padding: 0 20px;
+            font-family: var(--font-tech); /* Fonte técnica para UI */
+        }
+
+        .tool-group {
+            display: flex; align-items: center; gap: 8px;
+            padding: 0 15px; border-right: 1px solid var(--border-color);
+        }
+        .tool-group:last-child { border-right: none; }
+
+        /* Botões Estilo Dashboard */
+        .hud-btn {
+            height: 36px; min-width: 36px; padding: 0 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            color: var(--text-secondary); border-radius: var(--radius-sm);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-tech); font-weight: 600; font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .hud-btn:hover {
+            border-color: var(--accent); color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: var(--accent-glow); transform: translateY(-1px);
+        }
+
+        .hud-btn:active { transform: scale(0.95); }
+
+        .speed-display {
+            font-size: 0.75rem; color: var(--accent); min-width: 40px; text-align: center;
+        }
+
+        /* --- ÁREA DE CONTEÚDO --- */
+        .content-scroll-area {
+            flex: 1; overflow-y: auto; overflow-x: hidden;
+            padding: 40px 20px 100px 20px;
+            scroll-behavior: smooth;
+        }
+
+        .book-container {
+            max-width: 750px; margin: 0 auto;
+            /* Req 5: O tamanho da fonte é controlado aqui, independente da UI */
+            font-size: var(--reading-size); 
+            line-height: 1.8;
+        }
+
+        /* --- ESTILIZAÇÃO DO TEXTO --- */
+        /* Req 4: Títulos em MAIÚSCULO */
+        h1 {
+            font-family: var(--font-tech); font-size: 2.2em;
+            text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-primary); border-bottom: 2px solid var(--accent);
+            padding-bottom: 20px; margin-bottom: 40px; text-align: center;
+            text-shadow: 0 0 20px rgba(59,130,246,0.1);
+        }
+
+        h2 {
+            font-family: var(--font-tech); font-size: 1.5em;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--accent); margin-top: 3em; margin-bottom: 1em;
+            display: flex; align-items: center; gap: 10px;
+        }
+        h2::before { content: '//'; opacity: 0.5; }
+
+        h3 {
+            font-family: var(--font-ui); font-size: 1.2em; font-weight: 600;
+            color: var(--accent-warn); margin-top: 2em;
+            text-transform: uppercase; /* Req 4 */
+        }
+
+        p {
+            margin-bottom: 1.5em; text-align: justify;
+            color: var(--text-primary); opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        p:hover { opacity: 1; }
+
+        .chapter-meta {
+            text-align: center; font-family: var(--font-tech); font-size: 0.8em;
+            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 10px; opacity: 0.7;
+        }
+
+        /* --- CAIXAS DE DESTAQUE (Estilo Tech) --- */
+        .box {
+            border-radius: var(--radius-md); padding: 25px; margin: 3em 0;
+            font-size: 0.95em; position: relative;
+        }
+
+        /* Tese (Azul) */
+        .thesis-box {
+            background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3);
+            border-left: 4px solid var(--accent);
+        }
         
-        html { font-size: var(--base-font-size); scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Georgia', 'Lora', serif; line-height: 1.8; margin: 0; padding: 80px 20px 60px 20px; transition: background-color var(--transition), color var(--transition); }
-        .book-container { max-width: 750px; margin: 0 auto; position: relative; }
-        
-        h1 { font-family: 'Segoe UI', sans-serif; font-size: 2.2rem; text-align: center; text-transform: uppercase; border-bottom: 1px solid var(--accent-tech); padding-bottom: 20px; margin-top: 0; letter-spacing: 2px; }
-        h2 { font-family: 'Segoe UI', sans-serif; font-size: 1.5rem; color: var(--accent-tech); border-left: 4px solid var(--accent-tech); padding-left: 15px; margin-top: 2.5em; text-transform: uppercase; letter-spacing: 1px; }
-        h3 { font-family: 'Segoe UI', sans-serif; font-size: 1.2rem; font-weight: bold; margin-top: 1.5em; color: var(--highlight); }
-        p { margin-bottom: 1.5em; text-align: justify; hyphens: auto; transition: opacity 0.2s; cursor: pointer; } p:hover { opacity: 0.9; }
-        li { cursor: pointer; margin-bottom: 0.5em; }
-        
-        .chapter-meta { text-align: center; color: var(--text-muted); font-family: 'Consolas', monospace; font-size: 0.8rem; margin-bottom: 2em; letter-spacing: 3px; text-transform: uppercase; }
-        .thesis-box { border-left: 4px solid var(--accent-tech); padding: 20px; margin: 3em 0; color: var(--text-muted); background: var(--box-bg); font-style: italic; cursor: pointer; }
-        .deep-dive-box { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 30px 0; margin: 40px 0; }
-        .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid var(--accent-bio); border-radius: 8px; padding: 25px; margin: 40px 0; cursor: pointer; }
-        .action-box { background: linear-gradient(135deg, var(--box-bg) 0%, transparent 100%); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; margin-top: 50px; text-align: center; cursor: pointer; border-top: 3px solid var(--accent-bio); }
-        .action-title { color: var(--accent-bio); font-family: 'Segoe UI', sans-serif; font-size: 1.2rem; margin-bottom: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        /* Antítese (Verde) */
+        .antithesis-box {
+            background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3);
+            border-left: 4px solid var(--accent-bio);
+        }
 
-        /* Tables */
-        .visual-table-container { margin: 3em 0; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; font-family: 'Segoe UI', sans-serif; font-size: 0.9rem; cursor: pointer; }
-        .visual-header { background: var(--box-bg); color: var(--accent-tech); padding: 12px; font-weight: bold; border-bottom: 1px solid var(--border-color); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-        table { width: 100%; border-collapse: collapse; } 
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); } 
-        th { background: var(--table-head); color: var(--text-muted); font-weight: normal; }
+        /* Deep Dive (Linhas) */
+        .deep-dive-box {
+            border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color);
+            padding: 30px 0;
+        }
 
-        /* Audio Highlight */
-        .reading-highlight { background: rgba(14, 165, 233, 0.15); border-left: 4px solid var(--accent-tech); padding-left: 15px; margin-left: -19px; transition: all 0.3s ease; border-radius: 0 6px 6px 0; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
+        /* Action (Gradiente) */
+        .action-box {
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
+            border: 1px solid var(--accent-bio);
+            text-align: center;
+        }
+        .action-title {
+            color: var(--accent-bio); font-family: var(--font-tech); font-weight: bold;
+            text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px;
+        }
 
-        /* Toolbar */
-        .reading-toolbar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 1000; backdrop-filter: blur(5px); }
-        .tool-group { display: flex; align-items: center; gap: 5px; padding: 0 10px; border-right: 1px solid var(--border-color); } .tool-group:last-child { border-right: none; }
-        .btn-icon { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); width: 30px; height: 30px; border-radius: 4px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
-        .btn-icon:hover { background: rgba(255,255,255,0.1); }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); }
-        .dot-dark { background: #050505; border: 1px solid #555; } .dot-sepia { background: #f4ecd8; border: 1px solid #8d745e; } .dot-light { background: #fff; border: 1px solid #ccc; }
-        .speed-display { font-family: 'Consolas', monospace; font-size: 12px; color: var(--text-muted); width: 40px; text-align: center; }
+        /* --- TABELAS --- */
+        .visual-table-container {
+            border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+            overflow: hidden; margin: 3em 0;
+        }
+        .visual-header {
+            background: rgba(255,255,255,0.05); padding: 12px;
+            font-family: var(--font-tech); font-size: 0.8em; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color);
+        }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
 
-        @media (max-width: 600px) { h1 { font-size: 1.6rem; } body { padding-top: 70px; } }
+        /* --- AUDIO HIGHLIGHT --- */
+        .reading-highlight {
+            background: rgba(59, 130, 246, 0.15);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+            color: #fff;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .reading-hud { padding: 0 10px; gap: 10px; overflow-x: auto; justify-content: flex-start; }
+            .tool-group { padding: 0 8px; }
+            h1 { font-size: 1.6em; }
+            .book-container { padding: 0 5px; }
+        }
     </style>
 </head>
 <body>
-    <div class="reading-toolbar">
+
+    <div class="reading-hud">
         <div class="tool-group">
-            <div class="theme-dot dot-dark" onclick="setTheme('dark')"></div>
-            <div class="theme-dot dot-sepia" onclick="setTheme('sepia')"></div>
-            <div class="theme-dot dot-light" onclick="setTheme('light')"></div>
+            <button class="hud-btn" onclick="toggleTheme()" title="Alternar Tema">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
         </div>
+
         <div class="tool-group">
-            <button class="btn-icon" onclick="changeSpeed(-0.25)" title="Mais Lento">«</button>
+            <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Mais Lento">«</button>
             <span class="speed-display" id="speed-val">1.0x</span>
-            <button class="btn-icon" onclick="changeSpeed(0.25)" title="Mais Rápido">»</button>
-            <button class="btn-icon" id="btn-speak" onclick="toggleSpeech()" title="Play/Pause">▶</button>
+            <button class="hud-btn" onclick="changeSpeed(0.25)" title="Mais Rápido">»</button>
+            <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" style="color: var(--accent-bio); border-color: var(--accent-bio);">
+                ▶ PLAY
+            </button>
         </div>
+
         <div class="tool-group">
-            <button class="btn-icon" onclick="changeFontSize(-1)">A-</button>
-            <button class="btn-icon" onclick="changeFontSize(1)">A+</button>
+            <button class="hud-btn" onclick="changeFontSize(-1)">A-</button>
+            <button class="hud-btn" onclick="changeFontSize(1)">A+</button>
         </div>
     </div>
 
-    <div class="book-container" id="content-area">
-        <div class="chapter-meta">Parte I: A Mente | Capítulo 01</div>
-        <h1>O Cérebro Não é um Computador</h1>
+    <div class="content-scroll-area" id="content-area">
+        <div class="book-container">
+            <div class="chapter-meta">Parte I: A Mente | Capítulo 01</div>
+            <h1>O Cérebro Não é um Computador</h1>
 
-        <p>Olhe para o dispositivo onde você está lendo estas palavras. Ele processa informações através de silício, opera com lógica binária (zeros e uns) e, se você desligá-lo, a "consciência" dele cessa instantaneamente. Agora, olhe para a sua mão. Mova um dedo. Lembre-se do gosto da sua comida favorita.</p>
-        
-        <p>A narrativa predominante do século XXI tenta convencer você de que essas duas coisas — o dispositivo e o seu corpo — operam sob os mesmos princípios fundamentais. Disseram-nos que o cérebro é "hardware" (carne) e a mente é "software" (mente). Disseram que pensar é apenas "processar dados" e que, em breve, com o avanço da capacidade de processamento, as máquinas serão indistinguíveis de nós.</p>
+            <p>Olhe para o dispositivo onde você está lendo estas palavras. Ele processa informações através de silício, opera com lógica binária (zeros e uns) e, se você desligá-lo, a "consciência" dele cessa instantaneamente. Agora, olhe para a sua mão. Mova um dedo. Lembre-se do gosto da sua comida favorita.</p>
+            
+            <p>A narrativa predominante do século XXI tenta convencer você de que essas duas coisas — o dispositivo e o seu corpo — operam sob os mesmos princípios fundamentais. Disseram-nos que o cérebro é "hardware" (carne) e a mente é "software" (mente). Disseram que pensar é apenas "processar dados" e que, em breve, com o avanço da capacidade de processamento, as máquinas serão indistinguíveis de nós.</p>
 
-        <p>Essa é a <strong>Metáfora Computacional</strong>. E ela não é apenas um erro científico; é a fundação ideológica que permite que algoritmos tentem prever quem você é.</p>
+            <p>Essa é a <strong>Metáfora Computacional</strong>. E ela não é apenas um erro científico; é a fundação ideológica que permite que algoritmos tentem prever quem você é.</p>
 
-        <div class="thesis-box">
-            <strong>A Tese do Vale do Silício:</strong><br>
-            "A inteligência é independente do substrato. Se conseguirmos mapear todas as sinapses do seu cérebro e transferi-las para um computador (upload de mente), 'você' continuará existindo lá dentro. Logo, você é apenas um conjunto complexo de algoritmos esperando para ser otimizado."
-        </div>
+            <div class="box thesis-box">
+                <strong style="color: var(--accent); text-transform: uppercase; font-family: var(--font-tech);">// A Tese do Vale do Silício:</strong><br><br>
+                "A inteligência é independente do substrato. Se conseguirmos mapear todas as sinapses do seu cérebro e transferi-las para um computador (upload de mente), 'você' continuará existindo lá dentro. Logo, você é apenas um conjunto complexo de algoritmos esperando para ser otimizado."
+            </div>
 
-        <p>Se você aceita essa tese, aceita que "A Versão de Você que os Algoritmos Acreditam que Você É" é a versão real. Afinal, se você é apenas dados, quem melhor para entender você do que uma máquina projetada para analisar dados?</p>
-        
-        <p>Mas a biologia discorda.</p>
+            <p>Se você aceita essa tese, aceita que "A Versão de Você que os Algoritmos Acreditam que Você É" é a versão real. Afinal, se você é apenas dados, quem melhor para entender você do que uma máquina projetada para analisar dados?</p>
+            
+            <p>Mas a biologia discorda.</p>
 
-        <h2>O Hardware Antigo em um Mundo Novo</h2>
-        
-        <p>Para entender por que a metáfora do computador falha, precisamos retroceder o relógio. Seu cérebro não foi projetado por engenheiros em um laboratório limpo; ele foi esculpido por pressões evolutivas brutais ao longo de 300.000 anos nas savanas do Pleistoceno. Nós somos, essencialmente, caçadores-coletores vestindo ternos e segurando smartphones.</p>
+            <h2>O Hardware Antigo em um Mundo Novo</h2>
+            
+            <p>Para entender por que a metáfora do computador falha, precisamos retroceder o relógio. Seu cérebro não foi projetado por engenheiros em um laboratório limpo; ele foi esculpido por pressões evolutivas brutais ao longo de 300.000 anos nas savanas do Pleistoceno. Nós somos, essencialmente, caçadores-coletores vestindo ternos e segurando smartphones.</p>
 
-        <p>Na pré-história, a ansiedade era uma ferramenta de sobrevivência funcional. Se você ouvisse um barulho no arbusto, seu sistema límbico (a parte mais primitiva e emocional do cérebro) disparava cortisol e adrenalina. O custo de fugir e estar errado era apenas algumas calorias perdidas. O custo de ficar e estar errado era a morte. O cérebro humano, portanto, evoluiu com um viés negativo: ele prioriza o perigo, o medo e a escassez.</p>
+            <p>Na pré-história, a ansiedade era uma ferramenta de sobrevivência funcional. Se você ouvisse um barulho no arbusto, seu sistema límbico (a parte mais primitiva e emocional do cérebro) disparava cortisol e adrenalina. O custo de fugir e estar errado era apenas algumas calorias perdidas. O custo de ficar e estar errado era a morte. O cérebro humano, portanto, evoluiu com um viés negativo: ele prioriza o perigo, o medo e a escassez.</p>
 
-        <p>O problema surge quando transportamos esse "hardware biológico" antigo para o ambiente digital moderno. Hoje, o "leão no arbusto" foi substituído pela notificação de e-mail, pela rejeição social no Instagram ou pela manchete alarmista. Seu cérebro não sabe distinguir entre uma ameaça física de morte e uma ameaça digital ao seu status social. A resposta fisiológica é a mesma. As redes sociais hackearam esse legado evolutivo, transformando nosso instinto de sobrevivência em engajamento perpétuo.</p>
+            <p>O problema surge quando transportamos esse "hardware biológico" antigo para o ambiente digital moderno. Hoje, o "leão no arbusto" foi substituído pela notificação de e-mail, pela rejeição social no Instagram ou pela manchete alarmista. Seu cérebro não sabe distinguir entre uma ameaça física de morte e uma ameaça digital ao seu status social. A resposta fisiológica é a mesma. As redes sociais hackearam esse legado evolutivo, transformando nosso instinto de sobrevivência em engajamento perpétuo.</p>
 
-        <div class="deep-dive-box">
-            <h3>Fator X: Embodied Cognition e o Erro de Descartes</h3>
-            <p>A neurociência contemporânea, liderada por nomes como <strong>Antonio Damasio</strong> e <strong>Francisco Varela</strong>, derrubou a ideia de que a mente é um software separado do corpo. Damasio, em <em>O Erro de Descartes</em>, introduziu a "Hipótese do Marcador Somático". Ele provou que a racionalidade não existe sem a emoção e sem o corpo físico.</p>
-            <p>Quando você toma uma decisão, seu corpo "pensa" antes da sua mente consciente. O intestino contrai, o coração acelera. Isso é <strong>Embodied Cognition (Cognição Incorporada)</strong>. Um algoritmo não tem intestino. Ele não tem medo da morte. Portanto, ele pode simular lógica, mas nunca simular <em>sentido</em>. A inteligência artificial é, por definição, uma inteligência desencarnada, enquanto a sua é visceral.</p>
-        </div>
+            <div class="box deep-dive-box">
+                <h3>Fator X: Embodied Cognition e o Erro de Descartes</h3>
+                <p>A neurociência contemporânea, liderada por nomes como <strong>Antonio Damasio</strong> e <strong>Francisco Varela</strong>, derrubou a ideia de que a mente é um software separado do corpo. Damasio, em <em>O Erro de Descartes</em>, introduziu a "Hipótese do Marcador Somático". Ele provou que a racionalidade não existe sem a emoção e sem o corpo físico.</p>
+                <p>Quando você toma uma decisão, seu corpo "pensa" antes da sua mente consciente. O intestino contrai, o coração acelera. Isso é <strong>Embodied Cognition (Cognição Incorporada)</strong>. Um algoritmo não tem intestino. Ele não tem medo da morte. Portanto, ele pode simular lógica, mas nunca simular <em>sentido</em>. A inteligência artificial é, por definição, uma inteligência desencarnada, enquanto a sua é visceral.</p>
+            </div>
 
-        <div class="visual-table-container">
-            <div class="visual-header">🧠 A BATALHA CONCEITUAL: MÁQUINA VS. ORGANISMO</div>
-            <table>
-                <tbody>
-                    <tr>
-                        <td style="color:var(--accent-tech)"><strong>Visão Computacional</strong></td>
-                        <td>O cérebro é um processador de inputs passivos. A mente é abstrata e transferível.</td>
-                    </tr>
-                    <tr>
-                        <td style="color:var(--accent-bio)"><strong>Visão Enativa (Varela)</strong></td>
-                        <td>A mente emerge da interação física do organismo vivo com o mundo. O pensar é um "fazer".</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <div class="visual-table-container">
+                <div class="visual-header">🧠 A BATALHA CONCEITUAL: MÁQUINA VS. ORGANISMO</div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td style="color:var(--accent)"><strong>Visão Computacional</strong></td>
+                            <td>O cérebro é um processador de inputs passivos. A mente é abstrata e transferível.</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--accent-bio)"><strong>Visão Enativa (Varela)</strong></td>
+                            <td>A mente emerge da interação física do organismo vivo com o mundo. O pensar é um "fazer".</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <h2>Antítese: O Cérebro Relativístico e Criador</h2>
+            <h2>Antítese: O Cérebro Relativístico e Criador</h2>
 
-        <p>Para desmontar essa falácia, recorremos ao neurocientista brasileiro <strong>Miguel Nicolelis</strong>. Em seus estudos pioneiros sobre interfaces cérebro-máquina e em obras como <em>O Verdadeiro Criador de Tudo</em>, Nicolelis propõe uma visão radicalmente oposta à do computador.</p>
+            <p>Para desmontar essa falácia, recorremos ao neurocientista brasileiro <strong>Miguel Nicolelis</strong>. Em seus estudos pioneiros sobre interfaces cérebro-máquina e em obras como <em>O Verdadeiro Criador de Tudo</em>, Nicolelis propõe uma visão radicalmente oposta à do computador.</p>
 
-        <div class="antithesis-box">
-            <p><strong>O Contraponto Científico:</strong></p>
-            <p>O cérebro não processa informações passivamente; ele <strong>cria</strong> modelos da realidade. Diferente de um computador digital, que funciona com passos discretos (bits), o cérebro opera através de campos eletromagnéticos analógicos gerados por bilhões de neurônios interagindo simultaneamente.</p>
-            <p>Nicolelis introduz o conceito de <strong>Cérebro Relativístico</strong>: a forma como percebemos o espaço e o tempo é plástica e depende da nossa história evolutiva e das nossas experiências corporais. Um computador não tem corpo, não tem dor, não tem história. Ele pode acessar um banco de dados sobre "amor", mas não possui a estrutura fisiológica para <em>sentir</em> o aperto no peito que define a emoção.</p>
-            <p>A "computação" cerebral é intrinsecamente <strong>irreversível</strong>. Você não pode "reiniciar" um cérebro. Cada segundo que passa altera fisicamente a estrutura da sua mente (neuroplasticidade). Um algoritmo de IA é estático até ser retreinado; você é um rio que nunca é o mesmo duas vezes.</p>
-        </div>
+            <div class="box antithesis-box">
+                <p><strong style="color: var(--accent-bio); font-family: var(--font-tech); text-transform: uppercase;">// O Contraponto Científico:</strong></p>
+                <p>O cérebro não processa informações passivamente; ele <strong>cria</strong> modelos da realidade. Diferente de um computador digital, que funciona com passos discretos (bits), o cérebro opera através de campos eletromagnéticos analógicos gerados por bilhões de neurônios interagindo simultaneamente.</p>
+                <p>Nicolelis introduz o conceito de <strong>Cérebro Relativístico</strong>: a forma como percebemos o espaço e o tempo é plástica e depende da nossa história evolutiva e das nossas experiências corporais. Um computador não tem corpo, não tem dor, não tem história. Ele pode acessar um banco de dados sobre "amor", mas não possui a estrutura fisiológica para <em>sentir</em> o aperto no peito que define a emoção.</p>
+                <p>A "computação" cerebral é intrinsecamente <strong>irreversível</strong>. Você não pode "reiniciar" um cérebro. Cada segundo que passa altera fisicamente a estrutura da sua mente (neuroplasticidade). Um algoritmo de IA é estático até ser retreinado; você é um rio que nunca é o mesmo duas vezes.</p>
+            </div>
 
-        <h2>O Espelho Negro: Psicanálise na Era dos Dados</h2>
+            <h2>O Espelho Negro: Psicanálise na Era dos Dados</h2>
 
-        <p>Se a biologia nos dá o hardware, a psicologia nos dá o mapa dos conflitos internos que os algoritmos exploram. As máquinas operam na lógica, mas os humanos operam no desejo. E como nos ensinaram Freud, Jung e Lacan, o desejo é um terreno caótico.</p>
+            <p>Se a biologia nos dá o hardware, a psicologia nos dá o mapa dos conflitos internos que os algoritmos exploram. As máquinas operam na lógica, mas os humanos operam no desejo. E como nos ensinaram Freud, Jung e Lacan, o desejo é um terreno caótico.</p>
 
-        <h3>1. O Id Algorítmico (Sigmund Freud)</h3>
-        <p>Freud dividiu a psique em Id (impulsos primitivos), Ego (o mediador racional) e Superego (a moralidade). O algoritmo de recomendação do TikTok ou do YouTube não está interessado no seu Ego ou no seu Superego. Ele fala diretamente com o seu <strong>Id</strong>. Ele oferece recompensas imediatas, validação sexual ou agressiva, contornando a racionalidade do Ego. Quando você rola o feed infinitamente às 2 da manhã, não é você (sujeito racional) que está no comando; é o seu Id sendo alimentado por uma máquina que aprendeu a servi-lo.</p>
+            <h3>1. O Id Algorítmico (Sigmund Freud)</h3>
+            <p>Freud dividiu a psique em Id (impulsos primitivos), Ego (o mediador racional) e Superego (a moralidade). O algoritmo de recomendação do TikTok ou do YouTube não está interessado no seu Ego ou no seu Superego. Ele fala diretamente com o seu <strong>Id</strong>. Ele oferece recompensas imediatas, validação sexual ou agressiva, contornando a racionalidade do Ego. Quando você rola o feed infinitamente às 2 da manhã, não é você (sujeito racional) que está no comando; é o seu Id sendo alimentado por uma máquina que aprendeu a servi-lo.</p>
 
-        <h3>2. O Inconsciente Coletivo Digitalizado (Carl Jung)</h3>
-        <p>Jung falava sobre o Inconsciente Coletivo — um reservatório de arquétipos e mitos compartilhados por toda a humanidade. Hoje, as Big Techs privatizaram o inconsciente coletivo. O que antes eram mitos e sonhos agora são "Tendências" e "Hashtags". A Nuvem tornou-se o novo repositório da memória humana, mas ao contrário do conceito junguiano, que visava a individuação (tornar-se quem você realmente é), a Nuvem visa a padronização (tornar você um consumidor previsível).</p>
+            <h3>2. O Inconsciente Coletivo Digitalizado (Carl Jung)</h3>
+            <p>Jung falava sobre o Inconsciente Coletivo — um reservatório de arquétipos e mitos compartilhados por toda a humanidade. Hoje, as Big Techs privatizaram o inconsciente coletivo. O que antes eram mitos e sonhos agora são "Tendências" e "Hashtags". A Nuvem tornou-se o novo repositório da memória humana, mas ao contrário do conceito junguiano, que visava a individuação (tornar-se quem você realmente é), a Nuvem visa a padronização (tornar você um consumidor previsível).</p>
 
-        <h3>3. O Estádio do Espelho (Jacques Lacan)</h3>
-        <p>Lacan descreveu o "Estádio do Espelho" como o momento em que a criança se reconhece na imagem refletida, criando uma identidade (Ego) que é, fundamentalmente, uma ilusão de integridade. Hoje, vivemos em um Estádio do Espelho permanente através das telas (Black Mirror). A "versão de você" nas redes sociais é essa imagem idealizada e rígida. O sofrimento psíquico contemporâneo nasce do abismo entre quem somos organicamente (falhos, biológicos, imperfeitos) e a imagem digital perfeita que o algoritmo nos obriga a sustentar.</p>
+            <h3>3. O Estádio do Espelho (Jacques Lacan)</h3>
+            <p>Lacan descreveu o "Estádio do Espelho" como o momento em que a criança se reconhece na imagem refletida, criando uma identidade (Ego) que é, fundamentalmente, uma ilusão de integridade. Hoje, vivemos em um Estádio do Espelho permanente através das telas (Black Mirror). A "versão de você" nas redes sociais é essa imagem idealizada e rígida. O sofrimento psíquico contemporâneo nasce do abismo entre quem somos organicamente (falhos, biológicos, imperfeitos) e a imagem digital perfeita que o algoritmo nos obriga a sustentar.</p>
 
-        <h2>A Fronteira Final: Interface Cérebro-Máquina (BCI)</h2>
+            <h2>A Fronteira Final: Interface Cérebro-Máquina (BCI)</h2>
 
-        <p>Estamos nos aproximando rapidamente de um horizonte de eventos: a fusão física. Empresas como a Neuralink (Elon Musk) e pesquisas acadêmicas (incluindo as de Nicolelis, embora com objetivos terapêuticos distintos) estão desenvolvendo <strong>Interfaces Cérebro-Máquina</strong> (BCI).</p>
+            <p>Estamos nos aproximando rapidamente de um horizonte de eventos: a fusão física. Empresas como a Neuralink (Elon Musk) e pesquisas acadêmicas (incluindo as de Nicolelis, embora com objetivos terapêuticos distintos) estão desenvolvendo <strong>Interfaces Cérebro-Máquina</strong> (BCI).</p>
 
-        <p>A promessa é sedutora: curar paralisias, controlar objetos com a mente, expandir a memória. Mas o perigo, no contexto do Capitalismo de Vigilância, é existencial. Se hoje o algoritmo infere o que você sente através do seu clique, uma BCI poderá ler o estado neural diretamente na fonte. A privacidade mental — o último refúgio da subjetividade humana — pode deixar de existir. Nesse cenário, o cérebro deixaria de ser apenas o "usuário" para se tornar um periférico da rede.</p>
+            <p>A promessa é sedutora: curar paralisias, controlar objetos com a mente, expandir a memória. Mas o perigo, no contexto do Capitalismo de Vigilância, é existencial. Se hoje o algoritmo infere o que você sente através do seu clique, uma BCI poderá ler o estado neural diretamente na fonte. A privacidade mental — o último refúgio da subjetividade humana — pode deixar de existir. Nesse cenário, o cérebro deixaria de ser apenas o "usuário" para se tornar um periférico da rede.</p>
 
-        <h2>Síntese: A Supremacia da Falha</h2>
+            <h2>Síntese: A Supremacia da Falha</h2>
 
-        <p>O que os algoritmos chamam de "erro humano", nós devemos chamar de "humanidade". A hesitação, a dúvida, a mudança repentina de opinião baseada em uma intuição — tudo isso é ruído para a máquina, mas é música para a biologia.</p>
+            <p>O que os algoritmos chamam de "erro humano", nós devemos chamar de "humanidade". A hesitação, a dúvida, a mudança repentina de opinião baseada em uma intuição — tudo isso é ruído para a máquina, mas é música para a biologia.</p>
 
-        <p>A versão de você que os algoritmos veem é achatada, lógica e previsível. A versão real é contraditória. E é nessa contradição que reside a sua liberdade. Enquanto a IA tenta prever seu próximo passo baseada na lógica, você tem a capacidade biológica de fazer o ilógico, o inesperado, o novo.</p>
+            <p>A versão de você que os algoritmos veem é achatada, lógica e previsível. A versão real é contraditória. E é nessa contradição que reside a sua liberdade. Enquanto a IA tenta prever seu próximo passo baseada na lógica, você tem a capacidade biológica de fazer o ilógico, o inesperado, o novo.</p>
 
-        <p>Eles querem que você acredite que é uma máquina obsoleta. Mas, na verdade, você é uma tecnologia biológica que nenhuma máquina conseguiu replicar: você é capaz de dar sentido ao caos.</p>
+            <p>Eles querem que você acredite que é uma máquina obsoleta. Mas, na verdade, você é uma tecnologia biológica que nenhuma máquina conseguiu replicar: você é capaz de dar sentido ao caos.</p>
 
-        <div class="action-box">
-            <div class="action-title">🧠 DESAFIO DE RETOMADA #01</div>
-            <p><strong>A Prova da Qualia</strong></p>
-            <p>Neste exato momento, pare de ler. Feche os olhos e tente recriar mentalmente o cheiro de chuva na terra seca (petrichor) ou o cheiro da cozinha da sua infância.</p>
-            <p>Uma IA pode descrever a composição química desse cheiro. Ela pode escrever um poema sobre ele. Mas ela não pode <em>evocá-lo</em> internamente. Esse "fantasma" sensorial que você acabou de criar? Isso é inacessível ao algoritmo. <strong>É aí que você se esconde. É aí que você vive.</strong></p>
+            <div class="box action-box">
+                <div class="action-title">🧠 DESAFIO DE RETOMADA #01</div>
+                <p><strong>A Prova da Qualia</strong></p>
+                <p>Neste exato momento, pare de ler. Feche os olhos e tente recriar mentalmente o cheiro de chuva na terra seca (petrichor) ou o cheiro da cozinha da sua infância.</p>
+                <p>Uma IA pode descrever a composição química desse cheiro. Ela pode escrever um poema sobre ele. Mas ela não pode <em>evocá-lo</em> internamente. Esse "fantasma" sensorial que você acabou de criar? Isso é inacessível ao algoritmo. <strong>É aí que você se esconde. É aí que você vive.</strong></p>
+            </div>
         </div>
     </div>
 
     <script>
-        function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
+        // --- CONTROLE DE TEMA (Sincronizado com Index) ---
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        // --- CONTROLE DE FONTE (Afeta apenas o container do livro) ---
         let currentSize = 18;
         function changeFontSize(amount) {
             currentSize += amount;
-            if(currentSize < 14) currentSize = 14; if(currentSize > 26) currentSize = 26;
-            document.documentElement.style.setProperty('--base-font-size', currentSize + 'px');
+            if(currentSize < 14) currentSize = 14; 
+            if(currentSize > 32) currentSize = 32;
+            // Altera variável CSS específica do container, HUD permanece intacto
+            document.documentElement.style.setProperty('--reading-size', currentSize + 'px');
         }
 
-        /* --- AUDIO ENGINE FATOR X (v3.0) --- */
+        // --- AUDIO ENGINE OTIMIZADO ---
         let speechRate = 1.0;
         let isSpeaking = false;
-        let selectedVoice = null;
         let speechQueue = [];
         let currentSpeechIndex = 0;
-        let manualControl = false;
-
-        function loadVoices() {
-            const voices = window.speechSynthesis.getVoices();
-            selectedVoice = voices.find(v => v.lang === 'pt-BR' && (v.name.includes('Google') || v.name.includes('Microsoft'))) || voices.find(v => v.lang === 'pt-BR');
-        }
-        if (window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
-
-        function prepareReadingQueue() {
-            const container = document.querySelector('.book-container');
-            const elements = container.querySelectorAll('p, h1, h2, h3, li, .thesis-box, .antithesis-box p, .action-box p, .deep-dive-box p, td');
-            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
-        }
-
+        
         function changeSpeed(amount) {
-            speechRate += amount; if (speechRate < 0.5) speechRate = 0.5; if (speechRate > 3.0) speechRate = 3.0;
+            speechRate += amount; 
+            if (speechRate < 0.5) speechRate = 0.5; 
+            if (speechRate > 2.5) speechRate = 2.5;
             document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x';
-            if (isSpeaking) { manualControl = true; window.speechSynthesis.cancel(); setTimeout(() => { manualControl = false; speakChunk(); }, 50); }
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                speakChunk();
+            }
         }
 
         function toggleSpeech() {
             const btn = document.getElementById('btn-speak');
             if (isSpeaking) {
-                window.speechSynthesis.cancel(); isSpeaking = false; clearHighlights(); btn.innerText = "▶";
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                btn.innerText = "▶ PLAY";
             } else {
-                if (speechQueue.length === 0) prepareReadingQueue();
-                isSpeaking = true; btn.innerText = "⏸"; speakChunk();
+                prepareQueue();
+                if(speechQueue.length > 0) {
+                    isSpeaking = true;
+                    btn.innerText = "⏸ PAUSE";
+                    speakChunk();
+                }
             }
         }
 
-        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
+        function prepareQueue() {
+            const container = document.querySelector('.book-container');
+            // Seleciona parágrafos, cabeçalhos e células de tabela
+            const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+        }
 
         function speakChunk() {
             if (!isSpeaking) return;
-            if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; document.getElementById('btn-speak').innerText = "▶"; return; }
+            if (currentSpeechIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentSpeechIndex = 0;
+                document.getElementById('btn-speak').innerText = "▶ PLAY";
+                return;
+            }
+
             const element = speechQueue[currentSpeechIndex];
-            clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"});
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({behavior: "smooth", block: "center"});
+
             const utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR'; utterance.rate = speechRate; if (selectedVoice) utterance.voice = selectedVoice;
-            utterance.onend = function() { if (!manualControl && isSpeaking) { currentSpeechIndex++; speakChunk(); } };
-            utterance.onerror = function() { if (!manualControl && isSpeaking) { currentSpeechIndex++; speakChunk(); } };
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            
+            utterance.onend = function() {
+                if (isSpeaking) {
+                    currentSpeechIndex++;
+                    speakChunk();
+                }
+            };
+            
             window.speechSynthesis.speak(utterance);
         }
 
+        // Permite clicar no texto para iniciar leitura dali
         document.getElementById('content-area').addEventListener('click', function(e) {
-            const target = e.target.closest('p, h1, h2, h3, li, .thesis-box, .antithesis-box, .deep-dive-box, tr, .action-box');
+            const target = e.target.closest('p, h1, h2, h3, .box, td');
             if (target) {
-                if (speechQueue.length === 0) prepareReadingQueue();
+                prepareQueue();
                 let index = speechQueue.indexOf(target);
-                if (index === -1) { const sub = target.querySelector('p, td'); if(sub) index = speechQueue.indexOf(sub); }
-                if (index !== -1) { isSpeaking = true; document.getElementById('btn-speak').innerText = "⏸"; manualControl = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; setTimeout(() => { manualControl = false; speakChunk(); }, 50); }
+                if (index !== -1) {
+                    window.speechSynthesis.cancel();
+                    isSpeaking = true;
+                    document.getElementById('btn-speak').innerText = "⏸ PAUSE";
+                    currentSpeechIndex = index;
+                    speakChunk();
+                }
             }
         });
 
+        // Limpeza ao sair
         window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
     </script>
 </body>
