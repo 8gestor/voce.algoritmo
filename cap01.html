@@ -9,7 +9,7 @@
 
     <style>
         :root {
-            /* --- IDENTIDADE VISUAL --- */
+            /* --- IDENTIDADE VISUAL MESTRA --- */
             --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.95); --border-color: rgba(255, 255, 255, 0.12);
             --text-primary: #ededed; --text-secondary: #888888;
             --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef;
@@ -29,7 +29,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- HUD (AJUSTADO PARA MOBILE) --- */
+        /* --- HUD (CABEÇALHO) --- */
         .reading-hud {
             height: 70px; flex-shrink: 0;
             background: var(--bg-panel); backdrop-filter: var(--blur);
@@ -56,34 +56,20 @@
         .hud-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.1); box-shadow: var(--accent-glow); transform: translateY(-1px); }
         .hud-btn:active { transform: scale(0.95); }
         .speed-display { font-size: 0.75rem; color: var(--accent); min-width: 40px; text-align: center; }
-        
-        /* Oculta texto do botão no mobile se necessário */
         .btn-text { margin-left: 6px; }
 
-        /* --- RESPONSIVIDADE HUD MOBILE (Ajuste Crítico) --- */
+        /* Responsividade Mobile do HUD */
         @media (max-width: 600px) {
-            .reading-hud {
-                padding: 0 5px; gap: 2px;
-                justify-content: space-between; /* Distribui na tela toda */
-            }
-            .tool-group {
-                padding: 0 2px; gap: 4px;
-                border: none; /* Remove divisórias para economizar espaço */
-            }
-            .hud-btn {
-                min-width: 34px; height: 34px; padding: 0 6px; /* Botões menores */
-            }
-            .btn-text {
-                display: none; /* Esconde a palavra PLAY no mobile */
-            }
+            .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; }
+            .tool-group { padding: 0 2px; gap: 4px; border: none; }
+            .hud-btn { min-width: 34px; height: 34px; padding: 0 6px; }
+            .btn-text { display: none; } /* Oculta texto PLAY no mobile */
             .speed-display { min-width: 30px; font-size: 0.7rem; }
-            
-            /* Ajuste de Títulos */
-            h1 { font-size: 1.5em; }
+            h1 { font-size: 1.5em; } 
             .book-container { padding: 0 10px; }
         }
 
-        /* --- CONTENT --- */
+        /* --- CONTEÚDO --- */
         .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
         .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
         
@@ -94,7 +80,7 @@
         p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.9; transition: opacity 0.2s; } p:hover { opacity: 1; }
         .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* --- BOXES --- */
+        /* --- BOXES & TABLE --- */
         .box { border-radius: var(--radius-md); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
         .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
         .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-left: 4px solid var(--accent-bio); }
@@ -102,7 +88,6 @@
         .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-bio); text-align: center; }
         .action-title { color: var(--accent-bio); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
-        /* --- TABELAS --- */
         .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden; margin: 3em 0; }
         .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; }
@@ -279,4 +264,5 @@
     </script>
 </body>
 </html>
+
 
