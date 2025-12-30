@@ -2,43 +2,40 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dashboard // A Versão de Você</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- VARIAVEIS GLOBAIS (Tema Escuro Default) --- */
-            --bg-app: #050505;        /* Preto Profundo */
-            --bg-panel: rgba(20, 20, 23, 0.85); /* Vidro Escuro */
-            --border-color: rgba(255, 255, 255, 0.1);
+            /* --- VARIAVEIS GLOBAIS --- */
+            --bg-app: #050505;        
+            --bg-panel: rgba(20, 20, 23, 0.95); /* Vidro mais opaco para contraste */
+            --border-color: rgba(255, 255, 255, 0.12);
             
             --text-primary: #ededed;
             --text-secondary: #888888;
             
-            --accent: #3b82f6;        /* Azul Neon Suave */
+            --accent: #3b82f6;        
             --accent-glow: 0 0 15px rgba(59, 130, 246, 0.3);
             
-            --radius-sm: 8px;
             --radius-md: 12px;
             
             --font-ui: 'Inter', sans-serif;
             --font-tech: 'JetBrains Mono', monospace;
             
             --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-            --blur: blur(10px);
+            --blur: blur(12px);
         }
 
-        /* --- TEMA CLARO (Req 5) --- */
+        /* --- TEMA CLARO --- */
         body.light-mode {
             --bg-app: #f2f2f7;
-            --bg-panel: rgba(255, 255, 255, 0.85);
+            --bg-panel: rgba(255, 255, 255, 0.95);
             --border-color: rgba(0, 0, 0, 0.1);
-            
             --text-primary: #1c1c1e;
             --text-secondary: #6c6c70;
-            
             --accent: #007aff;
             --accent-glow: 0 0 15px rgba(0, 122, 255, 0.2);
         }
@@ -49,14 +46,18 @@
             background-color: var(--bg-app);
             color: var(--text-primary);
             font-family: var(--font-ui);
-            height: 100vh;
+            
+            /* CORREÇÃO MOBILE: Usa DVH (Dynamic Viewport Height) */
+            height: 100dvh; 
+            width: 100%;
+            
             display: flex;
-            overflow: hidden;
+            overflow: hidden; /* Impede rolagem da página inteira */
             font-size: 14px;
             transition: background 0.4s ease;
         }
 
-        /* --- SIDEBAR (Índice) --- */
+        /* --- SIDEBAR --- */
         aside.sidebar {
             width: 320px;
             background: var(--bg-app);
@@ -64,6 +65,7 @@
             display: flex; flex-direction: column;
             flex-shrink: 0; z-index: 100;
             transition: transform 0.3s ease;
+            height: 100%;
         }
         
         aside.sidebar.collapsed { margin-left: -320px; }
@@ -71,6 +73,7 @@
         .sidebar-header {
             height: 70px; display: flex; align-items: center; justify-content: space-between;
             padding: 0 24px; border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
         
         .sys-badge {
@@ -79,157 +82,154 @@
             border: 1px solid rgba(59, 130, 246, 0.2); letter-spacing: 1px;
         }
 
-        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px 16px; }
+        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px 16px; -webkit-overflow-scrolling: touch; }
 
-        /* Categorias do Índice */
         .nav-category {
             font-family: var(--font-tech); font-size: 0.65rem; color: var(--text-secondary);
             text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 8px 10px;
             display: block; opacity: 0.8;
         }
 
-        /* Links do Capítulo */
         .chapter-link {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 16px; margin-bottom: 4px;
             color: var(--text-secondary); text-decoration: none;
             border-radius: var(--radius-sm); border: 1px solid transparent;
             transition: var(--transition);
-            font-size: 0.85rem; font-weight: 500;
-            text-transform: uppercase; /* Req 4 */
+            font-size: 0.85rem; font-weight: 500; text-transform: uppercase;
         }
 
         .chapter-link:hover {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-primary); border-color: var(--border-color);
-            transform: translateX(4px); /* Req 7: Dinâmica */
+            background: rgba(255, 255, 255, 0.03); color: var(--text-primary); border-color: var(--border-color);
+            transform: translateX(4px);
         }
         body.light-mode .chapter-link:hover { background: rgba(0,0,0,0.03); }
 
         .chapter-link.active {
             background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
-            border-left: 3px solid var(--accent);
-            color: var(--text-primary);
-            font-weight: 600;
+            border-left: 3px solid var(--accent); color: var(--text-primary); font-weight: 600;
         }
 
         /* --- DASHBOARD PRINCIPAL --- */
         main.dashboard {
-            flex: 1; display: flex; flex-direction: column; position: relative; width: 100%;
+            flex: 1; 
+            display: flex; flex-direction: column; 
+            position: relative; 
+            width: 100%;
+            height: 100dvh; /* Força altura exata da tela */
+            overflow: hidden;
         }
 
-        /* Header Flutuante (Glassmorphism) */
+        /* Header */
         header.top-hud {
-            height: 70px;
+            height: 60px; flex-shrink: 0; /* Não encolhe */
             background: var(--bg-panel); backdrop-filter: var(--blur);
             border-bottom: 1px solid var(--border-color);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px; z-index: 50;
+            padding: 0 20px; z-index: 50;
         }
 
-        .hud-left, .hud-right { width: 120px; display: flex; gap: 10px; }
+        .hud-left, .hud-right { width: 100px; display: flex; gap: 10px; }
         .hud-right { justify-content: flex-end; }
 
         .book-title {
             flex: 1; text-align: center;
-            font-family: var(--font-tech); font-size: 0.8rem; letter-spacing: 1.5px;
+            font-family: var(--font-tech); font-size: 0.75rem; letter-spacing: 1px;
             color: var(--text-primary); text-transform: uppercase;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            opacity: 0.9;
         }
 
-        /* Botões de Controle (Minimalistas) */
         .ctrl-btn {
-            width: 40px; height: 40px;
+            width: 38px; height: 38px;
             background: transparent; border: 1px solid var(--border-color);
             color: var(--text-secondary); border-radius: var(--radius-md);
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: var(--transition);
         }
-        
-        .ctrl-btn:hover {
-            border-color: var(--text-primary); color: var(--text-primary);
-            box-shadow: 0 0 10px rgba(255,255,255,0.1); transform: scale(1.05);
-        }
+        .ctrl-btn:hover { border-color: var(--text-primary); color: var(--text-primary); transform: scale(1.05); }
 
         /* Área de Leitura */
         .viewport-wrapper {
-            flex: 1; position: relative; overflow: hidden;
+            flex: 1; /* Ocupa todo o espaço restante */
+            position: relative; overflow: hidden;
             display: flex; flex-direction: column;
             background: var(--bg-app);
         }
 
-        /* Barra de Progresso Tech */
-        .progress-track { width: 100%; height: 2px; background: var(--border-color); }
-        .progress-bar { 
-            height: 100%; background: var(--accent); width: 0%; 
-            transition: width 0.3s ease; box-shadow: var(--accent-glow); 
-        }
+        .progress-track { width: 100%; height: 2px; background: var(--border-color); flex-shrink: 0; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; box-shadow: var(--accent-glow); }
 
-        iframe.reader-frame {
-            flex: 1; border: none; width: 100%; height: 100%;
-            opacity: 0; animation: fadeTech 0.6s ease forwards;
-        }
+        iframe.reader-frame { flex: 1; border: none; width: 100%; height: 100%; opacity: 0; animation: fadeTech 0.6s ease forwards; }
 
-        /* --- RODAPÉ FIXO (Req 2) --- */
+        /* --- RODAPÉ FIXO (CORREÇÃO MOBILE) --- */
         footer.bottom-hud {
-            height: 90px;
+            /* Altura fixa garantida */
+            height: 85px; 
+            flex-shrink: 0; /* Impede que seja esmagado */
+            
             background: var(--bg-panel); backdrop-filter: var(--blur);
             border-top: 1px solid var(--border-color);
+            
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 30px;
+            padding: 0 24px;
+            
+            /* Ajuste para iPhones sem botão home (Safe Area) */
+            padding-bottom: env(safe-area-inset-bottom);
+            box-sizing: content-box; /* Garante que o padding não coma a altura */
+            
             position: relative; z-index: 50;
         }
 
-        /* Botões de Navegação (Grandes e Dinâmicos) */
+        /* Botões Navegação */
         .nav-btn {
-            height: 50px; padding: 0 25px;
+            height: 44px; padding: 0 20px;
             background: transparent; border: 1px solid var(--border-color);
             color: var(--text-primary); border-radius: var(--radius-md);
-            font-family: var(--font-tech); font-size: 0.9rem; font-weight: 600;
+            font-family: var(--font-tech); font-size: 0.85rem; font-weight: 600;
             cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; gap: 12px;
+            display: flex; align-items: center; gap: 10px;
         }
         
         .nav-btn:hover:not(:disabled) {
-            background: rgba(59, 130, 246, 0.1); 
-            border-color: var(--accent); color: var(--accent);
-            box-shadow: var(--accent-glow); transform: translateY(-2px);
+            background: rgba(59, 130, 246, 0.1); border-color: var(--accent); 
+            color: var(--accent); transform: translateY(-2px);
         }
-        
         .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: transparent; }
 
-        /* Display Central (Título + Relógio) */
-        .hud-center {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-        }
+        .hud-center { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 
         .chapter-display {
-            font-size: 0.9rem; font-weight: 600; color: var(--text-primary);
+            font-size: 0.85rem; font-weight: 600; color: var(--text-primary);
             text-transform: uppercase; letter-spacing: 0.5px;
         }
 
         .data-stream {
-            font-family: var(--font-tech); font-size: 0.75rem;
-            color: var(--accent); opacity: 0.8;
-            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-tech); font-size: 0.7rem; color: var(--accent); opacity: 0.8;
+            display: flex; align-items: center; gap: 6px;
         }
         
-        /* Pontinho pulsante para dar vida */
         .live-dot {
             width: 6px; height: 6px; background-color: var(--accent);
             border-radius: 50%; box-shadow: 0 0 8px var(--accent);
             animation: pulse 2s infinite;
         }
 
-        /* --- MOBILE --- */
+        /* --- MOBILE TWEAKS --- */
         @media (max-width: 768px) {
-            aside.sidebar { position: absolute; height: 100%; margin-left: -320px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+            aside.sidebar { position: absolute; height: 100%; margin-left: -320px; box-shadow: 20px 0 50px rgba(0,0,0,0.8); }
             aside.sidebar.open { margin-left: 0; }
-            .book-title { font-size: 0.7rem; }
-            .nav-btn span { display: none; } /* Ícones apenas */
-            .nav-btn { padding: 0 20px; }
-            .chapter-display { font-size: 0.8rem; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            
+            .book-title { font-size: 0.65rem; }
+            .nav-btn span { display: none; } /* Ícones apenas no mobile */
+            .nav-btn { padding: 0 15px; }
+            
+            .chapter-display { font-size: 0.75rem; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            
+            /* Garante que o rodapé suba um pouco mais no mobile para evitar toque acidental na barra do sistema */
+            footer.bottom-hud {
+                padding-bottom: max(10px, env(safe-area-inset-bottom)); 
+                height: 70px;
+            }
         }
 
         @keyframes fadeTech { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
@@ -241,7 +241,7 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <span class="sys-badge">SYSTEM V4.0</span>
+            <span class="sys-badge">SYSTEM V4.1</span>
             <button class="ctrl-btn" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
         </div>
 
@@ -326,21 +326,17 @@
     </main>
 
     <script>
-        // --- 1. RELÓGIO DASHBOARD (Req 2) ---
         function updateClock() {
             const now = new Date();
-            // Data e Hora em formato tech
             const dateStr = now.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
             const timeStr = now.toLocaleTimeString('pt-BR');
             document.getElementById('system-clock').innerText = `${dateStr} • ${timeStr}`;
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // --- 2. TEMA CLARO/ESCURO (Req 5) ---
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const icon = document.getElementById('theme-icon');
-            // Troca simples de ícone SVG
             if(document.body.classList.contains('light-mode')) {
                 icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
             } else {
@@ -348,34 +344,25 @@
             }
         }
 
-        // --- 3. NAVEGAÇÃO E LÓGICA ---
         let currentIdx = 0;
         const links = Array.from(document.querySelectorAll('.chapter-link'));
         const labelDisplay = document.getElementById('chapter-label');
         const progressBar = document.getElementById('progress-bar');
         
         function loadChapter(element) {
-            // UI Update
             links.forEach(l => l.classList.remove('active'));
             element.classList.add('active');
-            
-            // State
             currentIdx = links.indexOf(element);
             
-            // Label Update (Texto limpo)
             const cleanText = element.innerText.replace(/\d+$/, '').trim(); 
             labelDisplay.innerText = cleanText.toUpperCase();
 
-            // Progress Bar
             const percent = ((currentIdx + 1) / links.length) * 100;
             progressBar.style.width = percent + '%';
 
-            // Mobile: Fecha sidebar
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('open');
             }
-
-            // Buttons State
             updateButtons();
         }
 
@@ -391,7 +378,6 @@
             document.getElementById('btn-next').disabled = (currentIdx === links.length - 1);
         }
 
-        // --- UTILS ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             if (window.innerWidth <= 768) {
@@ -409,7 +395,6 @@
             }
         }
 
-        // --- INIT ---
         window.onload = () => {
             updateButtons();
             progressBar.style.width = (1 / links.length * 100) + '%';
@@ -417,6 +402,7 @@
     </script>
 </body>
 </html>
+
 
 
 
