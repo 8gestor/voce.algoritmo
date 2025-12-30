@@ -9,65 +9,34 @@
 
     <style>
         :root {
-            /* --- IDENTIDADE VISUAL (Mesma do Index) --- */
-            --bg-app: #050505;
-            --bg-panel: rgba(20, 20, 23, 0.95);
-            --border-color: rgba(255, 255, 255, 0.12);
-            
-            --text-primary: #ededed;
-            --text-secondary: #888888;
-            
-            --accent: #3b82f6;        /* Azul Tech */
-            --accent-bio: #10b981;    /* Verde Bio */
-            --accent-warn: #d946ef;   /* Rosa Alerta */
+            /* --- IDENTIDADE VISUAL --- */
+            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.95); --border-color: rgba(255, 255, 255, 0.12);
+            --text-primary: #ededed; --text-secondary: #888888;
+            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef;
             --accent-glow: 0 0 15px rgba(59, 130, 246, 0.25);
-            
-            --radius-md: 12px;
-            --radius-sm: 8px;
-            
-            --font-ui: 'Inter', sans-serif;
-            --font-tech: 'JetBrains Mono', monospace;
-            
-            --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-            --blur: blur(12px);
-
-            /* Variável Dinâmica de Leitura (Controlada pelo JS) */
+            --radius-md: 12px; --radius-sm: 8px;
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); --blur: blur(12px);
             --reading-size: 18px; 
         }
 
-        /* Tema Claro (Opcional, seguindo lógica do index) */
         body.light-mode {
-            --bg-app: #f2f2f7;
-            --bg-panel: rgba(255, 255, 255, 0.95);
-            --border-color: rgba(0, 0, 0, 0.1);
-            --text-primary: #1c1c1e;
-            --text-secondary: #6c6c70;
-            --accent: #007aff;
-            --accent-bio: #16a34a;
-            --accent-warn: #af52de;
+            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.95); --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
+            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        body {
-            background-color: var(--bg-app);
-            color: var(--text-primary);
-            font-family: var(--font-ui);
-            height: 100vh;
-            overflow: hidden; /* O scroll será no container de texto */
-            display: flex; flex-direction: column;
-        }
-
-        /* --- PAINEL SUPERIOR (HUD) --- */
-        /* Req 4 e 6: Fixo, não aumenta com zoom de texto, dinâmico */
+        /* --- HUD (AJUSTADO PARA MOBILE) --- */
         .reading-hud {
             height: 70px; flex-shrink: 0;
             background: var(--bg-panel); backdrop-filter: var(--blur);
             border-bottom: 1px solid var(--border-color);
             display: flex; align-items: center; justify-content: center;
-            gap: 20px; z-index: 100;
-            padding: 0 20px;
-            font-family: var(--font-tech); /* Fonte técnica para UI */
+            gap: 20px; z-index: 100; padding: 0 20px;
+            font-family: var(--font-tech);
         }
 
         .tool-group {
@@ -76,7 +45,6 @@
         }
         .tool-group:last-child { border-right: none; }
 
-        /* Botões Estilo Dashboard */
         .hud-btn {
             height: 36px; min-width: 36px; padding: 0 10px;
             background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
@@ -85,133 +53,62 @@
             font-family: var(--font-tech); font-weight: 600; font-size: 0.85rem;
             transition: var(--transition);
         }
-
-        .hud-btn:hover {
-            border-color: var(--accent); color: var(--accent);
-            background: rgba(59, 130, 246, 0.1);
-            box-shadow: var(--accent-glow); transform: translateY(-1px);
-        }
-
+        .hud-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.1); box-shadow: var(--accent-glow); transform: translateY(-1px); }
         .hud-btn:active { transform: scale(0.95); }
-
-        .speed-display {
-            font-size: 0.75rem; color: var(--accent); min-width: 40px; text-align: center;
-        }
-
-        /* --- ÁREA DE CONTEÚDO --- */
-        .content-scroll-area {
-            flex: 1; overflow-y: auto; overflow-x: hidden;
-            padding: 40px 20px 100px 20px;
-            scroll-behavior: smooth;
-        }
-
-        .book-container {
-            max-width: 750px; margin: 0 auto;
-            /* Req 5: O tamanho da fonte é controlado aqui, independente da UI */
-            font-size: var(--reading-size); 
-            line-height: 1.8;
-        }
-
-        /* --- ESTILIZAÇÃO DO TEXTO --- */
-        /* Req 4: Títulos em MAIÚSCULO */
-        h1 {
-            font-family: var(--font-tech); font-size: 2.2em;
-            text-transform: uppercase; letter-spacing: 2px;
-            color: var(--text-primary); border-bottom: 2px solid var(--accent);
-            padding-bottom: 20px; margin-bottom: 40px; text-align: center;
-            text-shadow: 0 0 20px rgba(59,130,246,0.1);
-        }
-
-        h2 {
-            font-family: var(--font-tech); font-size: 1.5em;
-            text-transform: uppercase; letter-spacing: 1px;
-            color: var(--accent); margin-top: 3em; margin-bottom: 1em;
-            display: flex; align-items: center; gap: 10px;
-        }
-        h2::before { content: '//'; opacity: 0.5; }
-
-        h3 {
-            font-family: var(--font-ui); font-size: 1.2em; font-weight: 600;
-            color: var(--accent-warn); margin-top: 2em;
-            text-transform: uppercase; /* Req 4 */
-        }
-
-        p {
-            margin-bottom: 1.5em; text-align: justify;
-            color: var(--text-primary); opacity: 0.9;
-            transition: opacity 0.2s;
-        }
-        p:hover { opacity: 1; }
-
-        .chapter-meta {
-            text-align: center; font-family: var(--font-tech); font-size: 0.8em;
-            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px;
-            margin-bottom: 10px; opacity: 0.7;
-        }
-
-        /* --- CAIXAS DE DESTAQUE (Estilo Tech) --- */
-        .box {
-            border-radius: var(--radius-md); padding: 25px; margin: 3em 0;
-            font-size: 0.95em; position: relative;
-        }
-
-        /* Tese (Azul) */
-        .thesis-box {
-            background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3);
-            border-left: 4px solid var(--accent);
-        }
+        .speed-display { font-size: 0.75rem; color: var(--accent); min-width: 40px; text-align: center; }
         
-        /* Antítese (Verde) */
-        .antithesis-box {
-            background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3);
-            border-left: 4px solid var(--accent-bio);
+        /* Oculta texto do botão no mobile se necessário */
+        .btn-text { margin-left: 6px; }
+
+        /* --- RESPONSIVIDADE HUD MOBILE (Ajuste Crítico) --- */
+        @media (max-width: 600px) {
+            .reading-hud {
+                padding: 0 5px; gap: 2px;
+                justify-content: space-between; /* Distribui na tela toda */
+            }
+            .tool-group {
+                padding: 0 2px; gap: 4px;
+                border: none; /* Remove divisórias para economizar espaço */
+            }
+            .hud-btn {
+                min-width: 34px; height: 34px; padding: 0 6px; /* Botões menores */
+            }
+            .btn-text {
+                display: none; /* Esconde a palavra PLAY no mobile */
+            }
+            .speed-display { min-width: 30px; font-size: 0.7rem; }
+            
+            /* Ajuste de Títulos */
+            h1 { font-size: 1.5em; }
+            .book-container { padding: 0 10px; }
         }
 
-        /* Deep Dive (Linhas) */
-        .deep-dive-box {
-            border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color);
-            padding: 30px 0;
-        }
+        /* --- CONTENT --- */
+        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
+        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
+        
+        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; text-shadow: 0 0 20px rgba(59,130,246,0.1); }
+        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: '//'; opacity: 0.5; }
+        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
+        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.9; transition: opacity 0.2s; } p:hover { opacity: 1; }
+        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* Action (Gradiente) */
-        .action-box {
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
-            border: 1px solid var(--accent-bio);
-            text-align: center;
-        }
-        .action-title {
-            color: var(--accent-bio); font-family: var(--font-tech); font-weight: bold;
-            text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px;
-        }
+        /* --- BOXES --- */
+        .box { border-radius: var(--radius-md); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
+        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
+        .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-left: 4px solid var(--accent-bio); }
+        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
+        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-bio); text-align: center; }
+        .action-title { color: var(--accent-bio); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
 
         /* --- TABELAS --- */
-        .visual-table-container {
-            border: 1px solid var(--border-color); border-radius: var(--radius-sm);
-            overflow: hidden; margin: 3em 0;
-        }
-        .visual-header {
-            background: rgba(255,255,255,0.05); padding: 12px;
-            font-family: var(--font-tech); font-size: 0.8em; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color);
-        }
+        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden; margin: 3em 0; }
+        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; }
         td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
 
-        /* --- AUDIO HIGHLIGHT --- */
-        .reading-highlight {
-            background: rgba(59, 130, 246, 0.15);
-            border-radius: var(--radius-sm);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
-            color: #fff;
-        }
-
-        /* Responsividade */
-        @media (max-width: 600px) {
-            .reading-hud { padding: 0 10px; gap: 10px; overflow-x: auto; justify-content: flex-start; }
-            .tool-group { padding: 0 8px; }
-            h1 { font-size: 1.6em; }
-            .book-container { padding: 0 5px; }
-        }
+        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius-sm); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
     </style>
 </head>
 <body>
@@ -227,8 +124,8 @@
             <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Mais Lento">«</button>
             <span class="speed-display" id="speed-val">1.0x</span>
             <button class="hud-btn" onclick="changeSpeed(0.25)" title="Mais Rápido">»</button>
-            <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" style="color: var(--accent-bio); border-color: var(--accent-bio);">
-                ▶ PLAY
+            <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" style="color: var(--accent-bio); border-color: var(--accent-bio); min-width: 60px;">
+                <span>▶</span> <span class="btn-text">PLAY</span>
             </button>
         </div>
 
@@ -336,112 +233,50 @@
     </div>
 
     <script>
-        // --- CONTROLE DE TEMA (Sincronizado com Index) ---
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-        }
-
-        // --- CONTROLE DE FONTE (Afeta apenas o container do livro) ---
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
         let currentSize = 18;
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if(currentSize < 14) currentSize = 14; 
-            if(currentSize > 32) currentSize = 32;
-            // Altera variável CSS específica do container, HUD permanece intacto
-            document.documentElement.style.setProperty('--reading-size', currentSize + 'px');
-        }
+        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
 
-        // --- AUDIO ENGINE OTIMIZADO ---
-        let speechRate = 1.0;
-        let isSpeaking = false;
-        let speechQueue = [];
-        let currentSpeechIndex = 0;
-        
-        function changeSpeed(amount) {
-            speechRate += amount; 
-            if (speechRate < 0.5) speechRate = 0.5; 
-            if (speechRate > 2.5) speechRate = 2.5;
-            document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x';
-            if (isSpeaking) {
-                window.speechSynthesis.cancel();
-                speakChunk();
-            }
-        }
+        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0;
+        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { window.speechSynthesis.cancel(); speakChunk(); } }
 
         function toggleSpeech() {
             const btn = document.getElementById('btn-speak');
             if (isSpeaking) {
-                window.speechSynthesis.cancel();
-                isSpeaking = false;
-                clearHighlights();
-                btn.innerText = "▶ PLAY";
+                window.speechSynthesis.cancel(); isSpeaking = false; clearHighlights();
+                btn.innerHTML = '<span>▶</span> <span class="btn-text">PLAY</span>';
             } else {
                 prepareQueue();
                 if(speechQueue.length > 0) {
                     isSpeaking = true;
-                    btn.innerText = "⏸ PAUSE";
+                    btn.innerHTML = '<span>⏸</span> <span class="btn-text">PAUSE</span>';
                     speakChunk();
                 }
             }
         }
 
-        function prepareQueue() {
-            const container = document.querySelector('.book-container');
-            // Seleciona parágrafos, cabeçalhos e células de tabela
-            const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box');
-            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
-        }
-
-        function clearHighlights() {
-            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
-        }
+        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
+        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
 
         function speakChunk() {
             if (!isSpeaking) return;
             if (currentSpeechIndex >= speechQueue.length) {
-                isSpeaking = false;
-                currentSpeechIndex = 0;
-                document.getElementById('btn-speak').innerText = "▶ PLAY";
+                isSpeaking = false; currentSpeechIndex = 0;
+                document.getElementById('btn-speak').innerHTML = '<span>▶</span> <span class="btn-text">PLAY</span>';
                 return;
             }
-
-            const element = speechQueue[currentSpeechIndex];
-            clearHighlights();
-            element.classList.add('reading-highlight');
-            element.scrollIntoView({behavior: "smooth", block: "center"});
-
-            const utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR';
-            utterance.rate = speechRate;
-            
-            utterance.onend = function() {
-                if (isSpeaking) {
-                    currentSpeechIndex++;
-                    speakChunk();
-                }
-            };
-            
+            const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"});
+            const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate;
+            utterance.onend = function() { if (isSpeaking) { currentSpeechIndex++; speakChunk(); } };
             window.speechSynthesis.speak(utterance);
         }
 
-        // Permite clicar no texto para iniciar leitura dali
         document.getElementById('content-area').addEventListener('click', function(e) {
             const target = e.target.closest('p, h1, h2, h3, .box, td');
-            if (target) {
-                prepareQueue();
-                let index = speechQueue.indexOf(target);
-                if (index !== -1) {
-                    window.speechSynthesis.cancel();
-                    isSpeaking = true;
-                    document.getElementById('btn-speak').innerText = "⏸ PAUSE";
-                    currentSpeechIndex = index;
-                    speakChunk();
-                }
-            }
+            if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { window.speechSynthesis.cancel(); isSpeaking = true; document.getElementById('btn-speak').innerHTML = '<span>⏸</span> <span class="btn-text">PAUSE</span>'; currentSpeechIndex = index; speakChunk(); } }
         });
-
-        // Limpeza ao sair
         window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
     </script>
 </body>
 </html>
+
