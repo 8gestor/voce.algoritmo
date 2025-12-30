@@ -1,240 +1,186 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Capítulo 9: A Nuvem é Feita de Pedra e Sangue. Uma análise sobre o impacto geológico da IA, o colonialismo energético e a filosofia da Permacomputação.">
-    <meta name="keywords" content="Impacto Ambiental da IA, Kate Crawford, Jussi Parikka, Permacomputação, Solarpunk, Lixo Eletrônico, Colonialismo de Dados">
-    <title>Capítulo 9 - A Geologia da Mídia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Capítulo 09 // A Geologia da Mídia</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS ENGINE v4.0 (Consistent Theme) */
-        :root { --base-font-size: 18px; --transition: 0.3s ease; }
-        :root[data-theme="dark"] { --bg-color: #050505; --text-main: #e5e5e5; --text-muted: #888; --accent-tech: #00f3ff; --accent-bio: #39ff14; --highlight: #f472b6; --border-color: rgba(255, 255, 255, 0.1); --panel-bg: rgba(20, 20, 20, 0.95); --box-bg: rgba(255, 255, 255, 0.03); --alert: #ef4444; --warning: #f59e0b; --table-head: rgba(255,255,255,0.05); }
-        :root[data-theme="sepia"] { --bg-color: #f4ecd8; --text-main: #5b4636; --text-muted: #8d745e; --accent-tech: #a65825; --accent-bio: #4d7c0f; --highlight: #d94e18; --border-color: rgba(91, 70, 54, 0.15); --panel-bg: #eaddcf; --box-bg: rgba(91, 70, 54, 0.05); --alert: #be123c; --warning: #b45309; --table-head: rgba(91, 70, 54, 0.1); }
-        :root[data-theme="light"] { --bg-color: #ffffff; --text-main: #222222; --text-muted: #666666; --accent-tech: #0056b3; --accent-bio: #15803d; --highlight: #b91c1c; --border-color: rgba(0, 0, 0, 0.1); --panel-bg: #f0f0f0; --box-bg: #f9f9f9; --alert: #dc2626; --warning: #d97706; --table-head: rgba(0,0,0,0.05); }
-        
-        html { font-size: var(--base-font-size); scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Georgia', 'Lora', serif; line-height: 1.8; margin: 0; padding: 80px 20px 60px 20px; transition: background-color var(--transition), color var(--transition); }
-        
-        /* UI Toolbar */
-        .reading-toolbar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 1000; backdrop-filter: blur(5px); }
-        .tool-group { display: flex; align-items: center; gap: 5px; padding: 0 10px; border-right: 1px solid var(--border-color); } .tool-group:last-child { border-right: none; }
-        .btn-icon { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); width: 30px; height: 30px; border-radius: 4px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); }
-        .dot-dark { background: #050505; border: 1px solid #555; } .dot-sepia { background: #f4ecd8; border: 1px solid #8d745e; } .dot-light { background: #fff; border: 1px solid #ccc; }
-        
-        /* Layout */
-        .book-container { max-width: 700px; margin: 0 auto; }
-        h1 { font-size: 2.2rem; text-align: center; text-transform: uppercase; border-bottom: 1px solid var(--accent-tech); padding-bottom: 20px; margin-top: 0; }
-        h2 { font-size: 1.5rem; color: var(--warning); border-left: 4px solid var(--warning); padding-left: 15px; border-bottom: none; margin-top: 2em; }
-        p { margin-bottom: 1.5em; text-align: justify; hyphens: auto; cursor: pointer; transition: opacity 0.2s; } p:hover { opacity: 0.9; }
-        
-        /* Components */
-        .chapter-meta { text-align: center; color: var(--text-muted); font-family: 'Consolas', monospace; font-size: 0.8rem; margin-bottom: 2em; }
-        .thesis-box { border-left: 4px solid var(--accent-tech); padding: 15px 20px; margin: 2em 0; color: var(--text-muted); background: var(--box-bg); cursor: pointer; transition: transform 0.2s; }
-        .thesis-box:hover { transform: translateX(5px); }
-        .action-box { background: linear-gradient(135deg, var(--box-bg) 0%, transparent 100%); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; margin-top: 50px; text-align: center; cursor: pointer; border-top: 3px solid var(--accent-bio); }
-        .action-title { color: var(--accent-bio); font-family: 'Segoe UI', sans-serif; font-size: 1.2rem; margin-bottom: 15px; }
-        .impact-statement { font-size: 1.2rem; color: var(--text-main); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 30px; margin: 40px 0; text-align: center; font-style: italic; background: rgba(0,0,0,0.1); cursor: pointer; }
-        .deep-dive-box { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 30px 0; margin: 40px 0; }
-        
-        /* Geology Visual */
-        .visual-geology-container { background: var(--box-bg); padding: 30px; border-radius: 4px; border: 1px solid var(--warning); margin: 3em 0; cursor: pointer; }
+        :root {
+            /* --- FÓRMULA X GLOBAIS --- */
+            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ededed; --text-secondary: #888888;
+            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-alert: #ef4444;
+            --warning: #f59e0b;
+            --accent-glow: 0 0 15px rgba(59, 130, 246, 0.2);
+            --radius: 8px;
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease; --blur: blur(12px);
+            --reading-size: 14px; 
+        }
+
+        body.light-mode {
+            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
+            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* HUD CLEAN */
+        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
+        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
+        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
+        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
+        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
+        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
+        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+
+        /* CONTENT */
+        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
+        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
+        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
+        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--warning); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: '//'; opacity: 0.5; }
+        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
+        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
+        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
+        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
+
+        /* BOXES */
+        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
+        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
+        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
+        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-bio); text-align: center; }
+        .action-title { color: var(--accent-bio); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        .impact-statement { font-size: 1.1rem; color: var(--accent-alert); border: 1px dashed var(--border-color); padding: 30px; margin: 40px 0; text-align: center; font-style: italic; background: rgba(239, 68, 68, 0.05); cursor: pointer; border-radius: var(--radius); }
+
+        /* GEOLOGY VISUAL */
+        .visual-geology-container { background: rgba(255,255,255,0.02); padding: 30px; border-radius: var(--radius); border: 1px solid var(--warning); margin: 3em 0; cursor: pointer; }
         .geo-step { display: grid; grid-template-columns: 50px 1fr; margin-bottom: 20px; align-items: start; }
-        .geo-icon { font-size: 1.8rem; }
-        .geo-title { color: var(--warning); font-family: 'Segoe UI', sans-serif; font-weight: bold; display: block; }
-        .geo-desc { font-size: 0.9rem; color: var(--text-muted); }
-        .retention-hack { font-family: 'Consolas', monospace; font-size: 0.8rem; color: var(--accent-bio); text-align: right; margin-top: 10px; border-top: 1px dotted var(--accent-bio); padding-top: 5px; cursor: pointer; }
-        
-        /* Table Comparison */
-        .visual-table-container { margin: 2em 0; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; }
-        .visual-header { background: var(--box-bg); color: var(--accent-tech); padding: 10px 15px; font-weight: bold; border-bottom: 1px solid var(--border-color); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
-        table { width: 100%; border-collapse: collapse; } 
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); } 
-        th { background: var(--table-head); color: var(--text-muted); font-weight: normal; }
+        .geo-icon { font-size: 1.5rem; text-align: center; }
+        .geo-title { color: var(--warning); font-family: var(--font-tech); font-weight: bold; display: block; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .geo-desc { font-size: 0.9rem; color: var(--text-secondary); }
+        .retention-hack { font-family: var(--font-tech); font-size: 0.7rem; color: var(--accent-bio); text-align: right; margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 5px; opacity: 0.8; }
 
-        .reading-highlight { background: rgba(0, 243, 255, 0.1); border-left: 3px solid var(--accent-tech); padding-left: 10px; margin-left: -13px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 0 4px 4px 0; }
+        /* TABLE */
+        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
+        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
 
-        @media (max-width: 600px) { h1 { font-size: 1.6rem; } body { padding-top: 70px; } }
+        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
     </style>
 </head>
 <body>
-    <div class="reading-toolbar">
-        <div class="tool-group">
-            <div class="theme-dot dot-dark" onclick="setTheme('dark')"></div>
-            <div class="theme-dot dot-sepia" onclick="setTheme('sepia')"></div>
-            <div class="theme-dot dot-light" onclick="setTheme('light')"></div>
-        </div>
-        <div class="tool-group">
-            <button class="btn-icon" onclick="changeSpeed(-0.25)" title="«">«</button>
-            <span class="speed-display" id="speed-val">1.0x</span>
-            <button class="btn-icon" onclick="changeSpeed(0.25)" title="»">»</button>
-            <button class="btn-icon" id="btn-speak" onclick="toggleSpeech()" title="Play">▶</button>
-        </div>
-        <div class="tool-group">
-            <button class="btn-icon" onclick="changeFontSize(-1)">A-</button>
-            <button class="btn-icon" onclick="changeFontSize(1)">A+</button>
-        </div>
+
+    <div class="reading-hud">
+        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
+        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
+        <span class="speed-indicator" id="speed-val">1.0x</span>
+        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
+        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
+            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </button>
     </div>
 
-    <div class="book-container" id="content-area">
-        <div class="chapter-meta">Parte III: A Sociedade e a Verdade | Capítulo 09</div>
-        <h1>A Nuvem é Feita de Pedra e Sangue</h1>
+    <div class="content-scroll-area" id="content-area">
+        <div class="book-container">
+            <div class="chapter-meta">Parte III: A Sociedade e a Verdade | Capítulo 09</div>
+            <h1>A Nuvem é Feita de Pedra e Sangue</h1>
 
-        <p>A "Nuvem" é o eufemismo mais bem-sucedido da história do marketing corporativo. A palavra foi escolhida a dedo para evocar leveza, imaterialidade, algo branco e fofo flutuando acima das leis da física. É uma mentira projetada para fazer você esquecer que cada byte tem peso, calor e custo.</p>
-        
-        <p>A Nuvem não é vapor. A Nuvem é uma megaestrutura industrial de concreto armado, cabos submarinos da grossura de um tronco humano rasgando o assoalho oceânico, e galpões do tamanho de cidades consumindo a energia de países inteiros. A Nuvem não flutua; ela queima.</p>
+            <p>A "Nuvem" é o eufemismo mais bem-sucedido da história do marketing corporativo. A palavra foi escolhida a dedo para evocar leveza, imaterialidade, algo branco e fofo flutuando acima das leis da física. É uma mentira projetada para fazer você esquecer que cada byte tem peso, calor e custo.</p>
+            
+            <p>A Nuvem não é vapor. A Nuvem é uma megaestrutura industrial de concreto armado, cabos submarinos da grossura de um tronco humano rasgando o assoalho oceânico, e galpões do tamanho de cidades consumindo a energia de países inteiros. A Nuvem não flutua; ela queima.</p>
 
-        <div class="impact-statement">
-            Se a Internet fosse um país, ela seria o 4º maior poluidor do mundo. A cada clique, você aciona uma chaminé invisível.
+            <div class="impact-statement">
+                Se a Internet fosse um país, ela seria o 4º maior poluidor do mundo. A cada clique, você aciona uma chaminé invisível.
+            </div>
+
+            <div class="deep-dive-box">
+                <h3>Fator X: A Geologia da Mídia</h3>
+                <p>O teórico <strong>Jussi Parikka</strong>, em <em>A Geology of Media</em>, argumenta que a era digital é, na verdade, uma nova era geológica. Para criar a tela onde você lê isso, montanhas inteiras foram movidas. A mídia não é "sem fio" (wireless); ela é profundamente enraizada na crosta terrestre. O "tempo profundo" dos minerais colide com o "tempo real" da rede.</p>
+            </div>
+
+            <h2>A Tese: O Colonialismo Energético</h2>
+
+            <p>Kate Crawford, em <em>Atlas of AI</em>, não fala de software; ela fala de geologia. Para que o algoritmo "pense", a terra precisa ser esviscerada. Seu smartphone é um cemitério geológico: ele contém lítio dos lagos de salmoura da Bolívia, cobalto escavado por mãos infantis em minas artesanais no Congo, e terras raras refinadas em lagos tóxicos na Mongólia Interior.</p>
+            
+            <p>A Inteligência Artificial é, na verdade, uma indústria extrativista. Treinar um único modelo de linguagem grande (LLM) consome tanta água para resfriamento quanto uma pessoa beberia em 20 anos. O Norte Global fica com a "inteligência" e o lucro; o Sul Global fica com a seca, as crateras e o lixo tóxico.</p>
+
+            <div class="thesis-box">
+                <strong style="color: var(--accent); text-transform: uppercase; font-family: var(--font-tech);">// O Segredo Sujo da IA:</strong><br><br>
+                "A 'magia' da tecnologia moderna depende de esconder sua cadeia de suprimentos. Se você visse a montanha de escória radioativa necessária para criar o chip que processa seus filtros de Instagram, a magia quebraria. A Nuvem é um mecanismo de ocultação da violência material."
+            </div>
+
+            <div class="visual-geology-container">
+                <strong style="display: block; text-align: center; color: var(--text-primary); margin-bottom: 25px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; font-family: var(--font-tech);">🏭 RECURSO VISUAL 9: ANATOMIA DA DEVASTAÇÃO</strong>
+                <div class="geo-step"><span class="geo-icon">💧</span><div><span class="geo-title">A SEDE DO SERVIDOR</span><span class="geo-desc">Cada conversa de 20 perguntas com o ChatGPT "bebe" 500ml de água potável.</span></div></div>
+                <div class="geo-step"><span class="geo-icon">🔋</span><div><span class="geo-title">O SANGUE DA BATERIA</span><span class="geo-desc">60% do cobalto mundial vem da RDC, onde milícias controlam minas.</span></div></div>
+                <div class="geo-step"><span class="geo-icon">🚢</span><div><span class="geo-title">O CEMITÉRIO DIGITAL</span><span class="geo-desc">O lixo eletrônico vai para Agbogbloshie (Gana), queimado a céu aberto.</span></div></div>
+            </div>
+
+            <h2>Antítese: Permacomputação e Solarpunk</h2>
+
+            <p>Podemos escapar dessa máquina de moer o planeta? A resposta não é "tecnologia verde" corporativa (que apenas vende novos produtos "verdes"), mas uma mudança radical de paradigma chamada <strong>Permacomputação</strong>.</p>
+            
+            <p>Inspirada na permacultura, essa filosofia exige uma tecnologia que dure, que possa ser consertada e que use o mínimo de energia possível. É o oposto da obsolescência programada. É a estética <strong>Solarpunk</strong>: computadores feitos de bambu e micélio, redes locais que rodam com a energia de um painel solar no telhado, softwares otimizados para rodar em hardware de 10 anos atrás.</p>
+            
+            <div class="visual-table-container">
+                <div class="visual-header">♻️ CONSUMO VS. MANUTENÇÃO</div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>Obsolescência Programada</strong></td>
+                            <td>Feito para quebrar. Software pesado força troca de hardware. Ciclo de 2 anos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Permacomputação</strong></td>
+                            <td>Feito para durar. Software leve revitaliza hardware antigo. Ciclo de 10+ anos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Síntese: O Peso do Invisível</h2>
+
+            <p>A versão algorítmica de você é um consumidor insaciável de novidade. O algoritmo precisa que você sinta que seu dispositivo de dois anos atrás é "lixo", para que a roda da extração continue girando.</p>
+            
+            <p>Reivindicar sua autoria significa reconhecer o peso das suas ferramentas. Significa tratar seu computador não como um consumível descartável, mas como uma ferramenta preciosa e custosa para a Terra, que deve ser honrada através da longevidade.</p>
+
+            <div class="action-box">
+                <div class="action-title">♻️ DESAFIO DE RETOMADA #09</div>
+                <p><strong>A Greve de Atualização</strong></p>
+                <p>Os fabricantes de software deixam seus dispositivos lentos propositalmente para forçar a troca. Resista.</p>
+                <p><strong>Sua missão:</strong> Hoje, faça a manutenção do seu hardware. Limpe a porta de carregamento. Delete aplicativos pesados. Prometa a si mesmo: "Não vou comprar nada novo este ano."</p>
+            </div>
+
+            <div class="retention-hack">>> SYSTEM_STATUS: A Nuvem pesa 10^18 gramas. Você sente o peso agora?</div>
         </div>
-
-        <div class="deep-dive-box">
-            <h3>Fator X: A Geologia da Mídia</h3>
-            <p>O teórico <strong>Jussi Parikka</strong>, em <em>A Geology of Media</em>, argumenta que a era digital é, na verdade, uma nova era geológica. Para criar a tela onde você lê isso, montanhas inteiras foram movidas. A mídia não é "sem fio" (wireless); ela é profundamente enraizada na crosta terrestre. O "tempo profundo" dos minerais colide com o "tempo real" da rede.</p>
-        </div>
-
-        <h2>A Tese: O Colonialismo Energético</h2>
-
-        <p>Kate Crawford, em <em>Atlas of AI</em>, não fala de software; ela fala de geologia. Para que o algoritmo "pense", a terra precisa ser esviscerada. Seu smartphone é um cemitério geológico: ele contém lítio dos lagos de salmoura da Bolívia, cobalto escavado por mãos infantis em minas artesanais no Congo, e terras raras refinadas em lagos tóxicos na Mongólia Interior.</p>
-        
-        <p>A Inteligência Artificial é, na verdade, uma indústria extrativista. Treinar um único modelo de linguagem grande (LLM) consome tanta água para resfriamento quanto uma pessoa beberia em 20 anos. O Norte Global fica com a "inteligência" e o lucro; o Sul Global fica com a seca, as crateras e o lixo tóxico.</p>
-
-        <div class="thesis-box">
-            <strong>O Segredo Sujo da IA:</strong><br>
-            "A 'magia' da tecnologia moderna depende de esconder sua cadeia de suprimentos. Se você visse a montanha de escória radioativa necessária para criar o chip que processa seus filtros de Instagram, a magia quebraria. A Nuvem é um mecanismo de ocultação da violência material."
-        </div>
-
-        <div class="visual-geology-container">
-            <strong style="display: block; text-align: center; color: var(--text-main); margin-bottom: 25px; text-transform: uppercase;">🏭 RECURSO VISUAL 9: ANATOMIA DA DEVASTAÇÃO</strong>
-            <div class="geo-step"><span class="geo-icon">💧</span><div><span class="geo-title">A SEDE DO SERVIDOR</span><span class="geo-desc">Cada conversa de 20 perguntas com o ChatGPT "bebe" 500ml de água potável.</span></div></div>
-            <div class="geo-step"><span class="geo-icon">🔋</span><div><span class="geo-title">O SANGUE DA BATERIA</span><span class="geo-desc">60% do cobalto mundial vem da RDC, onde milícias controlam minas.</span></div></div>
-            <div class="geo-step"><span class="geo-icon">🚢</span><div><span class="geo-title">O CEMITÉRIO DIGITAL</span><span class="geo-desc">O lixo eletrônico vai para Agbogbloshie (Gana), queimado a céu aberto.</span></div></div>
-        </div>
-
-        <h2>Antítese: Permacomputação e Solarpunk</h2>
-
-        <p>Podemos escapar dessa máquina de moer o planeta? A resposta não é "tecnologia verde" corporativa (que apenas vende novos produtos "verdes"), mas uma mudança radical de paradigma chamada <strong>Permacomputação</strong>.</p>
-        
-        <p>Inspirada na permacultura, essa filosofia exige uma tecnologia que dure, que possa ser consertada e que use o mínimo de energia possível. É o oposto da obsolescência programada. É a estética <strong>Solarpunk</strong>: computadores feitos de bambu e micélio, redes locais que rodam com a energia de um painel solar no telhado, softwares otimizados para rodar em hardware de 10 anos atrás.</p>
-        
-        <div class="visual-table-container">
-            <div class="visual-header">♻️ CONSUMO VS. MANUTENÇÃO</div>
-            <table>
-                <tbody>
-                    <tr>
-                        <td><strong>Obsolescência Programada</strong></td>
-                        <td>Feito para quebrar. Software pesado força troca de hardware. Ciclo de 2 anos.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Permacomputação</strong></td>
-                        <td>Feito para durar. Software leve revitaliza hardware antigo. Ciclo de 10+ anos.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <h2>Síntese: O Peso do Invisível</h2>
-
-        <p>A versão algorítmica de você é um consumidor insaciável de novidade. O algoritmo precisa que você sinta que seu dispositivo de dois anos atrás é "lixo", para que a roda da extração continue girando.</p>
-        
-        <p>Reivindicar sua autoria significa reconhecer o peso das suas ferramentas. Significa tratar seu computador não como um consumível descartável, mas como uma ferramenta preciosa e custosa para a Terra, que deve ser honrada através da longevidade.</p>
-
-        <div class="action-box">
-            <div class="action-title">♻️ DESAFIO DE RETOMADA #09</div>
-            <p><strong>A Greve de Atualização</strong></p>
-            <p>Os fabricantes de software deixam seus dispositivos lentos propositalmente para forçar a troca. Resista.</p>
-            <p><strong>Sua missão:</strong> Hoje, faça a manutenção do seu hardware. Limpe a porta de carregamento. Delete aplicativos pesados. Prometa a si mesmo: "Não vou comprar nada novo este ano."</p>
-        </div>
-
-        <div class="retention-hack">>> SYSTEM_STATUS: A Nuvem pesa 10^18 gramas. Você sente o peso agora?</div>
     </div>
 
     <script>
-        function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
-        let currentSize = 18;
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if (currentSize < 14) currentSize = 14; if (currentSize > 26) currentSize = 26;
-            document.documentElement.style.setProperty('--base-font-size', currentSize + 'px');
-        }
-
-        let isSpeaking = false, speechRate = 1.0, selectedVoice = null, speechQueue = [], currentSpeechIndex = 0, manualControl = false;
-
-        function loadVoices() {
-            const voices = window.speechSynthesis.getVoices();
-            selectedVoice = voices.find(v => v.lang === 'pt-BR' && (v.name.includes('Google') || v.name.includes('Microsoft'))) || voices.find(v => v.lang === 'pt-BR');
-        }
-        if (window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
-
-        function prepareReadingQueue() {
-            const container = document.querySelector('.book-container');
-            const elements = container.querySelectorAll('p, h1, h2, h3, li, .thesis-box, .action-box p, .geo-desc, .retention-hack, .impact-statement, .deep-dive-box p, td');
-            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
-        }
-
-        function changeSpeed(amount) {
-            speechRate += amount;
-            if (speechRate < 0.5) speechRate = 0.5;
-            if (speechRate > 3.0) speechRate = 3.0;
-            speechRate = Math.round(speechRate * 100) / 100;
-            document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x';
-            if (isSpeaking) {
-                manualControl = true;
-                window.speechSynthesis.cancel();
-                setTimeout(() => { manualControl = false; speakChunk(); }, 50);
-            }
-        }
-
-        function toggleSpeech() {
-            const btn = document.getElementById('btn-speak');
-            if (isSpeaking) {
-                isSpeaking = false;
-                window.speechSynthesis.cancel();
-                clearHighlights();
-                btn.innerHTML = "▶";
-            } else {
-                if (speechQueue.length === 0) prepareReadingQueue();
-                isSpeaking = true;
-                btn.innerHTML = "⏹";
-                speakChunk();
-            }
-        }
-
-        function clearHighlights() {
-            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
-        }
-
-        function speakChunk() {
-            if (!isSpeaking) return;
-            if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; document.getElementById('btn-speak').innerHTML = "▶"; return; }
-            const element = speechQueue[currentSpeechIndex];
-            clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"});
-            const utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR';
-            utterance.rate = speechRate;
-            if (selectedVoice) utterance.voice = selectedVoice;
-            utterance.onend = function() { if (!manualControl && isSpeaking) { currentSpeechIndex++; speakChunk(); } };
-            window.speechSynthesis.speak(utterance);
-        }
-
-        document.getElementById('content-area').addEventListener('click', function(e) {
-            const target = e.target.closest('p, h1, h2, h3, li, .thesis-box, .geo-desc, .impact-statement, .retention-hack, .deep-dive-box, tr');
-            if (target) {
-                if (speechQueue.length === 0) prepareReadingQueue();
-                const index = speechQueue.indexOf(target);
-                if (index !== -1) {
-                    isSpeaking = true;
-                    document.getElementById('btn-speak').innerHTML = "⏹";
-                    manualControl = true;
-                    window.speechSynthesis.cancel();
-                    currentSpeechIndex = index;
-                    setTimeout(() => { manualControl = false; speakChunk(); }, 50);
-                }
-            }
-        });
-
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        let currentSize = 14; 
+        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
+        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
+        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
+        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
+        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box, .geo-desc, .impact-statement, .retention-hack'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
+        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
+        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
+        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, li, .box, td'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
         window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
     </script>
 </body>
