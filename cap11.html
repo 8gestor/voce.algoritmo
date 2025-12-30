@@ -1,238 +1,200 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Capítulo 11: Do Medo ao Protagonismo. Como passar da resistência passiva para a cidadania digital ativa, construindo uma existência 'Onlife' equilibrada.">
-    <meta name="keywords" content="Protagonismo Digital, Luciano Floridi, Onlife, Cal Newport, Minimalismo Digital, Cidadania Algorítmica, Sherry Turkle, Ética da Informação">
-    <title>Capítulo 11 - A Cidadania Onlife</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Capítulo 11 // A Cidadania Onlife</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS ENGINE v4.1 (Harmonic Theme) */
-        :root { --base-font-size: 18px; --transition: 0.3s ease; }
-        :root[data-theme="dark"] { --bg-color: #050505; --text-main: #e5e5e5; --text-muted: #94a3b8; --accent-tech: #0ea5e9; --accent-bio: #10b981; --highlight: #8b5cf6; --border-color: rgba(255, 255, 255, 0.1); --panel-bg: rgba(20, 20, 20, 0.95); --box-bg: rgba(255, 255, 255, 0.03); --constructive: #3b82f6; --table-head: rgba(14, 165, 233, 0.1); }
-        :root[data-theme="sepia"] { --bg-color: #f4ecd8; --text-main: #5b4636; --text-muted: #8d745e; --accent-tech: #0284c7; --accent-bio: #059669; --highlight: #7c3aed; --border-color: rgba(91, 70, 54, 0.15); --panel-bg: #eaddcf; --box-bg: rgba(91, 70, 54, 0.05); --constructive: #2563eb; --table-head: rgba(91, 70, 54, 0.1); }
-        :root[data-theme="light"] { --bg-color: #ffffff; --text-main: #222222; --text-muted: #64748b; --accent-tech: #0284c7; --accent-bio: #16a34a; --highlight: #9333ea; --border-color: rgba(0, 0, 0, 0.1); --panel-bg: #f0f0f0; --box-bg: #f9f9f9; --constructive: #2563eb; --table-head: rgba(0,0,0,0.05); }
-        
-        html { font-size: var(--base-font-size); scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Georgia', 'Lora', serif; line-height: 1.8; margin: 0; padding: 80px 20px 60px 20px; transition: background-color var(--transition), color var(--transition); }
-        
-        /* UI Toolbar */
-        .reading-toolbar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 1000; backdrop-filter: blur(5px); }
-        .tool-group { display: flex; align-items: center; gap: 5px; padding: 0 10px; border-right: 1px solid var(--border-color); } .tool-group:last-child { border-right: none; }
-        .btn-icon { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); width: 30px; height: 30px; border-radius: 4px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); }
-        .dot-dark { background: #050505; border: 1px solid #555; } .dot-sepia { background: #f4ecd8; border: 1px solid #8d745e; } .dot-light { background: #fff; border: 1px solid #ccc; }
-        
-        /* Layout */
-        .book-container { max-width: 700px; margin: 0 auto; }
-        h1 { font-size: 2.2rem; text-align: center; text-transform: uppercase; border-bottom: 1px solid var(--accent-tech); padding-bottom: 20px; margin-top: 0; }
-        h2 { font-size: 1.5rem; color: var(--accent-bio); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 2em; }
-        p { margin-bottom: 1.5em; text-align: justify; hyphens: auto; cursor: pointer; transition: opacity 0.2s; } p:hover { opacity: 0.9; }
-        
-        /* Components */
-        .chapter-meta { text-align: center; color: var(--text-muted); font-family: 'Consolas', monospace; font-size: 0.8rem; margin-bottom: 2em; }
-        .thesis-box { border-left: 4px solid var(--accent-tech); padding: 15px 20px; margin: 2em 0; color: var(--text-muted); background: var(--box-bg); cursor: pointer; transition: transform 0.2s; }
-        .thesis-box:hover { transform: translateX(5px); }
-        
+        :root {
+            /* --- FÓRMULA X GLOBAIS --- */
+            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ededed; --text-secondary: #888888;
+            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-construct: #2563eb;
+            --radius: 8px;
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease; --blur: blur(12px);
+            --reading-size: 14px; 
+        }
+
+        body.light-mode {
+            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
+            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* HUD CLEAN */
+        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
+        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
+        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
+        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
+        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
+        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
+        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+
+        /* CONTENT */
+        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
+        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
+        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
+        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-bio); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: '//'; opacity: 0.5; }
+        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
+        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
+        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
+        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
+
+        /* BOXES */
+        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
+        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
         .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid var(--accent-bio); border-radius: 8px; padding: 25px; margin: 40px 0; position: relative; cursor: pointer; }
-        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-color); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: 'Consolas', monospace; text-transform: uppercase; font-size: 0.75rem; }
-        
-        .deep-dive-box { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 30px 0; margin: 40px 0; }
-        .action-box { background: linear-gradient(135deg, var(--box-bg) 0%, transparent 100%); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; margin-top: 50px; text-align: center; cursor: pointer; border-top: 3px solid var(--constructive); }
-        .action-title { color: var(--constructive); font-family: 'Segoe UI', sans-serif; font-size: 1.2rem; margin-bottom: 15px; }
-        
-        /* Equilibrium Visual */
+        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-app); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: var(--font-tech); text-transform: uppercase; font-size: 0.7rem; }
+        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
+        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-construct); text-align: center; }
+        .action-title { color: var(--accent-construct); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+
+        /* EQUILIBRIUM VISUAL */
         .equilibrium-container { 
             display: flex; align-items: center; justify-content: center; gap: 30px; margin: 3em 0; 
-            padding: 30px; background: var(--box-bg); border-radius: 12px; border: 1px solid var(--border-color);
-            font-family: 'Segoe UI', sans-serif; cursor: pointer;
+            padding: 30px; background: rgba(255,255,255,0.02); border-radius: var(--radius); border: 1px solid var(--border-color);
+            font-family: var(--font-tech); cursor: pointer; flex-direction: column;
         }
-        .balance-scale { position: relative; width: 200px; height: 10px; background: var(--text-muted); border-radius: 5px; }
-        .fulcrum { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid var(--text-muted); }
-        .plate { width: 60px; height: 60px; background: rgba(255,255,255,0.05); border: 2px solid var(--accent-tech); border-radius: 50%; position: absolute; top: -35px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.5s; }
+        .balance-scale { position: relative; width: 200px; height: 4px; background: var(--text-secondary); border-radius: 5px; margin-top: 20px; }
+        .fulcrum { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--text-secondary); }
+        .plate { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border: 2px solid var(--accent); border-radius: 50%; position: absolute; top: -25px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 2s ease-in-out; }
         .plate-left { left: 0; animation: balanceLeft 4s infinite ease-in-out; }
         .plate-right { right: 0; border-color: var(--accent-bio); animation: balanceRight 4s infinite ease-in-out; }
         
-        @keyframes balanceLeft { 0%, 100% { top: -35px; } 50% { top: -15px; } }
-        @keyframes balanceRight { 0%, 100% { top: -15px; } 50% { top: -35px; } }
+        @keyframes balanceLeft { 0%, 100% { top: -25px; } 50% { top: -10px; } }
+        @keyframes balanceRight { 0%, 100% { top: -10px; } 50% { top: -25px; } }
 
-        /* Table Comparison */
-        .visual-table-container { margin: 2em 0; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; }
-        .visual-header { background: var(--box-bg); color: var(--accent-tech); padding: 10px 15px; font-weight: bold; border-bottom: 1px solid var(--border-color); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
-        table { width: 100%; border-collapse: collapse; } 
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); } 
-        th { background: var(--table-head); color: var(--text-muted); font-weight: normal; }
+        /* TABLE */
+        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
+        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
 
-        .reading-highlight { background: rgba(59, 130, 246, 0.1); border-left: 3px solid var(--constructive); padding-left: 10px; margin-left: -13px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 0 4px 4px 0; }
-
-        @media (max-width: 600px) { h1 { font-size: 1.6rem; } body { padding-top: 70px; } .equilibrium-container { flex-direction: column; } }
+        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
     </style>
 </head>
 <body>
-    <div class="reading-toolbar">
-        <div class="tool-group">
-            <div class="theme-dot dot-dark" onclick="setTheme('dark')"></div>
-            <div class="theme-dot dot-sepia" onclick="setTheme('sepia')"></div>
-            <div class="theme-dot dot-light" onclick="setTheme('light')"></div>
-        </div>
-        <div class="tool-group">
-            <button class="btn-icon" onclick="changeSpeed(-0.25)" title="«">«</button>
-            <span class="speed-display" id="speed-val">1.0x</span>
-            <button class="btn-icon" onclick="changeSpeed(0.25)" title="»">»</button>
-            <button class="btn-icon" id="btn-speak" onclick="toggleSpeech()" title="Play">▶</button>
-        </div>
-        <div class="tool-group">
-            <button class="btn-icon" onclick="changeFontSize(-1)">A-</button>
-            <button class="btn-icon" onclick="changeFontSize(1)">A+</button>
-        </div>
+
+    <div class="reading-hud">
+        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
+        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
+        <span class="speed-indicator" id="speed-val">1.0x</span>
+        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
+        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
+            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </button>
     </div>
 
-    <div class="book-container" id="content-area">
-        <div class="chapter-meta">Parte IV: Horizontes e Resistência | Capítulo 11</div>
-        <h1>O Protocolo de Retomada: Do Medo ao Protagonismo</h1>
+    <div class="content-scroll-area" id="content-area">
+        <div class="book-container">
+            <div class="chapter-meta">Parte IV: Horizontes e Resistência | Capítulo 11</div>
+            <h1>O Protocolo de Retomada: Do Medo ao Protagonismo</h1>
 
-        <p>Você chegou até aqui. O diagnóstico está completo: sabemos que o algoritmo quer prever você, que a cidade o vigia e que o sistema o cansa. Diante desse cenário, a reação natural é o medo, a paranoia ou o desejo de fuga — jogar o celular no rio e ir morar numa caverna.</p>
-        
-        <p>Mas a retirada total é uma rendição. O mundo digital não é mais um "lugar" onde entramos e saímos; ele é a infraestrutura da nossa realidade social, econômica e política. Abandoná-lo significa abandonar o espaço público.</p>
-        
-        <p>A verdadeira revolução não é a ausência, é a <strong>Presença Soberana</strong>. Não precisamos de resistência hostil, precisamos de <strong>Protagonismo</strong>. Precisamos deixar de ser "usuários" (usados pelo sistema) para nos tornarmos "cidadãos" (que moldam o sistema).</p>
+            <p>Você chegou até aqui. O diagnóstico está completo: sabemos que o algoritmo quer prever você, que a cidade o vigia e que o sistema o cansa. Diante desse cenário, a reação natural é o medo, a paranoia ou o desejo de fuga — jogar o celular no rio e ir morar numa caverna.</p>
+            
+            <p>Mas a retirada total é uma rendição. O mundo digital não é mais um "lugar" onde entramos e saímos; ele é a infraestrutura da nossa realidade social, econômica e política. Abandoná-lo significa abandonar o espaço público.</p>
+            
+            <p>A verdadeira revolução não é a ausência, é a <strong>Presença Soberana</strong>. Não precisamos de resistência hostil, precisamos de <strong>Protagonismo</strong>. Precisamos deixar de ser "usuários" (usados pelo sistema) para nos tornarmos "cidadãos" (que moldam o sistema).</p>
 
-        <h2>A Tese: Intencionalidade vs. Automatismo</h2>
+            <h2>A Tese: Intencionalidade vs. Automatismo</h2>
 
-        <p>O oposto da submissão algorítmica não é a desconexão, mas a <strong>Intencionalidade</strong>. Cal Newport, em <em>Digital Minimalism</em>, argumenta que a tecnologia é uma ferramenta maravilhosa quando usada para apoiar seus valores, e uma ferramenta terrível quando usada para preencher seus vazios.</p>
+            <p>O oposto da submissão algorítmica não é a desconexão, mas a <strong>Intencionalidade</strong>. Cal Newport, em <em>Digital Minimalism</em>, argumenta que a tecnologia é uma ferramenta maravilhosa quando usada para apoiar seus valores, e uma ferramenta terrível quando usada para preencher seus vazios.</p>
 
-        <div class="thesis-box">
-            <strong>O Design da Escolha:</strong><br>
-            "A escravidão digital acontece no 'piloto automático'. É o scroll infinito, a notificação que puxa seu olho, o vídeo que toca sozinho. A retomada começa quando você desativa o automático. Você não precisa sair do Instagram; você precisa entrar nele com um propósito claro ('ver as fotos da minha irmã') e sair assim que o propósito for cumprido. Isso é transformar a plataforma em ferramenta."
-        </div>
-
-        <div class="deep-dive-box">
-            <h3>Fator X: O Manifesto Onlife</h3>
-            <p>O filósofo Luciano Floridi cunhou o termo <strong>Onlife</strong> para descrever nossa condição atual. Não estamos mais "online" ou "offline". Somos anfíbios vivendo em um estuário onde o digital e o analógico se misturam. A ética Onlife não busca separar esses mundos, mas garantir que a tecnologia sirva ao florescimento humano (Eudaimonia) e não à sua exploração. A paz não vem da guerra contra a máquina, mas da definição clara de seus limites éticos.</p>
-        </div>
-
-        <h2>Antítese: Construindo Cidades Melhores</h2>
-
-        <p>Se o Facebook e o X (Twitter) são praças públicas tóxicas e cheias de vigilância, a solução não é apenas parar de falar. É construir praças melhores. Sherry Turkle, em <em>Reclaiming Conversation</em>, nos lembra que a tecnologia pode, sim, fomentar empatia, desde que o design permita a pausa, a escuta e a profundidade.</p>
-        
-        <p>Movimentos como o <strong>Fediverso</strong> (Mastodon, Bluesky) não são apenas "alternativas de software". São exercícios de urbanismo digital. Neles, não há um algoritmo central otimizando pelo ódio. Você escolhe seu servidor (seu bairro), suas regras de moderação (suas leis locais) e seus vizinhos. É a migração do condomínio fechado corporativo para a vila comunitária aberta.</p>
-
-        <div class="antithesis-box">
-            <span class="antithesis-tag">O Contraponto Construtivo</span>
-            <p><strong>A Tecnologia Convivial</strong></p>
-            <p>Ivan Illich falava de "ferramentas conviviais": aquelas que ampliam a autonomia do indivíduo em vez de gerar dependência. O Wikipedia é convivial. O Linux é convivial. O Signal é convivial. Elas existem para servir, não para extrair. Apoiar e usar essas ferramentas é um ato de jardinagem digital: estamos plantando a floresta onde queremos viver.</p>
-        </div>
-
-        <div class="visual-table-container">
-            <div class="visual-header">🚀 EVOLUÇÃO: DE PASSIVO A ATIVO</div>
-            <table>
-                <tbody>
-                    <tr>
-                        <td><strong>O Usuário (Passivo)</strong></td>
-                        <td>Consome o que o feed entrega. Reage emocionalmente. É o produto.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>O Cidadão (Protagonista)</strong></td>
-                        <td>Busca ativamente a informação. Cria e cura seu ambiente. É o dono.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="equilibrium-container">
-            <div style="text-align:center; margin-bottom:15px; width:100%; position:absolute; top:10px; font-weight:bold; color:var(--text-muted); font-size:0.8rem;">⚖️ RECURSO VISUAL 11: O EQUILÍBRIO ONLIFE</div>
-            <div class="balance-scale">
-                <div class="fulcrum"></div>
-                <div class="plate plate-left">📱</div>
-                <div class="plate plate-right">🌳</div>
+            <div class="box thesis-box">
+                <strong style="color: var(--accent); text-transform: uppercase; font-family: var(--font-tech);">// O Design da Escolha:</strong><br><br>
+                "A escravidão digital acontece no 'piloto automático'. É o scroll infinito, a notificação que puxa seu olho, o vídeo que toca sozinho. A retomada começa quando você desativa o automático. Você não precisa sair do Instagram; você precisa entrar nele com um propósito claro ('ver as fotos da minha irmã') e sair assim que o propósito for cumprido. Isso é transformar a plataforma em ferramenta."
             </div>
-            <p style="margin-top:50px; font-size:0.8rem; color:var(--text-muted); text-align:center;">
-                A meta não é o peso zero no digital, mas o equilíbrio dinâmico com o real.
-            </p>
-        </div>
 
-        <h2>Síntese: A Diplomacia do Eu</h2>
+            <div class="box deep-dive-box">
+                <h3>Fator X: O Manifesto Onlife</h3>
+                <p>O filósofo Luciano Floridi cunhou o termo <strong>Onlife</strong> para descrever nossa condição atual. Não estamos mais "online" ou "offline". Somos anfíbios vivendo em um estuário onde o digital e o analógico se misturam. A ética Onlife não busca separar esses mundos, mas garantir que a tecnologia sirva ao florescimento humano (Eudaimonia) e não à sua exploração. A paz não vem da guerra contra a máquina, mas da definição clara de seus limites éticos.</p>
+            </div>
 
-        <p>A "Versão de Você" criada pelos algoritmos sempre tentará puxá-lo para os extremos. O protagonismo é a arte do centro. É a capacidade de negociar com a tecnologia.</p>
-        
-        <p>Você pode usar o GPS para não se perder, mas desligá-lo para se perder propositalmente quando quiser passear. Você pode usar a IA para resumir um texto, mas escrever a carta de amor com sua própria mão trêmula. Isso é <strong>Soberania Híbrida</strong>.</p>
-        
-        <p>Não precisamos destruir a tecnologia para sermos humanos. Precisamos apenas lembrar, todos os dias, que somos nós quem seguramos o aparelho, e não o contrário. A tela é um espelho, não um mestre.</p>
+            <h2>Antítese: Construindo Cidades Melhores</h2>
 
-        <div class="action-box">
-            <div class="action-title">🤝 DESAFIO DE RETOMADA #11</div>
-            <p><strong>O Acordo de Paz</strong></p>
-            <p>Em vez de bloquear tudo ou aceitar tudo, vamos negociar.</p>
-            <p><strong>Sua missão:</strong> Escolha <strong>uma</strong> ferramenta digital que você usa muito (ex: WhatsApp ou Instagram). Defina uma regra de "Cidadania" para ela hoje. Ex: "Só entro no Instagram após o almoço" ou "No WhatsApp, não respondo mensagens de trabalho após as 19h".</p>
-            <p>Escreva essa regra. Cumpra-a. Sinta o poder de definir os termos do contrato.</p>
+            <p>Se o Facebook e o X (Twitter) são praças públicas tóxicas e cheias de vigilância, a solução não é apenas parar de falar. É construir praças melhores. Sherry Turkle, em <em>Reclaiming Conversation</em>, nos lembra que a tecnologia pode, sim, fomentar empatia, desde que o design permita a pausa, a escuta e a profundidade.</p>
+            
+            <p>Movimentos como o <strong>Fediverso</strong> (Mastodon, Bluesky) não são apenas "alternativas de software". São exercícios de urbanismo digital. Neles, não há um algoritmo central otimizando pelo ódio. Você escolhe seu servidor (seu bairro), suas regras de moderação (suas leis locais) e seus vizinhos. É a migração do condomínio fechado corporativo para a vila comunitária aberta.</p>
+
+            <div class="box antithesis-box">
+                <span class="antithesis-tag">O Contraponto Construtivo</span>
+                <p><strong>A Tecnologia Convivial</strong></p>
+                <p>Ivan Illich falava de "ferramentas conviviais": aquelas que ampliam a autonomia do indivíduo em vez de gerar dependência. O Wikipedia é convivial. O Linux é convivial. O Signal é convivial. Elas existem para servir, não para extrair. Apoiar e usar essas ferramentas é um ato de jardinagem digital: estamos plantando a floresta onde queremos viver.</p>
+            </div>
+
+            <div class="visual-table-container">
+                <div class="visual-header">🚀 EVOLUÇÃO: DE PASSIVO A ATIVO</div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><strong>O Usuário (Passivo)</strong></td>
+                            <td>Consome o que o feed entrega. Reage emocionalmente. É o produto.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>O Cidadão (Protagonista)</strong></td>
+                            <td>Busca ativamente a informação. Cria e cura seu ambiente. É o dono.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="equilibrium-container">
+                <span style="font-weight:bold; color:var(--text-secondary); font-size:0.8rem; letter-spacing:1px;">⚖️ RECURSO VISUAL 11: O EQUILÍBRIO ONLIFE</span>
+                <div class="balance-scale">
+                    <div class="fulcrum"></div>
+                    <div class="plate plate-left">📱</div>
+                    <div class="plate plate-right">🌳</div>
+                </div>
+                <p style="margin-top:20px; font-size:0.8rem; color:var(--text-secondary); text-align:center;">
+                    A meta não é o peso zero no digital, mas o equilíbrio dinâmico com o real.
+                </p>
+            </div>
+
+            <h2>Síntese: A Diplomacia do Eu</h2>
+
+            <p>A "Versão de Você" criada pelos algoritmos sempre tentará puxá-lo para os extremos. O protagonismo é a arte do centro. É a capacidade de negociar com a tecnologia.</p>
+            
+            <p>Você pode usar o GPS para não se perder, mas desligá-lo para se perder propositalmente quando quiser passear. Você pode usar a IA para resumir um texto, mas escrever a carta de amor com sua própria mão trêmula. Isso é <strong>Soberania Híbrida</strong>.</p>
+            
+            <p>Não precisamos destruir a tecnologia para sermos humanos. Precisamos apenas lembrar, todos os dias, que somos nós quem seguramos o aparelho, e não o contrário. A tela é um espelho, não um mestre.</p>
+
+            <div class="box action-box">
+                <div class="action-title">🤝 DESAFIO DE RETOMADA #11</div>
+                <p><strong>O Acordo de Paz</strong></p>
+                <p>Em vez de bloquear tudo ou aceitar tudo, vamos negociar.</p>
+                <p><strong>Sua missão:</strong> Escolha <strong>uma</strong> ferramenta digital que você usa muito (ex: WhatsApp ou Instagram). Defina uma regra de "Cidadania" para ela hoje. Ex: "Só entro no Instagram após o almoço" ou "No WhatsApp, não respondo mensagens de trabalho após as 19h".</p>
+                <p>Escreva essa regra. Cumpra-a. Sinta o poder de definir os termos do contrato.</p>
+            </div>
         </div>
     </div>
 
     <script>
-        function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
-        let currentSize = 18;
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if (currentSize < 14) currentSize = 14; if (currentSize > 26) currentSize = 26;
-            document.documentElement.style.setProperty('--base-font-size', currentSize + 'px');
-        }
-
-        let isSpeaking = false, speechRate = 1.0, selectedVoice = null, speechQueue = [], currentSpeechIndex = 0, manualControl = false;
-
-        function loadVoices() {
-            const voices = window.speechSynthesis.getVoices();
-            selectedVoice = voices.find(v => v.lang === 'pt-BR' && (v.name.includes('Google') || v.name.includes('Microsoft'))) || voices.find(v => v.lang === 'pt-BR');
-        }
-        if (window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
-
-        function prepareReadingQueue() {
-            const container = document.querySelector('.book-container');
-            const elements = container.querySelectorAll('p, h1, h2, h3, li, .thesis-box, .antithesis-box p, .action-box p, .deep-dive-box p, td');
-            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
-        }
-
-        function changeSpeed(amount) {
-            speechRate += amount;
-            if (speechRate < 0.5) speechRate = 0.5;
-            if (speechRate > 3.0) speechRate = 3.0;
-            speechRate = Math.round(speechRate * 100) / 100;
-            document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x';
-            if (isSpeaking) {
-                manualControl = true;
-                window.speechSynthesis.cancel();
-                setTimeout(() => { manualControl = false; speakChunk(); }, 50);
-            }
-        }
-
-        function toggleSpeech() {
-            if (isSpeaking) { isSpeaking = false; window.speechSynthesis.cancel(); clearHighlights(); document.getElementById('btn-speak').innerText = "▶"; }
-            else { if (speechQueue.length === 0) prepareReadingQueue(); isSpeaking = true; document.getElementById('btn-speak').innerText = "⏹"; speakChunk(); }
-        }
-
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        let currentSize = 14; 
+        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
+        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
+        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
+        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
+        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
         function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-
-        function speakChunk() {
-            if (!isSpeaking) return;
-            if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; document.getElementById('btn-speak').innerText = "▶"; return; }
-            const element = speechQueue[currentSpeechIndex];
-            clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"});
-            const utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR'; utterance.rate = speechRate; if (selectedVoice) utterance.voice = selectedVoice;
-            utterance.onend = function() { if (!manualControl && isSpeaking) { currentSpeechIndex++; speakChunk(); } };
-            window.speechSynthesis.speak(utterance);
-        }
-
-        document.getElementById('content-area').addEventListener('click', function(e) {
-            const target = e.target.closest('p, h1, h2, h3, li, .thesis-box, .antithesis-box, .deep-dive-box, .equilibrium-container, tr');
-            if (target) {
-                if (speechQueue.length === 0) prepareReadingQueue();
-                let index = speechQueue.indexOf(target);
-                if (index === -1) { const sub = target.querySelector('p, td'); if(sub) index = speechQueue.indexOf(sub); }
-                if (index !== -1) { isSpeaking = true; document.getElementById('btn-speak').innerText = "⏹"; manualControl = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; setTimeout(() => { manualControl = false; speakChunk(); }, 50); }
-            }
-        });
-
+        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
+        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, .box, td, li'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
         window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
     </script>
 </body>
