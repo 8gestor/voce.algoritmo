@@ -3,183 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A VERSÃO DE VOCÊ // SYSTEM CORE</title>
+    <title>Interface de Leitura // A Versão de Você</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Consolas:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-core: #050505;
-            --bg-panel: #0a0a0a;
-            --bg-hover: #111;
-            --border: rgba(255, 255, 255, 0.1);
-            --accent: #0ea5e9;
-            --highlight: #d946ef;
-            --bio: #10b981;
-            --text-main: #e5e5e5;
-            --text-muted: #888;
-            --font-ui: 'Segoe UI', sans-serif;
-            --font-code: 'Consolas', monospace;
+            /* Palette Tech Minimalista */
+            --bg-body: #09090b;       /* Preto Fosco Profundo */
+            --bg-panel: #121214;      /* Cinza Chumbo */
+            --bg-hover: #27272a;      /* Cinza Interativo */
+            --border: #27272a;        /* Linhas Sutis */
+            
+            --text-main: #e4e4e7;     /* Branco Sujo (Conforto) */
+            --text-muted: #71717a;    /* Cinza Metálico */
+            
+            --accent: #3b82f6;        /* Azul Interface (Foco) */
+            --accent-glow: rgba(59, 130, 246, 0.15);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
         body {
-            background-color: var(--bg-core);
+            background-color: var(--bg-body);
             color: var(--text-main);
             font-family: var(--font-ui);
             height: 100vh;
             display: flex;
             overflow: hidden;
+            font-size: 14px;
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR (Minimalista) --- */
         aside.sidebar {
-            width: 320px;
+            width: 280px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border);
             display: flex; flex-direction: column;
-            height: 100%; flex-shrink: 0;
-            z-index: 100;
-            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            z-index: 50;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); /* Animação suave */
         }
+        
+        aside.sidebar.collapsed { margin-left: -280px; }
 
-        aside.sidebar.collapsed { margin-left: -320px; }
-
-        .brand-header {
-            padding: 25px;
+        .sidebar-header {
+            height: 60px;
             border-bottom: 1px solid var(--border);
-            background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.05), transparent 70%);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
         }
+        .sys-label { font-family: var(--font-tech); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; }
 
-        .close-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-family: var(--font-code);
-            font-size: 1.1rem;
-            cursor: pointer;
-            line-height: 1;
-            padding: 0 5px;
-            transition: all 0.2s;
-        }
-        .close-btn:hover {
-            color: var(--highlight);
-            text-shadow: 0 0 8px var(--highlight);
-        }
+        nav.nav-tree { flex: 1; overflow-y: auto; padding: 20px 0; }
 
-        .system-title {
-            font-family: var(--font-code); font-weight: 700; color: var(--text-main);
-            font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase;
-        }
-        .system-sub {
-            font-family: var(--font-code); font-size: 0.65rem; color: var(--accent); 
-            margin-top: 5px; opacity: 0.8;
-        }
-
-        nav.nav-tree { 
-            flex: 1; overflow-y: auto; padding: 10px 0;
-            scrollbar-width: thin; scrollbar-color: var(--border) transparent;
-        }
-
-        .section-label {
-            font-family: var(--font-code); font-size: 0.65rem; color: var(--accent);
-            text-transform: uppercase; padding: 25px 25px 8px; letter-spacing: 1px;
-            border-bottom: 1px dashed rgba(255,255,255,0.05); margin-bottom: 5px; opacity: 0.8;
-        }
-
+        /* Links da Sidebar */
         .chapter-link {
-            display: flex; align-items: center; padding: 12px 25px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 20px;
             color: var(--text-muted); text-decoration: none;
-            font-size: 0.85rem; cursor: pointer; border-left: 3px solid transparent;
+            transition: all 0.2s; border-left: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+        
+        .chapter-link:hover { background: var(--bg-hover); color: var(--text-main); }
+        
+        .chapter-link.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+            border-left-color: var(--accent);
+            font-weight: 500;
+        }
+
+        .chapter-num { font-family: var(--font-tech); font-size: 0.75rem; opacity: 0.5; margin-right: 10px; }
+
+        /* --- ÁREA PRINCIPAL --- */
+        main.interface {
+            flex: 1; display: flex; flex-direction: column; position: relative; width: 100%;
+        }
+
+        /* HEADER (Centralizado e Limpo) */
+        header.top-bar {
+            height: 60px;
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .header-left, .header-right { width: 100px; display: flex; align-items: center; }
+        .header-right { justify-content: flex-end; gap: 10px; }
+
+        .book-title {
+            flex: 1; text-align: center;
+            font-family: var(--font-tech);
+            font-size: 0.8rem; letter-spacing: 0.5px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Botões de Ícone (Quadrados e Clean) */
+        .icon-btn {
+            width: 36px; height: 36px;
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); border-radius: 6px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
+        .icon-btn:hover { border-color: var(--text-main); color: var(--text-main); background: var(--bg-hover); }
 
-        .chapter-link:hover {
-            background: var(--bg-hover); color: var(--text-main);
-            padding-left: 30px; border-left-color: var(--border);
+        /* READER AREA */
+        .viewport {
+            flex: 1; position: relative; background: #000;
+            display: flex; flex-direction: column;
         }
 
-        .chapter-link.active {
-            background: rgba(14, 165, 233, 0.08);
-            color: var(--text-main); border-left-color: var(--accent);
-            font-weight: 600; text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+        /* Barra de Progresso Fina no Topo do Leitor */
+        .progress-line { width: 100%; height: 2px; background: var(--border); }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--accent); }
+
+        iframe.content-frame {
+            flex: 1; border: none; width: 100%;
+            opacity: 0; animation: fadeIn 0.6s forwards 0.3s;
         }
 
-        /* --- MAIN INTERFACE --- */
-        main.workspace { flex: 1; display: flex; flex-direction: column; width: 100%; position: relative; }
-
-        /* Control Bar (Top) */
-        header.control-bar {
-            height: 70px; background: var(--bg-panel); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 25px; z-index: 10;
+        /* FOOTER (Navegação Dinâmica) */
+        footer.command-bar {
+            height: 70px;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px;
         }
 
-        .left-controls { display: flex; align-items: center; gap: 15px; }
-
-        .toggle-btn {
-            background: transparent; border: 1px solid var(--border); color: var(--accent);
-            width: 35px; height: 35px; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            transition: 0.2s;
+        /* Botões de Texto Grandes */
+        .nav-btn {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0 25px; height: 42px;
+            font-family: var(--font-tech); font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 4px; cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center; gap: 10px;
         }
-        .toggle-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
         
-        /* Separação visual para os grupos de botões */
-        .btn-group { display: flex; gap: 5px; margin-right: 10px; }
-
-        .book-identity { display: flex; flex-direction: column; }
-        .static-title { font-family: var(--font-code); font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px; }
-        .dynamic-chapter { font-family: var(--font-ui); font-size: 1rem; font-weight: 600; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Reading Stats (Right Side) */
-        .reading-stats {
-            display: flex; flex-direction: column; align-items: flex-end; 
-            font-family: var(--font-code); border-left: 1px solid var(--border);
-            padding-left: 20px; min-width: 180px;
+        .nav-btn:hover:not(:disabled) {
+            background: var(--text-main); color: var(--bg-body); border-color: var(--text-main);
+            transform: translateY(-2px);
         }
-
-        .stat-row { display: flex; align-items: center; gap: 10px; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; }
-        .stat-value { color: var(--accent); font-weight: bold; }
         
-        .progress-track {
-            width: 100%; height: 4px; background: rgba(255,255,255,0.1); 
-            border-radius: 2px; overflow: hidden; margin-top: 5px;
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: transparent; }
+
+        .chapter-status {
+            text-align: center;
+            display: flex; flex-direction: column; gap: 2px;
         }
-        .progress-bar { height: 100%; background: var(--bio); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--bio); }
+        .status-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .status-val { font-family: var(--font-tech); font-size: 0.85rem; color: var(--accent); }
 
-        /* Reading Frame */
-        iframe.reader-frame {
-            flex: 1; border: none; width: 100%; background: #000;
-            opacity: 0; animation: fadeIn 0.5s forwards 0.2s;
-        }
-
-        /* HUD Footer */
-        footer.hud-footer {
-            height: 35px; background: var(--bg-core); border-top: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 20px;
-            font-family: var(--font-code); font-size: 0.7rem; color: var(--text-muted);
-            justify-content: space-between;
-        }
-
-        .system-stats { display: flex; gap: 20px; }
-        .stat-item { display: flex; gap: 5px; }
-        .stat-label { color: var(--accent); opacity: 0.7; }
-        .stat-val { color: var(--text-main); min-width: 30px; }
-
-        .status-dot { width: 8px; height: 8px; background: var(--bio); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 5px var(--bio); }
-
-        /* Mobile */
+        /* Responsividade */
         @media (max-width: 768px) {
-            aside.sidebar { position: absolute; left: 0; height: 100%; box-shadow: 10px 0 30px rgba(0,0,0,0.5); margin-left: -320px; }
+            aside.sidebar { position: absolute; height: 100%; margin-left: -280px; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             aside.sidebar.open { margin-left: 0; }
-            .dynamic-chapter { font-size: 0.8rem; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .reading-stats { display: none; } /* Hide stats on mobile for space */
-            .system-stats { display: none; }
+            .book-title { font-size: 0.7rem; white-space: normal; line-height: 1.2; }
+            .nav-btn span { display: none; } /* Esconde texto 'Anterior/Próximo' mantendo setas */
+            .nav-btn { padding: 0 15px; }
+            .chapter-status { display: none; }
         }
 
         @keyframes fadeIn { to { opacity: 1; } }
@@ -188,169 +182,151 @@
 <body>
 
     <aside class="sidebar" id="sidebar">
-        <div class="brand-header">
-            <div style="flex:1;">
-                <div class="system-title">A Versão de Você</div>
-                <div class="system-sub">>> MENU DE NAVEGAÇÃO</div>
-            </div>
-            <button class="close-btn" onclick="toggleSidebar()" title="Recolher Menu">[X]</button>
+        <div class="sidebar-header">
+            <span class="sys-label">INDEX // V.2.0</span>
+            <button class="icon-btn" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
         </div>
 
         <nav class="nav-tree">
-            <div class="section-label">00. SISTEMA CENTRAL</div>
-            <a href="introducao.html" target="viewer" class="chapter-link active" onclick="loadChapter(this, 0, 5)">DIAGNÓSTICO INICIAL</a>
+            <a href="introducao.html" target="viewer" class="chapter-link active" onclick="loadChapter(this)">
+                <span>Diagnóstico Inicial</span> <span class="chapter-num">00</span>
+            </a>
+            
+            <div style="height: 1px; background: var(--border); margin: 10px 20px;"></div>
 
-            <div class="section-label">01. MÓDULO: A MENTE</div>
-            <a href="cap01.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 10, 15)">01. O Cérebro Não é um Computador</a>
-            <a href="cap02.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 20, 12)">02. O Sequestro da Atenção</a>
-            <a href="cap03.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 30, 14)">03. O Eu Inferido vs. Cosmotécnica</a>
-
-            <div class="section-label">02. MÓDULO: O CORPO</div>
-            <a href="cap04.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 40, 10)">04. Necropolítica Digital</a>
-            <a href="cap05.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 50, 12)">05. Smart Cities & Vigilância</a>
-            <a href="cap06.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 60, 15)">06. O Tribunal Algorítmico</a>
-
-            <div class="section-label">03. MÓDULO: SOCIEDADE</div>
-            <a href="cap07.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 70, 10)">07. O Patrão Invisível</a>
-            <a href="cap08.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 75, 12)">08. A Internet Morta</a>
-            <a href="cap09.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 80, 10)">09. A Nuvem de Pedra</a>
-
-            <div class="section-label">04. MÓDULO: RESISTÊNCIA</div>
-            <a href="cap10.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 85, 12)">10. Neuro-direitos</a>
-            <a href="cap11.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 90, 8)">11. Protocolo de Retomada</a>
-            <a href="cap12.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 92, 12)">12. Tecnofeudalismo vs. O Comum</a>
-            <a href="cap13.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 95, 10)">13. Imaginação Radical</a>
-
-            <div class="section-label">05. SHUTDOWN</div>
-            <a href="cap14.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 98, 5)">EPÍLOGO: O Reencantamento</a>
-
-            <div class="section-label">06. BANCO DE DADOS</div>
-            <a href="cap15.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 100, 20)">Apêndice A: Glossário</a>
-            <a href="cap16.html" target="viewer" class="chapter-link" onclick="loadChapter(this, 100, 20)">Apêndice B: Bibliografia</a>
+            <a href="cap01.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>O Cérebro não é PC</span> <span class="chapter-num">01</span>
+            </a>
+            <a href="cap02.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Sequestro da Atenção</span> <span class="chapter-num">02</span>
+            </a>
+            <a href="cap03.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>O Eu Inferido</span> <span class="chapter-num">03</span>
+            </a>
+            <a href="cap04.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Necropolítica Digital</span> <span class="chapter-num">04</span>
+            </a>
+            <a href="cap05.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Smart Cities</span> <span class="chapter-num">05</span>
+            </a>
+            <a href="cap06.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Tribunal Algorítmico</span> <span class="chapter-num">06</span>
+            </a>
+            <a href="cap07.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>O Patrão Invisível</span> <span class="chapter-num">07</span>
+            </a>
+            <a href="cap08.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>A Internet Morta</span> <span class="chapter-num">08</span>
+            </a>
+            <a href="cap09.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>A Nuvem de Pedra</span> <span class="chapter-num">09</span>
+            </a>
+            <a href="cap10.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Neuro-direitos</span> <span class="chapter-num">10</span>
+            </a>
+            <a href="cap11.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Protocolo de Retomada</span> <span class="chapter-num">11</span>
+            </a>
+            <a href="cap12.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Tecnofeudalismo</span> <span class="chapter-num">12</span>
+            </a>
+            <a href="cap13.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Imaginação Radical</span> <span class="chapter-num">13</span>
+            </a>
+            <a href="cap14.html" target="viewer" class="chapter-link" onclick="loadChapter(this)">
+                <span>Epílogo</span> <span class="chapter-num">EP</span>
+            </a>
         </nav>
     </aside>
 
-    <main class="workspace">
-        <header class="control-bar">
-            <div class="left-controls">
-                <button class="toggle-btn" onclick="toggleSidebar()" title="Abrir Menu">☰</button>
-                
-                <div class="btn-group">
-                    <button class="toggle-btn" onclick="navigateChapter(-1)" title="Capítulo Anterior">◀</button>
-                    <button class="toggle-btn" onclick="navigateChapter(1)" title="Próximo Capítulo">▶</button>
-                </div>
-
-                <button class="toggle-btn" onclick="toggleNarration()" id="voice-btn" title="Iniciar Leitura Neural">🔈</button> 
-
-                <div class="book-identity">
-                    <span class="static-title">A VERSÃO DE VOCÊ // LEITURA ATIVA</span>
-                    <span class="dynamic-chapter" id="chapter-title">DIAGNÓSTICO INICIAL</span>
-                </div>
+    <main class="interface">
+        
+        <header class="top-bar">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleSidebar()" title="Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
             </div>
 
-            <div class="reading-stats">
-                <div class="stat-row">
-                    <span>PROGRESSO TOTAL:</span>
-                    <span class="stat-value" id="total-percent">0%</span>
-                </div>
-                <div class="stat-row">
-                    <span>TEMPO RESTANTE:</span>
-                    <span class="stat-value" id="time-remaining">-- min</span>
-                </div>
-                <div class="progress-track">
-                    <div class="progress-bar" id="progress-fill"></div>
-                </div>
+            <div class="book-title">
+                A VERSÃO DE VOCÊ QUE OS ALGORÍTIMOS ACREDITAM QUE VOCÊ É
+            </div>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleFullScreen()" title="Tela Cheia">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                </button>
             </div>
         </header>
 
-        <iframe src="introducao.html" name="viewer" id="main-frame" class="reader-frame"></iframe>
+        <div class="viewport">
+            <div class="progress-line"><div class="progress-fill" id="progress-bar"></div></div>
+            <iframe src="introducao.html" name="viewer" id="main-frame" class="content-frame"></iframe>
+        </div>
 
-        <footer class="hud-footer">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span class="status-dot"></span>
-                <span id="clock">00:00:00</span>
+        <footer class="command-bar">
+            <button class="nav-btn" id="btn-prev" onclick="navigateChapter(-1)">
+                ← <span>Anterior</span>
+            </button>
+
+            <div class="chapter-status">
+                <span class="status-label">LENDO ARQUIVO</span>
+                <span class="status-val" id="current-chapter-display">DIAGNÓSTICO INICIAL</span>
             </div>
-            
-            <div class="system-stats">
-                <div class="stat-item"><span class="stat-label">MEM:</span><span class="stat-val" id="mem-val">24%</span></div>
-                <div class="stat-item"><span class="stat-label">CPU:</span><span class="stat-val" id="cpu-val">12%</span></div>
-                <div class="stat-item"><span class="stat-label">DISK:</span><span class="stat-val" id="disk-val">WRITE</span></div>
-            </div>
+
+            <button class="nav-btn" id="btn-next" onclick="navigateChapter(1)">
+                <span>Próximo</span> →
+            </button>
         </footer>
+
     </main>
 
     <script>
-        // --- CONFIGURAÇÕES DO SISTEMA ---
-        const TOTAL_BOOK_TIME = 190; 
-        let narrationActive = false;
-        let synth = window.speechSynthesis;
-        let currentUtterance = null;
-
-        // --- RELÓGIO & VISUAL ---
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
-        }
-        setInterval(updateClock, 1000); updateClock();
-
-        setInterval(() => {
-            document.getElementById('mem-val').innerText = Math.floor(Math.random() * (45 - 20) + 20) + "%";
-            document.getElementById('cpu-val').innerText = Math.floor(Math.random() * (15 - 5) + 5) + "%";
-            const diskState = Math.random() > 0.7 ? "READ" : "IDLE";
-            document.getElementById('disk-val').innerText = diskState;
-        }, 2000);
-
-        // --- LÓGICA DE NAVEGAÇÃO ---
-        function loadChapter(link, percent, chapterTime) {
-            // 1. Atualiza UI do Menu
-            document.querySelectorAll('.chapter-link').forEach(a => a.classList.remove('active'));
-            link.classList.add('active');
+        // --- LÓGICA DO SISTEMA ---
+        let currentIdx = 0;
+        const links = Array.from(document.querySelectorAll('.chapter-link'));
+        const displayTitle = document.getElementById('current-chapter-display');
+        const progressBar = document.getElementById('progress-bar');
+        
+        function loadChapter(element) {
+            // Atualiza UI dos links
+            links.forEach(l => l.classList.remove('active'));
+            element.classList.add('active');
             
-            // 2. Atualiza Título
-            const cleanTitle = link.innerText.replace(/^\d+\.\s*/, ''); 
-            document.getElementById('chapter-title').innerText = cleanTitle;
+            // Atualiza índice atual
+            currentIdx = links.indexOf(element);
+            
+            // Atualiza Texto Central Inferior
+            const rawText = element.querySelector('span').innerText; 
+            displayTitle.innerText = rawText.toUpperCase();
 
-            // 3. AUTO-COLLAPSE (Sidebar Recolhe Automaticamente)
-            const sidebar = document.getElementById('sidebar');
+            // Atualiza Barra de Progresso Visual
+            const percent = ((currentIdx + 1) / links.length) * 100;
+            progressBar.style.width = percent + '%';
+
+            // Comportamento Mobile (Fecha menu ao clicar)
             if (window.innerWidth <= 768) {
-                sidebar.classList.remove('open'); // Mobile
-            } else {
-                sidebar.classList.add('collapsed'); // Desktop
+                document.getElementById('sidebar').classList.remove('open');
             }
 
-            // 4. Resetar Narração ao mudar de capítulo
-            stopNarration();
-
-            // 5. Estatísticas
-            document.getElementById('progress-fill').style.width = percent + '%';
-            document.getElementById('total-percent').innerText = percent + '%';
-            
-            const remainingPercent = 100 - percent;
-            const minutesLeft = Math.round((TOTAL_BOOK_TIME * remainingPercent) / 100);
-            
-            document.getElementById('time-remaining').innerText = minutesLeft + " min";
+            // Atualiza estado dos botões de rodapé
+            updateButtons();
         }
 
-        // Função nova para navegar Anterior/Próximo
-        function navigateChapter(direction) {
-            const links = Array.from(document.querySelectorAll('.chapter-link'));
-            const activeLink = document.querySelector('.chapter-link.active');
-            
-            if (!activeLink) return;
-
-            const currentIndex = links.indexOf(activeLink);
-            let newIndex = currentIndex + direction;
-
-            // Evitar sair dos limites
-            if (newIndex < 0) newIndex = 0;
-            if (newIndex >= links.length) newIndex = links.length - 1;
-
-            if (newIndex !== currentIndex) {
-                // Simula o clique no novo link para rodar toda a lógica de loadChapter
-                links[newIndex].click();
+        function navigateChapter(dir) {
+            const nextIdx = currentIdx + dir;
+            // Se o índice for válido, clica no link correspondente
+            if (nextIdx >= 0 && nextIdx < links.length) {
+                links[nextIdx].click();
             }
         }
 
+        function updateButtons() {
+            document.getElementById('btn-prev').disabled = (currentIdx === 0);
+            document.getElementById('btn-next').disabled = (currentIdx === links.length - 1);
+        }
+
+        // --- FUNÇÕES DE INTERFACE ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             if (window.innerWidth <= 768) {
@@ -360,73 +336,29 @@
             }
         }
 
-        // --- SISTEMA DE NARRAÇÃO (TTS) ---
-        function toggleNarration() {
-            if (narrationActive) {
-                stopNarration();
+        // --- FULLSCREEN (TELA CHEIA) ---
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch((e) => {
+                    console.log("Erro ao entrar em tela cheia:", e);
+                });
             } else {
-                startNarration();
-            }
-        }
-
-        function startNarration() {
-            const iframe = document.getElementById('main-frame');
-            const btn = document.getElementById('voice-btn');
-
-            try {
-                // Tenta pegar o texto dentro do iframe
-                const frameContent = iframe.contentWindow.document.body.innerText;
-                
-                if (!frameContent || frameContent.trim() === "") {
-                    alert("SYSTEM ERROR: Nenhum texto detectado para leitura.");
-                    return;
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
                 }
-
-                // Configura a voz
-                currentUtterance = new SpeechSynthesisUtterance(frameContent);
-                currentUtterance.lang = 'pt-BR';
-                currentUtterance.rate = 1.1; // Velocidade IA
-                currentUtterance.pitch = 0.9; // Tom Grave
-
-                // Eventos visuais
-                currentUtterance.onstart = () => {
-                    narrationActive = true;
-                    btn.innerText = "⏹"; // Ícone Stop
-                    btn.style.borderColor = "var(--bio)";
-                    btn.style.color = "var(--bio)";
-                    btn.style.boxShadow = "0 0 10px var(--bio)";
-                };
-
-                currentUtterance.onend = () => {
-                    stopNarration();
-                };
-
-                synth.speak(currentUtterance);
-
-            } catch (e) {
-                console.error(e);
-                alert("SYSTEM ERROR: Acesso ao conteúdo bloqueado. Use um servidor local (Live Server).");
             }
         }
 
-        function stopNarration() {
-            if (synth.speaking) {
-                synth.cancel();
-            }
-            narrationActive = false;
-            
-            // Resetar botão
-            const btn = document.getElementById('voice-btn');
-            if(btn) {
-                btn.innerText = "🔈";
-                btn.style.borderColor = "";
-                btn.style.color = "";
-                btn.style.boxShadow = "";
-            }
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            updateButtons();
+            // Inicia barra de progresso
+            progressBar.style.width = (1 / links.length * 100) + '%';
         }
     </script>
 </body>
 </html>
+
 
 
 
