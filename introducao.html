@@ -1,289 +1,239 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Introdução: O Espelho Negro. Uma análise profunda sobre a ontologia digital, o Data Double e o imperativo da resistência.">
-    <title>Introdução - O Espelho Negro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Introdução // O Espelho Negro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS ENGINE v5.4 (Deep Reading + Audio Sync) */
-        :root { --base-font-size: 18px; --transition: 0.3s ease; }
-        :root[data-theme="dark"] { --bg-color: #050505; --text-main: #e5e5e5; --text-muted: #888; --accent-tech: #0ea5e9; --accent-bio: #10b981; --highlight: #d946ef; --border-color: rgba(255, 255, 255, 0.15); --panel-bg: rgba(15, 15, 20, 0.98); --box-bg: rgba(255, 255, 255, 0.02); }
-        :root[data-theme="sepia"] { --bg-color: #f4ecd8; --text-main: #4a3b2a; --text-muted: #8d745e; --accent-tech: #a21caf; --accent-bio: #15803d; --highlight: #b45309; --border-color: rgba(91, 70, 54, 0.2); --panel-bg: #eaddcf; --box-bg: rgba(91, 70, 54, 0.05); }
-        :root[data-theme="light"] { --bg-color: #ffffff; --text-main: #111827; --text-muted: #4b5563; --accent-tech: #0284c7; --accent-bio: #16a34a; --highlight: #9333ea; --border-color: rgba(0, 0, 0, 0.1); --panel-bg: #f3f4f6; --box-bg: #f9fafb; }
+        :root {
+            /* --- IDENTIDADE VISUAL MESTRA --- */
+            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.95); --border-color: rgba(255, 255, 255, 0.12);
+            --text-primary: #ededed; --text-secondary: #888888;
+            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef;
+            --accent-glow: 0 0 15px rgba(59, 130, 246, 0.25);
+            --radius-md: 12px; --radius-sm: 8px;
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); --blur: blur(12px);
+            --reading-size: 18px; 
+        }
+
+        body.light-mode {
+            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.95); --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
+            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* --- HUD (CABEÇALHO) --- */
+        .reading-hud {
+            height: 70px; flex-shrink: 0;
+            background: var(--bg-panel); backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; z-index: 100; padding: 0 20px;
+            font-family: var(--font-tech);
+        }
+
+        .tool-group {
+            display: flex; align-items: center; gap: 8px;
+            padding: 0 15px; border-right: 1px solid var(--border-color);
+        }
+        .tool-group:last-child { border-right: none; }
+
+        .hud-btn {
+            height: 36px; min-width: 36px; padding: 0 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            color: var(--text-secondary); border-radius: var(--radius-sm);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-tech); font-weight: 600; font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .hud-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59, 130, 246, 0.1); box-shadow: var(--accent-glow); transform: translateY(-1px); }
+        .hud-btn:active { transform: scale(0.95); }
+        .speed-display { font-size: 0.75rem; color: var(--accent); min-width: 40px; text-align: center; }
+        .btn-text { margin-left: 6px; }
+
+        /* Responsividade Mobile do HUD */
+        @media (max-width: 600px) {
+            .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; }
+            .tool-group { padding: 0 2px; gap: 4px; border: none; }
+            .hud-btn { min-width: 34px; height: 34px; padding: 0 6px; }
+            .btn-text { display: none; } /* Oculta texto PLAY no mobile */
+            .speed-display { min-width: 30px; font-size: 0.7rem; }
+            h1 { font-size: 1.5em; } 
+            .book-container { padding: 0 10px; }
+        }
+
+        /* --- CONTEÚDO --- */
+        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
+        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
         
-        html { font-size: var(--base-font-size); scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Georgia', 'Lora', serif; line-height: 1.8; margin: 0; padding: 80px 20px 60px 20px; transition: background-color var(--transition), color var(--transition); }
+        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; text-shadow: 0 0 20px rgba(59,130,246,0.1); }
+        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: '//'; opacity: 0.5; }
         
-        .book-container { max-width: 750px; margin: 0 auto; position: relative; }
+        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.9; transition: opacity 0.2s; } p:hover { opacity: 1; }
+        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
+        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
+
+        /* --- ELEMENTOS ESPECÍFICOS DA INTRODUÇÃO (Adaptados para Identidade Cap 01) --- */
         
-        h1 { font-family: 'Segoe UI', sans-serif; font-size: 2.2rem; text-align: center; text-transform: uppercase; border-bottom: 1px solid var(--highlight); padding-bottom: 20px; margin-top: 0; letter-spacing: 2px; }
-        h2 { font-family: 'Segoe UI', sans-serif; font-size: 1.5rem; color: var(--accent-tech); border-left: 4px solid var(--accent-tech); padding-left: 15px; margin-top: 2.5em; text-transform: uppercase; letter-spacing: 1px; }
-        p { margin-bottom: 1.5em; text-align: justify; hyphens: auto; transition: opacity 0.2s; cursor: pointer; } p:hover { opacity: 0.9; }
-        li { cursor: pointer; margin-bottom: 0.5em; }
-        
-        .chapter-meta { text-align: center; color: var(--text-muted); font-family: 'Consolas', monospace; font-size: 0.8rem; margin-bottom: 2em; letter-spacing: 3px; text-transform: uppercase; }
-        .manifesto-box { border: 1px solid var(--text-main); padding: 40px; margin: 50px 0; text-align: center; background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%); cursor: pointer; }
-        .manifesto-text { font-family: 'Segoe UI', sans-serif; font-size: 1.3rem; font-weight: 300; font-style: italic; }
-        .glitch-text { display: inline-block; position: relative; color: var(--highlight); font-weight: bold; animation: glitch 3s infinite; }
-        .warning-box { border: 1px dashed var(--highlight); padding: 25px; margin: 40px 0; background: rgba(217, 70, 239, 0.05); text-align: center; font-family: 'Segoe UI', sans-serif; cursor: pointer; }
-        .warning-title { color: var(--highlight); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 10px; }
+        .warning-box {
+            border: 1px dashed var(--accent-warn);
+            border-radius: var(--radius-md);
+            padding: 25px; margin: 40px 0;
+            background: rgba(217, 70, 239, 0.05);
+            text-align: center; font-family: var(--font-ui);
+            cursor: pointer; position: relative;
+        }
+        .warning-title {
+            color: var(--accent-warn); font-family: var(--font-tech);
+            font-weight: bold; text-transform: uppercase; letter-spacing: 2px;
+            display: block; margin-bottom: 10px;
+        }
+
+        .manifesto-box {
+            border-left: 4px solid var(--text-primary);
+            background: rgba(255,255,255,0.03);
+            border-radius: 0 8px 8px 0;
+            padding: 30px; margin: 50px 0;
+            text-align: center; font-style: italic;
+        }
+        .manifesto-text { font-family: var(--font-ui); font-size: 1.1rem; font-weight: 300; }
+
+        .glitch-text {
+            display: inline-block; position: relative;
+            color: var(--accent-warn); font-weight: bold;
+            animation: glitch 3s infinite; font-family: var(--font-tech);
+        }
 
         @keyframes glitch { 0% { transform: skew(0deg); } 20% { transform: skew(-10deg); } 40% { transform: skew(10deg); } 100% { transform: skew(0deg); } }
-        
-        /* Audio Highlight Style */
-        .reading-highlight { background: rgba(14, 165, 233, 0.15); border-left: 4px solid var(--accent-tech); padding-left: 15px; margin-left: -19px; transition: all 0.3s ease; border-radius: 0 6px 6px 0; box-shadow: 5px 0 15px rgba(0,0,0,0.1); }
 
-        /* Toolbar */
-        .reading-toolbar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 1000; backdrop-filter: blur(5px); }
-        .tool-group { display: flex; align-items: center; gap: 5px; padding: 0 10px; border-right: 1px solid var(--border-color); } .tool-group:last-child { border-right: none; }
-        .btn-icon { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); width: 30px; height: 30px; border-radius: 4px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
-        .btn-icon:hover { background: rgba(255,255,255,0.1); }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); }
-        .dot-dark { background: #050505; border: 1px solid #555; } .dot-sepia { background: #f4ecd8; border: 1px solid #8d745e; } .dot-light { background: #fff; border: 1px solid #ccc; }
-        .speed-display { font-family: 'Consolas', monospace; font-size: 12px; color: var(--text-muted); width: 40px; text-align: center; }
-
-        @media (max-width: 600px) { h1 { font-size: 1.6rem; } body { padding-top: 70px; } }
+        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius-sm); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
     </style>
 </head>
 <body>
-    <div class="reading-toolbar">
+
+    <div class="reading-hud">
         <div class="tool-group">
-            <div class="theme-dot dot-dark" onclick="setTheme('dark')"></div>
-            <div class="theme-dot dot-sepia" onclick="setTheme('sepia')"></div>
-            <div class="theme-dot dot-light" onclick="setTheme('light')"></div>
+            <button class="hud-btn" onclick="toggleTheme()" title="Alternar Tema">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
         </div>
+
         <div class="tool-group">
-            <button class="btn-icon" onclick="changeSpeed(-0.25)" title="Mais Lento">«</button>
+            <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Mais Lento">«</button>
             <span class="speed-display" id="speed-val">1.0x</span>
-            <button class="btn-icon" onclick="changeSpeed(0.25)" title="Mais Rápido">»</button>
-            <button class="btn-icon" id="btn-speak" onclick="toggleSpeech()" title="Play/Pause">▶</button>
+            <button class="hud-btn" onclick="changeSpeed(0.25)" title="Mais Rápido">»</button>
+            <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" style="color: var(--accent-bio); border-color: var(--accent-bio); min-width: 60px;">
+                <span>▶</span> <span class="btn-text">PLAY</span>
+            </button>
         </div>
+
         <div class="tool-group">
-            <button class="btn-icon" onclick="changeFontSize(-1)">A-</button>
-            <button class="btn-icon" onclick="changeFontSize(1)">A+</button>
+            <button class="hud-btn" onclick="changeFontSize(-1)">A-</button>
+            <button class="hud-btn" onclick="changeFontSize(1)">A+</button>
         </div>
     </div>
 
-    <div class="book-container" id="content-area">
-        <div class="chapter-meta">SYSTEM_INIT: SEQUENCE_00</div>
-        <h1>Introdução: O Espelho Negro</h1>
+    <div class="content-scroll-area" id="content-area">
+        <div class="book-container">
+            <div class="chapter-meta">SYSTEM_INIT: SEQUENCE_00</div>
+            <h1>Introdução: O Espelho Negro</h1>
 
-        <div class="warning-box">
-            <span class="warning-title">Aviso de Sistema</span>
-            Este não é um livro sobre tecnologia. É um livro sobre o que a tecnologia está fazendo com a sua biologia, sua alma e sua liberdade enquanto você lê este aviso.
+            <div class="warning-box">
+                <span class="warning-title">Aviso de Sistema</span>
+                Este não é um livro sobre tecnologia. É um livro sobre o que a tecnologia está fazendo com a sua biologia, sua alma e sua liberdade enquanto você lê este aviso.
+            </div>
+
+            <p>Pare por um segundo. Sinta o peso do dispositivo em sua mão. Sinta a textura do vidro, o calor da bateria. Agora, tente lembrar: quando foi a última vez que você tomou uma decisão que foi <em>inteiramente</em> sua?</p>
+            
+            <p>A música que você ouviu hoje cedo: você a escolheu ou o algoritmo a sugeriu? O vídeo que te fez rir (ou sentir raiva): você o buscou ou ele foi injetado na sua retina para manter seus olhos abertos por mais três segundos? A opinião política que você defendeu no jantar: ela nasceu da sua reflexão ou foi moldada pela arquitetura invisível do seu feed?</p>
+            
+            <p>Se a resposta for desconfortável, é porque deveria ser. Você está vivendo dentro de uma máquina de previsão.</p>
+
+            <p>Você não é mais apenas um corpo biológico. Você foi duplicado. Existe uma versão de você feita de carne e osso, e existe uma versão feita de dados estatísticos — o <strong>Data Double</strong>.</p>
+
+            <div class="manifesto-box">
+                <p class="manifesto-text">
+                    O problema é que o sistema prefere o Duplo. Ele é mais previsível. Ele é mais lucrativo. Ele não cansa, não dorme e não reclama. E, aos poucos, o sistema começou a remodelar o mundo real para acomodar o Duplo, deixando a sua versão biológica — exausta, ansiosa e vigiada — para trás, como um resíduo obsoleto.
+                </p>
+            </div>
+
+            <h2>A Autópsia do Invisível</h2>
+
+            <p>Eles nos disseram que a tecnologia era neutra. Disseram que a "Nuvem" era leve e imaterial. Mentiram.</p>
+            
+            <p>Nas páginas a seguir, vamos realizar uma autópsia desse sistema. Vamos rasgar a interface bonita e polida do Vale do Silício para expor as engrenagens sujas que giram por baixo:</p>
+
+            <ul>
+                <li>Você verá como a <strong>Dopamina</strong> foi militarizada contra sua vontade.</li>
+                <li>Você descobrirá que seu <strong>Cansaço</strong> não é uma falha pessoal, mas um projeto econômico.</li>
+                <li>Você entenderá que a <strong>Nuvem</strong> é feita de pedras escavadas por crianças e resfriada com a água que falta na sua torneira.</li>
+                <li>E, o mais assustador: você verá como um <strong>Tribunal Invisível</strong> já julgou o seu valor social sem que você tivesse direito a um advogado.</li>
+            </ul>
+
+            <h2>O Caminho da Retomada</h2>
+
+            <p>Mas este livro não é um obituário da humanidade. É um mapa de fuga. Não para uma caverna (fugir é inútil), mas para uma nova forma de existir <em>dentro</em> e <em>apesar</em> da máquina.</p>
+            
+            <p>Vamos aprender a usar a <strong>Ofuscação</strong> para nos tornarmos invisíveis em plena luz do dia. Vamos reivindicar nossos <strong>Neuro-direitos</strong> para que nossos pensamentos continuem sendo privados. Vamos explorar o <strong>Solarpunk</strong> para imaginar um futuro onde a tecnologia sirva à vida, e não ao lucro.</p>
+            
+            <p>A era da inocência digital acabou. A era da <span class="glitch-text">Resistência Ontológica</span> começa agora.</p>
+            
+            <p>Respire fundo. A partir da próxima página, nada será automático.</p>
         </div>
-
-        <p>Pare por um segundo. Sinta o peso do dispositivo em sua mão. Sinta a textura do vidro, o calor da bateria. Agora, tente lembrar: quando foi a última vez que você tomou uma decisão que foi <em>inteiramente</em> sua?</p>
-        
-        <p>A música que você ouviu hoje cedo: você a escolheu ou o algoritmo a sugeriu? O vídeo que te fez rir (ou sentir raiva): você o buscou ou ele foi injetado na sua retina para manter seus olhos abertos por mais três segundos? A opinião política que você defendeu no jantar: ela nasceu da sua reflexão ou foi moldada pela arquitetura invisível do seu feed?</p>
-        
-        <p>Se a resposta for desconfortável, é porque deveria ser. Você está vivendo dentro de uma máquina de previsão.</p>
-
-        <p>Você não é mais apenas um corpo biológico. Você foi duplicado. Existe uma versão de você feita de carne e osso, e existe uma versão feita de dados estatísticos — o <strong>Data Double</strong>.</p>
-
-        <div class="manifesto-box">
-            <p class="manifesto-text">
-                O problema é que o sistema prefere o Duplo. Ele é mais previsível. Ele é mais lucrativo. Ele não cansa, não dorme e não reclama. E, aos poucos, o sistema começou a remodelar o mundo real para acomodar o Duplo, deixando a sua versão biológica — exausta, ansiosa e vigiada — para trás, como um resíduo obsoleto.
-            </p>
-        </div>
-
-        <h2>A Autópsia do Invisível</h2>
-
-        <p>Eles nos disseram que a tecnologia era neutra. Disseram que a "Nuvem" era leve e imaterial. Mentiram.</p>
-        
-        <p>Nas páginas a seguir, vamos realizar uma autópsia desse sistema. Vamos rasgar a interface bonita e polida do Vale do Silício para expor as engrenagens sujas que giram por baixo:</p>
-
-        <ul>
-            <li>Você verá como a <strong>Dopamina</strong> foi militarizada contra sua vontade.</li>
-            <li>Você descobrirá que seu <strong>Cansaço</strong> não é uma falha pessoal, mas um projeto econômico.</li>
-            <li>Você entenderá que a <strong>Nuvem</strong> é feita de pedras escavadas por crianças e resfriada com a água que falta na sua torneira.</li>
-            <li>E, o mais assustador: você verá como um <strong>Tribunal Invisível</strong> já julgou o seu valor social sem que você tivesse direito a um advogado.</li>
-        </ul>
-
-        <h2>O Caminho da Retomada</h2>
-
-        <p>Mas este livro não é um obituário da humanidade. É um mapa de fuga. Não para uma caverna (fugir é inútil), mas para uma nova forma de existir <em>dentro</em> e <em>apesar</em> da máquina.</p>
-        
-        <p>Vamos aprender a usar a <strong>Ofuscação</strong> para nos tornarmos invisíveis em plena luz do dia. Vamos reivindicar nossos <strong>Neuro-direitos</strong> para que nossos pensamentos continuem sendo privados. Vamos explorar o <strong>Solarpunk</strong> para imaginar um futuro onde a tecnologia sirva à vida, e não ao lucro.</p>
-        
-        <p>A era da inocência digital acabou. A era da <span class="glitch-text">Resistência Ontológica</span> começa agora.</p>
-        
-        <p>Respire fundo. A partir da próxima página, nada será automático.</p>
     </div>
 
     <script>
-        // --- 1. CONFIGURAÇÃO VISUAL ---
-        function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
         let currentSize = 18;
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if(currentSize < 14) currentSize = 14; if(currentSize > 26) currentSize = 26;
-            document.documentElement.style.setProperty('--base-font-size', currentSize + 'px');
-        }
+        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
 
-        // --- 2. ENGINE DE ÁUDIO CORRIGIDA ---
-        let speechRate = 1.0;
-        let isSpeaking = false;
-        let selectedVoice = null;
-        let speechQueue = [];
-        let currentSpeechIndex = 0;
-        let utterance = null;
-        
-        // FLAG CRÍTICA: Impede que o 'cancel()' acione o 'onend' e pule o parágrafo
-        let isChangingState = false; 
-
-        // Carregamento de Vozes
-        function loadVoices() {
-            const voices = window.speechSynthesis.getVoices();
-            selectedVoice = voices.find(v => v.lang === 'pt-BR' && (v.name.includes('Google') || v.name.includes('Microsoft'))) || 
-                            voices.find(v => v.lang === 'pt-BR');
-        }
-        if (window.speechSynthesis.onvoiceschanged !== undefined) window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
-
-        // Preparação da Fila de Leitura
-        function prepareReadingQueue() {
-            const container = document.querySelector('.book-container');
-            const elements = container.querySelectorAll('p, h1, h2, h3, li, .thesis-box, .manifesto-text, .warning-box');
-            
-            speechQueue = Array.from(elements).filter(el => {
-                const text = el.innerText.trim();
-                return text.length > 0 && el.offsetParent !== null;
-            });
-        }
-
-        // Função Principal de Fala
-        function speakChunk() {
-            if (!isSpeaking) return;
-            
-            if (speechQueue.length === 0) prepareReadingQueue();
-
-            if (currentSpeechIndex >= speechQueue.length) {
-                // Fim do livro
-                isSpeaking = false;
-                currentSpeechIndex = 0;
-                updateButtonState();
-                clearHighlights();
-                return;
-            }
-
-            // Cancela qualquer fala anterior para evitar sobreposição
-            window.speechSynthesis.cancel();
-
-            const element = speechQueue[currentSpeechIndex];
-            highlightBlock(element);
-
-            utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR';
-            utterance.rate = speechRate;
-            if (selectedVoice) utterance.voice = selectedVoice;
-
-            // EVENTO DE FIM: Só avança se NÃO for uma interrupção manual (mudança de velocidade ou clique)
-            utterance.onend = function() {
-                if (isSpeaking && !isChangingState) {
-                    currentSpeechIndex++;
-                    speakChunk();
-                }
-                // Reseta a flag de mudança de estado após o evento ser processado
-                if(isChangingState) isChangingState = false;
-            };
-
-            utterance.onerror = function(e) {
-                console.error("Erro TTS:", e);
-                // Em caso de erro real, tentamos avançar
-                if (isSpeaking && !isChangingState) {
-                    currentSpeechIndex++;
-                    speakChunk();
-                }
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // --- 3. CONTROLES DE INTERAÇÃO ---
+        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0;
+        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { window.speechSynthesis.cancel(); speakChunk(); } }
 
         function toggleSpeech() {
             const btn = document.getElementById('btn-speak');
-            
             if (isSpeaking) {
-                // PAUSE
-                isChangingState = true; // Avisa o sistema que é uma pausa manual, não fim de frase
-                window.speechSynthesis.cancel();
-                isSpeaking = false;
-                btn.innerText = "▶"; 
+                window.speechSynthesis.cancel(); isSpeaking = false; clearHighlights();
+                btn.innerHTML = '<span>▶</span> <span class="btn-text">PLAY</span>';
             } else {
-                // PLAY
-                isSpeaking = true;
-                btn.innerText = "⏸";
-                // Retoma exatamente do índice atual (sem zerar)
-                speakChunk();
-            }
-        }
-
-        function changeSpeed(amount) {
-            speechRate += amount;
-            if (speechRate < 0.5) speechRate = 0.5;
-            if (speechRate > 3.0) speechRate = 3.0;
-            
-            document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x';
-
-            if (isSpeaking) {
-                // Ajuste de velocidade em tempo real
-                isChangingState = true; // Impede o pulo de parágrafo
-                window.speechSynthesis.cancel();
-                
-                // Pequeno delay para garantir que o cancelamento processou
-                setTimeout(() => {
-                    isChangingState = false; 
-                    speakChunk(); // Reinicia o MESMO bloco com nova velocidade
-                }, 50);
-            }
-        }
-
-        // --- 4. FUNÇÕES AUXILIARES ---
-
-        function highlightBlock(element) {
-            clearHighlights();
-            element.classList.add('reading-highlight');
-            element.scrollIntoView({behavior: "smooth", block: "center"});
-        }
-
-        function clearHighlights() {
-            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
-        }
-
-        function updateButtonState() {
-            document.getElementById('btn-speak').innerText = isSpeaking ? "⏸" : "▶";
-        }
-
-        // --- 5. CLICK TO READ (NAVEGAÇÃO) ---
-        document.getElementById('content-area').addEventListener('click', function(e) {
-            const target = e.target.closest('p, h1, h2, h3, li, .thesis-box, .manifesto-text, .warning-box');
-            
-            if (target) {
-                if (speechQueue.length === 0) prepareReadingQueue();
-                
-                const index = speechQueue.indexOf(target);
-                if (index !== -1) {
-                    // Configura estado para mudança
-                    isChangingState = true; 
-                    window.speechSynthesis.cancel();
-                    
-                    // Atualiza para o novo local
-                    currentSpeechIndex = index;
+                prepareQueue();
+                if(speechQueue.length > 0) {
                     isSpeaking = true;
-                    updateButtonState();
-                    
-                    setTimeout(() => {
-                        isChangingState = false;
-                        speakChunk();
-                    }, 50);
+                    btn.innerHTML = '<span>⏸</span> <span class="btn-text">PAUSE</span>';
+                    speakChunk();
                 }
             }
-        });
+        }
 
-        // Limpeza ao fechar aba
+        // Fila de leitura incluindo elementos específicos da Intro
+        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box, .warning-box, .manifesto-text'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
+        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
+
+        function speakChunk() {
+            if (!isSpeaking) return;
+            if (currentSpeechIndex >= speechQueue.length) {
+                isSpeaking = false; currentSpeechIndex = 0;
+                document.getElementById('btn-speak').innerHTML = '<span>▶</span> <span class="btn-text">PLAY</span>';
+                return;
+            }
+            const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"});
+            const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate;
+            utterance.onend = function() { if (isSpeaking) { currentSpeechIndex++; speakChunk(); } };
+            window.speechSynthesis.speak(utterance);
+        }
+
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('p, h1, h2, h3, .box, td, li, .warning-box, .manifesto-text');
+            if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { window.speechSynthesis.cancel(); isSpeaking = true; document.getElementById('btn-speak').innerHTML = '<span>⏸</span> <span class="btn-text">PAUSE</span>'; currentSpeechIndex = index; speakChunk(); } }
+        });
         window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
     </script>
 </body>
