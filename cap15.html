@@ -1,397 +1,170 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Glossário Completo: O Léxico da Resistência. Definições densas dos conceitos de tecnopolítica, filosofia e vigilância.">
-    <title>Glossário - O Léxico da Resistência</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Epílogo // A Singularidade Humana</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS ENGINE v5.5 (Grid Layout Upgrade) */
-        :root { --base-font-size: 18px; --transition: 0.3s ease; }
-        :root[data-theme="dark"] { --bg-color: #050505; --text-main: #e5e5e5; --text-muted: #888; --accent-tech: #0ea5e9; --accent-bio: #10b981; --highlight: #d946ef; --border-color: rgba(255, 255, 255, 0.15); --panel-bg: rgba(15, 15, 20, 0.98); --box-bg: rgba(255, 255, 255, 0.02); --term-header: #1e293b; }
-        :root[data-theme="sepia"] { --bg-color: #f4ecd8; --text-main: #4a3b2a; --text-muted: #8d745e; --accent-tech: #a21caf; --accent-bio: #15803d; --highlight: #b45309; --border-color: rgba(91, 70, 54, 0.2); --panel-bg: #eaddcf; --box-bg: rgba(91, 70, 54, 0.05); --term-header: #e6dcc5; }
-        :root[data-theme="light"] { --bg-color: #ffffff; --text-main: #111827; --text-muted: #4b5563; --accent-tech: #0284c7; --accent-bio: #16a34a; --highlight: #9333ea; --border-color: rgba(0, 0, 0, 0.1); --panel-bg: #f3f4f6; --box-bg: #f9fafb; --term-header: #e5e7eb; }
-        
-        html { font-size: var(--base-font-size); scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Georgia', 'Lora', serif; line-height: 1.7; margin: 0; padding: 80px 20px 60px 20px; transition: background-color var(--transition), color var(--transition); }
-        
-        /* GRID LAYOUT CONFIGURATION */
-        .book-container { 
-            max-width: 1000px; /* Aumentado para caber 2 colunas confortavelmente */
-            margin: 0 auto; 
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
-            gap: 25px; /* Espaço entre as caixas */
-            align-items: start;
+        :root {
+            /* --- FÓRMULA X GLOBAIS --- */
+            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
+            --border-color: rgba(251, 191, 36, 0.2); /* Dourado */
+            --text-primary: #ededed; --text-secondary: #888888;
+            --accent: #d946ef; --accent-bio: #fbbf24; --accent-warn: #f472b6;
+            --radius: 8px;
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --transition: all 0.2s ease; --blur: blur(12px);
+            --reading-size: 14px; 
         }
 
-        /* Full Width Elements (Headers, Nav, Titles) */
-        h1, h2, .alpha-nav, .chapter-meta { 
-            grid-column: 1 / -1; /* Ocupa todas as colunas */
+        body.light-mode {
+            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
+            --accent: #c026d3; --accent-bio: #d97706; --accent-warn: #db2777;
         }
 
-        h1 { font-family: 'Segoe UI', sans-serif; font-size: 2.5rem; text-align: center; text-transform: uppercase; border-bottom: 2px solid var(--highlight); padding-bottom: 20px; margin-bottom: 50px; letter-spacing: 2px; }
-        
-        h2 { 
-            font-family: 'Segoe UI', sans-serif; font-size: 1.5rem; color: var(--accent-tech); 
-            border-left: 5px solid var(--accent-tech); padding-left: 15px; 
-            margin-top: 2em; margin-bottom: 1em; text-transform: uppercase; letter-spacing: 1px;
-            background: linear-gradient(90deg, var(--box-bg) 0%, transparent 100%); /* Visual flair */
-            padding-top: 10px; padding-bottom: 10px;
-        }
-        
-        /* Glossary Card Design */
-        .glossary-entry { 
-            background: var(--box-bg); 
-            border: 1px solid var(--border-color); 
-            border-radius: 6px; 
-            overflow: hidden; 
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-            display: flex; 
-            flex-direction: column;
-            height: 100%; /* Garante altura igual na linha */
-        }
-        .glossary-entry:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-color: var(--highlight); }
-        
-        .entry-header { 
-            background: var(--term-header); 
-            padding: 15px 20px; 
-            border-bottom: 1px solid var(--border-color); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        .term { font-family: 'Consolas', monospace; font-weight: bold; color: var(--accent-tech); font-size: 1rem; }
-        .origin { font-family: 'Segoe UI', sans-serif; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; text-align: right; }
-        
-        .entry-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .definition { margin-bottom: 15px; font-weight: 500; color: var(--text-main); font-size: 0.95rem; }
-        .context { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; border-left: 2px solid var(--border-color); padding-left: 15px; margin-left: 5px; flex: 1; }
-        .see-also { margin-top: 15px; font-size: 0.75rem; color: var(--accent-bio); font-family: 'Segoe UI', sans-serif; font-weight: bold; text-transform: uppercase; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* Navigation Alphabet */
-        .alpha-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 40px; position: sticky; top: 60px; background: var(--panel-bg); padding: 10px; z-index: 100; border-bottom: 1px solid var(--border-color); backdrop-filter: blur(5px); }
-        .alpha-link { font-family: 'Consolas', monospace; color: var(--text-muted); text-decoration: none; padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.9rem; transition: all 0.2s; }
-        .alpha-link:hover { background: var(--accent-tech); color: #000; border-color: var(--accent-tech); }
+        /* HUD CLEAN */
+        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
+        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
+        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
+        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
+        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
+        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
+        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
 
-        .chapter-meta { text-align: center; color: var(--text-muted); font-family: 'Consolas', monospace; font-size: 0.8rem; margin-bottom: 2em; letter-spacing: 3px; }
+        /* CONTENT */
+        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
+        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
+        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent-bio); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
+        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-bio); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        h2::before { content: '//'; opacity: 0.5; }
+        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
+        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
+        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
+        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* Toolbar */
-        .reading-toolbar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 15px; z-index: 1000; backdrop-filter: blur(5px); }
-        .tool-group { display: flex; align-items: center; gap: 5px; } 
-        .theme-dot { width: 15px; height: 15px; border-radius: 50%; cursor: pointer; border: 1px solid var(--border-color); }
-        .dot-dark { background: #050505; } .dot-sepia { background: #f4ecd8; } .dot-light { background: #fff; }
-        .btn-icon { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); font-size: 12px; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        /* REVELATION BOX */
+        .revelation-box { border: 1px solid var(--accent-bio); padding: 40px; margin: 50px 0; text-align: center; background: rgba(251, 191, 36, 0.05); border-radius: var(--radius); cursor: pointer; }
+        .revelation-text { font-family: var(--font-ui); font-size: 1.2rem; font-weight: 300; line-height: 1.4; font-style: italic; color: var(--text-primary); }
 
-        /* Mobile Responsive (Volta para 1 coluna) */
-        @media (max-width: 768px) { 
-            .book-container { grid-template-columns: 1fr; }
-            h1 { font-size: 1.8rem; } 
-            .entry-header { flex-direction: column; align-items: flex-start; gap: 5px; }
-            .origin { text-align: left; }
-        }
+        /* SPECTRUM */
+        .spectrum-container { display: flex; justify-content: center; gap: 20px; margin: 3em 0; flex-wrap: wrap; cursor: pointer; font-family: var(--font-tech); }
+        .spectrum-zone { flex: 1; min-width: 200px; padding: 20px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); transition: transform 0.3s; background: rgba(255,255,255,0.02); }
+        .spectrum-zone:hover { transform: translateY(-5px); border-color: var(--accent-bio); }
+        .zone-title { font-weight: bold; display: block; margin-bottom: 15px; font-size: 0.9rem; color: var(--accent); }
+        .zone-list { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8; }
+
+        /* FINAL CTA */
+        .final-cta { margin-top: 80px; padding: 40px; border-top: 1px solid var(--border-color); text-align: center; cursor: pointer; }
+        .glitch-final { font-family: var(--font-tech); font-size: 0.9rem; color: var(--accent-warn); margin: 20px 0; opacity: 0.8; }
+
+        .reading-highlight { background: rgba(251, 191, 36, 0.1); border-radius: var(--radius); box-shadow: 0 0 20px rgba(251, 191, 36, 0.1); color: #fff; }
     </style>
 </head>
 <body>
-    <div class="reading-toolbar">
-        <div class="tool-group">
-            <div class="theme-dot dot-dark" onclick="setTheme('dark')"></div>
-            <div class="theme-dot dot-sepia" onclick="setTheme('sepia')"></div>
-            <div class="theme-dot dot-light" onclick="setTheme('light')"></div>
-        </div>
-        <div class="tool-group">
-            <button class="btn-icon" onclick="changeFontSize(1)">A+</button>
-            <button class="btn-icon" onclick="changeFontSize(-1)">A-</button>
-        </div>
+
+    <div class="reading-hud">
+        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
+        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
+        <span class="speed-indicator" id="speed-val">1.0x</span>
+        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
+        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
+            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </button>
     </div>
 
-    <div class="book-container">
-        <div class="chapter-meta">DATABASE // GLOSSARY</div>
-        <h1>O Léxico da Resistência</h1>
-        
-        <div class="alpha-nav">
-            <a href="#A" class="alpha-link">A</a> <a href="#B" class="alpha-link">B</a> <a href="#C" class="alpha-link">C</a> 
-            <a href="#D" class="alpha-link">D</a> <a href="#E" class="alpha-link">E</a> <a href="#F" class="alpha-link">F</a>
-            <a href="#G" class="alpha-link">G</a> <a href="#I" class="alpha-link">I</a> <a href="#M" class="alpha-link">M</a>
-            <a href="#N" class="alpha-link">N</a> <a href="#O" class="alpha-link">O</a> <a href="#P" class="alpha-link">P</a>
-            <a href="#R" class="alpha-link">R</a> <a href="#S" class="alpha-link">S</a> <a href="#T" class="alpha-link">T</a>
-            <a href="#V" class="alpha-link">V</a> <a href="#W" class="alpha-link">W</a>
-        </div>
+    <div class="content-scroll-area" id="content-area">
+        <div class="book-container">
+            <div class="chapter-meta">EPÍLOGO // A SAÍDA</div>
+            <h1>O Reencantamento da Singularidade</h1>
 
-        <h2 id="A">A</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Afro-computação</span><span class="origin">Ron Eglash</span></div>
-            <div class="entry-body">
-                <p class="definition">Abordagem computacional e matemática baseada em sistemas de conhecimento africanos, caracterizada pelo uso de fractais, recursividade não-linear e estruturas comunitárias descentralizadas.</p>
-                <div class="context">No livro, é apresentada como uma alternativa epistemológica à lógica linear e extrativista do Vale do Silício, provando que "computação" não é sinônimo de "ocidentalização".</div>
-                <span class="see-also">→ Solarpunk, Permacomputação</span>
+            <p>No Vale do Silício, existe uma religião chamada "Singularidade Tecnológica". É a crença de que, em breve, a Inteligência Artificial ultrapassará a inteligência humana, tornando-nos obsoletos. Eles nos dizem que seremos para as máquinas o que os chimpanzés são para nós: ancestrais lentos e biológicos.</p>
+            
+            <p>Mas eles erraram o cálculo. Eles esqueceram uma variável fundamental: a máquina não pode <strong>morrer</strong>. E, porque não pode morrer, ela não pode dar valor à vida.</p>
+
+            <p>Você passou por treze capítulos de desconstrução. Viu como o algoritmo tenta mapear sua mente, prever seus passos e cercar seus sonhos. Mas agora, no final, resta a revelação mais importante: o algoritmo é incrivelmente rápido, mas ele é <strong>burro</strong>.</p>
+
+            <h2>A Convergência Medíocre</h2>
+
+            <p>O objetivo final de todo algoritmo é a Otimização. Ele busca o caminho mais curto, a resposta mais provável, a música que mais gente gostou. Se deixarmos os algoritmos governarem o mundo, eles não criarão o caos; eles criarão uma realidade de <strong>Convergência Medíocre</strong>.</p>
+            
+            <p>Em um mundo otimizado, todas as músicas tocam o refrão nos primeiros 30 segundos. Todos os filmes seguem a mesma estrutura de roteiro. A otimização é a morte da beleza, porque a beleza é, fundamentalmente, uma anomalia. É um erro que deu certo.</p>
+
+            <div class="revelation-box">
+                <span class="revelation-text">O Algoritmo conhece todo o passado,<br>mas é incapaz de conceber o inédito.<br>Você é a máquina do Novo.</span>
+            </div>
+
+            <h2>A Singularidade Humana</h2>
+
+            <p>A filósofa <strong>Hannah Arendt</strong> chamou isso de <strong>Natalidade</strong>: a capacidade humana de iniciar algo imprevisível, de quebrar a cadeia de causa e efeito. A máquina é pura causalidade (Input -> Output). O humano é a quebra da causalidade.</p>
+            
+            <p>Cada vez que você perdoa alguém que a lógica diz para odiar; cada vez que você muda de carreira por paixão e não por lucro; cada vez que você cria algo que não segue a tendência; você está exercendo a Natalidade. Você está criando um "erro" no sistema que o sistema não consegue computar.</p>
+
+            <div class="spectrum-container">
+                <div class="spectrum-zone zone-machine">
+                    <span class="zone-title" style="color:var(--accent-warn);">A MÁQUINA (Mimesis)</span>
+                    <div class="zone-list">
+                        • Busca Padrão<br>
+                        • Repete o Passado<br>
+                        • Eficiência Máxima<br>
+                        • Imortal (Sem Risco)
+                    </div>
+                </div>
+                <div class="spectrum-zone zone-human">
+                    <span class="zone-title" style="color:var(--accent-bio);">O HUMANO (Poiesis)</span>
+                    <div class="zone-list">
+                        • Cria Sentido<br>
+                        • Inventa o Futuro<br>
+                        • Beleza Ineficiente<br>
+                        • Finito (Peso Infinito)
+                    </div>
+                </div>
+            </div>
+
+            <p>Você possui uma tecnologia que a Nvidia nunca conseguirá fabricar: <strong>Consciência Finita</strong>. O fato de que seu tempo é limitado dá um peso infinito a cada escolha sua. Quando você dedica uma hora a um amigo, você está dando a ele um pedaço da sua vida que nunca mais voltará. Uma IA pode gerar um milhão de mensagens de conforto em um segundo, mas elas não valem nada, porque não custaram nada.</p>
+
+            <h2>O Último Comando</h2>
+
+            <p>Max Weber disse que a modernidade provocou o "Desencantamento do Mundo". A tecnologia de vigilância foi o ápice desse processo: a tentativa de transformar o mistério da vida em uma planilha de Excel. O nosso trabalho, a partir de agora, é o <strong>Reencantamento</strong>.</p>
+            
+            <p>O reencantamento não exige mágica. Exige presença. Exige que você olhe para uma árvore não como um objeto a ser fotografado para o Instagram, mas como um ser vivo com o qual você compartilha a respiração. Exige que você olhe para o seu vizinho não como um perfil de dados, mas como um mistério biológico.</p>
+
+            <p>A tecnologia deve voltar a ser uma ferramenta em nossas mãos, não o ambiente onde moramos. Use-a para curar, para conectar, para construir o Solarpunk. Mas nunca, jamais, use-a para definir quem você é.</p>
+
+            <div class="final-cta">
+                <p>O código termina aqui.</p>
+                <div class="glitch-final">>> SYSTEM STATUS: PREDICTION FAILED. SUBJECT IS FREE.</div>
+                <p>A sua vida real — cheia de cheiros, texturas, dores e amores que nenhum servidor pode hospedar — está esperando do lado de fora dessa tela.</p>
+                <p style="font-size: 1.2rem; color: var(--accent-bio); letter-spacing: 2px; margin-top: 30px; font-weight: bold; text-transform: uppercase;">Vá Viver.</p>
             </div>
         </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Algoritmo de Caixa Preta</span><span class="origin">Frank Pasquale</span></div>
-            <div class="entry-body">
-                <p class="definition">Sistemas de IA cujos processos de tomada de decisão são opacos, seja por segredo comercial ou complexidade técnica, impedindo que o usuário entenda por que foi julgado ou excluído.</p>
-                <div class="context">Base do "Tribunal Algorítmico". Impede o direito de defesa, pois não se pode contestar uma sentença cuja lógica é invisível.</div>
-            </div>
-        </div>
-
-        <h2 id="B">B</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Biopolítica Digital</span><span class="origin">Michel Foucault / Expansão Digital</span></div>
-            <div class="entry-body">
-                <p class="definition">A extensão do poder estatal e corporativo sobre a vida biológica dos cidadãos através de tecnologias de monitoramento (wearables, apps de saúde).</p>
-                <div class="context">Diferente da biopolítica clássica (vacinação, natalidade), a digital opera no nível individual e em tempo real, transformando batimentos cardíacos e sono em ativos financeiros.</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Bossware</span><span class="origin">Cultura Corporativa</span></div>
-            <div class="entry-body">
-                <p class="definition">Softwares de vigilância instalados em computadores de trabalhadores (especialmente remotos) para monitorar produtividade através de capturas de tela, registro de teclas e rastreamento ocular.</p>
-                <div class="context">A ferramenta central do "Patrão Invisível", eliminando a confiança e instaurando um panóptico no ambiente doméstico.</div>
-            </div>
-        </div>
-
-        <h2 id="C">C</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Capitalismo Cognitivo</span><span class="origin">Yann Moulier-Boutang</span></div>
-            <div class="entry-body">
-                <p class="definition">Fase do capitalismo onde a acumulação de riqueza depende da exploração das faculdades mentais, intelectuais e afetivas dos trabalhadores e usuários, não apenas da força física.</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Capitalismo de Vigilância</span><span class="origin">Shoshana Zuboff</span></div>
-            <div class="entry-body">
-                <p class="definition">Uma ordem econômica que reivindica a experiência humana como matéria-prima gratuita para práticas comerciais ocultas de extração, previsão e vendas.</p>
-                <div class="context">O conceito central do livro. Explica que você não é o "produto", você é a "carcaça" de onde o produto (previsão comportamental) é extraído.</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Chokepoint Capitalism</span><span class="origin">Rebecca Giblin & Cory Doctorow</span></div>
-            <div class="entry-body">
-                <p class="definition">A criação deliberada de gargalos de mercado por corporações para capturar valor de criadores e consumidores, tornando a evasão da plataforma economicamente inviável.</p>
-                <div class="context">Explica por que é tão difícil sair do Instagram ou Spotify: eles cercaram o público e cobram pedágio para acessá-lo.</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Cidadania Digital</span><span class="origin">Ativismo Onlife</span></div>
-            <div class="entry-body">
-                <p class="definition">A transição da postura de "usuário" (consumidor passivo de plataformas) para a de participante ativo na governança, criação e manutenção da infraestrutura digital (ex: moderar um servidor Mastodon).</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Colapso do Modelo</span><span class="origin">Pesquisa em IA</span></div>
-            <div class="entry-body">
-                <p class="definition">Processo degenerativo onde modelos de IA, treinados com dados gerados por outras IAs, começam a perder coerência, diversidade e qualidade, levando a uma "homogeneidade alucinatória".</p>
-                <div class="context">O "Ouroboros de Dados" que ameaça a utilidade da internet futura e reforça a necessidade de autoria humana genuína.</div>
-            </div>
-        </div>
-
-        <h2 id="D">D</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Data Double (Eu Inferido)</span><span class="origin">Kevin D. Haggerty / Richard V. Ericson</span></div>
-            <div class="entry-body">
-                <p class="definition">A representação virtual de um indivíduo composta por fragmentos de dados agregados. Para o sistema, este duplo é a entidade "real" que é avaliada para crédito, risco e acesso.</p>
-                <div class="context">A tese do livro: o conflito entre quem você é (biológico, complexo) e quem o sistema diz que você é (estatístico, reducionista).</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Direito à Opacidade</span><span class="origin">Édouard Glissant</span></div>
-            <div class="entry-body">
-                <p class="definition">O direito ético e político de não ser totalmente transparente, compreendido ou reduzido a categorias pelo "Outro" (ou pelo sistema colonial/tecnológico).</p>
-                <div class="context">A base filosófica da Ofuscação. Uma defesa contra a exigência totalitária de transparência do algoritmo.</div>
-            </div>
-        </div>
-
-        <h2 id="E">E</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Enshittification</span><span class="origin">Cory Doctorow</span></div>
-            <div class="entry-body">
-                <p class="definition">O ciclo de vida predatório das plataformas: 1. São boas para o usuário para crescer; 2. São boas para o anunciante para lucrar; 3. Tornam-se terríveis para ambos para manter o monopólio.</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Excedente Comportamental</span><span class="origin">Shoshana Zuboff</span></div>
-            <div class="entry-body">
-                <p class="definition">Dados gerados pelo usuário que vão além do necessário para a melhoria do serviço e são usados exclusivamente para treinar modelos preditivos de mercado.</p>
-                <div class="context">Exemplo: O Google Maps precisa saber sua localização para guiar você (dado necessário). Mas ele armazena seu histórico para vender seu perfil de mobilidade (excedente).</div>
-            </div>
-        </div>
-
-        <h2 id="F">F</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Fediverso</span><span class="origin">Web Descentralizada</span></div>
-            <div class="entry-body">
-                <p class="definition">Federação de servidores independentes (como Mastodon, PeerTube, Lemmy) que se comunicam entre si usando protocolos abertos (ActivityPub), sem uma autoridade central.</p>
-                <div class="context">A infraestrutura técnica do "Comum Digital".</div>
-            </div>
-        </div>
-
-        <h2 id="G">G</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Glitch (Como Política)</span><span class="origin">Legacy Russell</span></div>
-            <div class="entry-body">
-                <p class="definition">O uso estratégico do erro, da falha e da ilegibilidade para recusar a classificação binária e normativa imposta pelos sistemas de controle.</p>
-                <div class="context">"Seja o Glitch": tornar-se inclassificável para escapar da predição algorítmica.</div>
-            </div>
-        </div>
-
-        <h2 id="I">I</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Identidade Estocástica</span><span class="origin">Conceito do Livro</span></div>
-            <div class="entry-body">
-                <p class="definition">Uma identidade forjada por probabilidades estatísticas baseadas no passado, negando a capacidade humana de mudança e reinvenção.</p>
-                <div class="context">Oposta à "Identidade Narrativa" (Ricoeur).</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Imaginação Radical</span><span class="origin">Teoria Política</span></div>
-            <div class="entry-body">
-                <p class="definition">A capacidade coletiva de visualizar e desejar futuros que rompem fundamentalmente com a lógica do presente, recusando o "Realismo Capitalista".</p>
-            </div>
-        </div>
-
-        <h2 id="N">N</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Natalidade</span><span class="origin">Hannah Arendt</span></div>
-            <div class="entry-body">
-                <p class="definition">A capacidade ontológica do ser humano de iniciar algo novo, inédito e imprevisível, rompendo com a cadeia de causalidade histórica.</p>
-                <div class="context">A "Singularidade Humana" que impede a máquina de prever o futuro com 100% de precisão.</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Necropolítica Algorítmica</span><span class="origin">Achille Mbembe (Adaptado)</span></div>
-            <div class="entry-body">
-                <p class="definition">O uso de automação e IA para decidir quais grupos populacionais são "descartáveis" ou devem ser submetidos à morte social/física (negação de crédito, saúde, liberdade).</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Neuro-direitos</span><span class="origin">Rafael Yuste / Marcello Ienca</span></div>
-            <div class="entry-body">
-                <p class="definition">Nova categoria de direitos humanos propostos para proteger a integridade mental e a privacidade neural diante dos avanços da neurotecnologia.</p>
-            </div>
-        </div>
-
-        <h2 id="O">O</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Ofuscação</span><span class="origin">Brunton & Nissenbaum</span></div>
-            <div class="entry-body">
-                <p class="definition">Estratégia de resistência que envolve a produção deliberada de dados ambíguos, confusos ou enganosos para tornar a vigilância ineficaz.</p>
-                <div class="context">Esconder-se no ruído, não no silêncio.</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Onlife</span><span class="origin">Luciano Floridi</span></div>
-            <div class="entry-body">
-                <p class="definition">A condição existencial onde as fronteiras entre online e offline desapareceram, exigindo uma ética que trate o digital como parte integrante do ambiente real.</p>
-            </div>
-        </div>
-
-        <h2 id="P">P</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Permacomputação</span><span class="origin">Design Ecológico</span></div>
-            <div class="entry-body">
-                <p class="definition">Design de computação holístico focado em maximizar a vida útil do hardware, minimizar o consumo de energia e integrar a tecnologia aos ciclos naturais.</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Poiesis</span><span class="origin">Filosofia Grega</span></div>
-            <div class="entry-body">
-                <p class="definition">O ato de "trazer à existência" algo que não existia antes. Criação genuína.</p>
-                <div class="context">Usado para diferenciar a criatividade humana da <em>Mimesis</em> (imitação) da Inteligência Artificial.</div>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Precariado</span><span class="origin">Guy Standing</span></div>
-            <div class="entry-body">
-                <p class="definition">Classe social emergente caracterizada pela instabilidade laboral crônica, falta de identidade ocupacional e dependência de plataformas digitais (Gig Economy).</p>
-            </div>
-        </div>
-
-        <h2 id="R">R</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Realismo Capitalista</span><span class="origin">Mark Fisher</span></div>
-            <div class="entry-body">
-                <p class="definition">A atmosfera cultural generalizada de que o capitalismo é o único sistema político e econômico viável, e que é impossível imaginar uma alternativa coerente.</p>
-            </div>
-        </div>
-
-        <h2 id="S">S</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Slop (Lodo Digital)</span><span class="origin">Gíria da Internet (2024)</span></div>
-            <div class="entry-body">
-                <p class="definition">Conteúdo de baixa qualidade gerado em massa por IA (textos, imagens, comentários) com o único objetivo de capturar atenção ou manipular SEO, sem valor intrínseco.</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Solarpunk</span><span class="origin">Movimento Estético</span></div>
-            <div class="entry-body">
-                <p class="definition">Visão de futuro otimista (mas punk) que imagina como a sociedade seria se resolvêssemos nossos principais desafios contemporâneos com ênfase em sustentabilidade, comunidade e alta tecnologia descentralizada.</p>
-            </div>
-        </div>
-
-        <h2 id="T">T</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Tecnofeudalismo</span><span class="origin">Yanis Varoufakis</span></div>
-            <div class="entry-body">
-                <p class="definition">Tese de que o capitalismo evoluiu para um sistema onde os mercados foram substituídos por plataformas (feudos digitais) e o lucro foi substituído pela renda extraída de "servos" (usuários e empresas subalternas).</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Teoria da Internet Morta</span><span class="origin">Folclore da Internet / Realidade Técnica</span></div>
-            <div class="entry-body">
-                <p class="definition">A hipótese de que a maior parte do tráfego e conteúdo da internet é gerado por bots e agentes de IA, simulando atividade humana para criar engajamento falso.</p>
-            </div>
-        </div>
-
-        <h2 id="V">V</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Vidas Desperdiçadas</span><span class="origin">Zygmunt Bauman</span></div>
-            <div class="entry-body">
-                <p class="definition">Conceito sobre os "refugos humanos" da modernidade; pessoas que se tornam supérfluas para a produção econômica e são, portanto, segregadas ou excluídas pelo sistema (e agora, pelos algoritmos).</p>
-            </div>
-        </div>
-
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Violência Neuronal</span><span class="origin">Byung-Chul Han</span></div>
-            <div class="entry-body">
-                <p class="definition">Patologias psíquicas (depressão, burnout, TDAH) causadas não pela repressão externa, mas pelo excesso de positividade, comunicação e desempenho exigidos pela sociedade digital.</p>
-            </div>
-        </div>
-
-        <h2 id="W">W</h2>
-        <div class="glossary-entry">
-            <div class="entry-header"><span class="term">Walled Gardens (Jardins Murados)</span><span class="origin">Arquitetura de Software</span></div>
-            <div class="entry-body">
-                <p class="definition">Ecossistemas fechados (como Apple iOS ou Meta) onde o operador controla o hardware, as aplicações e o conteúdo, restringindo o acesso e a interoperabilidade para manter o usuário cativo.</p>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        function setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); }
-        let currentSize = 18;
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if(currentSize < 14) currentSize = 14; if(currentSize > 24) currentSize = 24;
-            document.documentElement.style.setProperty('--base-font-size', currentSize + 'px');
-        }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        let currentSize = 14; 
+        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
+        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
+        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
+        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
+        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, .revelation-text, .zone-list, .final-cta p, .glitch-final'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
+        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
+        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
+        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, li, .revelation-box, .spectrum-zone, .final-cta'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index === -1) { const sub = target.querySelector('p, .zone-list'); if(sub) index = speechQueue.indexOf(sub); } if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
+        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
     </script>
 </body>
 </html>
