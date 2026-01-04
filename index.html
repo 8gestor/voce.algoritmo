@@ -24,7 +24,7 @@
 
     <style>
         :root {
-            /* --- VARIAVEIS GLOBAIS --- */
+            /* --- VARIAVEIS GLOBAIS (DESIGN SYSTEM ESTILO A) --- */
             --bg-app: #050505;        
             --bg-panel: rgba(20, 20, 23, 0.95);
             --border-color: rgba(255, 255, 255, 0.08);
@@ -306,7 +306,7 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <span class="sys-badge">SYSTEM V4.1</span>
+            <span class="sys-badge">SYSTEM V4.2</span>
             <button class="ctrl-btn" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
         </div>
 
@@ -383,7 +383,7 @@
                     <div class="live-dot"></div>
                     <span id="system-clock">00:00:00</span>
                     <span class="hud-separator">|</span>
-                    <span id="visit-counter">LEITORES: ...</span>
+                    <span id="visit-counter">NET.HITS: ...</span>
                 </div>
             </div>
 
@@ -404,12 +404,9 @@
         setInterval(updateClock, 1000); updateClock();
 
         /* --- CONTADOR DE ACESSOS (CORRIGIDO) --- */
-        // Utiliza counterapi.dev v1 (mais estável e sem necessidade de chave prévia)
+        // Utiliza counterapi.dev v1
         function initCounter() {
             const counterEl = document.getElementById('visit-counter');
-            
-            // Namespace genérico para garantir funcionamento. 
-            // "up" incrementa e retorna o valor atualizado.
             const apiUrl = 'https://api.counterapi.dev/v1/dashboard-v4-sys/visits/up';
 
             fetch(apiUrl)
@@ -418,29 +415,34 @@
                     return response.json();
                 })
                 .then(data => {
-                    // O campo retornado agora é 'count'
                     const count = data.count.toString().padStart(6, '0');
                     counterEl.innerText = `N: ${count}`;
                 })
                 .catch(err => {
                     console.log('Counter Offline/Blocker:', err);
-                    // Fallback visual silencioso
                     counterEl.innerText = 'NET.HITS: OFFLINE';
                     counterEl.style.opacity = '0.5';
                 });
         }
-        // Inicia o contador
         initCounter();
 
 
-        /* --- LÓGICA DO TEMA --- */
+        /* --- LÓGICA DO TEMA E COMUNICAÇÃO COM IFRAME (FATOR 1.4) --- */
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const icon = document.getElementById('theme-icon');
+            const frame = document.getElementById('main-frame');
+            
+            // Atualiza ícone
             if(document.body.classList.contains('light-mode')) {
                 icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
             } else {
                 icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            }
+
+            // Envia sinal para o Capítulo
+            if (frame && frame.contentWindow) {
+                frame.contentWindow.postMessage('toggleTheme', '*');
             }
         }
 
@@ -503,6 +505,7 @@
     </script>
 </body>
 </html>
+
 
 
 
