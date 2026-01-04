@@ -420,7 +420,7 @@
                 .then(data => {
                     // O campo retornado agora é 'count'
                     const count = data.count.toString().padStart(6, '0');
-                    counterEl.innerText = : ${count}`;
+                    counterEl.innerText = `N: ${count}`;
                 })
                 .catch(err => {
                     console.log('Counter Offline/Blocker:', err);
@@ -503,6 +503,7 @@
     </script>
 </body>
 </html>
+
 
 
 
