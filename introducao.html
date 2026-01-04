@@ -24,31 +24,30 @@
 
     <style>
         :root {
-            /* --- DESIGN SYSTEM (ESTILO A) --- */
+            /* --- DESIGN SYSTEM FATOR 1 (OTIMIZADO) --- */
             --bg-app: #050505;        
-            --text-primary: #ededed;
+            --text-primary: #e5e5e5; /* Levemente off-white para menos cansaço */
             --text-secondary: #888888;
             --border-color: rgba(255, 255, 255, 0.12);
             
-            /* ALMA DO CAPÍTULO */
-            --accent: #d946ef;        /* Magenta Neon */
-            --accent-dim: rgba(217, 70, 239, 0.1);
-            --highlight: #f0abfc;
+            /* ALMA: DIAGNÓSTICO (Magenta) */
+            --accent: #d946ef;
+            --accent-dim: rgba(217, 70, 239, 0.08);
+            --highlight: #f5d0fe;
             
             --font-ui: 'Inter', sans-serif;
             --font-tech: 'JetBrains Mono', monospace;
-            --base-size: 18px;
-            --line-height: 1.8; /* Aumentado para melhor leitura */
+            --base-size: 19px; /* Leitura mais confortável */
+            --line-height: 1.8;
         }
 
         body.light-mode {
             --bg-app: #f2f2f7;
             --text-primary: #1c1c1e;
-            --text-secondary: #666666;
+            --text-secondary: #575757;
             --border-color: rgba(0, 0, 0, 0.1);
             --accent: #a21caf;
-            --accent-dim: rgba(162, 28, 175, 0.1);
-            --highlight: #86198f;
+            --accent-dim: rgba(162, 28, 175, 0.05);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
@@ -60,21 +59,22 @@
             font-size: var(--base-size);
             line-height: var(--line-height);
             transition: background 0.3s ease, color 0.3s ease;
-            overflow-x: hidden; /* Evita scroll lateral indesejado */
+            overflow-x: hidden;
         }
 
-        /* --- MARGENS E LAYOUT (FATOR 1 REVISADO) --- */
+        /* --- MARGENS E LAYOUT REVISADOS --- */
         .reader-container {
-            max-width: 680px; /* Largura ideal de leitura (aprox 65-75 caracteres) */
+            width: 100%;
+            max-width: 640px; /* Largura ideal para leitura humana */
             margin: 0 auto;
-            padding: 40px 24px 120px 24px; /* Topo, Dir, Fim, Esq */
+            padding: 40px 24px 120px 24px; /* Margens laterais seguras */
         }
 
         p {
-            margin-bottom: 1.8em; 
+            margin-bottom: 2em; 
             text-align: justify; 
-            hyphens: auto; /* Evita buracos no texto justificado */
-            opacity: 0.95;
+            hyphens: auto; 
+            letter-spacing: -0.01em;
         }
 
         /* HUD */
@@ -86,7 +86,6 @@
             padding: 12px 24px;
             display: flex; justify-content: space-between; align-items: center;
         }
-
         .hud-btn {
             background: transparent; border: 1px solid var(--border-color);
             color: var(--text-secondary); border-radius: 6px;
@@ -94,55 +93,91 @@
             cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
         }
         .hud-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-        .hud-ctrls { display: flex; gap: 10px; }
+        .hud-ctrls { display: flex; gap: 8px; }
 
-        /* TIPOGRAFIA */
+        /* TIPOGRAFIA TECH */
         .chapter-meta {
             font-family: var(--font-tech); font-size: 0.75rem; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block;
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
+            border-left: 2px solid var(--accent); padding-left: 10px;
         }
 
         h1 {
             font-family: var(--font-tech); font-size: 2rem; line-height: 1.2;
-            text-transform: uppercase; margin-bottom: 40px; border-bottom: 2px solid var(--accent);
-            padding-bottom: 20px; color: var(--text-primary); letter-spacing: -1px;
+            text-transform: uppercase; margin-bottom: 50px; 
+            color: var(--text-primary); letter-spacing: -1px;
         }
 
         h2 {
-            font-family: var(--font-tech); font-size: 1.4rem; color: var(--accent);
-            margin-top: 3.5em; margin-bottom: 1.2em; display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-tech); font-size: 1.3rem; color: var(--accent);
+            margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
         }
         h2::before { content: '//'; opacity: 0.5; }
 
-        li { margin-bottom: 15px; padding-left: 15px; position: relative; }
-        ul { padding-left: 10px; list-style: none; }
-        li::before { content: '>'; color: var(--accent); position: absolute; left: 0; font-family: var(--font-tech); font-weight: bold; }
-
-        /* WIDGETS */
+        /* WIDGETS VISUAIS MELHORADOS */
+        
+        /* Alerta de Sistema */
         .warning-widget {
-            border: 1px dashed var(--accent); background: var(--accent-dim);
-            border-radius: 8px; padding: 25px; margin: 3em 0;
-            font-family: var(--font-tech); font-size: 0.85rem;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+            border-left-width: 4px;
+            border-radius: 4px; 
+            padding: 20px 25px; 
+            margin: 3em 0;
+            font-family: var(--font-tech); 
+            font-size: 0.85rem;
+            line-height: 1.6;
         }
         .warning-header {
             color: var(--accent); font-weight: bold; text-transform: uppercase;
-            letter-spacing: 1px; margin-bottom: 10px; display: block;
+            letter-spacing: 1px; margin-bottom: 8px; display: block;
         }
 
+        /* Citação Manifesto */
         .manifesto-widget {
-            border-left: 3px solid var(--text-primary); padding-left: 25px; margin: 3em 0;
-            font-style: italic; color: var(--text-secondary); font-size: 1.1em;
+            position: relative;
+            padding: 0 20px;
+            margin: 3em 0;
+            font-style: italic; 
+            color: var(--text-secondary); 
+            font-size: 1.1em;
+            border-left: 2px solid var(--border-color);
         }
 
-        .glitch-text { color: var(--accent); font-weight: bold; font-family: var(--font-tech); }
-        .reading-highlight { background: var(--accent-dim); color: var(--text-primary); border-radius: 4px; box-shadow: 0 0 0 2px var(--accent-dim); }
+        /* GRID DE DADOS (Substituindo a lista simples) */
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 2em 0;
+        }
+        .data-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            transition: transform 0.2s;
+        }
+        .data-card:hover { border-color: var(--accent); transform: translateX(5px); }
+        .data-label {
+            font-family: var(--font-tech); color: var(--accent); 
+            font-size: 0.75rem; text-transform: uppercase; 
+            display: block; margin-bottom: 5px; font-weight: bold;
+        }
+        .data-content { font-size: 0.95rem; color: var(--text-primary); }
 
-        /* RESPONSIVIDADE (MOBILE) */
+        .glitch-text { color: var(--accent); font-weight: bold; font-family: var(--font-tech); text-shadow: 0 0 5px var(--accent-dim); }
+        .reading-highlight { background: var(--accent-dim); color: var(--text-primary); border-radius: 2px; }
+
+        @media (min-width: 600px) {
+            .data-grid { grid-template-columns: 1fr 1fr; } /* Duas colunas no PC */
+        }
+
         @media (max-width: 600px) {
-            .reader-container { padding: 30px 20px 100px 20px; } /* Ajuste fino mobile */
+            .reader-container { padding: 30px 20px 100px 20px; }
             h1 { font-size: 1.7rem; }
-            .hud-btn span { display: none; } /* Ícones apenas no mobile */
-            .chapter-hud { padding: 10px 15px; }
+            .hud-btn span { display: none; }
         }
     </style>
 </head>
@@ -165,34 +200,44 @@
         <h1>Introdução:<br>O Espelho Negro</h1>
 
         <div class="warning-widget">
-            <span class="warning-header">⚠ SYSTEM_ALERT: DIAGNÓSTICO</span>
+            <span class="warning-header">⚠ SYSTEM_ALERT</span>
             Este não é um livro sobre tecnologia. É um livro sobre o que a tecnologia está fazendo com a sua biologia, sua alma e sua liberdade enquanto você lê este aviso.
         </div>
 
         <p>Pare por um segundo. Sinta o peso do dispositivo em sua mão. Sinta a textura do vidro, o calor da bateria. Agora, tente lembrar: quando foi a última vez que você tomou uma decisão que foi <em>inteiramente</em> sua?</p>
         
-        <p>A música que você ouviu hoje cedo: você a escolheu ou o algoritmo a sugeriu? O vídeo que te fez rir (ou sentir raiva): você o buscou ou ele foi injetado na sua retina para manter seus olhos abertos por mais três segundos? A opinião política que você defendeu no jantar: ela nasceu da sua reflexão ou foi moldada pela arquitetura invisível do seu feed?</p>
+        <p>A música que você ouviu hoje cedo: você a escolheu ou o algoritmo a sugeriu? O vídeo que te fez rir: você o buscou ou ele foi injetado na sua retina? A opinião política que você defendeu no jantar: ela nasceu da sua reflexão ou foi moldada pela arquitetura invisível do seu feed?</p>
         
         <p>Se a resposta for desconfortável, é porque deveria ser. Você está vivendo dentro de uma máquina de previsão.</p>
 
         <p>Você não é mais apenas um corpo biológico. Você foi duplicado. Existe uma versão de você feita de carne e osso, e existe uma versão feita de dados estatísticos — o <strong>Data Double</strong>.</p>
 
         <div class="manifesto-widget">
-            "O problema é que o sistema prefere o Duplo. Ele é mais previsível. Ele é mais lucrativo. Ele não cansa, não dorme e não reclama. E, aos poucos, o sistema começou a remodelar o mundo real para acomodar o Duplo, deixando a sua versão biológica para trás, como um resíduo obsoleto."
+            "O problema é que o sistema prefere o Duplo. Ele é mais previsível. Ele é mais lucrativo. Ele não cansa, não dorme e não reclama. O sistema remodelou o mundo real para acomodar o Duplo, deixando a sua versão biológica para trás como um resíduo obsoleto."
         </div>
 
         <h2>A Autópsia do Invisível</h2>
 
-        <p>Eles nos disseram que a tecnologia era neutra. Disseram que a "Nuvem" era leve e imaterial. Mentiram.</p>
-        
-        <p>Nas páginas a seguir, vamos realizar uma autópsia desse sistema. Vamos rasgar a interface bonita e polida do Vale do Silício para expor as engrenagens sujas que giram por baixo:</p>
+        <p>Eles nos disseram que a tecnologia era neutra. Disseram que a "Nuvem" era leve e imaterial. Mentiram. Nas páginas a seguir, vamos realizar uma autópsia desse sistema:</p>
 
-        <ul>
-            <li>Você verá como a <strong>Dopamina</strong> foi militarizada contra sua vontade.</li>
-            <li>Você descobrirá que seu <strong>Cansaço</strong> não é uma falha pessoal, mas um projeto econômico.</li>
-            <li>Você entenderá que a <strong>Nuvem</strong> é feita de pedras escavadas por crianças e resfriada com a água que falta na sua torneira.</li>
-            <li>E, o mais assustador: você verá como um <strong>Tribunal Invisível</strong> já julgou o seu valor social sem que você tivesse direito a um advogado.</li>
-        </ul>
+        <div class="data-grid">
+            <div class="data-card">
+                <span class="data-label">Componente 01</span>
+                <div class="data-content">A <strong>Dopamina</strong> foi militarizada contra sua vontade.</div>
+            </div>
+            <div class="data-card">
+                <span class="data-label">Componente 02</span>
+                <div class="data-content">O <strong>Cansaço</strong> não é falha pessoal, é projeto econômico.</div>
+            </div>
+            <div class="data-card">
+                <span class="data-label">Componente 03</span>
+                <div class="data-content">A <strong>Nuvem</strong> é feita de pedras escavadas e água potável.</div>
+            </div>
+            <div class="data-card">
+                <span class="data-label">Componente 04</span>
+                <div class="data-content">Um <strong>Tribunal Invisível</strong> julga seu valor social agora.</div>
+            </div>
+        </div>
 
         <h2>O Caminho da Retomada</h2>
 
@@ -206,7 +251,7 @@
     </div>
 
     <script>
-        /* Sincronia e Tema */
+        /* Sincronia */
         window.addEventListener('message', function(event) {
             if (event.data === 'toggleTheme') document.body.classList.toggle('light-mode');
         });
@@ -215,11 +260,11 @@
         }
 
         /* Fonte */
-        let currentSize = 18;
+        let currentSize = 19;
         function changeFontSize(amount) {
             currentSize += amount;
             if (currentSize < 14) currentSize = 14; 
-            if (currentSize > 24) currentSize = 24;
+            if (currentSize > 26) currentSize = 26;
             document.documentElement.style.setProperty('--base-size', currentSize + 'px');
         }
 
@@ -245,6 +290,7 @@
     </script>
 </body>
 </html>
+
 
 
 
