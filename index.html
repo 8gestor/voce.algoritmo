@@ -403,26 +403,30 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        /* --- CONTADOR DE ACESSOS (API EXTERNA) --- */
-        // Usa api.countapi.xyz para persistir dados sem backend
-        // Namespace único gerado para este projeto: 'dashboard-v4-reader'
+        /* --- CONTADOR DE ACESSOS (CORRIGIDO) --- */
+        // Utiliza counterapi.dev v1 (mais estável e sem necessidade de chave prévia)
         function initCounter() {
             const counterEl = document.getElementById('visit-counter');
             
-            // Substitua 'dashboard-leitura-v1-unique' por outro nome se quiser resetar a contagem
-            const namespace = 'dashboard-leitura-v1-unique'; 
-            const key = 'visits';
+            // Namespace genérico para garantir funcionamento. 
+            // "up" incrementa e retorna o valor atualizado.
+            const apiUrl = 'https://api.counterapi.dev/v1/dashboard-v4-sys/visits/up';
 
-            fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-                .then(response => response.json())
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
-                    // Formata número com zeros à esquerda (estética tech)
-                    const count = data.value.toString().padStart(6, '0');
+                    // O campo retornado agora é 'count'
+                    const count = data.count.toString().padStart(6, '0');
                     counterEl.innerText = `NET.HITS: ${count}`;
                 })
                 .catch(err => {
-                    console.log('Counter Offline:', err);
-                    counterEl.innerText = 'NET.HITS: OFF';
+                    console.log('Counter Offline/Blocker:', err);
+                    // Fallback visual silencioso
+                    counterEl.innerText = 'NET.HITS: OFFLINE';
+                    counterEl.style.opacity = '0.5';
                 });
         }
         // Inicia o contador
@@ -499,6 +503,7 @@
     </script>
 </body>
 </html>
+
 
 
 
