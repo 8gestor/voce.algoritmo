@@ -105,51 +105,44 @@
             position: relative;
         }
 
-        /* Barra de rolagem estilizada */
         nav.nav-list::-webkit-scrollbar { width: 4px; }
         nav.nav-list::-webkit-scrollbar-track { background: transparent; }
         nav.nav-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
-        /* Linha Vertical de Conexão (Árvore) */
         nav.nav-list::before {
             content: '';
             position: absolute;
-            left: 34px; /* Alinhado com o design */
+            left: 34px; 
             top: 0; bottom: 0;
             width: 1px;
             background: linear-gradient(180deg, transparent, var(--border-color) 10%, var(--border-color) 90%, transparent);
             z-index: 0;
         }
 
-        /* Categorias Modernas */
         .nav-category {
             font-family: var(--font-tech); font-size: 0.65rem; color: var(--text-secondary);
             text-transform: uppercase; letter-spacing: 1.5px; margin: 24px 0 12px 0;
             display: flex; align-items: center; gap: 10px;
             position: relative; z-index: 1; padding-left: 10px;
-            background: var(--bg-app); /* Quebra a linha visualmente */
+            background: var(--bg-app);
             width: fit-content;
         }
         
-        .nav-category::before {
-            content: '//'; color: var(--accent); opacity: 0.5; margin-right: 4px;
-        }
+        .nav-category::before { content: '//'; color: var(--accent); opacity: 0.5; margin-right: 4px; }
 
-        /* Links Dinâmicos */
         .chapter-link {
             position: relative;
             display: flex; align-items: center;
-            padding: 10px 16px 10px 30px; /* Espaço para o conector */
+            padding: 10px 16px 10px 30px; 
             margin-bottom: 2px;
             color: var(--text-secondary); text-decoration: none;
-            border-radius: 4px 0 0 4px; /* Borda arredondada só na esquerda */
+            border-radius: 4px 0 0 4px; 
             transition: var(--transition);
             font-size: 0.85rem; font-weight: 500;
             border: none; background: transparent;
             z-index: 2;
         }
 
-        /* Conector Horizontal (O "Branch" do circuito) */
         .chapter-link::before {
             content: ''; position: absolute;
             left: 10px; top: 50%;
@@ -158,7 +151,6 @@
             transition: width 0.3s ease, background-color 0.3s ease;
         }
 
-        /* O "Nó" na ponta do conector */
         .chapter-link::after {
             content: ''; position: absolute;
             left: 22px; top: 50%; transform: translateY(-50%);
@@ -168,66 +160,43 @@
             transition: all 0.3s ease;
         }
 
-        /* Hover State Dinâmico */
         .chapter-link:hover {
             color: var(--text-primary);
-            padding-left: 35px; /* Deslize suave */
+            padding-left: 35px;
             background: linear-gradient(90deg, rgba(255,255,255,0.03), transparent);
         }
 
-        .chapter-link:hover::before {
-            width: 17px; /* Estica a linha */
-            background-color: var(--accent);
-        }
-        
-        .chapter-link:hover::after {
-            left: 27px;
-            background-color: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
-        }
+        .chapter-link:hover::before { width: 17px; background-color: var(--accent); }
+        .chapter-link:hover::after { left: 27px; background-color: var(--accent); box-shadow: 0 0 8px var(--accent); }
 
-        /* Active State Moderno */
         .chapter-link.active {
             color: var(--text-primary);
             font-weight: 600;
             background: linear-gradient(90deg, var(--accent-dim), transparent);
         }
 
-        .chapter-link.active::before {
-            background-color: var(--accent);
-            width: 12px;
-        }
+        .chapter-link.active::before { background-color: var(--accent); width: 12px; }
 
         .chapter-link.active::after {
             background-color: var(--accent);
             box-shadow: 0 0 10px var(--accent);
-            transform: translateY(-50%) scale(1.5); /* Ponto maior */
-            border-radius: 2px; /* Vira um quadrado tecnológico */
+            transform: translateY(-50%) scale(1.5);
+            border-radius: 2px;
         }
         
-        /* Ajuste do número do capítulo para ser mais sutil */
         .chapter-link span {
-            font-family: var(--font-tech);
-            font-size: 0.7em;
-            margin-left: auto;
-            opacity: 0; transform: translateX(-10px);
-            transition: var(--transition);
+            font-family: var(--font-tech); font-size: 0.7em; margin-left: auto;
+            opacity: 0; transform: translateX(-10px); transition: var(--transition);
         }
         
-        .chapter-link:hover span, .chapter-link.active span {
-            opacity: 0.4; transform: translateX(0);
-        }
+        .chapter-link:hover span, .chapter-link.active span { opacity: 0.4; transform: translateX(0); }
 
         /* --- DASHBOARD PRINCIPAL --- */
         main.dashboard {
-            flex: 1; 
-            display: flex; flex-direction: column; 
-            position: relative; 
-            width: 100%; height: 100dvh; 
-            overflow: hidden;
+            flex: 1; display: flex; flex-direction: column; 
+            position: relative; width: 100%; height: 100dvh; overflow: hidden;
         }
 
-        /* Header */
         header.top-hud {
             height: 60px; flex-shrink: 0;
             background: var(--bg-panel); backdrop-filter: var(--blur);
@@ -309,6 +278,11 @@
             border-radius: 50%; box-shadow: 0 0 8px var(--accent);
             animation: pulse 2s infinite;
         }
+        
+        /* Estilo para o separador e contador */
+        .hud-separator { opacity: 0.3; margin: 0 4px; }
+        #visit-counter { color: var(--text-secondary); transition: color 0.3s; }
+        .data-stream:hover #visit-counter { color: var(--accent); }
 
         /* --- MOBILE --- */
         @media (max-width: 768px) {
@@ -319,8 +293,6 @@
             .nav-btn { padding: 0 15px; }
             .chapter-display { font-size: 0.75rem; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             footer.bottom-hud { padding-bottom: max(10px, env(safe-area-inset-bottom)); height: 70px; }
-            
-            /* Ajuste da linha no mobile para não cortar */
             nav.nav-list::before { left: 24px; }
             nav.nav-list { padding-left: 14px; }
         }
@@ -406,9 +378,12 @@
 
             <div class="hud-center">
                 <span class="chapter-display" id="chapter-label">DIAGNÓSTICO INICIAL</span>
+                
                 <div class="data-stream">
                     <div class="live-dot"></div>
                     <span id="system-clock">00:00:00</span>
+                    <span class="hud-separator">|</span>
+                    <span id="visit-counter">NET.HITS: ...</span>
                 </div>
             </div>
 
@@ -419,6 +394,7 @@
     </main>
 
     <script>
+        /* --- RELÓGIO DO SISTEMA --- */
         function updateClock() {
             const now = new Date();
             const dateStr = now.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
@@ -427,6 +403,33 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
+        /* --- CONTADOR DE ACESSOS (API EXTERNA) --- */
+        // Usa api.countapi.xyz para persistir dados sem backend
+        // Namespace único gerado para este projeto: 'dashboard-v4-reader'
+        function initCounter() {
+            const counterEl = document.getElementById('visit-counter');
+            
+            // Substitua 'dashboard-leitura-v1-unique' por outro nome se quiser resetar a contagem
+            const namespace = 'dashboard-leitura-v1-unique'; 
+            const key = 'visits';
+
+            fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Formata número com zeros à esquerda (estética tech)
+                    const count = data.value.toString().padStart(6, '0');
+                    counterEl.innerText = `NET.HITS: ${count}`;
+                })
+                .catch(err => {
+                    console.log('Counter Offline:', err);
+                    counterEl.innerText = 'NET.HITS: OFF';
+                });
+        }
+        // Inicia o contador
+        initCounter();
+
+
+        /* --- LÓGICA DO TEMA --- */
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const icon = document.getElementById('theme-icon');
@@ -437,6 +440,7 @@
             }
         }
 
+        /* --- NAVEGAÇÃO DE CAPÍTULOS --- */
         let currentIdx = 0;
         const links = Array.from(document.querySelectorAll('.chapter-link'));
         const labelDisplay = document.getElementById('chapter-label');
@@ -447,7 +451,6 @@
             element.classList.add('active');
             currentIdx = links.indexOf(element);
             
-            // Remove o número no final (dentro do span) para o título do rodapé
             const cleanText = element.innerText.replace(/\d+$/, '').trim(); 
             labelDisplay.innerText = cleanText.toUpperCase();
 
@@ -496,6 +499,7 @@
     </script>
 </body>
 </html>
+
 
 
 
