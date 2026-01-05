@@ -2,182 +2,411 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Capítulo 10: Neuro-direitos. A última fronteira da privacidade, o Projeto BRAIN, Rafael Yuste e a defesa da Liberdade Cognitiva.">
+    <meta name="keywords" content="Neuro-direitos, Rafael Yuste, Nita Farahany, BCI, P300, Privacidade Mental, Neuralink, Lei 21.383 Chile, Liberdade Cognitiva, Neurocapitalismo">
     <title>Capítulo 10 // A Mente Hackeada</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-alert: #ef4444;
-            --shield-glow: rgba(168, 85, 247, 0.3);
-            --accent-glow: 0 0 15px rgba(59, 130, 246, 0.2);
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- DESIGN SYSTEM FATOR X (Theme: Neural & Shield) --- */
+            --bg-app: #050505;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            /* ALMA DO CAPÍTULO: NEURAL (Roxo Elétrico) & DEFESA (Dourado/Escudo) */
+            --neural-purple: #a855f7;
+            --shield-gold: #fbbf24;
+            --alert-red: #ef4444;
+            
+            --neural-dim: rgba(168, 85, 247, 0.08);
+            --shield-glow: 0 0 20px rgba(251, 191, 36, 0.15);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; /* Controlado pelo Index */
+            --line-height: 1.8;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+            --bg-app: #f2f2f7;
+            --text-primary: #1c1c1e;
+            --text-secondary: #4b5563;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --neural-purple: #7e22ce;
+            --shield-gold: #d97706;
+            --neural-dim: rgba(126, 34, 206, 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
 
-        /* CONTENT */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-warn); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        /* --- CONTAINER DE LEITURA --- */
+        .reader-container {
+            width: 100%;
+            max-width: 740px; 
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        p {
+            margin-bottom: 2em; 
+            text-align: justify; 
+            hyphens: auto; 
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+        }
+
+        strong { color: var(--text-primary); font-weight: 700; }
+
+        /* --- TIPOGRAFIA TECH --- */
+        .chapter-meta {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--neural-purple);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
+            border-left: 2px solid var(--neural-purple); padding-left: 10px;
+        }
+
+        h1 {
+            font-family: var(--font-tech); font-size: 2.2rem; line-height: 1.2;
+            text-transform: uppercase; margin-bottom: 50px; 
+            color: var(--text-primary); letter-spacing: -1px;
+            border-bottom: 1px solid var(--neural-purple); padding-bottom: 20px;
+        }
+
+        h2 {
+            font-family: var(--font-tech); font-size: 1.4rem; color: var(--shield-gold);
+            margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
         h2::before { content: '//'; opacity: 0.5; }
-        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
-        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
-        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
-        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* BOXES */
-        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
-        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
-        .antithesis-box { background: rgba(57, 255, 20, 0.05); border: 1px solid var(--accent-bio); border-radius: 8px; padding: 25px; margin: 40px 0; position: relative; cursor: pointer; }
-        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-app); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: var(--font-tech); text-transform: uppercase; font-size: 0.7rem; }
-        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
-        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-warn); text-align: center; }
-        .action-title { color: var(--accent-warn); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--neural-purple); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--neural-dim); padding-left: 15px;
+        }
+
+        /* --- WIDGETS --- */
+        .box { padding: 30px; border-radius: 8px; margin: 3em 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); }
         
-        .danger-zone { background: rgba(239, 68, 68, 0.05); border: 1px dashed var(--accent-alert); padding: 20px; border-radius: var(--radius); color: var(--accent-alert); margin: 2em 0; text-align: center; font-weight: bold; cursor: pointer; font-family: var(--font-tech); font-size: 0.9rem; }
+        .thesis-box {
+            background: var(--neural-dim);
+            border-left: 4px solid var(--neural-purple);
+            text-align: justify;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--neural-purple); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* SHIELD VISUAL */
-        .visual-shield-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin: 3em 0; cursor: pointer; }
-        .shield-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 15px; border-radius: var(--radius); text-align: center; transition: all 0.3s; position: relative; overflow: hidden; }
-        .shield-item:hover { transform: translateY(-3px); background: rgba(168, 85, 247, 0.1); border-color: var(--accent-warn); }
-        .shield-icon { font-size: 1.8rem; display: block; margin-bottom: 10px; }
-        .shield-title { font-weight: bold; color: var(--text-primary); display: block; font-size: 0.75rem; margin-bottom: 5px; text-transform: uppercase; font-family: var(--font-tech); }
-        .shield-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.3; }
+        .deep-dive-box {
+            border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color);
+            border-left: none; border-right: none; border-radius: 0;
+            background: rgba(255,255,255,0.01);
+        }
 
-        /* TABLE */
-        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
-        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+        /* VISUAL: NEURO-RIGHTS GRID */
+        .neurorights-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 3em 0;
+        }
+        .nr-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            padding: 20px; border-radius: 8px; text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .nr-card:hover { transform: translateY(-5px); border-color: var(--shield-gold); box-shadow: var(--shield-glow); }
+        .nr-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .nr-title { font-family: var(--font-tech); font-weight: bold; color: var(--text-primary); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .nr-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
 
-        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
+        /* VISUAL: BRAIN INVASION SPECTRUM */
+        .spectrum-bar {
+            display: flex; height: 30px; border-radius: 15px; overflow: hidden; margin: 20px 0;
+            font-family: var(--font-tech); font-size: 0.65rem; font-weight: bold; color: #000;
+        }
+        .sb-1 { width: 33%; background: #4ade80; display: flex; align-items: center; justify-content: center; } /* Verde */
+        .sb-2 { width: 33%; background: #fbbf24; display: flex; align-items: center; justify-content: center; } /* Amarelo */
+        .sb-3 { width: 34%; background: #ef4444; display: flex; align-items: center; justify-content: center; color: #fff; } /* Vermelho */
+        .spectrum-legend { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 3em; }
+
+        /* Action Box */
+        .action-box {
+            border: 1px dashed var(--shield-gold); background: linear-gradient(180deg, rgba(251, 191, 36, 0.05), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .action-header { 
+            font-family: var(--font-tech); color: var(--shield-gold); font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- SINCRONIA DE LEITURA (FATOR X) --- */
+        .reading-highlight { 
+            background: var(--neural-dim); 
+            color: var(--text-primary); 
+            border-left: 4px solid var(--neural-purple);
+            padding-left: 15px;
+            margin-left: -19px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 20px var(--neural-dim);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 700px) {
+            .reader-container { padding: 40px 20px; }
+            h1 { font-size: 1.8rem; }
+            .neurorights-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
-        <span class="speed-indicator" id="speed-val">1.0x</span>
-        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
-        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
-            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-    </div>
+    <div class="reader-container" id="content-area">
+        <span class="chapter-meta">PARTE IV: CONTRA-MEDIDAS | CAPÍTULO 10</span>
+        
+        <h1 class="speakable">Neuro-direitos:<br>A Mente Hackeada</h1>
 
-    <div class="content-scroll-area" id="content-area">
-        <div class="book-container">
-            <div class="chapter-meta">Parte IV: Horizontes e Resistência | Capítulo 10</div>
-            <h1>Neuro-direitos: O Fim do Silêncio Interior</h1>
+        <p class="speakable">Olhe para a pessoa ao seu lado. Você pode ver o rosto dela, as roupas, a postura. Mas você não tem a menor ideia do que ela está pensando. Ela pode estar sorrindo enquanto planeja um crime, ou chorando por dentro enquanto mantém uma cara de paisagem. Esse espaço inviolável — a caixa-preta da mente — é o último refúgio da liberdade humana. É onde a dissidência nasce. É onde o "Eu" real se esconde do "Eu Inferido".</p>
+        
+        <p class="speakable">Agora, imagine que essa caixa foi aberta. Imagine um fone de ouvido que avisa ao seu chefe que sua concentração caiu. Imagine uma pulseira que diz à polícia que você reconheceu o rosto de um suspeito antes mesmo de você falar. Isso não é ficção científica distópica. A tecnologia já existe. Bem-vindo à era da <strong>Transparência Neural Forçada</strong>.</p>
 
-            <p>Olhe para a pessoa ao seu lado. Você pode ver o rosto dela, as roupas, a postura. Mas você não tem a menor ideia do que ela está pensando. Ela pode estar sorrindo enquanto planeja um crime, ou chorando por dentro enquanto mantém uma cara de paisagem.</p>
-            
-            <p>Esse espaço inviolável — a caixa-preta da mente — é o último refúgio da liberdade humana. É onde a dissidência nasce. É onde o "Eu" real se esconde do "Eu Inferido".</p>
-            
-            <p>Agora, imagine que essa caixa foi aberta. Imagine um fone de ouvido que avisa ao seu chefe que sua concentração caiu. Imagine uma pulseira que diz à polícia que você reconheceu o rosto de um suspeito antes mesmo de você falar. Isso não é <em>Black Mirror</em>. A tecnologia já existe. Bem-vindo à era da <strong>Transparência Neural Forçada</strong>.</p>
+        <div class="box thesis-box speakable">
+            <span class="thesis-header">// O Fim do Silêncio Interior</span>
+            "O historiador <strong>Yuval Noah Harari</strong> alerta que 'os humanos são agora animais hackeáveis'. As grandes corporações de tecnologia atingiram um teto na extração de dados comportamentais (onde você vai, o que compra). Para continuar crescendo, elas precisam colonizar o único território virgem restante: a experiência subjetiva humana. Eles não querem apenas prever o que você fará; eles querem decodificar <em>por que</em> você fará, acessando a fonte: seus neurônios."
+        </div>
 
-            <h2>A Tese: A Colonização do Pensamento</h2>
+        <h2 class="speakable">O Hardware da Invasão: Já Está Entre Nós</h2>
 
-            <p>As grandes corporações de tecnologia atingiram um teto. Elas já sabem onde você vai (GPS) e o que você compra (cartão de crédito). O único dado que falta é o <strong>porquê</strong>. Para conseguir isso, elas precisam cruzar a barreira do crânio.</p>
-            
-            <p>Nita Farahany, em <em>The Battle for Your Brain</em>, alerta que a "Privacidade Mental" está morrendo. Dispositivos de consumo, como fones de ouvido com sensores EEG (eletroencefalograma), já estão sendo patenteados. Eles prometem "bem-estar" e "meditação", mas a letra miúda dos termos de uso permite a mineração de dados neurais. Isso inaugura o <strong>Capitalismo Cognitivo</strong>, onde o lucro vem da extração direta do sistema nervoso.</p>
+        <p class="speakable">A leitura da mente saiu dos laboratórios médicos e entrou nas prateleiras da Best Buy. Dispositivos de consumo, chamados de <strong>Neurotecnologia de Consumo</strong>, estão normalizando a coleta de dados cerebrais (EEG e EMG) sob o pretexto de conveniência e bem-estar.</p>
 
-            <div class="danger-zone">
-                ⚠️ ALERTA DE SISTEMA<br>
-                Seus dados neurais são a chave mestra. Se uma senha vaza, você a troca. Se seus dados biométricos neurais vazam (a forma única como seu cérebro reage a um estímulo), você não pode trocar de cérebro. Você está comprometido para sempre.
+        <div class="box deep-dive-box speakable">
+            <h3 style="margin-top:0;">1. Meta e a Pulseira Neural</h3>
+            <p>A Meta (Facebook) adquiriu a CTRL-labs para desenvolver uma pulseira que lê os sinais elétricos dos seus nervos motores. Ela sabe que você quer mover um dedo milissegundos antes de você movê-lo. A promessa é controlar o Metaverso sem controles; o custo é entregar a <strong>intenção motora</strong> da sua mente para Mark Zuckerberg.</p>
+
+            <h3>2. Apple Vision Pro e Pupilometria</h3>
+            <p>O headset da Apple monitora seus olhos com precisão infravermelha. A dilatação da pupila é uma resposta do sistema nervoso autônomo; ela revela excitação sexual, carga cognitiva e resposta emocional. O dispositivo sabe o que você sente ao olhar para uma imagem antes que você tenha consciência desse sentimento.</p>
+
+            <h3>3. SmartCap: A Vigilância da Fadiga</h3>
+            <p>Já usado em mineradoras e empresas de logística, o SmartCap é um boné com sensores EEG que monitora a fadiga do motorista. Se o cérebro dele entra em estado de sonolência, o sistema alerta a central. Parece seguro, mas cria um precedente: a empresa tem acesso direto ao estado biológico de vigília do funcionário.</p>
+        </div>
+
+        <h2 class="speakable">A Ciência da Traição: A Onda P300</h2>
+
+        <p class="speakable">A maior ameaça à privacidade não é "ler pensamentos" complexos (como frases), mas ler reações involuntárias. O cérebro emite um pico elétrico específico, chamado <strong>Onda P300</strong>, cerca de 300 milissegundos após reconhecer algo familiar ou significativo.</p>
+        
+        <p class="speakable">Em um interrogatório policial, não é necessário torturar. Basta mostrar ao suspeito fotos da cena do crime. Se o cérebro emitir uma P300, ele reconheceu a imagem. É o "Guilty Knowledge Test" (Teste de Conhecimento Culpado). O cérebro confessa antes que a boca possa mentir. A privacidade mental deixa de ser uma escolha e torna-se uma impossibilidade fisiológica.</p>
+
+        <div class="spectrum-bar speakable">
+            <div class="sb-1">COMPORTAMENTAL</div>
+            <div class="sb-2">BIOMÉTRICO</div>
+            <div class="sb-3">NEURAL (Onda P300)</div>
+        </div>
+        <div class="spectrum-legend speakable">
+            <span>Likes/Cliques (Pode mentir)</span>
+            <span>Face/Digital (Pode ocultar)</span>
+            <span>Cérebro (Não pode conter)</span>
+        </div>
+
+        <h2 class="speakable">A Defesa Legal: Os 5 Neuro-Direitos</h2>
+
+        <p class="speakable">Diante desse cenário, a legislação atual (LGPD/GDPR) é obsoleta. Ela protege "dados", mas não a "integridade do eu". O neurocientista <strong>Rafael Yuste</strong> (Universidade de Columbia), líder do Projeto BRAIN, fundou a <strong>Neurorights Foundation</strong> para criar uma nova categoria de direitos humanos.</p>
+        
+        <p class="speakable">Em 2021, o <strong>Chile</strong> tornou-se o primeiro país do mundo a alterar sua Constituição (Lei 21.383) para proteger a atividade cerebral e a integridade mental. Yuste propõe cinco direitos fundamentais que devem ser adotados globalmente:</p>
+
+        <div class="neurorights-grid speakable">
+            <div class="nr-card">
+                <span class="nr-icon">🔒</span>
+                <span class="nr-title">Privacidade Mental</span>
+                <span class="nr-desc">Seus dados neurais não podem ser decodificados ou vendidos sem consentimento explícito e estrito.</span>
             </div>
-
-            <p>Se a mente se torna legível, a liberdade de expressão torna-se irrelevante, pois a <strong>liberdade de pensamento</strong> foi revogada. Seremos julgados não pelo que fazemos, mas pelo que ousamos pensar.</p>
-
-            <div class="visual-table-container">
-                <div class="visual-header">🧠 A FRONTEIRA FINAL: COMPORTAMENTO VS. NEURAL</div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><strong>Dados Comportamentais</strong></td>
-                            <td>Indiretos (Cliques, Likes). Você pode mentir (falsificar comportamento).</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Dados Neurais (EEG/BCI)</strong></td>
-                            <td>Diretos (Ondas Cerebrais). Você não pode mentir (reação subconsciente).</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="nr-card">
+                <span class="nr-icon">🆔</span>
+                <span class="nr-title">Identidade Pessoal</span>
+                <span class="nr-desc">Proteção contra tecnologias que alterem a percepção do "Eu" ou a consciência.</span>
             </div>
-
-            <h2>Antítese: A Constituição da Mente</h2>
-
-            <p>Diante desse abismo, a resistência precisa ser legal e biológica. Cientistas como <strong>Rafael Yuste</strong> e <strong>Miguel Nicolelis</strong> estão liderando uma cruzada global para criar os <strong>Neuro-direitos</strong>: emendas constitucionais que protegem o tecido cerebral como sagrado.</p>
-            
-            <p>Yuste, idealizador do Projeto BRAIN, argumenta que os dados cerebrais não são dados médicos; são dados de identidade. O Chile foi o pioneiro, alterando sua constituição para proteger a integridade mental contra manipulação tecnológica. A premissa é simples: o cérebro não é um órgão qualquer; ele é a sede da identidade. Alterar o cérebro via algoritmo é alterar a pessoa.</p>
-
-            <div class="visual-shield-container">
-                <div class="shield-item"><span class="shield-icon">🔒</span><span class="shield-title">PRIVACIDADE MENTAL</span><span class="shield-desc">Direito absoluto de manter pensamentos ilegíveis.</span></div>
-                <div class="shield-item"><span class="shield-icon">🆔</span><span class="shield-title">IDENTIDADE PESSOAL</span><span class="shield-desc">Proteção contra alterações algorítmicas do "eu".</span></div>
-                <div class="shield-item"><span class="shield-icon">🗽</span><span class="shield-title">LIVRE ARBÍTRIO</span><span class="shield-desc">Decisões tomadas sem manipulação neural oculta.</span></div>
-                <div class="shield-item"><span class="shield-icon">⚖️</span><span class="shield-title">ACESSO EQUITATIVO</span><span class="shield-desc">Evitar a criação de castas de "super-humanos".</span></div>
+            <div class="nr-card">
+                <span class="nr-icon">🗽</span>
+                <span class="nr-title">Livre Arbítrio</span>
+                <span class="nr-desc">Garantia de que decisões são tomadas sem manipulação neural subconsciente.</span>
             </div>
-
-            <h2>Síntese: O Firewall de Papel</h2>
-
-            <p>Enquanto as leis não chegam, sua defesa deve ser prática. O algoritmo quer digitalizar sua vida interior para prever e controlar. A resistência é manter a vida interior <strong>analógica</strong>.</p>
-            
-            <p>Escrever à mão ativa circuitos neurais diferentes da digitação. O papel não tem conexão Wi-Fi. O papel não tem backdoor para a NSA ou para o Google. O que você escreve em um caderno físico é o único dado verdadeiramente criptografado pela física.</p>
-
-            <div class="action-box">
-                <div class="action-title">🧠 DESAFIO DE RETOMADA #10</div>
-                <p><strong>A Criptografia Analógica</strong></p>
-                <p>Compre um caderno. Não um app de notas, um caderno de papel. Use-o para escrever seus sonhos, seus medos mais escuros, seus planos revolucionários.</p>
-                <p><strong>Sua missão:</strong> Mantenha uma parte da sua mente offline. Se você está usando um wearable que monitora estresse, tire-o quando for ter uma conversa difícil ou íntima. Negue ao algoritmo os dados dos seus momentos mais humanos.</p>
+            <div class="nr-card">
+                <span class="nr-icon">⚖️</span>
+                <span class="nr-title">Acesso Equitativo</span>
+                <span class="nr-desc">Evitar a criação de uma elite cognitiva "aumentada" tecnologicamente.</span>
             </div>
+            <div class="nr-card">
+                <span class="nr-icon">🛡️</span>
+                <span class="nr-title">Proteção contra Viés</span>
+                <span class="nr-desc">Algoritmos não podem discriminar baseados em padrões neurais.</span>
+            </div>
+        </div>
+
+        <h2 class="speakable">Síntese: O Firewall Analógico</h2>
+
+        <p class="speakable"><strong>Nita Farahany</strong>, em <em>The Battle for Your Brain</em>, defende o conceito de <strong>Liberdade Cognitiva</strong>: o direito absoluto de autogovernar nossa vida interior. Se perdermos isso, perdemos a condição humana.</p>
+        
+        <p class="speakable">Enquanto as leis não chegam, sua defesa deve ser prática. O algoritmo quer digitalizar sua vida interior para prever e controlar. A resistência é manter a vida interior <strong>analógica</strong>. Escrever à mão ativa circuitos neurais diferentes da digitação. O papel não tem conexão Wi-Fi. O papel não tem "backdoor" para a NSA ou para a Meta. O que você escreve em um caderno físico é o único dado verdadeiramente criptografado pela física.</p>
+
+        <div class="box action-box speakable">
+            <span class="action-header">🧠 DESAFIO DE RETOMADA #10</span>
+            <p><strong>O Santuário Offline</strong></p>
+            <p>Compre um caderno. Não um app de notas, um caderno de papel. Use-o para escrever seus sonhos, seus medos mais escuros, seus planos revolucionários.</p>
+            <p><strong>Sua missão:</strong> Crie zonas de "Não-Monitoramento". Se você usa um smartwatch que mede estresse, tire-o quando for ter uma conversa difícil com seu parceiro ou quando estiver em um momento de criação intensa. Negue ao algoritmo os dados dos seus momentos mais humanos. Mantenha o sagrado fora da nuvem.</p>
         </div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
-        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
-        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
-        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
-        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box, .danger-zone, .shield-desc'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
-        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
-        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, li, .box, td, .shield-desc'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            // 1. Controle de Tema
+            if (data.type === 'theme') {
+                if (data.mode === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            }
+
+            // 2. Controle de Fonte
+            if (data.type === 'font-resize') {
+                const newSize = 19 * data.value;
+                document.documentElement.style.setProperty('--base-size', newSize + 'px');
+            }
+
+            // 3. Controle de TTS
+            if (data.type === 'tts-toggle') toggleSpeech();
+            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        });
+
+        /* --- ENGINE TTS AVANÇADA (FATOR X) --- */
+        let speechQueue = [];
+        let currentIndex = 0;
+        let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+        let selectedVoice = null;
+
+        function loadVoices() {
+            const voices = synthesis.getVoices();
+            selectedVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) ||
+                            voices.find(v => v.lang === 'pt-BR' && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang === 'pt-BR');
+        }
+        
+        if (synthesis.onvoiceschanged !== undefined) {
+            synthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function prepareQueue() {
+            const elements = document.querySelectorAll('.speakable');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+        }
+
+        function toggleSpeech() {
+            if (speechQueue.length === 0) prepareQueue();
+
+            if (isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
+            } else {
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
+        }
+
+        function updateSpeechRate(rate) {
+            speechRate = rate;
+            if (isSpeaking) {
+                synthesis.cancel();
+                speakNext();
+            }
+        }
+
+        function speakNext() {
+            if (!isSpeaking) return;
+            if (currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentIndex = 0;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
+            const element = speechQueue[currentIndex];
+            const text = element.innerText;
+
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            
+            if (selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.onend = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+            
+            utterance.onerror = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+        }
+
+        function reportStatus(playing) {
+            window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*');
+        }
+
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) prepareQueue();
+                const index = speechQueue.indexOf(target);
+                if (index !== -1) {
+                    synthesis.cancel();
+                    currentIndex = index;
+                    isSpeaking = true;
+                    reportStatus(true);
+                    speakNext();
+                }
+            }
+        });
+
+        window.onbeforeunload = function() {
+            synthesis.cancel();
+        };
     </script>
 </body>
 </html>
