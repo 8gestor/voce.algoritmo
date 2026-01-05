@@ -2,230 +2,406 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Capítulo 12 // Tecnofeudalismo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Capítulo 12: Tecnofeudalismo. O fim do capitalismo de lucro, a teoria da Enshittification de Cory Doctorow e a saída via Protocolos Abertos.">
+    <meta name="keywords" content="Tecnofeudalismo, Yanis Varoufakis, Enshittification, Cory Doctorow, Cloud Capital, Walled Gardens, POSSE, Fediverso, Soberania Digital">
+    <title>Capítulo 12 // O Novo Feudalismo</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-feudal: #f59e0b;
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- DESIGN SYSTEM FATOR X (Theme: Gold & Iron) --- */
+            --bg-app: #050505;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            /* ALMA DO CAPÍTULO: OURO (Renda) & FERRO (Controle) */
+            --feudal-gold: #d97706;
+            --iron-grey: #475569;
+            --liberty-teal: #14b8a6;
+            
+            --gold-dim: rgba(217, 119, 6, 0.08);
+            --gold-glow: 0 0 20px rgba(217, 119, 6, 0.2);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; /* Controlado pelo Index */
+            --line-height: 1.8;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+            --bg-app: #f2f2f7;
+            --text-primary: #1c1c1e;
+            --text-secondary: #4b5563;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --feudal-gold: #b45309;
+            --iron-grey: #334155;
+            --liberty-teal: #0d9488;
+            --gold-dim: rgba(180, 83, 9, 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
 
-        /* CONTENT */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        /* --- CONTAINER DE LEITURA --- */
+        .reader-container {
+            width: 100%;
+            max-width: 740px; 
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        p {
+            margin-bottom: 2em; 
+            text-align: justify; 
+            hyphens: auto; 
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+        }
+
+        strong { color: var(--text-primary); font-weight: 700; }
+
+        /* --- TIPOGRAFIA TECH --- */
+        .chapter-meta {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--feudal-gold);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
+            border-left: 2px solid var(--feudal-gold); padding-left: 10px;
+        }
+
+        h1 {
+            font-family: var(--font-tech); font-size: 2.2rem; line-height: 1.2;
+            text-transform: uppercase; margin-bottom: 50px; 
+            color: var(--text-primary); letter-spacing: -1px;
+            border-bottom: 1px solid var(--feudal-gold); padding-bottom: 20px;
+        }
+
+        h2 {
+            font-family: var(--font-tech); font-size: 1.4rem; color: var(--feudal-gold);
+            margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
         h2::before { content: '//'; opacity: 0.5; }
-        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
-        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
-        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
-        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* BOXES */
-        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
-        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent-feudal); }
-        .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-left: 4px solid var(--accent-bio); position: relative; }
-        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-app); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: var(--font-tech); text-transform: uppercase; font-size: 0.7rem; }
-        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
-        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-feudal); text-align: center; }
-        .action-title { color: var(--accent-feudal); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--liberty-teal); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--gold-dim); padding-left: 15px;
+        }
 
-        /* FEUDAL MAP */
-        .feudal-map-container { display: flex; flex-direction: column; gap: 10px; margin: 3em 0; padding: 20px; background: rgba(255,255,255,0.02); border-radius: var(--radius); border: 1px solid var(--border-color); font-family: var(--font-tech); text-align: center; cursor: pointer; }
-        .map-layer { padding: 15px; border-radius: 4px; position: relative; transition: transform 0.3s; }
-        .map-layer:hover { transform: scale(1.02); z-index: 2; }
-        .layer-cloud { background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-feudal); color: var(--accent-feudal); font-weight: bold; }
-        .layer-serfs { background: rgba(255, 255, 255, 0.05); border: 1px dashed var(--text-secondary); color: var(--text-secondary); font-size: 0.9rem; }
-        .feudal-arrow { font-size: 1.5rem; color: var(--accent-feudal); margin: -5px 0; }
+        /* --- WIDGETS --- */
+        .box { padding: 30px; border-radius: 8px; margin: 3em 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); }
+        
+        .thesis-box {
+            background: var(--gold-dim);
+            border-left: 4px solid var(--feudal-gold);
+            text-align: justify;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--feudal-gold); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* TABLE */
-        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
-        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+        .deep-dive-box {
+            border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color);
+            border-left: none; border-right: none; border-radius: 0;
+            background: rgba(255,255,255,0.01);
+        }
 
-        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
+        /* VISUAL: ENSHITTIFICATION CYCLE */
+        .cycle-container {
+            display: flex; flex-direction: column; gap: 10px; margin: 3em 0;
+            padding: 20px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-app);
+        }
+        .cycle-step {
+            padding: 15px; border-radius: 6px; font-size: 0.85rem; 
+            display: flex; flex-direction: column; gap: 5px;
+            border-left: 4px solid transparent;
+        }
+        .step-1 { border-color: var(--liberty-teal); background: rgba(20, 184, 166, 0.05); }
+        .step-2 { border-color: var(--feudal-gold); background: rgba(217, 119, 6, 0.05); }
+        .step-3 { border-color: var(--iron-grey); background: rgba(71, 85, 105, 0.1); color: var(--text-secondary); }
+        
+        .step-title { font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; }
+        .arrow-down { text-align: center; color: var(--text-secondary); opacity: 0.5; }
+
+        /* Comparison Grid */
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
+        .comp-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color); padding: 25px; border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .comp-card:hover { transform: translateY(-5px); border-color: var(--feudal-gold); }
+        .comp-title { 
+            font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; 
+            display: block; margin-bottom: 15px; font-size: 0.8rem;
+        }
+        .comp-content { font-size: 0.9rem; text-align: justify; color: var(--text-secondary); line-height: 1.6; }
+
+        /* Action Box */
+        .action-box {
+            border: 1px dashed var(--liberty-teal); background: linear-gradient(180deg, rgba(20, 184, 166, 0.05), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .action-header { 
+            font-family: var(--font-tech); color: var(--liberty-teal); font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- SINCRONIA DE LEITURA (FATOR X) --- */
+        .reading-highlight { 
+            background: var(--gold-dim); 
+            color: var(--text-primary); 
+            border-left: 4px solid var(--feudal-gold);
+            padding-left: 15px;
+            margin-left: -19px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: var(--gold-glow);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 700px) {
+            .reader-container { padding: 40px 20px; }
+            h1 { font-size: 1.8rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
-        <span class="speed-indicator" id="speed-val">1.0x</span>
-        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
-        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
-            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-    </div>
+    <div class="reader-container" id="content-area">
+        <span class="chapter-meta">PARTE IV: HORIZONTES E RESISTÊNCIA | CAPÍTULO 12</span>
+        
+        <h1 class="speakable">Tecnofeudalismo:<br>O Fim do Capitalismo</h1>
 
-    <div class="content-scroll-area" id="content-area">
-        <div class="book-container">
-            <div class="chapter-meta">Parte IV: Horizontes e Resistência | Capítulo 12</div>
-            <h1>Tecnofeudalismo vs. O Comum Digital</h1>
+        <p class="speakable">Se você tem uma conta no Instagram com 10 mil seguidores, você se sente um "criador". Mas a realidade econômica é outra: você é um servo feudal. O senhor do castelo (Meta) permite que você cultive a terra (poste fotos, crie conteúdo), mas ele fica com toda a colheita (os dados e a receita de anúncios) e pode expulsá-lo a qualquer momento sem aviso prévio e sem direito de defesa. Nós não vivemos mais em um capitalismo de livre mercado digital; vivemos, como define o economista grego <strong>Yanis Varoufakis</strong>, no <strong>Tecnofeudalismo</strong>.</p>
 
-            <p>No capítulo anterior, falamos sobre ferramentas individuais (Firefox, Signal). Mas trocar de ferramenta dentro de um sistema podre é como trocar a fechadura da porta enquanto o prédio está sendo demolido. Precisamos falar sobre o terreno. Quem é o dono do solo onde sua vida digital está construída?</p>
+        <div class="box thesis-box speakable">
+            <span class="thesis-header">// A Morte do Lucro, A Ascensão da Renda</span>
+            "Varoufakis argumenta que o capitalismo tradicional (baseado em lucro via produção de mercadorias) foi substituído por uma economia de <strong>Renda Feudal</strong>. A Amazon não produz as mercadorias; ela cobra um 'pedágio' para que vendedores e compradores se encontrem. O Google não produz o conteúdo; ele cobra pedágio para você achar a informação. O poder migrou dos industriais para os donos do <strong>Capital de Nuvem</strong> (Cloud Capital). Quem possui os servidores e os algoritmos age como um senhor de terras medieval: ele não inova, ele extrai tributo de todos que pisam em seu solo digital."
+        </div>
+
+        <h2 class="speakable">A Anatomia da Merdificação (Enshittification)</h2>
+
+        <p class="speakable">O ativista e autor <strong>Cory Doctorow</strong> descreveu com precisão cirúrgica como as plataformas morrem. Ele chama esse processo de <strong>Enshittification</strong> (Merdificação). Não é um acidente; é o modelo de negócios. As plataformas seguem um ciclo previsível de traição:</p>
+
+        <div class="cycle-container speakable">
+            <span style="display:block; text-align:center; font-family:var(--font-tech); font-weight:bold; color:var(--feudal-gold); margin-bottom:15px;">O CICLO DE DEGRADAÇÃO DA PLATAFORMA</span>
             
-            <p>Se você tem uma conta no Instagram, você não é o dono da sua casa; você é um servo feudal. O senhor do castelo (Meta) permite que você cultive a terra (poste fotos, crie conteúdo, construa audiência), mas ele fica com toda a colheita (os dados e a receita de anúncios) e pode expulsá-lo a qualquer momento sem aviso prévio. Nós não vivemos em um capitalismo de livre mercado digital; vivemos, como define o economista <strong>Yanis Varoufakis</strong>, no <strong>Tecnofeudalismo</strong>.</p>
-
-            <div class="deep-dive-box">
-                <h3>Fator X: O Capital de Nuvem</h3>
-                <p>Varoufakis argumenta que o capitalismo tradicional (baseado em lucro via produção) morreu. Ele foi substituído por uma economia de <strong>Renda Feudal</strong>. A Amazon não produz as mercadorias; ela cobra um "pedágio" para que vendedores e compradores se encontrem. O Google não produz o conteúdo; ele cobra pedágio para você achar a informação. O poder migrou dos industriais para os donos do "Capital de Nuvem" (servidores e algoritmos).</p>
+            <div class="cycle-step step-1">
+                <span class="step-step">FASE 1: O SUBSÍDIO</span>
+                <span class="step-title">"Sejam Bem-Vindos!"</span>
+                A plataforma opera com prejuízo para atrair usuários. O serviço é incrível, sem anúncios, o Uber é barato, o Google não tem spam. O objetivo é criar o "Efeito de Rede" e prender você (Lock-in).
             </div>
-
-            <h2>A Tese: O Cerco dos Jardins Murados</h2>
-
-            <p>O modelo atual é baseado em <em>Walled Gardens</em> (Jardins Murados). A Apple cria um jardim lindo e seguro, mas você não pode plantar o que quiser, não pode consertar a cerca e não pode sair levando suas flores. A interoperabilidade é bloqueada propositalmente. A conveniência é a moeda que pagamos pela servidão.</p>
+            <div class="arrow-down">↓</div>
             
-            <p>O ativista Cory Doctorow chama isso de <strong>Chokepoint Capitalism</strong> (Capitalismo de Gargalo). As Big Techs criam gargalos artificiais entre criadores e audiências para extrair o máximo de valor possível, tornando impossível sair sem perder tudo.</p>
+            <div class="cycle-step step-2">
+                <span class="step-step">FASE 2: A CAPTURA</span>
+                <span class="step-title">"Paguem o Pedágio"</span>
+                Com os usuários presos, a plataforma foca nos clientes empresariais. O alcance orgânico cai. Você precisa pagar para atingir seus próprios seguidores. O Uber fica caro, a Amazon prioriza produtos patrocinados.
+            </div>
+            <div class="arrow-down">↓</div>
+            
+            <div class="cycle-step step-3">
+                <span class="step-step">FASE 3: A EXTRAÇÃO TOTAL</span>
+                <span class="step-title">"A Terra Arrasada"</span>
+                Com usuários e empresas presos (custo de saída alto), a plataforma extrai cada centavo. O serviço se torna horrível para ambos. O feed é só anúncio e lixo de IA. O objetivo é o lucro máximo antes do colapso final.
+            </div>
+        </div>
 
-            <div class="feudal-map-container">
-                <span style="display: block; font-weight: bold; color: var(--accent-feudal); text-transform: uppercase; margin-bottom: 10px;">🏰 RECURSO VISUAL 12: A ESTRUTURA FEUDAL</span>
-                
-                <div class="map-layer layer-cloud">
-                    SENHORES DA NUVEM (Cloud Lords)<br>
-                    <span style="font-size:0.7em; font-weight:normal;">Donos da Infraestrutura (AWS, Meta, Google)</span>
+        <h2 class="speakable">Chokepoint Capitalism: O Pedágio da Inovação</h2>
+
+        <p class="speakable">O resultado desse processo é o <strong>Chokepoint Capitalism</strong> (Capitalismo de Gargalo). As Big Techs criam gargalos artificiais entre criadores e audiências. A Apple cobra 30% de tudo que passa pela App Store. O Spotify paga frações de centavo aos músicos. Eles se colocam no meio de cada transação humana e cobram uma taxa de passagem.</p>
+        
+        <p class="speakable">Isso destrói a inovação. Startups não conseguem competir porque precisam pagar o "imposto feudal" para existir nas lojas de aplicativos. O mercado digital tornou-se um conjunto de castelos fortificados (Walled Gardens) onde a interoperabilidade é proibida. Você não pode mandar uma mensagem do WhatsApp para o iMessage, não por limitação técnica, mas por decisão comercial de manter o fosso do castelo intransponível.</p>
+
+        <h2 class="speakable">Antítese: O Retorno aos Comuns (The Commons)</h2>
+
+        <p class="speakable">A única maneira de quebrar o feudalismo é recuperar a posse da terra. Historicamente, existiam os <strong>Commons</strong> (Terras Comuns), geridos pela comunidade. No digital, isso significa adotar <strong>Protocolos Abertos</strong> em vez de Plataformas Fechadas.</p>
+        
+        <p class="speakable">O e-mail é um protocolo: você pode enviar um e-mail do Gmail para o Outlook. Ninguém é "dono" do e-mail. O Fediverso (Mastodon, Bluesky, Lemmy) tenta resgatar essa lógica. Se você não gosta das regras de um servidor, você migra para outro levando seus seguidores e seus dados. É a <strong>Reforma Agrária Digital</strong>.</p>
+
+        <div class="comparison-grid">
+            <div class="comp-card" style="border-left: 2px solid var(--feudal-gold);">
+                <span class="comp-title" style="color:var(--feudal-gold)">FEUDO DIGITAL (Instagram/TikTok)</span>
+                <div class="comp-content speakable">
+                    Centralizado. O dono dita as regras. Se sua conta for banida, você perde tudo (identidade e conexões). O algoritmo decide o que você vê. Você é o servo.
                 </div>
-                <div class="feudal-arrow">⬇ (Cobrança de Renda/Dados)</div>
-                <div class="map-layer layer-serfs">
-                    SERVOS DE NUVEM (Cloud Serfs)<br>
-                    <span style="font-size:0.7em; opacity:0.8;">Você, Criadores, Empresas Menores</span>
+            </div>
+            <div class="comp-card" style="border-left: 2px solid var(--liberty-teal);">
+                <span class="comp-title" style="color:var(--liberty-teal)">TERRA COMUM (Fediverso/Web)</span>
+                <div class="comp-content speakable">
+                    Descentralizado. Regras comunitárias. Portabilidade de dados garantida (você leva seus seguidores). Você escolhe o feed cronológico. Você é o cidadão.
                 </div>
-                
-                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 15px; font-style: italic;">
-                    "O servo trabalha de graça (produz conteúdo) em troca do direito de existir no feudo."
-                </p>
             </div>
+        </div>
 
-            <div class="visual-table-container">
-                <div class="visual-header">💰 MUDANÇA DE ERA: LUCRO VS. RENDA</div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><strong>Capitalismo (Séc. XX)</strong></td>
-                            <td>Busca <strong>Lucro</strong>. Vende produtos. O cliente tem poder de escolha.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Tecnofeudalismo (Séc. XXI)</strong></td>
-                            <td>Busca <strong>Renda</strong>. Cobra acesso. O usuário é capturado pelo efeito de rede.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <h2 class="speakable">Síntese: O Protocolo POSSE</h2>
 
-            <h2>Antítese: O Renascimento do Comum</h2>
+        <p class="speakable">A estratégia de resistência tática tem um nome: <strong>POSSE</strong> (Publish on your Own Site, Syndicate Elsewhere — Publique no Seu Próprio Site, Distribua em Outro Lugar).</p>
+        
+        <p class="speakable">Nunca crie conteúdo original direto na plataforma do senhor feudal. Crie no seu blog, no seu site, na sua newsletter. Esse é o seu território soberano. Depois, compartilhe o link nas redes sociais. Se o Instagram morrer amanhã ou se o Elon Musk decidir cobrar pelo Twitter, seu arquivo e sua história permanecem intactos no seu domínio. A rede social deve ser apenas um canal de distribuição, nunca o seu lar.</p>
 
-            <p>A saída não é "regular o feudo" (embora ajude), mas sair dele. Historicamente, existiam os <strong>Commons</strong> (O Comum): terras que pertenciam à comunidade, onde todos podiam levar seu gado para pastar. <strong>Elinor Ostrom</strong> ganhou um Nobel provando que comunidades podem gerir recursos melhor que o Estado ou o Mercado, desde que tenham regras claras.</p>
-            
-            <p>No digital, a "Reforma Agrária" é o <strong>Fediverso</strong>. Imagine que você possa enviar uma mensagem do WhatsApp para o Telegram, ou seguir alguém do Twitter estando no Instagram. Isso é impossível hoje por ganância corporativa, mas é assim que o e-mail funciona (Gmail fala com Outlook). O Fediverso resgata essa lógica.</p>
-
-            <div class="antithesis-box">
-                <span class="antithesis-tag">O Contraponto Estrutural</span>
-                <p><strong>A Soberania da Comunidade:</strong></p>
-                <p>No Fediverso (Mastodon, Lemmy, PeerTube), não existe um algoritmo central otimizando para o ódio. Existem milhares de pequenos servidores (instâncias), geridos por comunidades locais com suas próprias regras. Se você não gosta das regras do seu servidor, você muda de casa e leva toda a sua mobília (seus seguidores e posts) com você.</p>
-                <p>Isso não é apenas "tecnologia livre"; é <strong>tecnologia política</strong>. É a migração do modelo "Inquilino" para o modelo "Proprietário Comunitário".</p>
-            </div>
-
-            <h2>Síntese: Ocupar para não ser Ocupado</h2>
-
-            <p>A "Versão de Você" algorítmica só existe dentro do castelo feudal. Fora dele, ela se desintegra. O algoritmo da Meta não consegue te seguir até o seu próprio site ou servidor federado, porque lá os dados não são centralizados para treinamento.</p>
-            
-            <p>Sair das Big Techs não é apenas uma escolha de software; é um ato de soberania territorial. É fincar uma bandeira no solo digital e dizer: "Aqui, as regras são minhas".</p>
-
-            <div class="action-box">
-                <div class="action-title">🚩 DESAFIO DE RETOMADA #12</div>
-                <p><strong>A Posse da Terra</strong></p>
-                <p>Se você constrói sua reputação no Instagram, você está construindo um castelo na areia de outra pessoa.</p>
-                <p><strong>Sua missão:</strong> Dê o primeiro passo para ter seu próprio território. Crie uma conta no <strong>Fediverso</strong> (baixe um app de Mastodon). Ou, mais radical: compre um <strong>domínio próprio</strong> (seu nome.com) para seu e-mail ou site. Tenha um endereço na web que você pague com dinheiro, não com sua alma.</p>
-            </div>
+        <div class="box action-box speakable">
+            <span class="action-header">🚩 DESAFIO DE RETOMADA #12</span>
+            <p><strong>A Lista de Ouro</strong></p>
+            <p>Existe uma tecnologia antiga que nenhum bilionário conseguiu matar ou fechar: o <strong>E-mail</strong>.</p>
+            <p><strong>Sua missão:</strong> Comece a construir sua lista de contatos fora das redes sociais. Se você é criador ou profissional, crie uma Newsletter simples (Substack, Ghost, ou apenas uma planilha de e-mails). Peça o e-mail das pessoas importantes para você. O e-mail é o único canal direto, sem algoritmo, onde você tem a garantia de entrega. É o seu ativo mais valioso na era feudal.</p>
         </div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32;
-            document.documentElement.style.setProperty('--reading-size', currentSize + 'px');
-        }
+        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            // 1. Controle de Tema
+            if (data.type === 'theme') {
+                if (data.mode === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            }
 
-        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
-        function changeSpeed(amount) {
-            speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5;
-            document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x';
-            if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); }
+            // 2. Controle de Fonte
+            if (data.type === 'font-resize') {
+                const newSize = 19 * data.value;
+                document.documentElement.style.setProperty('--base-size', newSize + 'px');
+            }
+
+            // 3. Controle de TTS
+            if (data.type === 'tts-toggle') toggleSpeech();
+            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        });
+
+        /* --- ENGINE TTS AVANÇADA (FATOR X) --- */
+        let speechQueue = [];
+        let currentIndex = 0;
+        let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+        let selectedVoice = null;
+
+        function loadVoices() {
+            const voices = synthesis.getVoices();
+            selectedVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) ||
+                            voices.find(v => v.lang === 'pt-BR' && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang === 'pt-BR');
+        }
+        
+        if (synthesis.onvoiceschanged !== undefined) {
+            synthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function prepareQueue() {
+            const elements = document.querySelectorAll('.speakable');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
         }
 
         function toggleSpeech() {
-            const btn = document.getElementById('btn-speak');
+            if (speechQueue.length === 0) prepareQueue();
+
             if (isSpeaking) {
-                isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; 
-                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>';
-                btn.classList.remove('active');
+                synthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
             } else {
-                prepareQueue();
-                if(speechQueue.length > 0) {
-                    isSpeaking = true; btn.classList.add('active');
-                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
-                    speakChunk();
-                }
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
             }
         }
 
-        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box, .map-layer'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
-        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
+        function updateSpeechRate(rate) {
+            speechRate = rate;
+            if (isSpeaking) {
+                synthesis.cancel();
+                speakNext();
+            }
+        }
 
-        function speakChunk() {
+        function speakNext() {
             if (!isSpeaking) return;
-            if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; }
-            const element = speechQueue[currentSpeechIndex];
-            clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"});
-            const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate;
-            utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; };
-            window.speechSynthesis.speak(utterance);
+            if (currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentIndex = 0;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
+            const element = speechQueue[currentIndex];
+            const text = element.innerText;
+
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            
+            if (selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.onend = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+            
+            utterance.onerror = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+        }
+
+        function reportStatus(playing) {
+            window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*');
         }
 
         document.getElementById('content-area').addEventListener('click', function(e) {
-            const target = e.target.closest('p, h1, h2, h3, .box, td, li, .map-layer');
-            if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) prepareQueue();
+                const index = speechQueue.indexOf(target);
+                if (index !== -1) {
+                    synthesis.cancel();
+                    currentIndex = index;
+                    isSpeaking = true;
+                    reportStatus(true);
+                    speakNext();
+                }
+            }
         });
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+
+        window.onbeforeunload = function() {
+            synthesis.cancel();
+        };
     </script>
 </body>
 </html>
