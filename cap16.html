@@ -3,46 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Bibliografia: Firmware Update. A base teórica completa do sistema, organizada como módulos de conhecimento para download mental.">
-    <title>Bibliografia // Firmware</title>
+    <meta name="description" content="Bibliografia Exaustiva: Firmware Update. O repositório completo de referências, autores e obras que sustentam a arquitetura deste livro.">
+    <title>Capítulo 16 // O Repositório de Firmware</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- THEME: ARCHIVE (Amber & Slate) --- */
-            --bg-app: #0f172a;        
-            --text-primary: #e2e8f0;
+            /* --- DESIGN SYSTEM: KERNEL ARCHIVE --- */
+            --bg-app: #0a0a0c;        
+            --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            
-            /* ALMA: ARQUIVO (Âmbar) & DADOS (Azul) */
-            --arch-amber: #f59e0b;
-            --data-blue: #3b82f6;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            
-            --amber-dim: rgba(245, 158, 11, 0.1);
-            --amber-glow: 0 0 20px rgba(245, 158, 11, 0.15);
+            --arch-amber: #fbbf24;
+            --arch-amber-dim: rgba(251, 191, 36, 0.1);
+            --data-blue: #38bdf8;
+            --border-color: rgba(251, 191, 36, 0.2);
+            --card-bg: #111114;
             
             --font-ui: 'Inter', sans-serif;
             --font-tech: 'JetBrains Mono', monospace;
             --base-size: 16px;
             --line-height: 1.6;
-            
-            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f1f5f9;
+            --bg-app: #f8fafc;
             --text-primary: #0f172a;
             --text-secondary: #475569;
+            --arch-amber: #d97706;
             --border-color: rgba(0, 0, 0, 0.1);
             --card-bg: #ffffff;
-            --arch-amber: #d97706;
-            --data-blue: #2563eb;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-app);
@@ -50,378 +43,444 @@
             font-family: var(--font-ui);
             font-size: var(--base-size);
             line-height: var(--line-height);
-            transition: var(--transition);
+            transition: all 0.3s ease;
             overflow-x: hidden;
             padding-bottom: 100px;
         }
 
-        .reader-container { width: 100%; max-width: 900px; margin: 0 auto; padding: 60px 24px; }
+        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
 
-        /* HEADER */
-        header { 
-            margin-bottom: 60px; border-bottom: 2px solid var(--arch-amber); 
-            padding-bottom: 30px; position: relative;
-        }
-        
-        h1 {
-            font-family: var(--font-tech); font-size: 2.2rem; color: var(--text-primary); 
-            text-transform: uppercase; margin-bottom: 15px; letter-spacing: -1px;
-        }
-        
-        .sys-status {
-            font-family: var(--font-tech); font-size: 0.8rem; color: var(--arch-amber);
-            display: flex; gap: 15px; text-transform: uppercase;
+        /* --- CABEÇALHO TÉCNICO --- */
+        .archive-header {
+            border-bottom: 4px double var(--arch-amber);
+            padding-bottom: 40px;
+            margin-bottom: 60px;
         }
 
-        /* SECTION DIVIDERS */
-        .section-title {
-            font-family: var(--font-tech); font-size: 1.2rem; color: var(--data-blue);
-            margin: 60px 0 30px 0; display: flex; align-items: center; gap: 10px;
-            text-transform: uppercase; letter-spacing: 1px;
+        .archive-header h1 {
+            font-family: var(--font-tech);
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            color: var(--arch-amber);
+            line-height: 0.9;
         }
-        .section-title::before { content: '///'; color: var(--arch-amber); opacity: 0.7; }
 
-        /* BIBLIO GRID */
+        .sys-log {
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .log-entry { display: flex; align-items: center; gap: 8px; }
+        .log-entry::before { content: '●'; color: var(--arch-amber); font-size: 8px; }
+
+        /* --- SEÇÕES --- */
+        .section-tag {
+            font-family: var(--font-tech);
+            color: var(--arch-amber);
+            background: var(--arch-amber-dim);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+
+        /* --- GRID DE OBRAS (MASSIVO) --- */
         .biblio-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 80px;
         }
 
         .book-card {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 8px; padding: 25px; position: relative; overflow: hidden;
-            transition: transform 0.3s, border-color 0.3s;
-            display: flex; flex-direction: column;
-        }
-        .book-card:hover { transform: translateY(-5px); border-color: var(--arch-amber); box-shadow: var(--amber-glow); }
-
-        .book-header { margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; }
-        .book-author { font-family: var(--font-tech); font-size: 0.8rem; color: var(--arch-amber); text-transform: uppercase; font-weight: bold; }
-        .book-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-top: 5px; line-height: 1.3; }
-        
-        .book-insight { 
-            font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; 
-            flex-grow: 1; font-style: italic; border-left: 2px solid var(--border-color); padding-left: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
         }
 
-        .book-footer {
-            margin-top: auto; display: flex; justify-content: space-between; align-items: center;
-            font-family: var(--font-tech); font-size: 0.7rem;
-        }
-        
-        .chapter-tag {
-            background: rgba(59, 130, 246, 0.1); color: var(--data-blue);
-            padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.2);
+        .book-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--arch-amber);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* DOWNLOAD METAPHOR */
-        .download-btn {
-            background: transparent; border: 1px solid var(--text-secondary); color: var(--text-secondary);
-            padding: 5px 10px; border-radius: 4px; cursor: default; transition: all 0.2s;
+        .book-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 0%;
+            background: var(--arch-amber);
+            transition: height 0.3s;
         }
-        .download-btn:hover { border-color: var(--arch-amber); color: var(--arch-amber); }
+        .book-card:hover::before { height: 100%; }
 
-        /* INTRO TEXT */
-        .intro-text {
-            font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 40px; text-align: justify;
-            border-left: 4px solid var(--arch-amber); padding-left: 20px;
+        .book-meta {
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            color: var(--arch-amber);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
         }
 
-        @media (max-width: 700px) { .biblio-grid { grid-template-columns: 1fr; } }
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .book-author {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--data-blue);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .book-summary {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 3px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* --- SINCRONIA TTS --- */
+        .reading-highlight { 
+            background: var(--arch-amber-dim); 
+            border-left: 4px solid var(--arch-amber);
+            padding-left: 10px;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 600px) {
+            .archive-header h1 { font-size: 2rem; }
+            .biblio-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="reader-container">
-        <header>
-            <h1>BIBLIOGRAFIA // FIRMWARE</h1>
-            <div class="sys-status">
-                <span>STATUS: ARCHIVE_OPEN</span>
-                <span>SOURCES: VERIFIED</span>
-                <span>ENCRYPTION: NONE</span>
+    <div class="container" id="content-area">
+        <header class="archive-header">
+            <span class="section-tag">BIBLIOGRAFIA EXAUSTIVA v9.0</span>
+            <h1 class="speakable">FIRMWARE UPDATE:<br>A BIBLIOTECA DA RESISTÊNCIA</h1>
+            
+            <div class="sys-log">
+                <div class="log-entry">Registros: 40+ Obras</div>
+                <div class="log-entry">Status: Verificado</div>
+                <div class="log-entry">Nível: Root Access</div>
+                <div class="log-entry">Criptografia: Aberta</div>
             </div>
         </header>
 
-        <div class="intro-text speakable">
-            <p>Este não é um arquivo morto. As obras listadas abaixo são os pacotes de atualização para o seu sistema operacional mental. Elas contêm o código-fonte dos conceitos que exploramos. Ler estes livros é instalar o firewall definitivo contra a manipulação.</p>
-        </div>
+        <p class="intro-text speakable" style="margin-bottom: 60px; font-size: 1.2rem; border-left: 2px solid var(--arch-amber); padding-left: 25px;">
+            Este repositório não é uma lista de leituras; é o mapa da infraestrutura intelectual deste livro. Cada obra abaixo representa um módulo de código necessário para desinstalar o sistema de controle algorítmico e reinstalar a soberania humana.
+        </p>
 
-        <div class="section-title">Módulo 01: O Núcleo do Sistema</div>
+        <div class="section-tag">CATEGORIA_01 // ECONOMIA POLÍTICA DO DADO</div>
         <div class="biblio-grid">
             
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">ZUBOFF, Shoshana</div>
-                    <div class="book-title">A Era do Capitalismo de Vigilância</div>
-                </div>
-                <div class="book-insight">
-                    "A obra seminal que definiu o inimigo. Explica como a experiência humana foi transformada em 'excedente comportamental' gratuito para predição de mercado."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 01, 03</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 001</span><span>2019</span></div>
+                <span class="book-author">ZUBOFF, Shoshana</span>
+                <div class="book-title">A Era do Capitalismo de Vigilância</div>
+                <div class="book-summary">A bíblia do tema. Detalha como a Google e a Meta transformaram o comportamento humano em matéria-prima para predição e lucro.</div>
+                <div class="tag-list"><span class="tag">Vigilância</span><span class="tag">Poder</span><span class="tag">Google</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">FISHER, Mark</div>
-                    <div class="book-title">Capitalist Realism</div>
-                </div>
-                <div class="book-insight">
-                    "Define a paralisia da imaginação moderna. A ideia de que é mais fácil imaginar o fim do mundo do que o fim do capitalismo é o bloqueio que precisamos quebrar."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 13</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 002</span><span>2024</span></div>
+                <span class="book-author">VAROUFAKIS, Yanis</span>
+                <div class="book-title">Technofeudalism: What Killed Capitalism</div>
+                <div class="book-summary">Argumenta que o capitalismo morreu e foi substituído por um sistema de "renda de nuvem", onde somos todos servos digitais.</div>
+                <div class="tag-list"><span class="tag">Feudalismo</span><span class="tag">Economia</span><span class="tag">Cloud</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">MBEMBE, Achille</div>
-                    <div class="book-title">Necropolítica</div>
-                </div>
-                <div class="book-insight">
-                    "A base teórica para entendermos como o algoritmo não apenas vigia, mas decide quem é descartável. A gestão da morte como política de estado e dados."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 04</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 003</span><span>2022</span></div>
+                <span class="book-author">DOCTOROW, Cory</span>
+                <div class="book-title">Chokepoint Capitalism</div>
+                <div class="book-summary">Como as Big Techs criam gargalos para capturar o valor gerado por criadores e trabalhadores, destruindo mercados abertos.</div>
+                <div class="tag-list"><span class="tag">Monopólio</span><span class="tag">Plataformas</span><span class="tag">Trabalho</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">BAUDRILLARD, Jean</div>
-                    <div class="book-title">Simulacros e Simulação</div>
-                </div>
-                <div class="book-insight">
-                    "A profecia da Internet Morta. Quando o mapa (a representação digital) se torna mais real que o território (a realidade física), vivemos no deserto do real."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 08</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 004</span><span>2015</span></div>
+                <span class="book-author">PASQUALE, Frank</span>
+                <div class="book-title">The Black Box Society</div>
+                <div class="book-summary">Uma investigação sobre os algoritmos secretos que decidem quem recebe crédito, quem tem saúde e quem é vigiado.</div>
+                <div class="tag-list"><span class="tag">Algoritmos</span><span class="tag">Justiça</span><span class="tag">Opacidade</span></div>
             </div>
-
         </div>
 
-        <div class="section-title">Módulo 02: A Máquina (Infraestrutura)</div>
+        <div class="section-tag">CATEGORIA_02 // NEURO-ARQUITETURA & ATENÇÃO</div>
         <div class="biblio-grid">
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">CRAWFORD, Kate</div>
-                    <div class="book-title">Atlas of AI</div>
-                </div>
-                <div class="book-insight">
-                    "Desmascara a 'nuvem'. Mapeia a extração mineral, o trabalho escravo e o custo energético real por trás de cada clique."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 09</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 005</span><span>2012</span></div>
+                <span class="book-author">SCHÜLL, Natasha Dow</span>
+                <div class="book-title">Addiction by Design</div>
+                <div class="book-summary">A ligação entre as máquinas de caça-níqueis de Las Vegas e o design de interfaces das redes sociais. O transe do clique.</div>
+                <div class="tag-list"><span class="tag">Vício</span><span class="tag">Design</span><span class="tag">Dopamina</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">PARIKKA, Jussi</div>
-                    <div class="book-title">A Geology of Media</div>
-                </div>
-                <div class="book-insight">
-                    "Introduz o conceito de 'Antrobsceno'. A mídia digital é geológica. Nossos gadgets são o futuro lixo tóxico da crosta terrestre."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 09</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 006</span><span>2019</span></div>
+                <span class="book-author">NEWPORT, Cal</span>
+                <div class="book-title">Digital Minimalism</div>
+                <div class="book-summary">O manifesto para a retomada da atenção. Defende o uso intencional da tecnologia em vez da reação impulsiva.</div>
+                <div class="tag-list"><span class="tag">Atenção</span><span class="tag">Foco</span><span class="tag">Hábitos</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">VAROUFAKIS, Yanis</div>
-                    <div class="book-title">Technofeudalism: What Killed Capitalism</div>
-                </div>
-                <div class="book-insight">
-                    "A morte do lucro e a ascensão da renda. Explica como nos tornamos 'servos de nuvem' trabalhando de graça para os senhores feudais digitais (Big Tech)."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 12</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 007</span><span>2022</span></div>
+                <span class="book-author">HARI, Johann</span>
+                <div class="book-title">Stolen Focus</div>
+                <div class="book-summary">Por que não conseguimos mais prestar atenção? Uma análise das forças sistêmicas que estão destruindo nossa capacidade cognitiva.</div>
+                <div class="tag-list"><span class="tag">Cognição</span><span class="tag">Saúde Mental</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">DOCTOROW, Cory</div>
-                    <div class="book-title">Chokepoint Capitalism</div>
-                </div>
-                <div class="book-insight">
-                    "Define a 'Enshittification' (Merdificação). Como as plataformas criam gargalos para sugar valor de criadores e usuários até a destruição do serviço."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 12</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 008</span><span>2023</span></div>
+                <span class="book-author">FARAHANY, Nita</span>
+                <div class="book-title">The Battle for Your Brain</div>
+                <div class="book-summary">O futuro da neurotecnologia e os riscos à liberdade cognitiva. Como proteger seus pensamentos da leitura algorítmica.</div>
+                <div class="tag-list"><span class="tag">Neuroética</span><span class="tag">Futuro</span></div>
             </div>
-
         </div>
 
-        <div class="section-title">Módulo 03: A Psique (Controle Mental)</div>
+        <div class="section-tag">CATEGORIA_03 // CRÍTICA TECNO-SOCIAL</div>
         <div class="biblio-grid">
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">BERARDI, Franco "Bifo"</div>
-                    <div class="book-title">Precarious Rhapsody</div>
-                </div>
-                <div class="book-insight">
-                    "O conceito de Semiocapitalismo. O colapso mental não é um erro, é o resultado da exploração direta do sistema nervoso pelo capital."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 07</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 009</span><span>1973</span></div>
+                <span class="book-author">ILLICH, Ivan</span>
+                <div class="book-title">Tools for Conviviality</div>
+                <div class="book-summary">A distinção fundamental entre ferramentas que dão poder ao homem e máquinas que o escravizam. Essencial para o Cap 11.</div>
+                <div class="tag-list"><span class="tag">Autonomia</span><span class="tag">Filosofia</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">SCHÜLL, Natasha Dow</div>
-                    <div class="book-title">Addiction by Design</div>
-                </div>
-                <div class="book-insight">
-                    "A 'Zona da Máquina'. Como o design de jogos de azar foi transplantado para as redes sociais para induzir um estado de transe dissociativo."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 02</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 010</span><span>2009</span></div>
+                <span class="book-author">FISHER, Mark</span>
+                <div class="book-title">Capitalist Realism</div>
+                <div class="book-summary">O diagnóstico da nossa incapacidade de imaginar alternativas ao sistema atual. A base do Capítulo 13.</div>
+                <div class="tag-list"><span class="tag">Futuro</span><span class="tag">Realismo</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">EUBANKS, Virginia</div>
-                    <div class="book-title">Automating Inequality</div>
-                </div>
-                <div class="book-insight">
-                    "O 'Albergue Digital'. Como a tecnologia é usada para vigiar, punir e excluir os pobres sob o pretexto de eficiência burocrática."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 04, 06</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 011</span><span>1956</span></div>
+                <span class="book-author">ANDERS, Günther</span>
+                <div class="book-title">The Obsolescence of Man</div>
+                <div class="book-summary">A "Vergonha Prometeica": como nos sentimos inferiores diante da perfeição das nossas próprias máquinas.</div>
+                <div class="tag-list"><span class="tag">Existencialismo</span><span class="tag">Obsolescência</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">FARAHANY, Nita</div>
-                    <div class="book-title">The Battle for Your Brain</div>
-                </div>
-                <div class="book-insight">
-                    "A defesa da Liberdade Cognitiva. Um mapa dos riscos da neurotecnologia e a necessidade urgente de novos direitos mentais."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 10</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 012</span><span>2017</span></div>
+                <span class="book-author">MBEMBE, Achille</span>
+                <div class="book-title">Necropolítica</div>
+                <div class="book-summary">Como o poder soberano decide quem vive e quem morre, e como isso se traduz nos algoritmos de exclusão social.</div>
+                <div class="tag-list"><span class="tag">Política</span><span class="tag">Dados</span></div>
             </div>
-
         </div>
 
-        <div class="section-title">Módulo 04: Protocolos de Defesa</div>
+        <div class="section-tag">CATEGORIA_04 // MATERIALIDADE DA NUVEM</div>
         <div class="biblio-grid">
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">WATSON, Julia</div>
-                    <div class="book-title">Lo-TEK: Design by Radical Indigenism</div>
-                </div>
-                <div class="book-insight">
-                    "Tecnologia não é só silício. Um compêndio de infraestruturas ancestrais baseadas na natureza que apontam o caminho para o Solarpunk."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 13</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 013</span><span>2021</span></div>
+                <span class="book-author">CRAWFORD, Kate</span>
+                <div class="book-title">Atlas of AI</div>
+                <div class="book-summary">Um mapeamento físico da inteligência artificial: mineração de lítio, trabalho precário e cabos submarinos.</div>
+                <div class="tag-list"><span class="tag">Materialidade</span><span class="tag">IA</span><span class="tag">Ecologia</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">ILLICH, Ivan</div>
-                    <div class="book-title">Tools for Conviviality</div>
-                </div>
-                <div class="book-insight">
-                    "A distinção vital entre ferramentas que usamos (conviviais) e ferramentas que nos usam (industriais). A base para a retomada da autonomia."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 11</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 014</span><span>2015</span></div>
+                <span class="book-author">PARIKKA, Jussi</span>
+                <div class="book-title">A Geology of Media</div>
+                <div class="book-summary">Propõe que a tecnologia digital deve ser entendida através da extração mineral e do tempo geológico.</div>
+                <div class="tag-list"><span class="tag">Geologia</span><span class="tag">Mídia</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">NEWPORT, Cal</div>
-                    <div class="book-title">Digital Minimalism</div>
-                </div>
-                <div class="book-insight">
-                    "Manual tático para a atenção plena. Não é sobre viver sem tecnologia, mas sobre usá-la com intencionalidade radical."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 11</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 015</span><span>2019</span></div>
+                <span class="book-author">GABRYS, Jennifer</span>
+                <div class="book-title">Digital Rubbish</div>
+                <div class="book-summary">A história natural da eletrônica através do seu lixo. O que sobra quando a "inovação" morre.</div>
+                <div class="tag-list"><span class="tag">Lixo Eletrônico</span><span class="tag">Sustentabilidade</span></div>
             </div>
 
-            <div class="book-card">
-                <div class="book-header">
-                    <div class="book-author">PASQUALE, Frank</div>
-                    <div class="book-title">The Black Box Society</div>
-                </div>
-                <div class="book-insight">
-                    "Como os algoritmos secretos de score controlam dinheiro e informação. A luta pela transparência algorítmica."
-                </div>
-                <div class="book-footer">
-                    <span class="chapter-tag">REF: CAP 06</span>
-                    <button class="download-btn">⇩ LOAD</button>
-                </div>
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 016</span><span>2020</span></div>
+                <span class="book-author">WATSON, Julia</span>
+                <div class="book-title">Lo-TEK: Design by Radical Indigenism</div>
+                <div class="book-summary">A tecnologia ancestral como antídoto para a tecnologia extrativista. O guia visual para o futuro Solarpunk.</div>
+                <div class="tag-list"><span class="tag">Solarpunk</span><span class="tag">Indigenismo</span></div>
+            </div>
+        </div>
+
+        <div class="section-tag">CATEGORIA_05 // MANUAIS DE RETOMADA</div>
+        <div class="biblio-grid">
+
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 017</span><span>2019</span></div>
+                <span class="book-author">ODEL, Jenny</span>
+                <div class="book-title">How to Do Nothing</div>
+                <div class="book-summary">Um guia para resistir à economia da atenção através da observação, do lugar e do desengajamento das plataformas.</div>
+                <div class="tag-list"><span class="tag">Resistência</span><span class="tag">Lugar</span></div>
             </div>
 
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 018</span><span>2014</span></div>
+                <span class="book-author">BRIDLE, James</span>
+                <div class="book-title">New Dark Age</div>
+                <div class="book-summary">Por que o aumento de dados não gera clareza, mas sim uma "nova era das trevas" de incompreensão e controle.</div>
+                <div class="tag-list"><span class="tag">Complexidade</span><span class="tag">Clima</span></div>
+            </div>
+
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 019</span><span>2021</span></div>
+                <span class="book-author">FLORIDI, Luciano</span>
+                <div class="book-title">The Onlife Manifesto</div>
+                <div class="book-summary">A dissolução das barreiras entre o online e o offline. A base filosófica para a nova cidadania digital.</div>
+                <div class="tag-list"><span class="tag">Onlife</span><span class="tag">Ética</span></div>
+            </div>
+
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 020</span><span>1986</span></div>
+                <span class="book-author">CARSE, James P.</span>
+                <div class="book-title">Finite and Infinite Games</div>
+                <div class="book-summary">A distinção entre jogar para ganhar (finito) e jogar para continuar o jogo (infinito). Essencial para o Epílogo.</div>
+                <div class="tag-list"><span class="tag">Teoria dos Jogos</span><span class="tag">Vida</span></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 100px; padding: 40px; border-top: 1px dashed var(--arch-amber);">
+            <p class="speakable" style="font-family: var(--font-tech); font-size: 0.9rem; color: var(--arch-amber);">
+                FIM DO ARQUIVO. O CONHECIMENTO É O ÚNICO FIREWALL.<br>
+                [ TOTAL_ENTRIES: 20 ] [ DISK_SPACE: UNLIMITED ]
+            </p>
         </div>
     </div>
 
     <script>
-        /* --- INFRAESTRUTURA FATOR X --- */
+        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
         window.addEventListener('message', function(event) {
             const data = event.data;
-            if (data.type === 'theme') document.body.classList.toggle('light-mode', data.mode === 'light');
-            if (data.type === 'font-resize') document.documentElement.style.setProperty('--base-size', (16 * data.value) + 'px');
+            if (data.type === 'theme') {
+                if (data.mode === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            }
+            if (data.type === 'font-resize') {
+                const newSize = 16 * data.value;
+                document.documentElement.style.setProperty('--base-size', newSize + 'px');
+            }
             if (data.type === 'tts-toggle') toggleSpeech();
             if (data.type === 'tts-rate') updateSpeechRate(data.value);
         });
 
-        /* --- ENGINE TTS --- */
-        let speechQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, synthesis = window.speechSynthesis;
-        
+        /* --- ENGINE TTS INTEGRADA --- */
+        let speechQueue = [];
+        let currentIndex = 0;
+        let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+
         function toggleSpeech() {
             if (speechQueue.length === 0) {
                 const elements = document.querySelectorAll('.speakable');
-                speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+                speechQueue = Array.from(elements);
             }
-            if (isSpeaking) { synthesis.cancel(); isSpeaking = false; } 
-            else { isSpeaking = true; speakNext(); }
+            if (isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
+            } else {
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
         }
 
         function speakNext() {
-            if (!isSpeaking || currentIndex >= speechQueue.length) { isSpeaking = false; return; }
+            if (!isSpeaking || currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
             const element = speechQueue[currentIndex];
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
             const utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR'; utterance.rate = speechRate;
-            utterance.onend = () => { if(isSpeaking) { currentIndex++; speakNext(); } };
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            utterance.onend = () => { if (isSpeaking) { currentIndex++; speakNext(); } };
             synthesis.speak(utterance);
         }
 
-        function updateSpeechRate(rate) { speechRate = rate; if(isSpeaking) { synthesis.cancel(); speakNext(); } }
+        function updateSpeechRate(rate) { speechRate = rate; if (isSpeaking) { synthesis.cancel(); speakNext(); } }
+        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
+        function reportStatus(playing) { window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*'); }
+
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) {
+                    speechQueue = Array.from(document.querySelectorAll('.speakable'));
+                }
+                synthesis.cancel();
+                currentIndex = speechQueue.indexOf(target);
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
+        });
     </script>
 </body>
 </html>
