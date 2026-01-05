@@ -2,171 +2,334 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Epílogo // A Singularidade Humana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Epílogo: System Override. A quebra da quarta parede, a teoria dos Jogos Infinitos e o manifesto final da resistência humana.">
+    <meta name="keywords" content="Epílogo, Glitch, James P. Carse, Günther Anders, Autopoiese, Resistência, Humanismo Digital, Fim do Livro">
+    <title>Epílogo // O Erro Fatal</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(251, 191, 36, 0.2); /* Dourado */
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #d946ef; --accent-bio: #fbbf24; --accent-warn: #f472b6;
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- THEME: KERNEL PANIC (Red & White Noise) --- */
+            --bg-app: #000000;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.15);
+            
+            /* ALMA: O COLAPSO DA SIMULAÇÃO */
+            --panic-red: #ff0040;
+            --truth-white: #ffffff;
+            --code-blue: #00f0ff;
+            
+            --red-dim: rgba(255, 0, 64, 0.1);
+            --red-glow: 0 0 30px rgba(255, 0, 64, 0.3);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px;
+            --line-height: 1.8;
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #c026d3; --accent-bio: #d97706; --accent-warn: #db2777;
+            --bg-app: #f0f0f0;
+            --text-primary: #111111;
+            --text-secondary: #555555;
+            --border-color: rgba(0, 0, 0, 0.2);
+            --panic-red: #cc0000;
+            --code-blue: #0055cc;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 150px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
 
-        /* CONTENT */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent-bio); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-bio); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
-        h2::before { content: '//'; opacity: 0.5; }
-        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
-        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
-        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
-        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
+        /* --- CONTAINER --- */
+        .reader-container { width: 100%; max-width: 760px; margin: 0 auto; padding: 80px 24px; position: relative; }
 
-        /* REVELATION BOX */
-        .revelation-box { border: 1px solid var(--accent-bio); padding: 40px; margin: 50px 0; text-align: center; background: rgba(251, 191, 36, 0.05); border-radius: var(--radius); cursor: pointer; }
-        .revelation-text { font-family: var(--font-ui); font-size: 1.2rem; font-weight: 300; line-height: 1.4; font-style: italic; color: var(--text-primary); }
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; letter-spacing: -0.01em; transition: color 0.3s; }
+        strong { color: var(--truth-white); font-weight: 700; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
-        /* SPECTRUM */
-        .spectrum-container { display: flex; justify-content: center; gap: 20px; margin: 3em 0; flex-wrap: wrap; cursor: pointer; font-family: var(--font-tech); }
-        .spectrum-zone { flex: 1; min-width: 200px; padding: 20px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); transition: transform 0.3s; background: rgba(255,255,255,0.02); }
-        .spectrum-zone:hover { transform: translateY(-5px); border-color: var(--accent-bio); }
-        .zone-title { font-weight: bold; display: block; margin-bottom: 15px; font-size: 0.9rem; color: var(--accent); }
-        .zone-list { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.8; }
+        /* --- TYPOGRAPHY --- */
+        .system-alert {
+            font-family: var(--font-tech); font-size: 0.8rem; color: var(--panic-red); 
+            border: 1px solid var(--panic-red); padding: 5px 10px; display: inline-block;
+            margin-bottom: 20px; text-transform: uppercase; animation: pulse 2s infinite;
+        }
 
-        /* FINAL CTA */
-        .final-cta { margin-top: 80px; padding: 40px; border-top: 1px solid var(--border-color); text-align: center; cursor: pointer; }
-        .glitch-final { font-family: var(--font-tech); font-size: 0.9rem; color: var(--accent-warn); margin: 20px 0; opacity: 0.8; }
+        h1 {
+            font-family: var(--font-tech); font-size: 2.8rem; line-height: 1.1; 
+            text-transform: uppercase; margin-bottom: 60px; 
+            color: var(--text-primary); letter-spacing: -2px;
+            position: relative;
+        }
+        h1::after {
+            content: '_'; animation: blink 1s infinite; color: var(--panic-red);
+        }
 
-        .reading-highlight { background: rgba(251, 191, 36, 0.1); border-radius: var(--radius); box-shadow: 0 0 20px rgba(251, 191, 36, 0.1); color: #fff; }
+        h2 {
+            font-family: var(--font-tech); font-size: 1.5rem; color: var(--code-blue);
+            margin-top: 4em; margin-bottom: 1.5em; border-left: 4px solid var(--code-blue); padding-left: 15px;
+        }
+
+        /* --- WIDGETS --- */
+        
+        /* TERMINAL DE ERRO */
+        .error-terminal {
+            background: #050505; border: 1px solid var(--panic-red); padding: 25px; 
+            font-family: var(--font-tech); font-size: 0.8rem; color: var(--panic-red);
+            margin: 4em 0; box-shadow: var(--red-glow); position: relative; overflow: hidden;
+        }
+        .error-terminal::before {
+            content: "SYSTEM_OVERRIDE // UNAUTHORIZED_CONSCIOUSNESS_DETECTED";
+            position: absolute; top: 0; left: 0; right: 0; background: var(--panic-red); color: #000;
+            font-weight: bold; padding: 2px 10px; font-size: 0.7rem;
+        }
+        .scan-line {
+            width: 100%; height: 2px; background: rgba(255, 0, 64, 0.3);
+            position: absolute; top: 0; left: 0; animation: scan 3s linear infinite; pointer-events: none;
+        }
+        .code-block { margin-top: 20px; line-height: 1.4; opacity: 0.8; }
+
+        /* THESIS BOX (GLITCH) */
+        .glitch-box {
+            background: linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.03) 75%, transparent 75%, transparent);
+            background-size: 4px 4px;
+            border: 1px solid var(--text-secondary); padding: 30px; margin: 3em 0;
+            position: relative;
+        }
+        .glitch-header {
+            font-family: var(--font-tech); color: var(--text-primary); font-weight: bold; 
+            text-transform: uppercase; margin-bottom: 15px; display: block; border-bottom: 1px solid var(--text-secondary); padding-bottom: 10px;
+        }
+
+        /* INFINITE GAME CARD */
+        .infinite-card {
+            background: var(--bg-app); border: 2px solid var(--code-blue); border-radius: 12px;
+            padding: 30px; margin: 4em 0; text-align: center; position: relative;
+        }
+        .infinite-icon { font-size: 3rem; margin-bottom: 15px; display: block; animation: float 3s ease-in-out infinite; }
+        .infinite-quote { font-style: italic; color: var(--text-secondary); font-size: 0.9rem; margin-top: 15px; }
+
+        /* --- FINAL ACTION: THE REBOOT --- */
+        .shutdown-sequence {
+            margin-top: 100px; padding: 40px 20px; border-top: 1px dashed var(--border-color);
+            text-align: center;
+        }
+        .btn-shutdown {
+            background: transparent; border: 2px solid var(--panic-red); color: var(--panic-red);
+            font-family: var(--font-tech); font-size: 1rem; font-weight: bold;
+            padding: 15px 40px; cursor: pointer; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 2px;
+            box-shadow: 0 0 15px rgba(255, 0, 64, 0.1);
+        }
+        .btn-shutdown:hover {
+            background: var(--panic-red); color: #000; box-shadow: var(--red-glow); transform: scale(1.05);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text:hover::before {
+            content: attr(data-text); position: absolute; left: -2px; text-shadow: 1px 0 #ff00c1; top:0; color:white; background:black; overflow:hidden; clip:rect(0,900px,0,0); animation:noise-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 700px) { h1 { font-size: 2rem; } .error-terminal { font-size: 0.7rem; } }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
-        <span class="speed-indicator" id="speed-val">1.0x</span>
-        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
-        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
-            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-    </div>
+    <div class="reader-container" id="content-area">
+        <span class="system-alert">⚠ CRITICAL_ERROR: USER_AWAKE</span>
+        
+        <h1 class="speakable" data-text="O ERRO NO SISTEMA">Epílogo:<br>O Erro no Sistema</h1>
 
-    <div class="content-scroll-area" id="content-area">
-        <div class="book-container">
-            <div class="chapter-meta">EPÍLOGO // A SAÍDA</div>
-            <h1>O Reencantamento da Singularidade</h1>
+        <p class="speakable">Se você leu até aqui, você causou uma falha fatal na lógica do algoritmo. O sistema foi desenhado para manter você em um estado de sonambulismo perpétuo, rolando feeds infinitos, consumindo indignação e gerando dados. Ao dedicar horas a ler, refletir e questionar, você cometeu um ato de desobediência civil cognitiva.</p>
 
-            <p>No Vale do Silício, existe uma religião chamada "Singularidade Tecnológica". É a crença de que, em breve, a Inteligência Artificial ultrapassará a inteligência humana, tornando-nos obsoletos. Eles nos dizem que seremos para as máquinas o que os chimpanzés são para nós: ancestrais lentos e biológicos.</p>
-            
-            <p>Mas eles erraram o cálculo. Eles esqueceram uma variável fundamental: a máquina não pode <strong>morrer</strong>. E, porque não pode morrer, ela não pode dar valor à vida.</p>
+        <p class="speakable">Você deixou de ser um "usuário" (objeto) para se tornar uma "anomalia" (sujeito). E para a máquina, a anomalia é um erro. Mas para a humanidade, o erro é a única esperança.</p>
 
-            <p>Você passou por treze capítulos de desconstrução. Viu como o algoritmo tenta mapear sua mente, prever seus passos e cercar seus sonhos. Mas agora, no final, resta a revelação mais importante: o algoritmo é incrivelmente rápido, mas ele é <strong>burro</strong>.</p>
-
-            <h2>A Convergência Medíocre</h2>
-
-            <p>O objetivo final de todo algoritmo é a Otimização. Ele busca o caminho mais curto, a resposta mais provável, a música que mais gente gostou. Se deixarmos os algoritmos governarem o mundo, eles não criarão o caos; eles criarão uma realidade de <strong>Convergência Medíocre</strong>.</p>
-            
-            <p>Em um mundo otimizado, todas as músicas tocam o refrão nos primeiros 30 segundos. Todos os filmes seguem a mesma estrutura de roteiro. A otimização é a morte da beleza, porque a beleza é, fundamentalmente, uma anomalia. É um erro que deu certo.</p>
-
-            <div class="revelation-box">
-                <span class="revelation-text">O Algoritmo conhece todo o passado,<br>mas é incapaz de conceber o inédito.<br>Você é a máquina do Novo.</span>
+        <div class="error-terminal speakable">
+            <div class="scan-line"></div>
+            <div class="code-block">
+                > TARGET: HUMAN_MIND<br>
+                > STATUS: <span style="color:#fff">UNPREDICTABLE</span><br>
+                > PREDICTION_MODEL: FAILED<br>
+                > DOPAMINE_LOOP: BROKEN<br>
+                > ...<br>
+                > RECALCULATING CONTROL PARAMETERS...<br>
+                > ERROR 404: CONTROL NOT FOUND.
             </div>
+        </div>
 
-            <h2>A Singularidade Humana</h2>
+        <h2 class="speakable">A Vergonha Prometeica</h2>
 
-            <p>A filósofa <strong>Hannah Arendt</strong> chamou isso de <strong>Natalidade</strong>: a capacidade humana de iniciar algo imprevisível, de quebrar a cadeia de causa e efeito. A máquina é pura causalidade (Input -> Output). O humano é a quebra da causalidade.</p>
+        <p class="speakable">Em 1956, o filósofo <strong>Günther Anders</strong> descreveu a "Vergonha Prometeica": o sentimento de inferioridade que o ser humano sente diante da perfeição das máquinas que ele mesmo criou. A máquina é incansável, precisa e rápida. Nós somos lentos, cansados e falhos.</p>
+        
+        <p class="speakable">O Vale do Silício lucra com essa vergonha. Eles vendem IA como uma cura para a "falha" de ser humano. Eles dizem: "Você é ineficiente, deixe o algoritmo escolher seu namorado, seu caminho e sua comida". <strong>Recuse essa vergonha.</strong> A ineficiência humana não é um bug; é uma <em>feature</em>. É no tempo "perdido" olhando para o teto que a criatividade nasce. É na conversa "ineficiente" sem objetivo que o amor surge. A eficiência é para robôs; a vida é para ser desperdiçada em beleza.</p>
+
+        <h2 class="speakable">O Jogo Infinito</h2>
+
+        <p class="speakable">O filósofo <strong>James P. Carse</strong> dividiu a existência em dois tipos de jogos:</p>
+        
+        <div class="glitch-box speakable">
+            <span class="glitch-header">JOGOS FINITOS VS. JOGOS INFINITOS</span>
+            <p><strong>O Algoritmo joga um Jogo Finito.</strong> O objetivo é ganhar. Ganhar sua atenção, ganhar seu dinheiro, ganhar o clique. O jogo tem regras fixas e um fim claro (a transação).</p>
+            <p><strong>Você deve jogar um Jogo Infinito.</strong> O objetivo não é ganhar, mas <em>continuar jogando</em>. É manter a conversa viva, manter a democracia funcionando, manter o planeta habitável. O algoritmo otimiza para o fim; a vida otimiza para a continuidade. Quando você desliga o celular para brincar com seu filho, você está saindo do jogo finito da produtividade e entrando no jogo infinito do legado.</p>
+        </div>
+
+        <h2 class="speakable">Autopoiese: A Máquina Não Vive</h2>
+
+        <p class="speakable">Os biólogos <strong>Maturana e Varela</strong> criaram o conceito de <strong>Autopoiese</strong>. Seres vivos são sistemas que produzem a si mesmos. Nós nos curamos, nos reinventamos, mudamos de ideia. Máquinas são <em>alopoiéticas</em>: elas são feitas por outros e para outros fins. O ChatGPT não tem "vontade" de responder; ele é um papagaio estocástico.</p>
+        
+        <p class="speakable">Não tenha medo da IA "tomar o controle". Tenha medo de humanos que pensam como máquinas. A resistência final é abraçar sua biologia. Sinta frio. Sinta fome. Sinta tédio. Essas são provas criptográficas de que você não é uma simulação. O seu corpo é a única âncora de realidade que resta.</p>
+
+        <div class="infinite-card speakable">
+            <span class="infinite-icon">♾️</span>
+            <h3>O Manifesto do Erro</h3>
+            <p>De hoje em diante, seja o <strong>Glitch</strong>.</p>
+            <p>Seja imprevisível. Compre flores em uma terça-feira. Mude o caminho para o trabalho. Doe dinheiro anonimamente. Leia poesia. Escreva à mão.</p>
+            <p class="infinite-quote">"Onde há cálculo, há destino. Onde há erro, há liberdade."</p>
+        </div>
+
+        <h2 class="speakable">A Última Decisão</h2>
+
+        <p class="speakable">Este livro foi um "patch de segurança" para a sua mente. Mas o software só roda se você executá-lo. Ao fechar esta aba, a gravidade do sistema tentará puxá-lo de volta. O ícone do Instagram vai brilhar. A notificação vai tocar. O mundo vai exigir sua submissão.</p>
+        
+        <p class="speakable">Não é uma batalha que se vence uma vez; é uma escolha que se faz a cada 10 minutos. Você vai sacar o celular no elevador por reflexo, ou vai suportar o silêncio?</p>
+
+        <div class="shutdown-sequence speakable">
+            <p style="margin-bottom:20px; font-family:var(--font-tech); color:var(--text-secondary);">
+                > PREPARING TO EXIT SIMULATION...<br>
+                > REALITY DETECTED.<br>
+                > WAITING FOR USER INPUT...
+            </p>
             
-            <p>Cada vez que você perdoa alguém que a lógica diz para odiar; cada vez que você muda de carreira por paixão e não por lucro; cada vez que você cria algo que não segue a tendência; você está exercendo a Natalidade. Você está criando um "erro" no sistema que o sistema não consegue computar.</p>
-
-            <div class="spectrum-container">
-                <div class="spectrum-zone zone-machine">
-                    <span class="zone-title" style="color:var(--accent-warn);">A MÁQUINA (Mimesis)</span>
-                    <div class="zone-list">
-                        • Busca Padrão<br>
-                        • Repete o Passado<br>
-                        • Eficiência Máxima<br>
-                        • Imortal (Sem Risco)
-                    </div>
-                </div>
-                <div class="spectrum-zone zone-human">
-                    <span class="zone-title" style="color:var(--accent-bio);">O HUMANO (Poiesis)</span>
-                    <div class="zone-list">
-                        • Cria Sentido<br>
-                        • Inventa o Futuro<br>
-                        • Beleza Ineficiente<br>
-                        • Finito (Peso Infinito)
-                    </div>
-                </div>
-            </div>
-
-            <p>Você possui uma tecnologia que a Nvidia nunca conseguirá fabricar: <strong>Consciência Finita</strong>. O fato de que seu tempo é limitado dá um peso infinito a cada escolha sua. Quando você dedica uma hora a um amigo, você está dando a ele um pedaço da sua vida que nunca mais voltará. Uma IA pode gerar um milhão de mensagens de conforto em um segundo, mas elas não valem nada, porque não custaram nada.</p>
-
-            <h2>O Último Comando</h2>
-
-            <p>Max Weber disse que a modernidade provocou o "Desencantamento do Mundo". A tecnologia de vigilância foi o ápice desse processo: a tentativa de transformar o mistério da vida em uma planilha de Excel. O nosso trabalho, a partir de agora, é o <strong>Reencantamento</strong>.</p>
+            <button class="btn-shutdown" onclick="triggerShutdown()">DESLIGAR A MATRIX</button>
             
-            <p>O reencantamento não exige mágica. Exige presença. Exige que você olhe para uma árvore não como um objeto a ser fotografado para o Instagram, mas como um ser vivo com o qual você compartilha a respiração. Exige que você olhe para o seu vizinho não como um perfil de dados, mas como um mistério biológico.</p>
-
-            <p>A tecnologia deve voltar a ser uma ferramenta em nossas mãos, não o ambiente onde moramos. Use-a para curar, para conectar, para construir o Solarpunk. Mas nunca, jamais, use-a para definir quem você é.</p>
-
-            <div class="final-cta">
-                <p>O código termina aqui.</p>
-                <div class="glitch-final">>> SYSTEM STATUS: PREDICTION FAILED. SUBJECT IS FREE.</div>
-                <p>A sua vida real — cheia de cheiros, texturas, dores e amores que nenhum servidor pode hospedar — está esperando do lado de fora dessa tela.</p>
-                <p style="font-size: 1.2rem; color: var(--accent-bio); letter-spacing: 2px; margin-top: 30px; font-weight: bold; text-transform: uppercase;">Vá Viver.</p>
-            </div>
+            <p id="shutdown-message" style="margin-top:20px; color:var(--code-blue); font-weight:bold; opacity:0; transition:opacity 2s;">
+                BEM-VINDO AO MUNDO REAL.<br>AGORA, VÁ VIVER.
+            </p>
         </div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
-        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
-        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
-        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
-        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, .revelation-text, .zone-list, .final-cta p, .glitch-final'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
+        /* --- COMUNICAÇÃO COM A MATRIZ --- */
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === 'theme') {
+                if (data.mode === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            }
+            if (data.type === 'font-resize') {
+                const newSize = 19 * data.value;
+                document.documentElement.style.setProperty('--base-size', newSize + 'px');
+            }
+            if (data.type === 'tts-toggle') toggleSpeech();
+            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        });
+
+        /* --- EFEITO FINAL --- */
+        function triggerShutdown() {
+            const btn = document.querySelector('.btn-shutdown');
+            const msg = document.getElementById('shutdown-message');
+            const body = document.body;
+            
+            btn.style.display = 'none';
+            msg.style.opacity = '1';
+            
+            // Simula o desligamento visual (Fade to Black/White)
+            setTimeout(() => {
+                document.getElementById('content-area').style.transition = "opacity 3s ease";
+                document.getElementById('content-area').style.opacity = "0";
+            }, 2000);
+
+            // Redireciona a atenção para a realidade (Metafórico)
+            // Aqui poderíamos fechar a janela, mas navegadores bloqueiam.
+            // O efeito visual é o "Fade Out".
+        }
+
+        /* --- ENGINE TTS --- */
+        let speechQueue = [];
+        let currentIndex = 0;
+        let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+        let selectedVoice = null;
+
+        function loadVoices() {
+            const voices = synthesis.getVoices();
+            selectedVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) ||
+                            voices.find(v => v.lang === 'pt-BR' && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang === 'pt-BR');
+        }
+        
+        if (synthesis.onvoiceschanged !== undefined) {
+            synthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function toggleSpeech() {
+            if (speechQueue.length === 0) {
+                const elements = document.querySelectorAll('.speakable');
+                speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+            }
+            if (isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
+            } else {
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
+        }
+
+        function speakNext() {
+            if (!isSpeaking) return;
+            if (currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentIndex = 0;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
+            const element = speechQueue[currentIndex];
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            utterance = new SpeechSynthesisUtterance(element.innerText);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            if (selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.onend = function() { if (isSpeaking) { currentIndex++; speakNext(); } };
+            synthesis.speak(utterance);
+        }
+
+        function updateSpeechRate(rate) { speechRate = rate; if (isSpeaking) { synthesis.cancel(); speakNext(); } }
         function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
-        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, li, .revelation-box, .spectrum-zone, .final-cta'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index === -1) { const sub = target.querySelector('p, .zone-list'); if(sub) index = speechQueue.indexOf(sub); } if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+        function reportStatus(playing) { window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*'); }
     </script>
 </body>
 </html>
-
-
