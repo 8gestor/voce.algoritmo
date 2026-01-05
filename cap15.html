@@ -2,193 +2,363 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Glossário // O Léxico da Resistência</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Glossário: O Código-Fonte. Banco de dados de conceitos, autores e tecnologias citados na obra.">
+    <title>Glossário // Database</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef;
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- THEME: DATABASE (Green & Dark) --- */
+            --bg-app: #050505;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            /* ALMA: DADOS (Verde Terminal) & CATEGORIAS */
+            --data-green: #10b981;
+            --cat-tech: #3b82f6;   /* Azul */
+            --cat-soc: #f59e0b;    /* Laranja */
+            --cat-phil: #8b5cf6;   /* Roxo */
+            --cat-tac: #ef4444;    /* Vermelho */
+            
+            --data-dim: rgba(16, 185, 129, 0.08);
+            --data-glow: 0 0 15px rgba(16, 185, 129, 0.2);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 16px;
+            --line-height: 1.6;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+            --bg-app: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --data-green: #059669;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
-
-        /* CONTENT GRID */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; font-size: var(--reading-size); }
-        
-        /* HEADER (Full Width) */
-        .header-section { grid-column: 1 / -1; text-align: center; margin-bottom: 40px; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 20px; }
-        .chapter-meta { font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
-
-        /* ALPHABET NAV */
-        .alpha-nav { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 30px; position: sticky; top: -10px; background: var(--bg-panel); padding: 10px; z-index: 10; border-bottom: 1px solid var(--border-color); backdrop-filter: blur(10px); }
-        .alpha-link { font-family: var(--font-tech); color: var(--text-secondary); text-decoration: none; padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.8rem; transition: all 0.2s; }
-        .alpha-link:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-        /* CARDS */
-        .glossary-card { 
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius); 
-            padding: 20px; display: flex; flex-direction: column; transition: transform 0.2s, border-color 0.2s; 
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 100px;
         }
-        .glossary-card:hover { transform: translateY(-3px); border-color: var(--accent); }
-        
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; }
-        .term { font-family: var(--font-tech); color: var(--accent); font-weight: bold; font-size: 0.95rem; }
-        .origin { font-family: var(--font-ui); font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; }
-        
-        .definition { font-family: var(--font-ui); color: var(--text-primary); font-size: 0.9rem; margin-bottom: 10px; line-height: 1.6; }
-        .context { font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-secondary); border-left: 2px solid var(--border-color); padding-left: 10px; margin-top: auto; }
 
-        @media (max-width: 600px) { .book-container { display: flex; flex-direction: column; } .alpha-nav { position: relative; top: 0; } }
+        .reader-container { width: 100%; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+        /* HEADER & SEARCH */
+        header { margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        
+        h1 {
+            font-family: var(--font-tech); font-size: 1.8rem; color: var(--data-green); 
+            text-transform: uppercase; margin-bottom: 20px; letter-spacing: -1px;
+        }
+
+        .search-wrapper { position: relative; margin-bottom: 20px; }
+        .search-input {
+            width: 100%; padding: 15px 15px 15px 45px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);
+            font-family: var(--font-tech); font-size: 1rem; transition: var(--transition);
+        }
+        .search-input:focus { border-color: var(--data-green); box-shadow: var(--data-glow); }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+
+        /* FILTERS */
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        .filter-btn {
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary);
+            padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-family: var(--font-tech);
+            cursor: pointer; transition: var(--transition); text-transform: uppercase;
+        }
+        .filter-btn:hover, .filter-btn.active { background: var(--data-dim); color: var(--text-primary); border-color: var(--data-green); }
+        
+        /* GRID DE TERMOS */
+        .glossary-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+        }
+
+        .term-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 20px; position: relative; overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column;
+        }
+        .term-card:hover { transform: translateY(-3px); border-color: var(--data-green); box-shadow: var(--data-glow); }
+
+        .term-tag {
+            position: absolute; top: 10px; right: 10px; font-size: 0.6rem; 
+            padding: 2px 6px; border-radius: 3px; font-family: var(--font-tech); font-weight: bold;
+            text-transform: uppercase;
+        }
+        .tag-tech { color: var(--cat-tech); border: 1px solid var(--cat-tech); }
+        .tag-soc { color: var(--cat-soc); border: 1px solid var(--cat-soc); }
+        .tag-phil { color: var(--cat-phil); border: 1px solid var(--cat-phil); }
+        .tag-tac { color: var(--cat-tac); border: 1px solid var(--cat-tac); }
+
+        .term-title { font-family: var(--font-tech); font-weight: bold; color: var(--text-primary); font-size: 1.1rem; margin-bottom: 10px; padding-right: 20px; }
+        .term-def { font-size: 0.9rem; color: var(--text-secondary); flex-grow: 1; margin-bottom: 15px; text-align: justify; }
+        
+        .term-footer { border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: auto; }
+        .term-source { font-size: 0.75rem; color: var(--data-green); font-family: var(--font-tech); display: flex; align-items: center; gap: 5px; }
+        
+        /* NO RESULTS */
+        .no-results { grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary); font-family: var(--font-tech); display: none; }
+
+        @media (max-width: 600px) { .glossary-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)">A+</button>
-    </div>
-
-    <div class="content-scroll-area">
-        <div class="book-container">
-            <div class="header-section">
-                <div class="chapter-meta">DATABASE // GLOSSARY</div>
-                <h1>O Léxico da Resistência</h1>
+    <div class="reader-container">
+        <header>
+            <h1>GLOSSÁRIO // CÓDIGO-FONTE</h1>
+            
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar comando, autor ou conceito..." onkeyup="filterGrid()">
             </div>
 
-            <div class="alpha-nav">
-                <a href="#A" class="alpha-link">A</a> <a href="#B" class="alpha-link">B</a> <a href="#C" class="alpha-link">C</a> 
-                <a href="#D" class="alpha-link">D</a> <a href="#E" class="alpha-link">E</a> <a href="#F" class="alpha-link">F</a>
-                <a href="#G" class="alpha-link">G</a> <a href="#I" class="alpha-link">I</a> <a href="#M" class="alpha-link">M</a>
-                <a href="#N" class="alpha-link">N</a> <a href="#O" class="alpha-link">O</a> <a href="#P" class="alpha-link">P</a>
-                <a href="#R" class="alpha-link">R</a> <a href="#S" class="alpha-link">S</a> <a href="#T" class="alpha-link">T</a>
-                <a href="#V" class="alpha-link">V</a> <a href="#W" class="alpha-link">W</a>
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterCategory('all')">Todos</button>
+                <button class="filter-btn" onclick="filterCategory('tech')">Tecnologia</button>
+                <button class="filter-btn" onclick="filterCategory('soc')">Sociologia</button>
+                <button class="filter-btn" onclick="filterCategory('phil')">Filosofia</button>
+                <button class="filter-btn" onclick="filterCategory('tac')">Táticas</button>
+            </div>
+        </header>
+
+        <div id="grid" class="glossary-grid">
+            
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Antrobsceno</div>
+                <div class="term-def">Conceito que funde "Antropoceno" e "Obsceno". Refere-se à materialidade tóxica e escondida da mídia digital (lixo eletrônico, mineração).</div>
+                <div class="term-footer"><span class="term-source">↳ Jussi Parikka (Cap 09)</span></div>
             </div>
 
-            <div class="glossary-card" id="A">
-                <div class="card-header"><span class="term">Afro-computação</span><span class="origin">Ron Eglash</span></div>
-                <div class="definition">Abordagem computacional baseada em sistemas de conhecimento africanos (fractais, recursividade).</div>
-                <div class="context">Alternativa epistemológica à lógica linear do Vale do Silício.</div>
+            <div class="term-card" data-cat="tech">
+                <span class="term-tag tag-tech">Tecnologia</span>
+                <div class="term-title">Ad Fraud (Methbot)</div>
+                <div class="term-def">Fraude publicitária massiva onde bots visualizam anúncios em sites falsos, gerando receita ilegítima e inflando a economia da atenção.</div>
+                <div class="term-footer"><span class="term-source">↳ Tim Hwang (Cap 08)</span></div>
             </div>
 
-            <div class="glossary-card">
-                <div class="card-header"><span class="term">Algoritmo de Caixa Preta</span><span class="origin">Frank Pasquale</span></div>
-                <div class="definition">Sistemas de IA cujos processos de decisão são opacos e secretos.</div>
-                <div class="context">Base do "Tribunal Algorítmico", impedindo o direito de defesa.</div>
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Autopoiese</div>
+                <div class="term-def">Capacidade dos seres vivos de se produzirem a si mesmos. Diferencia organismos (vivos) de máquinas (alopoiéticas).</div>
+                <div class="term-footer"><span class="term-source">↳ Maturana & Varela (Cap 14)</span></div>
             </div>
 
-            <div class="glossary-card" id="B">
-                <div class="card-header"><span class="term">Biopolítica Digital</span><span class="origin">Foucault (Adaptado)</span></div>
-                <div class="definition">Extensão do poder estatal/corporativo sobre a vida biológica via monitoramento.</div>
-                <div class="context">Transforma batimentos cardíacos e sono em ativos financeiros.</div>
+            <div class="term-card" data-cat="tech">
+                <span class="term-tag tag-tech">Tecnologia</span>
+                <div class="term-title">Bossware</div>
+                <div class="term-def">Softwares de vigilância laboral (Hubstaff, Teramind) que monitoram ociosidade, teclas e telas de funcionários remotos.</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 07</span></div>
             </div>
 
-            <div class="glossary-card">
-                <div class="card-header"><span class="term">Bossware</span><span class="origin">Corporativo</span></div>
-                <div class="definition">Software de vigilância para monitorar trabalhadores remotos (prints, keystrokes).</div>
-                <div class="context">Ferramenta central do "Patrão Invisível".</div>
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Chokepoint Capitalism</div>
+                <div class="term-def">Estratégia de criar gargalos entre criadores e audiências para extrair valor máximo (renda) de ambos (ex: taxas da App Store).</div>
+                <div class="term-footer"><span class="term-source">↳ Cory Doctorow (Cap 12)</span></div>
             </div>
 
-            <div class="glossary-card" id="C">
-                <div class="card-header"><span class="term">Capitalismo de Vigilância</span><span class="origin">Shoshana Zuboff</span></div>
-                <div class="definition">Ordem econômica que reivindica a experiência humana como matéria-prima gratuita.</div>
-                <div class="context">O conceito central do livro: você é a "carcaça" de extração.</div>
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Capitalismo de Vigilância</div>
+                <div class="term-def">Nova ordem econômica que reivindica a experiência humana como matéria-prima gratuita para extração e predição comportamental.</div>
+                <div class="term-footer"><span class="term-source">↳ Shoshana Zuboff (Intro)</span></div>
             </div>
 
-            <div class="glossary-card" id="D">
-                <div class="card-header"><span class="term">Data Double</span><span class="origin">Haggerty / Ericson</span></div>
-                <div class="definition">A representação virtual composta por fragmentos de dados.</div>
-                <div class="context">Para o sistema, este duplo é mais "real" que você.</div>
+            <div class="term-card" data-cat="tac">
+                <span class="term-tag tag-tac">Tática</span>
+                <div class="term-title">Digital Gardens</div>
+                <div class="term-def">Espaços na web (sites, blogs) cultivados pessoalmente, sem algoritmos de feed, focados em profundidade e conexão (Small Web).</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 08</span></div>
             </div>
 
-            <div class="glossary-card" id="E">
-                <div class="card-header"><span class="term">Enshittification</span><span class="origin">Cory Doctorow</span></div>
-                <div class="definition">O ciclo de vida predatório das plataformas (bom > ruim > terrível).</div>
-                <div class="context">Explica a degradação proposital de serviços como Facebook e Amazon.</div>
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Digital Redlining</div>
+                <div class="term-def">Prática de negar serviços a áreas geográficas baseada em algoritmos de risco, afetando desproporcionalmente minorias.</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 06</span></div>
             </div>
 
-            <div class="glossary-card" id="F">
-                <div class="card-header"><span class="term">Fediverso</span><span class="origin">Web Descentralizada</span></div>
-                <div class="definition">Federação de servidores independentes com protocolos abertos.</div>
-                <div class="context">Infraestrutura técnica do "Comum Digital".</div>
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Enshittification</div>
+                <div class="term-def">O ciclo de decadência das plataformas: boas para usuários -> boas para empresas -> boas apenas para os donos (Merdificação).</div>
+                <div class="term-footer"><span class="term-source">↳ Cory Doctorow (Cap 12)</span></div>
             </div>
 
-            <div class="glossary-card" id="G">
-                <div class="card-header"><span class="term">Glitch</span><span class="origin">Legacy Russell</span></div>
-                <div class="definition">Uso estratégico do erro para recusar classificação binária.</div>
-                <div class="context">Tornar-se ilegível para escapar da predição.</div>
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Ghost Work</div>
+                <div class="term-def">Trabalho humano invisível e mal pago (moderação, rotulagem) que sustenta a ilusão de automação da IA.</div>
+                <div class="term-footer"><span class="term-source">↳ Gray & Suri (Cap 07)</span></div>
             </div>
 
-            <div class="glossary-card" id="N">
-                <div class="card-header"><span class="term">Natalidade</span><span class="origin">Hannah Arendt</span></div>
-                <div class="definition">Capacidade humana de iniciar o novo e imprevisível.</div>
-                <div class="context">A "singularidade" que impede a máquina de prever o futuro.</div>
+            <div class="term-card" data-cat="tech">
+                <span class="term-tag tag-tech">Tecnologia</span>
+                <div class="term-title">IMSI Catcher</div>
+                <div class="term-def">Dispositivo que simula uma torre de celular para interceptar dados e localização de telefones próximos (Stingray).</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 05</span></div>
             </div>
 
-            <div class="glossary-card" id="O">
-                <div class="card-header"><span class="term">Ofuscação</span><span class="origin">Brunton & Nissenbaum</span></div>
-                <div class="definition">Produção de dados ambíguos ou falsos para confundir vigilância.</div>
-                <div class="context">Esconder-se no ruído, não no silêncio.</div>
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Liar's Dividend</div>
+                <div class="term-def">O "Dividendo do Mentiroso". Benefício que céticos e criminosos ganham em um mundo de Deepfakes, podendo negar qualquer prova real como "falsa".</div>
+                <div class="term-footer"><span class="term-source">↳ Chesney & Citron (Cap 08)</span></div>
             </div>
 
-            <div class="glossary-card" id="P">
-                <div class="card-header"><span class="term">Permacomputação</span><span class="origin">Design Ecológico</span></div>
-                <div class="definition">Design focado em longevidade de hardware e baixo consumo.</div>
-                <div class="context">Antítese da obsolescência programada.</div>
+            <div class="term-card" data-cat="tac">
+                <span class="term-tag tag-tac">Tática</span>
+                <div class="term-title">Lo-TEK</div>
+                <div class="term-def">Tecnologias Ecológicas Tradicionais. Infraestruturas ancestrais baseadas em simbiose com a natureza.</div>
+                <div class="term-footer"><span class="term-source">↳ Julia Watson (Cap 13)</span></div>
             </div>
 
-            <div class="glossary-card" id="S">
-                <div class="card-header"><span class="term">Solarpunk</span><span class="origin">Estética</span></div>
-                <div class="definition">Visão de futuro otimista, sustentável e descentralizada.</div>
-                <div class="context">Alta tecnologia + Alta biologia.</div>
+            <div class="term-card" data-cat="tech">
+                <span class="term-tag tag-tech">Tecnologia</span>
+                <div class="term-title">Model Collapse</div>
+                <div class="term-def">Colapso degenerativo de IAs treinadas com dados gerados por outras IAs, levando à perda de realidade e alucinação.</div>
+                <div class="term-footer"><span class="term-source">↳ Ilia Shumailov (Cap 08)</span></div>
             </div>
 
-            <div class="glossary-card" id="T">
-                <div class="card-header"><span class="term">Tecnofeudalismo</span><span class="origin">Yanis Varoufakis</span></div>
-                <div class="definition">Capitalismo substituído por renda extraída em feudos digitais.</div>
-                <div class="context">Você é um servo digital pagando aluguel com dados.</div>
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Necropolítica Digital</div>
+                <div class="term-def">O uso de algoritmos para decidir quem é "descartável", administrando a morte social ou física de populações.</div>
+                <div class="term-footer"><span class="term-source">↳ Achille Mbembe (Cap 04)</span></div>
+            </div>
+
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Neuro-direitos</div>
+                <div class="term-def">Novos direitos humanos propostos para proteger a privacidade mental e a integridade cognitiva contra neurotecnologias.</div>
+                <div class="term-footer"><span class="term-source">↳ Rafael Yuste (Cap 10)</span></div>
+            </div>
+
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Onlife</div>
+                <div class="term-def">Condição existencial onde as fronteiras entre online e offline desapareceram; a vida é um fluxo híbrido de informações.</div>
+                <div class="term-footer"><span class="term-source">↳ Luciano Floridi (Cap 11)</span></div>
+            </div>
+
+            <div class="term-card" data-cat="tac">
+                <span class="term-tag tag-tac">Tática</span>
+                <div class="term-title">Permacomputação</div>
+                <div class="term-def">Filosofia de computação focada em longevidade de hardware, baixo consumo e reparabilidade radical.</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 09</span></div>
+            </div>
+
+            <div class="term-card" data-cat="tac">
+                <span class="term-tag tag-tac">Tática</span>
+                <div class="term-title">POSSE Protocol</div>
+                <div class="term-def">"Publish on your Own Site, Syndicate Elsewhere". Estratégia de publicar conteúdo em domínio próprio e distribuir nas redes.</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 12</span></div>
+            </div>
+
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Realismo Capitalista</div>
+                <div class="term-def">A sensação generalizada de que é mais fácil imaginar o fim do mundo do que o fim do capitalismo.</div>
+                <div class="term-footer"><span class="term-source">↳ Mark Fisher (Cap 13)</span></div>
+            </div>
+
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Semiocapitalismo</div>
+                <div class="term-def">Regime onde o capital explora a linguagem e o sistema nervoso, gerando superestimulação e pânico.</div>
+                <div class="term-footer"><span class="term-source">↳ Franco Berardi (Cap 07)</span></div>
+            </div>
+
+            <div class="term-card" data-cat="phil">
+                <span class="term-tag tag-phil">Filosofia</span>
+                <div class="term-title">Solarpunk</div>
+                <div class="term-def">Movimento estético/político que imagina um futuro onde a tecnologia regenera a natureza e empodera comunidades.</div>
+                <div class="term-footer"><span class="term-source">↳ Cap 13</span></div>
+            </div>
+
+            <div class="term-card" data-cat="soc">
+                <span class="term-tag tag-soc">Sociologia</span>
+                <div class="term-title">Tecnofeudalismo</div>
+                <div class="term-def">Sistema onde mercados são substituídos por plataformas (feudos) e o lucro por renda (aluguel digital).</div>
+                <div class="term-footer"><span class="term-source">↳ Yanis Varoufakis (Cap 12)</span></div>
+            </div>
+
+            <div class="term-card" data-cat="tech">
+                <span class="term-tag tag-tech">Tecnologia</span>
+                <div class="term-title">The New Jim Code</div>
+                <div class="term-def">Como tecnologias "neutras" codificam e amplificam preconceitos raciais históricos.</div>
+                <div class="term-footer"><span class="term-source">↳ Ruha Benjamin (Cap 04)</span></div>
             </div>
 
         </div>
+        
+        <div id="no-results" class="no-results">NENHUM DADO ENCONTRADO NO SISTEMA.</div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) {
-            currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 24) currentSize = 24;
-            document.documentElement.style.setProperty('--reading-size', currentSize + 'px');
+        // FILTRO DE BUSCA E CATEGORIA
+        function filterGrid() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const category = activeBtn ? activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'all';
+            
+            const cards = document.querySelectorAll('.term-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                const cardCat = card.getAttribute('data-cat');
+                
+                const matchesSearch = text.includes(input);
+                const matchesCat = category === 'all' || cardCat === category;
+
+                if (matchesSearch && matchesCat) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
         }
+
+        function filterCategory(cat) {
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Trigger filter
+            filterGrid();
+        }
+
+        // INFRAESTRUTURA INDEX
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === 'theme') {
+                document.body.classList.toggle('light-mode', data.mode === 'light');
+            }
+            if (data.type === 'font-resize') {
+                document.documentElement.style.setProperty('--base-size', (16 * data.value) + 'px');
+            }
+        });
     </script>
 </body>
 </html>
-
-
