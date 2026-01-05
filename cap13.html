@@ -2,194 +2,429 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Capítulo 13: Imaginação Radical. Solarpunk, Mark Fisher, Lo-TEK e a construção de um futuro regenerativo e descentralizado.">
+    <meta name="keywords" content="Solarpunk, Mark Fisher, Realismo Capitalista, Lo-TEK, Julia Watson, Murray Bookchin, Protopia, Design Regenerativo, Economia Circular">
     <title>Capítulo 13 // O Futuro Solarpunk</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-solar: #fcd34d;
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- DESIGN SYSTEM FATOR X (Theme: Photosynthesis & Energy) --- */
+            --bg-app: #050505;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            /* ALMA DO CAPÍTULO: SOL (Amarelo) & VIDA (Verde Neon/Folha) */
+            --solar-yellow: #fbbf24;
+            --life-green: #4ade80;
+            --tech-teal: #2dd4bf;
+            
+            --solar-dim: rgba(251, 191, 36, 0.08);
+            --life-glow: 0 0 20px rgba(74, 222, 128, 0.2);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; /* Controlado pelo Index */
+            --line-height: 1.8;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+            --bg-app: #f2f2f7;
+            --text-primary: #1c1c1e;
+            --text-secondary: #4b5563;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --solar-yellow: #d97706;
+            --life-green: #15803d;
+            --tech-teal: #0f766e;
+            --solar-dim: rgba(217, 119, 6, 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
 
-        /* CONTENT */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        /* --- CONTAINER DE LEITURA --- */
+        .reader-container {
+            width: 100%;
+            max-width: 760px; 
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        p {
+            margin-bottom: 2em; 
+            text-align: justify; 
+            hyphens: auto; 
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+        }
+
+        strong { color: var(--text-primary); font-weight: 700; }
+
+        /* --- TIPOGRAFIA TECH --- */
+        .chapter-meta {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--life-green);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
+            border-left: 2px solid var(--life-green); padding-left: 10px;
+        }
+
+        h1 {
+            font-family: var(--font-tech); font-size: 2.2rem; line-height: 1.2;
+            text-transform: uppercase; margin-bottom: 50px; 
+            color: var(--text-primary); letter-spacing: -1px;
+            border-bottom: 1px solid var(--solar-yellow); padding-bottom: 20px;
+        }
+
+        h2 {
+            font-family: var(--font-tech); font-size: 1.4rem; color: var(--solar-yellow);
+            margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
         h2::before { content: '//'; opacity: 0.5; }
-        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
-        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
-        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
-        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* BOXES */
-        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
-        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent-solar); }
-        .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-left: 4px solid var(--accent-bio); position: relative; }
-        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-app); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: var(--font-tech); text-transform: uppercase; font-size: 0.7rem; }
-        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
-        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-solar); text-align: center; }
-        .action-title { color: var(--accent-solar); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--life-green); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--solar-dim); padding-left: 15px;
+        }
 
-        /* SOLARPUNK */
-        .solarpunk-container { display: flex; justify-content: center; gap: 20px; margin: 3em 0; cursor: pointer; flex-wrap: wrap; }
-        .solar-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius); width: 45%; min-width: 250px; text-align: center; transition: transform 0.3s; font-family: var(--font-tech); }
-        .solar-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(252, 211, 77, 0.1); border-color: var(--accent-solar); }
-        .solar-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
-        .solar-title { font-weight: bold; color: var(--text-primary); display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8rem; }
-        .solar-desc { font-size: 0.8rem; color: var(--text-secondary); }
+        /* --- WIDGETS --- */
+        .box { padding: 30px; border-radius: 8px; margin: 3em 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); }
+        
+        .thesis-box {
+            background: var(--solar-dim);
+            border-left: 4px solid var(--solar-yellow);
+            text-align: justify;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--solar-yellow); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* TABLE */
-        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
-        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+        .deep-dive-box {
+            border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color);
+            border-left: none; border-right: none; border-radius: 0;
+            background: rgba(255,255,255,0.01);
+        }
 
-        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
+        /* VISUAL: FUTURES CONE */
+        .futures-container {
+            display: flex; flex-direction: column; gap: 10px; margin: 3em 0;
+            padding: 20px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-app);
+        }
+        .future-bar { 
+            height: 40px; display: flex; align-items: center; padding: 0 15px;
+            border-radius: 4px; font-family: var(--font-tech); font-size: 0.8rem;
+            margin-bottom: 5px; position: relative; overflow: hidden;
+        }
+        .fb-collapse { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; width: 80%; }
+        .fb-statusquo { background: rgba(148, 163, 184, 0.1); border: 1px solid #94a3b8; color: #94a3b8; width: 90%; }
+        .fb-solarpunk { background: rgba(74, 222, 128, 0.2); border: 1px solid var(--life-green); color: var(--life-green); width: 100%; box-shadow: var(--life-glow); }
+        
+        .future-label { margin-left: auto; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+
+        /* TECH CARDS (Solarpunk Tech) */
+        .tech-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 3em 0;
+        }
+        .tech-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            padding: 20px; border-radius: 8px; text-align: center;
+            transition: transform 0.3s;
+        }
+        .tech-card:hover { transform: translateY(-5px); border-color: var(--life-green); }
+        .tech-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .tech-title { font-family: var(--font-tech); font-weight: bold; color: var(--text-primary); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .tech-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
+
+        /* Comparison Grid */
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
+        .comp-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color); padding: 25px; border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .comp-card:hover { transform: translateY(-5px); border-color: var(--solar-yellow); }
+        .comp-title { 
+            font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; 
+            display: block; margin-bottom: 15px; font-size: 0.8rem;
+        }
+        .comp-content { font-size: 0.9rem; text-align: justify; color: var(--text-secondary); line-height: 1.6; }
+
+        /* Action Box */
+        .action-box {
+            border: 1px dashed var(--life-green); background: linear-gradient(180deg, rgba(74, 222, 128, 0.05), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .action-header { 
+            font-family: var(--font-tech); color: var(--life-green); font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- SINCRONIA DE LEITURA (FATOR X) --- */
+        .reading-highlight { 
+            background: var(--solar-dim); 
+            color: var(--text-primary); 
+            border-left: 4px solid var(--solar-yellow);
+            padding-left: 15px;
+            margin-left: -19px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: var(--life-glow);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 700px) {
+            .reader-container { padding: 40px 20px; }
+            h1 { font-size: 1.8rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .tech-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
-        <span class="speed-indicator" id="speed-val">1.0x</span>
-        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
-        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
-            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-    </div>
+    <div class="reader-container" id="content-area">
+        <span class="chapter-meta">PARTE IV: HORIZONTES E RESISTÊNCIA | CAPÍTULO 13</span>
+        
+        <h1 class="speakable">Imaginação Radical:<br>O Futuro Solarpunk</h1>
 
-    <div class="content-scroll-area" id="content-area">
-        <div class="book-container">
-            <div class="chapter-meta">Parte IV: Horizontes e Resistência | Capítulo 13</div>
-            <h1>Imaginação Radical: O Futuro Solarpunk</h1>
+        <p class="speakable">Por que é tão fácil imaginar o fim do mundo? Por que todo filme sobre o futuro mostra cidades chuvosas, iluminadas por néon, governadas por corporações malignas (estética Cyberpunk)? E por que é tão difícil, quase constrangedor, imaginar um futuro onde as coisas... deram certo?</p>
+        
+        <p class="speakable">O falecido filósofo <strong>Mark Fisher</strong> chamou isso de <strong>Realismo Capitalista</strong>: a sensação generalizada de que não existe alternativa viável. O sistema colonizou não apenas nossos dados, mas nossos sonhos. Ele nos convenceu de que o futuro será apenas uma versão piorada (mais vigiada, mais quente, mais cara) do presente. A resistência final é a <strong>Imaginação Radical</strong>. É a coragem técnica de projetar utopias funcionais.</p>
 
-            <p>Por que é tão fácil imaginar o fim do mundo? Por que todo filme sobre o futuro mostra cidades chuvosas, iluminadas por néon, governadas por corporações malignas? E por que é tão difícil, quase constrangedor, imaginar um futuro onde as coisas... deram certo?</p>
+        <div class="box thesis-box speakable">
+            <span class="thesis-header">// A Política da Ficção</span>
+            "A escritora <strong>Ursula K. Le Guin</strong> disse: 'Vivemos no capitalismo. Seu poder parece inescapável. Mas assim também parecia o direito divino dos reis.' Para Le Guin, a função da ficção (e da tecnologia) não é prever o futuro, mas descrever uma realidade onde as regras atuais não se aplicam, provando que elas não são leis da física, mas escolhas políticas. O Solarpunk nasce aqui: não como estética, mas como engenharia de esperança."
+        </div>
+
+        <h2 class="speakable">Lo-TEK: A Tecnologia Ancestral</h2>
+
+        <p class="speakable">A inovação nem sempre significa "novo chip". A arquiteta e pesquisadora <strong>Julia Watson</strong> cunhou o termo <strong>Lo-TEK</strong> (Traditional Ecological Knowledge) para descrever tecnologias indígenas que são mais avançadas em sustentabilidade do que qualquer "Smart City".</p>
+        
+        <p class="speakable">Considere as pontes de raízes vivas de Meghalaya, na Índia. O povo Khasi guia as raízes da Ficus elastica através dos rios. Diferente de uma ponte de concreto, que começa a degradar no dia em que é inaugurada, a ponte de raízes fica <em>mais forte</em> com o tempo, absorve carbono e se autorrepara. Isso é infraestrutura regenerativa. O futuro Solarpunk funde essa sabedoria biológica com sensores modernos e computação descentralizada.</p>
+
+        <h2 class="speakable">Tecnologias de Libertação: O Hardware Solarpunk</h2>
+
+        <p class="speakable">O Solarpunk não é um retorno ao primitivismo. É uma aceleração em direção a uma tecnologia que serve à vida (biocêntrica) e não ao lucro (antropocêntrica). Eis o arsenal da Protopia:</p>
+
+        <div class="tech-grid speakable">
+            <div class="tech-card">
+                <span class="tech-icon">🕸️</span>
+                <span class="tech-title">Redes Mesh</span>
+                <span class="tech-desc">Internet descentralizada onde cada celular é um roteador. Se a operadora desliga o sinal, a comunidade continua conectada. Resiliência local.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">🍄</span>
+                <span class="tech-title">Micotectura</span>
+                <span class="tech-desc">Uso de micélio (raízes de cogumelos) para crescer tijolos isolantes, móveis e embalagens. Materiais que nascem do lixo e viram adubo.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">⚡</span>
+                <span class="tech-title">Microgrids P2P</span>
+                <span class="tech-desc">Vizinhos gerando energia solar e vendendo o excedente diretamente uns para os outros via Blockchain, sem passar pela concessionária estatal.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">🔧</span>
+                <span class="tech-title">Modularidade</span>
+                <span class="tech-desc">Eletrônicos desenhados para serem abertos, consertados e atualizados (como o Framework Laptop). O fim da obsolescência programada.</span>
+            </div>
+        </div>
+
+        <h2 class="speakable">Ecologia Social: Além da "Tecnologia Verde"</h2>
+
+        <p class="speakable">Não basta mudar a fonte de energia; é preciso mudar a hierarquia de poder. <strong>Murray Bookchin</strong>, pai da Ecologia Social, argumentava que "a dominação da natureza pela humanidade decorre da dominação real do humano pelo humano".</p>
+        
+        <p class="speakable">Um painel solar em uma fábrica onde trabalhadores são explorados não é Solarpunk; é apenas capitalismo verde. O Solarpunk exige uma reorganização social: cooperativas de plataforma, propriedade comunal dos dados e governança participativa. A tecnologia deve ser uma ferramenta de libertação, não apenas de eficiência energética.</p>
+
+        <div class="futures-container speakable">
+            <span style="display:block; text-align:center; font-family:var(--font-tech); font-weight:bold; color:var(--text-primary); margin-bottom:15px;">O CONE DE FUTUROS POSSÍVEIS</span>
             
-            <p>Mark Fisher chamou isso de <strong>Realismo Capitalista</strong>: a sensação generalizada de que não existe alternativa. O sistema colonizou não apenas nossos dados, mas nossos sonhos. Ele nos convenceu de que o futuro será apenas uma versão piorada (mais vigiada, mais quente, mais cara) do presente.</p>
+            <div class="future-bar fb-collapse">
+                FUTURO 1: COLAPSO
+                <span class="future-label">Barbárie, Mad Max</span>
+            </div>
+            <div class="future-bar fb-statusquo">
+                FUTURO 2: STATUS QUO
+                <span class="future-label">Cyberpunk, Vigilância, Desigualdade</span>
+            </div>
+            <div class="future-bar fb-solarpunk">
+                FUTURO 3: PROTOPIA
+                <span class="future-label">Solarpunk, Regeneração, Comunidade</span>
+            </div>
             
-            <p>A resistência final é a <strong>Imaginação Radical</strong>. É a coragem de ser otimista de uma forma técnica, punk e suja. Não é o otimismo ingênuo de que "tudo vai dar certo", mas o otimismo pragmático de quem diz: "nós vamos consertar isso".</p>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 15px; font-style: italic; text-align: center;">
+                "O Futuro 2 é o caminho automático. O Futuro 3 exige esforço deliberado de engenharia social e técnica."
+            </p>
+        </div>
 
-            <div class="deep-dive-box">
-                <h3>Fator X: A Política da Imaginação</h3>
-                <p>A escritora <strong>Ursula K. Le Guin</strong> disse: "Vivemos no capitalismo. Seu poder parece inescapável. Mas assim também parecia o direito divino dos reis." Para Le Guin, a função da ficção (e da tecnologia) não é prever o futuro, mas descrever uma realidade onde as regras atuais não se aplicam, provando que elas não são leis da física, mas escolhas políticas. Imaginar um mundo sem Big Tech é o primeiro passo para construí-lo.</p>
-            </div>
+        <h2 class="speakable">Síntese: Protopia e o Trabalho Manual</h2>
 
-            <h2>A Tese: A Preguiça da Distopia</h2>
+        <p class="speakable">Kevin Kelly propõe o conceito de <strong>Protopia</strong>: um mundo que não é utópico (perfeito), mas que é ligeiramente melhor hoje do que foi ontem. O Solarpunk é protopiano. Ele não promete o paraíso instantâneo, mas o trabalho duro e constante de manutenção e cuidado.</p>
+        
+        <p class="speakable">O algoritmo quer que você acredite que o futuro é algo que <em>acontece</em> com você, como um filme na Netflix. O Solarpunk diz que o futuro é algo que você <em>constrói</em> com as mãos. Reivindicar o futuro significa sujar as mãos: aprender a soldar, a plantar, a programar, a organizar seu bairro.</p>
 
-            <p>O Vale do Silício nos vende dois futuros: a Distopia (apocalipse climático, cada um por si) ou a Utopia Tecnocrata (Metaverso, Marte). Ambos têm algo em comum: eles negam a vida biológica e comunitária aqui na Terra.</p>
-
-            <div class="box thesis-box">
-                <strong style="color: var(--accent); text-transform: uppercase; font-family: var(--font-tech);">// O Lucro do Medo:</strong><br><br>
-                "O medo vende. O algoritmo ama o medo porque ele prende a atenção (viés de negatividade). Imaginar o apocalipse é confortável porque nos isenta de responsabilidade ('se tudo vai acabar, para que tentar?'). A esperança, por outro lado, dá trabalho. A esperança exige engenharia."
-            </div>
-
-            <h2>Antítese: A Estética Solarpunk</h2>
-
-            <p>Contra o cinza do Cyberpunk, surge o <strong>Solarpunk</strong>. O Solarpunk não rejeita a tecnologia, mas rejeita a centralização. Ele imagina um futuro onde a alta tecnologia é usada para regenerar a natureza e empoderar a comunidade, não para dominá-las.</p>
-            
-            <p>É um futuro de cidades verdes, mas não primitivas. Painéis solares transparentes. Dirigíveis de carga. Impressoras 3D comunitárias. Internet descentralizada (como vimos no capítulo anterior) rodando em servidores locais movidos a energia eólica.</p>
-
-            <div class="box antithesis-box">
-                <span class="antithesis-tag">O Contraponto Visual</span>
-                <p><strong>Alta Tecnologia + Alta Biologia:</strong></p>
-                <p>O Solarpunk rejeita a nostalgia do "retorno ao campo". Nós queremos a medicina moderna e a comunicação global. Mas queremos usar a IA para otimizar a distribuição de energia de uma cooperativa solar, não para gerar anúncios. Queremos biotecnologia para limpar rios com bactérias, não para patentear sementes.</p>
-            </div>
-
-            <div class="visual-table-container">
-                <div class="visual-header">🌇 BATALHA DE IMAGINÁRIOS</div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><strong>Cyberpunk (O que nos vendem)</strong></td>
-                            <td>"High tech, low life". Corporações governam. Chuva ácida. Fuga para o VR.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Solarpunk (O que precisamos)</strong></td>
-                            <td>"High tech, high life". Comunidades governam. Cidades-jardim. Foco no Real.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="solarpunk-container">
-                <div class="solar-card">
-                    <span class="solar-icon">🌱</span>
-                    <span class="solar-title">REGENERAÇÃO</span>
-                    <span class="solar-desc">A tecnologia deve curar o dano ambiental, não acelerá-lo.</span>
-                </div>
-                <div class="solar-card">
-                    <span class="solar-icon">🔧</span>
-                    <span class="solar-title">REPARABILIDADE</span>
-                    <span class="solar-desc">Se você não pode consertar, você não é o dono. (Right to Repair)</span>
-                </div>
-            </div>
-
-            <h2>Síntese: O Futuro é um Trabalho Manual</h2>
-
-            <p>O algoritmo quer que você acredite que o futuro é algo que <em>acontece</em> com você, como um filme. O Solarpunk diz que o futuro é algo que você <em>constrói</em> com as mãos.</p>
-            
-            <p>Reivindicar o futuro significa sujar as mãos. Significa aprender a consertar seu computador, a plantar sua comida (mesmo que seja manjericão na janela), a configurar seu servidor no Fediverso. A utopia não é um lugar onde chegamos; é uma ferramenta que usamos para quebrar o concreto do presente.</p>
-
-            <div class="action-box">
-                <div class="action-title">🌻 DESAFIO DE RETOMADA #13</div>
-                <p><strong>A Engenharia da Esperança</strong></p>
-                <p>O cinismo é a ferramenta do status quo. A esperança é rebelde.</p>
-                <p><strong>Sua missão:</strong> Escreva um parágrafo (no seu caderno analógico) descrevendo um dia na sua vida daqui a 10 anos, num mundo onde a tecnologia deu certo. Como é o seu trabalho? Como é o ar? Como você se conecta com os outros sem ser vigiado?</p>
-                <p>Esse parágrafo é o código-fonte da sua resistência. Não o perca.</p>
-            </div>
+        <div class="box action-box speakable">
+            <span class="action-header">🌻 DESAFIO DE RETOMADA #13</span>
+            <p><strong>A Arqueologia do Futuro (Artifact form the Future)</strong></p>
+            <p>Para construir, primeiro você precisa ver.</p>
+            <p><strong>Sua missão:</strong> Crie um "Artefato do Futuro". Pode ser um desenho, um texto ou um objeto físico improvisado. Imagine um objeto que existiria em 2050 numa sociedade Solarpunk.</p>
+            <p><em>Exemplo:</em> Um "Passaporte de Carbono Pessoal" que te dá créditos por plantar árvores? Um manual de instruções para um "Smartphone de 50 anos" feito de madeira e cerâmica? Tangibilize a esperança. Tire-a da cabeça e coloque-a no mundo físico.</p>
         </div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
-        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
-        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
-        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
-        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box, .solar-card'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
-        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
-        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, li, .box, td, .solar-card'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            // 1. Controle de Tema
+            if (data.type === 'theme') {
+                if (data.mode === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            }
+
+            // 2. Controle de Fonte
+            if (data.type === 'font-resize') {
+                const newSize = 19 * data.value;
+                document.documentElement.style.setProperty('--base-size', newSize + 'px');
+            }
+
+            // 3. Controle de TTS
+            if (data.type === 'tts-toggle') toggleSpeech();
+            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        });
+
+        /* --- ENGINE TTS AVANÇADA (FATOR X) --- */
+        let speechQueue = [];
+        let currentIndex = 0;
+        let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+        let selectedVoice = null;
+
+        function loadVoices() {
+            const voices = synthesis.getVoices();
+            selectedVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) ||
+                            voices.find(v => v.lang === 'pt-BR' && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang === 'pt-BR');
+        }
+        
+        if (synthesis.onvoiceschanged !== undefined) {
+            synthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function prepareQueue() {
+            const elements = document.querySelectorAll('.speakable');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+        }
+
+        function toggleSpeech() {
+            if (speechQueue.length === 0) prepareQueue();
+
+            if (isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
+            } else {
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
+        }
+
+        function updateSpeechRate(rate) {
+            speechRate = rate;
+            if (isSpeaking) {
+                synthesis.cancel();
+                speakNext();
+            }
+        }
+
+        function speakNext() {
+            if (!isSpeaking) return;
+            if (currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentIndex = 0;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
+            const element = speechQueue[currentIndex];
+            const text = element.innerText;
+
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            
+            if (selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.onend = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+            
+            utterance.onerror = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+        }
+
+        function reportStatus(playing) {
+            window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*');
+        }
+
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) prepareQueue();
+                const index = speechQueue.indexOf(target);
+                if (index !== -1) {
+                    synthesis.cancel();
+                    currentIndex = index;
+                    isSpeaking = true;
+                    reportStatus(true);
+                    speakNext();
+                }
+            }
+        });
+
+        window.onbeforeunload = function() {
+            synthesis.cancel();
+        };
     </script>
 </body>
 </html>
-
-
