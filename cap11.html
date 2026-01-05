@@ -2,201 +2,325 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Capítulo 11: O Protocolo de Retomada. Manifesto Onlife, Ferramentas Conviviais, Minimalismo Digital e a transição de Usuário para Cidadão.">
+    <meta name="keywords" content="Onlife, Luciano Floridi, Cal Newport, Ivan Illich, Ferramentas Conviviais, Minimalismo Digital, Atenção Plena, Soberania Digital, Protagonismo">
     <title>Capítulo 11 // A Cidadania Onlife</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-construct: #2563eb;
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- DESIGN SYSTEM FATOR X (Theme: Harmony & Structure) --- */
+            --bg-app: #050505;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            /* ALMA DO CAPÍTULO: EQUILÍBRIO (Azul Real) & CONSTRUÇÃO (Roxo) */
+            --construct-blue: #3b82f6;
+            --harmony-purple: #8b5cf6;
+            --human-warmth: #f59e0b;
+            
+            --blue-dim: rgba(59, 130, 246, 0.08);
+            --blue-glow: 0 0 20px rgba(59, 130, 246, 0.2);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; /* Controlado pelo Index */
+            --line-height: 1.8;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+            --bg-app: #f2f2f7;
+            --text-primary: #1c1c1e;
+            --text-secondary: #4b5563;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --construct-blue: #2563eb;
+            --harmony-purple: #7c3aed;
+            --blue-dim: rgba(37, 99, 235, 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
 
-        /* CONTENT */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-bio); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        /* --- CONTAINER DE LEITURA --- */
+        .reader-container {
+            width: 100%;
+            max-width: 740px; 
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        p {
+            margin-bottom: 2em; 
+            text-align: justify; 
+            hyphens: auto; 
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+        }
+
+        strong { color: var(--text-primary); font-weight: 700; }
+
+        /* --- TIPOGRAFIA TECH --- */
+        .chapter-meta {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--construct-blue);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
+            border-left: 2px solid var(--construct-blue); padding-left: 10px;
+        }
+
+        h1 {
+            font-family: var(--font-tech); font-size: 2.2rem; line-height: 1.2;
+            text-transform: uppercase; margin-bottom: 50px; 
+            color: var(--text-primary); letter-spacing: -1px;
+            border-bottom: 1px solid var(--construct-blue); padding-bottom: 20px;
+        }
+
+        h2 {
+            font-family: var(--font-tech); font-size: 1.4rem; color: var(--harmony-purple);
+            margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
         h2::before { content: '//'; opacity: 0.5; }
-        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
-        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
-        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
-        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* BOXES */
-        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
-        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
-        .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid var(--accent-bio); border-radius: 8px; padding: 25px; margin: 40px 0; position: relative; cursor: pointer; }
-        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-app); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: var(--font-tech); text-transform: uppercase; font-size: 0.7rem; }
-        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
-        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-construct); text-align: center; }
-        .action-title { color: var(--accent-construct); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
-
-        /* EQUILIBRIUM VISUAL */
-        .equilibrium-container { 
-            display: flex; align-items: center; justify-content: center; gap: 30px; margin: 3em 0; 
-            padding: 30px; background: rgba(255,255,255,0.02); border-radius: var(--radius); border: 1px solid var(--border-color);
-            font-family: var(--font-tech); cursor: pointer; flex-direction: column;
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--construct-blue); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--blue-dim); padding-left: 15px;
         }
-        .balance-scale { position: relative; width: 200px; height: 4px; background: var(--text-secondary); border-radius: 5px; margin-top: 20px; }
-        .fulcrum { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--text-secondary); }
-        .plate { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border: 2px solid var(--accent); border-radius: 50%; position: absolute; top: -25px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 2s ease-in-out; }
-        .plate-left { left: 0; animation: balanceLeft 4s infinite ease-in-out; }
-        .plate-right { right: 0; border-color: var(--accent-bio); animation: balanceRight 4s infinite ease-in-out; }
+
+        /* --- WIDGETS --- */
+        .box { padding: 30px; border-radius: 8px; margin: 3em 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); }
         
-        @keyframes balanceLeft { 0%, 100% { top: -25px; } 50% { top: -10px; } }
-        @keyframes balanceRight { 0%, 100% { top: -10px; } 50% { top: -25px; } }
+        .thesis-box {
+            background: var(--blue-dim);
+            border-left: 4px solid var(--construct-blue);
+            text-align: justify;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--construct-blue); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* TABLE */
-        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
-        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+        /* VISUAL: INTENTIONALITY FILTER */
+        .filter-container {
+            display: flex; flex-direction: column; align-items: center; margin: 3em 0; gap: 10px;
+        }
+        .filter-funnel {
+            width: 100%; max-width: 400px;
+            clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+            background: linear-gradient(180deg, var(--construct-blue), var(--harmony-purple));
+            padding: 20px; text-align: center; color: #fff; font-family: var(--font-tech); font-size: 0.8rem;
+        }
+        .filter-output {
+            width: 60%; background: var(--bg-app); border: 1px solid var(--harmony-purple);
+            padding: 15px; text-align: center; border-radius: 4px; box-shadow: 0 0 15px var(--blue-glow);
+        }
 
-        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
+        /* Comparison Grid */
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
+        .comp-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color); padding: 25px; border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .comp-card:hover { transform: translateY(-5px); border-color: var(--construct-blue); }
+        .comp-title { 
+            font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; 
+            display: block; margin-bottom: 15px; font-size: 0.8rem;
+        }
+        .comp-content { font-size: 0.9rem; text-align: justify; color: var(--text-secondary); line-height: 1.6; }
+
+        /* Action Box */
+        .action-box {
+            border: 1px dashed var(--construct-blue); background: linear-gradient(180deg, var(--blue-dim), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .action-header { 
+            font-family: var(--font-tech); color: var(--construct-blue); font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- SINCRONIA DE LEITURA (FATOR X) --- */
+        .reading-highlight { 
+            background: var(--blue-dim); 
+            color: var(--text-primary); 
+            border-left: 4px solid var(--construct-blue);
+            padding-left: 15px;
+            margin-left: -19px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: var(--blue-glow);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 700px) {
+            .reader-container { padding: 40px 20px; }
+            h1 { font-size: 1.8rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
-        <span class="speed-indicator" id="speed-val">1.0x</span>
-        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
-        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
-            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-    </div>
+    <div class="reader-container" id="content-area">
+        <span class="chapter-meta">PARTE IV: CONTRA-MEDIDAS | CAPÍTULO 11</span>
+        
+        <h1 class="speakable">O Protocolo de Retomada:<br>Cidadania Onlife</h1>
 
-    <div class="content-scroll-area" id="content-area">
-        <div class="book-container">
-            <div class="chapter-meta">Parte IV: Horizontes e Resistência | Capítulo 11</div>
-            <h1>O Protocolo de Retomada: Do Medo ao Protagonismo</h1>
+        <p class="speakable">Você chegou até aqui. O diagnóstico está completo: sabemos que o algoritmo prevê, a cidade vigia e o sistema exaure. Diante desse cenário, a reação natural é o medo ou o desejo de fuga — o "Detox Digital". Mas o detox é uma falácia. Ele pressupõe que o digital é uma toxina externa que pode ser eliminada. Não é. O digital é a infraestrutura da nossa realidade.</p>
+        
+        <p class="speakable">A verdadeira revolução não é a ausência, é a <strong>Presença Soberana</strong>. Não precisamos de eremitas digitais, precisamos de <strong>Protagonistas</strong>. Precisamos deixar de ser "usuários" (usados pelo sistema) para nos tornarmos "cidadãos" (que habitam e moldam o sistema com direitos e deveres).</p>
 
-            <p>Você chegou até aqui. O diagnóstico está completo: sabemos que o algoritmo quer prever você, que a cidade o vigia e que o sistema o cansa. Diante desse cenário, a reação natural é o medo, a paranoia ou o desejo de fuga — jogar o celular no rio e ir morar numa caverna.</p>
-            
-            <p>Mas a retirada total é uma rendição. O mundo digital não é mais um "lugar" onde entramos e saímos; ele é a infraestrutura da nossa realidade social, econômica e política. Abandoná-lo significa abandonar o espaço público.</p>
-            
-            <p>A verdadeira revolução não é a ausência, é a <strong>Presença Soberana</strong>. Não precisamos de resistência hostil, precisamos de <strong>Protagonismo</strong>. Precisamos deixar de ser "usuários" (usados pelo sistema) para nos tornarmos "cidadãos" (que moldam o sistema).</p>
+        <div class="box thesis-box speakable">
+            <span class="thesis-header">// O Manifesto Onlife</span>
+            "O filósofo <strong>Luciano Floridi</strong> cunhou o termo <strong>Onlife</strong> para descrever nossa condição existencial. As fronteiras entre 'online' e 'offline' desapareceram. Somos organismos anfíbios vivendo em um estuário de informações. A ética Onlife não busca separar esses mundos (o que é impossível), mas garantir que a tecnologia sirva ao florescimento humano (*Eudaimonia*) e não à sua extração. A paz não vem da guerra contra a máquina, mas da definição rígida de seus limites éticos."
+        </div>
 
-            <h2>A Tese: Intencionalidade vs. Automatismo</h2>
+        <h2 class="speakable">De Ivan Illich a Cal Newport: A Ferramenta Convivial</h2>
 
-            <p>O oposto da submissão algorítmica não é a desconexão, mas a <strong>Intencionalidade</strong>. Cal Newport, em <em>Digital Minimalism</em>, argumenta que a tecnologia é uma ferramenta maravilhosa quando usada para apoiar seus valores, e uma ferramenta terrível quando usada para preencher seus vazios.</p>
+        <p class="speakable">Como navegar no estuário sem se afogar? Recorremos a dois pensadores. Primeiro, <strong>Ivan Illich</strong>, que em 1973 definiu "Ferramentas Conviviais": aquelas que ampliam a autonomia do indivíduo em vez de gerar dependência. O martelo é convivial; você o usa e o guarda. O Instagram não é convivial; ele tenta ativamente impedir que você o guarde.</p>
+        
+        <p class="speakable">Segundo, <strong>Cal Newport</strong> e o "Minimalismo Digital". Não se trata de usar menos tecnologia, mas de usar tecnologia com <strong>Intencionalidade Radical</strong>. Cada clique deve ter um propósito. Se você não tem um "porquê" para abrir o aplicativo, você não deve abri-lo. É a substituição do automatismo pela escolha consciente.</p>
 
-            <div class="box thesis-box">
-                <strong style="color: var(--accent); text-transform: uppercase; font-family: var(--font-tech);">// O Design da Escolha:</strong><br><br>
-                "A escravidão digital acontece no 'piloto automático'. É o scroll infinito, a notificação que puxa seu olho, o vídeo que toca sozinho. A retomada começa quando você desativa o automático. Você não precisa sair do Instagram; você precisa entrar nele com um propósito claro ('ver as fotos da minha irmã') e sair assim que o propósito for cumprido. Isso é transformar a plataforma em ferramenta."
+        <div class="filter-container speakable">
+            <span style="font-family:var(--font-tech); margin-bottom:10px;">O FILTRO DE INTENCIONALIDADE</span>
+            <div class="filter-funnel">
+                INPUT: Impulso de pegar o celular<br>
+                ↓<br>
+                PERGUNTA 1: Isso serve a um valor profundo meu?<br>
+                PERGUNTA 2: É a melhor ferramenta para isso?<br>
+                PERGUNTA 3: Tenho horário para sair?
             </div>
-
-            <div class="box deep-dive-box">
-                <h3>Fator X: O Manifesto Onlife</h3>
-                <p>O filósofo Luciano Floridi cunhou o termo <strong>Onlife</strong> para descrever nossa condição atual. Não estamos mais "online" ou "offline". Somos anfíbios vivendo em um estuário onde o digital e o analógico se misturam. A ética Onlife não busca separar esses mundos, mas garantir que a tecnologia sirva ao florescimento humano (Eudaimonia) e não à sua exploração. A paz não vem da guerra contra a máquina, mas da definição clara de seus limites éticos.</p>
+            <div class="filter-output">
+                <strong>AÇÃO CONSCIENTE</strong><br>(Ou o bloqueio do impulso)
             </div>
+        </div>
 
-            <h2>Antítese: Construindo Cidades Melhores</h2>
+        <h2 class="speakable">A Arquitetura da Escolha: Design Defensivo</h2>
 
-            <p>Se o Facebook e o X (Twitter) são praças públicas tóxicas e cheias de vigilância, a solução não é apenas parar de falar. É construir praças melhores. Sherry Turkle, em <em>Reclaiming Conversation</em>, nos lembra que a tecnologia pode, sim, fomentar empatia, desde que o design permita a pausa, a escuta e a profundidade.</p>
-            
-            <p>Movimentos como o <strong>Fediverso</strong> (Mastodon, Bluesky) não são apenas "alternativas de software". São exercícios de urbanismo digital. Neles, não há um algoritmo central otimizando pelo ódio. Você escolhe seu servidor (seu bairro), suas regras de moderação (suas leis locais) e seus vizinhos. É a migração do condomínio fechado corporativo para a vila comunitária aberta.</p>
+        <p class="speakable">O "design persuasivo" das Big Techs joga contra você. Para vencer, você precisa fazer engenharia reversa e aplicar um <strong>Design Defensivo</strong> no seu próprio ambiente.</p>
 
-            <div class="box antithesis-box">
-                <span class="antithesis-tag">O Contraponto Construtivo</span>
-                <p><strong>A Tecnologia Convivial</strong></p>
-                <p>Ivan Illich falava de "ferramentas conviviais": aquelas que ampliam a autonomia do indivíduo em vez de gerar dependência. O Wikipedia é convivial. O Linux é convivial. O Signal é convivial. Elas existem para servir, não para extrair. Apoiar e usar essas ferramentas é um ato de jardinagem digital: estamos plantando a floresta onde queremos viver.</p>
-            </div>
-
-            <div class="visual-table-container">
-                <div class="visual-header">🚀 EVOLUÇÃO: DE PASSIVO A ATIVO</div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><strong>O Usuário (Passivo)</strong></td>
-                            <td>Consome o que o feed entrega. Reage emocionalmente. É o produto.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>O Cidadão (Protagonista)</strong></td>
-                            <td>Busca ativamente a informação. Cria e cura seu ambiente. É o dono.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="equilibrium-container">
-                <span style="font-weight:bold; color:var(--text-secondary); font-size:0.8rem; letter-spacing:1px;">⚖️ RECURSO VISUAL 11: O EQUILÍBRIO ONLIFE</span>
-                <div class="balance-scale">
-                    <div class="fulcrum"></div>
-                    <div class="plate plate-left">📱</div>
-                    <div class="plate plate-right">🌳</div>
+        <div class="comparison-grid">
+            <div class="comp-card" style="border-left: 2px solid var(--harmony-purple);">
+                <span class="comp-title" style="color:var(--harmony-purple)">O USUÁRIO PADRÃO (Passivo)</span>
+                <div class="comp-content speakable">
+                    Notificações ligadas ("Push"). Tela colorida. Ícones de redes sociais na home. Autoplay de vídeos ativado. Reage ao que o telefone pede. É o produto.
                 </div>
-                <p style="margin-top:20px; font-size:0.8rem; color:var(--text-secondary); text-align:center;">
-                    A meta não é o peso zero no digital, mas o equilíbrio dinâmico com o real.
-                </p>
             </div>
-
-            <h2>Síntese: A Diplomacia do Eu</h2>
-
-            <p>A "Versão de Você" criada pelos algoritmos sempre tentará puxá-lo para os extremos. O protagonismo é a arte do centro. É a capacidade de negociar com a tecnologia.</p>
-            
-            <p>Você pode usar o GPS para não se perder, mas desligá-lo para se perder propositalmente quando quiser passear. Você pode usar a IA para resumir um texto, mas escrever a carta de amor com sua própria mão trêmula. Isso é <strong>Soberania Híbrida</strong>.</p>
-            
-            <p>Não precisamos destruir a tecnologia para sermos humanos. Precisamos apenas lembrar, todos os dias, que somos nós quem seguramos o aparelho, e não o contrário. A tela é um espelho, não um mestre.</p>
-
-            <div class="box action-box">
-                <div class="action-title">🤝 DESAFIO DE RETOMADA #11</div>
-                <p><strong>O Acordo de Paz</strong></p>
-                <p>Em vez de bloquear tudo ou aceitar tudo, vamos negociar.</p>
-                <p><strong>Sua missão:</strong> Escolha <strong>uma</strong> ferramenta digital que você usa muito (ex: WhatsApp ou Instagram). Defina uma regra de "Cidadania" para ela hoje. Ex: "Só entro no Instagram após o almoço" ou "No WhatsApp, não respondo mensagens de trabalho após as 19h".</p>
-                <p>Escreva essa regra. Cumpra-a. Sinta o poder de definir os termos do contrato.</p>
+            <div class="comp-card" style="border-left: 2px solid var(--construct-blue);">
+                <span class="comp-title" style="color:var(--construct-blue)">O CIDADÃO ONLIFE (Ativo)</span>
+                <div class="comp-content speakable">
+                    Notificações desligadas (exceto pessoas reais). Tela em escala de cinza. Apps de vício escondidos em pastas ou deletados. Busca a informação ("Pull"). É o dono.
+                </div>
             </div>
+        </div>
+
+        <h2 class="speakable">Síntese: A Diplomacia do Eu</h2>
+
+        <p class="speakable">A "Versão de Você" criada pelos algoritmos sempre tentará puxá-lo para os extremos: o consumo frenético ou a exaustão total. O protagonismo é a arte do centro. É a capacidade de negociar com a tecnologia.</p>
+        
+        <p class="speakable">Você pode usar o GPS para não se perder em uma reunião, mas desligá-lo propositalmente para se perder quando quiser passear (Deriva). Você pode usar a IA para resumir um relatório técnico, mas escrever a carta de amor com sua própria mão trêmula. Isso é <strong>Soberania Híbrida</strong>. Não precisamos destruir a tecnologia para sermos humanos. Precisamos apenas lembrar, todos os dias, que somos nós quem seguramos o aparelho, e não o contrário. A tela é um espelho, não um mestre.</p>
+
+        <div class="box action-box speakable">
+            <span class="action-header">🤝 DESAFIO DE RETOMADA #11</span>
+            <p><strong>O Acordo de Paz (SLA Pessoal)</strong></p>
+            <p>Em vez de bloquear tudo ou aceitar tudo, vamos negociar os termos de serviço.</p>
+            <p><strong>Sua missão:</strong> Escolha a ferramenta digital que mais drena sua vida (ex: WhatsApp ou Instagram). Defina uma única regra de "Cidadania" para ela hoje. Ex: "O WhatsApp de trabalho só é aberto às 09h e fecha às 18h" ou "O Instagram foi movido para um tablet que fica na gaveta, fora do meu bolso".</p>
+            <p>Escreva essa regra. Cumpra-a por 24 horas. Sinta o poder de reescrever o contrato.</p>
         </div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
-        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
-        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
-        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
-        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
+        /* --- COMUNICAÇÃO COM O INDEX --- */
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === 'theme') {
+                document.body.classList.toggle('light-mode', data.mode === 'light');
+            }
+            if (data.type === 'font-resize') {
+                document.documentElement.style.setProperty('--base-size', (19 * data.value) + 'px');
+            }
+            if (data.type === 'tts-toggle') toggleSpeech();
+            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        });
+
+        /* --- ENGINE TTS --- */
+        let speechQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, utterance = null, selectedVoice = null;
+        let synthesis = window.speechSynthesis;
+
+        function loadVoices() {
+            const voices = synthesis.getVoices();
+            selectedVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) ||
+                            voices.find(v => v.lang === 'pt-BR' && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang === 'pt-BR');
+        }
+        if (synthesis.onvoiceschanged !== undefined) synthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+
+        function toggleSpeech() {
+            if (speechQueue.length === 0) prepareQueue();
+            if (isSpeaking) { synthesis.cancel(); isSpeaking = false; clearHighlights(); reportStatus(false); }
+            else { isSpeaking = true; reportStatus(true); speakNext(); }
+        }
+
+        function prepareQueue() {
+            const elements = document.querySelectorAll('.speakable');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+        }
+
+        function updateSpeechRate(rate) {
+            speechRate = rate;
+            if (isSpeaking) { synthesis.cancel(); speakNext(); }
+        }
+
+        function speakNext() {
+            if (!isSpeaking) return;
+            if (currentIndex >= speechQueue.length) { isSpeaking = false; currentIndex = 0; clearHighlights(); reportStatus(false); return; }
+            
+            const element = speechQueue[currentIndex];
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            utterance = new SpeechSynthesisUtterance(element.innerText);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            if (selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.onend = () => { if (isSpeaking) { currentIndex++; speakNext(); } };
+            utterance.onerror = () => { if (isSpeaking) { currentIndex++; speakNext(); } };
+            
+            synthesis.speak(utterance);
+        }
+
         function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
-        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, .box, td, li'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+        function reportStatus(playing) { window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*'); }
+
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) prepareQueue();
+                synthesis.cancel();
+                currentIndex = speechQueue.indexOf(target);
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
+        });
+        
+        window.onbeforeunload = () => synthesis.cancel();
     </script>
 </body>
 </html>
-
