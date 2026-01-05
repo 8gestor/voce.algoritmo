@@ -3,29 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="A Versão de Você que os Algoritmos Acreditam que Você É. Uma autópsia da vigilância digital, manipulação algorítmica e o fim da privacidade.">
+    <meta name="description" content="A Versão de Você que os Algoritmos Acreditam que Você É. Uma autópsia da vigilância digital.">
     <title>Introdução // O Espelho Negro</title>
     
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1605342980481793');
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1605342980481793&ev=PageView&noscript=1"
-    /></noscript>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- DESIGN SYSTEM FATOR 1 (OTIMIZADO) --- */
+            /* --- DESIGN SYSTEM FATOR X (Theme: Diagnosis) --- */
             --bg-app: #050505;        
             --text-primary: #e5e5e5;
             --text-secondary: #9ca3af;
@@ -33,13 +18,17 @@
             
             /* ALMA: DIAGNÓSTICO (Magenta/Alerta) */
             --accent: #d946ef;
-            --accent-dim: rgba(217, 70, 239, 0.08);
+            --accent-dim: rgba(217, 70, 239, 0.1);
+            --accent-glow: 0 0 20px rgba(217, 70, 239, 0.2);
             --highlight: #f5d0fe;
+            --alert-bg: rgba(220, 38, 38, 0.08);
             
             --font-ui: 'Inter', sans-serif;
             --font-tech: 'JetBrains Mono', monospace;
             --base-size: 19px;
             --line-height: 1.8;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
@@ -48,7 +37,8 @@
             --text-secondary: #4b5563;
             --border-color: rgba(0, 0, 0, 0.1);
             --accent: #a21caf;
-            --accent-dim: rgba(162, 28, 175, 0.05);
+            --accent-dim: rgba(162, 28, 175, 0.08);
+            --alert-bg: rgba(220, 38, 38, 0.05);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
@@ -59,46 +49,30 @@
             font-family: var(--font-ui);
             font-size: var(--base-size);
             line-height: var(--line-height);
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: var(--transition);
             overflow-x: hidden;
+            padding-bottom: 100px;
         }
 
-        /* --- LAYOUT DE LEITURA (FATOR 1) --- */
+        /* --- CONTAINER DE LEITURA --- */
         .reader-container {
             width: 100%;
-            max-width: 640px; /* Padrão ouro para leitura */
+            max-width: 680px; 
             margin: 0 auto;
-            padding: 40px 24px 120px 24px;
+            padding: 60px 24px;
         }
 
         p {
             margin-bottom: 2em; 
-            text-align: justify; /* Texto justificado no corpo */
+            text-align: justify; 
             hyphens: auto; 
             letter-spacing: -0.01em;
+            transition: color 0.3s;
         }
 
         strong { color: var(--text-primary); font-weight: 700; }
 
-        /* HUD */
-        .chapter-hud {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(var(--bg-app), 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 24px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .hud-btn {
-            background: transparent; border: 1px solid var(--border-color);
-            color: var(--text-secondary); border-radius: 6px;
-            padding: 6px 12px; font-family: var(--font-tech); font-size: 0.75rem;
-            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
-        }
-        .hud-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-        .hud-ctrls { display: flex; gap: 8px; }
-
-        /* TIPOGRAFIA TECH */
+        /* --- TIPOGRAFIA TECH --- */
         .chapter-meta {
             font-family: var(--font-tech); font-size: 0.75rem; color: var(--accent);
             text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
@@ -106,62 +80,66 @@
         }
 
         h1 {
-            font-family: var(--font-tech); font-size: 2rem; line-height: 1.2;
+            font-family: var(--font-tech); font-size: 2.2rem; line-height: 1.2;
             text-transform: uppercase; margin-bottom: 50px; 
             color: var(--text-primary); letter-spacing: -1px;
+            border-bottom: 1px solid var(--accent); padding-bottom: 20px;
         }
 
         h2 {
-            font-family: var(--font-tech); font-size: 1.3rem; color: var(--accent);
+            font-family: var(--font-tech); font-size: 1.4rem; color: var(--accent);
             margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
             border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
         }
         h2::before { content: '//'; opacity: 0.5; }
 
-        /* WIDGETS VISUAIS (Com Texto Justificado) */
-        
+        /* --- WIDGETS --- */
         .warning-widget {
-            background: var(--accent-dim);
+            background: var(--alert-bg);
             border: 1px solid var(--accent);
             border-left-width: 4px;
             border-radius: 4px; 
-            padding: 20px 25px; 
+            padding: 25px; 
             margin: 3em 0;
             font-family: var(--font-tech); 
             font-size: 0.85rem;
             line-height: 1.6;
             text-align: justify;
+            box-shadow: var(--accent-glow);
         }
         .warning-header {
             color: var(--accent); font-weight: bold; text-transform: uppercase;
-            letter-spacing: 1px; margin-bottom: 8px; display: block; text-align: left;
+            letter-spacing: 1px; margin-bottom: 10px; display: block; text-align: left;
         }
 
         .manifesto-widget {
             position: relative;
-            padding: 0 20px;
+            padding: 20px 25px;
             margin: 3em 0;
             font-style: italic; 
             color: var(--text-secondary); 
-            font-size: 1.1em;
+            font-size: 1.05em;
             border-left: 2px solid var(--border-color);
+            background: rgba(255,255,255,0.02);
+            border-radius: 0 8px 8px 0;
             text-align: justify;
         }
 
         /* GRID DE DADOS */
-        .data-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin: 2em 0; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
         .data-card {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 6px;
-            transition: transform 0.2s;
+            padding: 25px;
+            border-radius: 8px;
+            transition: transform 0.2s, border-color 0.2s;
         }
-        .data-card:hover { border-color: var(--accent); transform: translateX(5px); }
+        .data-card:hover { border-color: var(--accent); transform: translateY(-5px); }
         .data-label {
             font-family: var(--font-tech); color: var(--accent); 
             font-size: 0.75rem; text-transform: uppercase; 
-            display: block; margin-bottom: 8px; font-weight: bold;
+            display: block; margin-bottom: 12px; font-weight: bold;
+            border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;
         }
         .data-content { 
             font-size: 0.9rem; color: var(--text-primary); 
@@ -169,137 +147,254 @@
             line-height: 1.6;
         }
 
-        .glitch-text { color: var(--accent); font-weight: bold; font-family: var(--font-tech); text-shadow: 0 0 5px var(--accent-dim); }
-        .reading-highlight { background: var(--accent-dim); color: var(--text-primary); border-radius: 2px; }
-
-        @media (min-width: 600px) {
-            .data-grid { grid-template-columns: 1fr 1fr; }
+        .glitch-text { 
+            color: var(--accent); font-weight: bold; font-family: var(--font-tech); 
+            text-shadow: 0 0 5px var(--accent-dim); 
+            animation: glitch 3s infinite;
         }
 
-        @media (max-width: 600px) {
-            .reader-container { padding: 30px 20px 100px 20px; }
-            h1 { font-size: 1.7rem; }
-            .chapter-hud { padding: 10px 15px; }
-            .hud-btn span { display: none; }
+        /* Action Box (Novo Padrão) */
+        .action-box {
+            border: 1px dashed var(--accent); background: linear-gradient(180deg, var(--accent-dim), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .action-header { 
+            font-family: var(--font-tech); color: var(--accent); font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- SINCRONIA DE LEITURA --- */
+        .reading-highlight { 
+            background: var(--accent-dim); 
+            color: var(--text-primary); 
+            border-left: 4px solid var(--accent);
+            padding-left: 15px;
+            margin-left: -19px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: var(--accent-glow);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes glitch {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            52% { opacity: 0.4; }
+            54% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 700px) {
+            .reader-container { padding: 40px 20px; }
+            h1 { font-size: 1.8rem; }
+            .data-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="chapter-hud">
-        <div class="hud-ctrls">
-            <button class="hud-btn" onclick="changeFontSize(-1)">A-</button>
-            <button class="hud-btn" onclick="changeFontSize(1)">A+</button>
-        </div>
-        <div class="hud-ctrls">
-            <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()">
-                ▶ <span>OUVIR</span>
-            </button>
-        </div>
-    </div>
-
     <div class="reader-container" id="content-area">
         <span class="chapter-meta">SYSTEM_INIT: SEQUENCE_00</span>
-        <h1>Introdução:<br>O Espelho Negro</h1>
-
-        <div class="warning-widget">
-            <span class="warning-header">⚠ SYSTEM_ALERT: VIGILÂNCIA ATIVA</span>
-            Este texto não é uma ficção. Enquanto seus olhos escaneiam estas linhas, dezenas de rastreadores invisíveis estão dissecando seu comportamento, medindo seu tempo de leitura e triangulando sua posição para alimentar um banco de dados que sabe mais sobre você do que você mesmo.
-        </div>
-
-        <p>Pare por um segundo. Sinta o peso frio do dispositivo em sua mão. Observe a tela brilhante que ilumina seu rosto. Agora, pergunte-se: quem está realmente no comando? Quando foi a última vez que você tomou uma decisão que foi <em>inteiramente, puramente</em> sua, sem a influência sutil de uma notificação, de uma sugestão de busca ou de um anúncio preditivo?</p>
         
-        <p>A verdade desconfortável é que a sua mente foi transformada em um campo de batalha. Não estamos falando apenas de "vício em celular". Estamos falando de uma engenharia social em escala global, desenhada para capturar, moldar e vender a experiência humana.</p>
+        <h1 class="speakable">Introdução:<br>O Espelho Negro</h1>
 
-        <p>Você não é mais apenas um corpo biológico. Você foi duplicado. Existe a versão de carne e osso, que respira e sente, e existe o <strong>Data Double</strong> — uma versão estatística sua, composta por bilhões de fragmentos de dados, que vive nos servidores de corporações privadas e governos. E o sistema prefere o Duplo.</p>
-
-        <div class="manifesto-widget">
-            "A ruptura sociológica do nosso tempo é silenciosa: passamos de cidadãos para usuários, e de usuários para produtos. A filosofia e a sociologia clássicas estão em colapso, pois não conseguem explicar uma sociedade onde a intimidade foi abolida e o pensamento foi terceirizado para máquinas de previsão."
+        <div class="warning-widget speakable">
+            <span class="warning-header">⚠ SYSTEM_ALERT: VIGILÂNCIA ATIVA</span>
+            Este texto não é uma ficção. Enquanto seus olhos escaneiam estas linhas, dezenas de rastreadores invisíveis estão dissecando seu comportamento. Eles medem o tempo que você demora em cada parágrafo, registram os micro-movimentos do seu mouse e triangulam sua posição geográfica com precisão de metros. Tudo isso para alimentar um banco de dados que, neste exato momento, sabe mais sobre os seus desejos subconscientes do que você mesmo.
         </div>
 
-        <h2>A Autópsia do Controle</h2>
+        <p class="speakable">Pare por um segundo. Sinta o peso frio do dispositivo em sua mão. Observe a tela brilhante que ilumina seu rosto. Agora, pergunte-se com honestidade brutal: quem está realmente no comando? Quando foi a última vez que você tomou uma decisão que foi <em>inteiramente, puramente</em> sua, livre da influência sutil de uma notificação vibrante, de uma sugestão de busca "personalizada" ou de um anúncio preditivo que apareceu magicamente após uma conversa privada?</p>
+        
+        <p class="speakable">A verdade desconfortável, aquela que tentamos ignorar para manter nossa sanidade funcional, é que a sua mente foi transformada em um campo de batalha. Não estamos falando apenas de "vício em celular" ou da dificuldade de concentração. Estamos falando de uma engenharia social em escala global, desenhada por algumas das mentes mais brilhantes da nossa geração, com um único objetivo: capturar, moldar e vender a experiência humana.</p>
 
-        <p>Como chegamos aqui? Como permitimos que nossas casas, nossos carros e nossas cidades se tornassem agentes de espionagem? A tecnologia moderna não é neutra; ela é uma ferramenta de extração. O que vamos dissecar nas próximas páginas é a anatomia desse sequestro:</p>
+        <p class="speakable">Você não é mais apenas um corpo biológico de carne e osso. Você foi duplicado. Existe a versão física, que respira, sente dor e envelhece. E existe o seu <strong>Data Double</strong> (Duplo de Dados) — uma versão estatística sua, composta por bilhões de fragmentos de informação (metadados), que vive eternamente nos servidores refrigerados de corporações privadas em lugares como Utah ou o deserto de Nevada. Para o sistema econômico atual, o seu Data Double é mais valioso, mais real e muito mais lucrativo do que você.</p>
+
+        <div class="manifesto-widget speakable">
+            "A ruptura sociológica do nosso tempo é silenciosa e invisível: passamos de cidadãos com direitos para usuários com termos de uso, e de usuários para produtos comercializáveis. A filosofia e a sociologia clássicas estão em colapso, pois não conseguem explicar uma sociedade onde a intimidade foi abolida por design e o pensamento crítico foi terceirizado para máquinas de previsão probabilística."
+        </div>
+
+        <h2 class="speakable">A Autópsia do Controle</h2>
+
+        <p class="speakable">Como chegamos a esse ponto? Como permitimos, com tanta docilidade, que nossas casas, nossos carros e nossas cidades se tornassem agentes duplos de espionagem? A tecnologia moderna não é neutra; ela nunca foi. Ela é uma ferramenta de extração desenhada para maximizar a coleta. O que vamos dissecar nas próximas páginas é a anatomia precisa desse sequestro:</p>
 
         <div class="data-grid">
-            <div class="data-card">
+            <div class="data-card speakable">
                 <span class="data-label">01. O Rastreador de Bolso</span>
                 <div class="data-content">
-                    Seu smartphone é um espião perfeito. Ele ouve, vê e sente. Acelerômetros medem seu nervosismo pelo tremor das mãos; o GPS revela seus segredos geográficos.
+                    Seu smartphone é o espião perfeito. Ele ouve, vê e sente. Acelerômetros medem seu nervosismo pelo tremor das mãos; o giroscópio sabe se você está deitado ou correndo; o GPS revela seus segredos geográficos mais íntimos. Ele nunca dorme.
                 </div>
             </div>
-            <div class="data-card">
+            <div class="data-card speakable">
                 <span class="data-label">02. O Lar Panóptico</span>
                 <div class="data-content">
-                    Geladeiras inteligentes, assistentes de voz e aspiradores-robô mapeiam a planta da sua casa e rotina doméstica. Sua privacidade acabou na porta de entrada.
+                    Geladeiras inteligentes, assistentes de voz e aspiradores-robô mapeiam a planta da sua casa e sua rotina doméstica. Sua privacidade acabou na porta de entrada. O lar deixou de ser um santuário para ser uma vitrine de dados.
                 </div>
             </div>
-            <div class="data-card">
+            <div class="data-card speakable">
                 <span class="data-label">03. O Dinheiro Vigiado</span>
                 <div class="data-content">
-                    Cada transação de cartão de crédito e pagamento digital constrói um perfil psicológico de consumo. O sistema financeiro sabe seus desejos antes de você.
+                    O fim do dinheiro físico não é apenas conveniência; é controle. Cada transação digital constrói um perfil psicológico de consumo. O sistema financeiro sabe seus desejos, suas fraquezas e seus vícios antes mesmo de você admiti-los para si mesmo.
                 </div>
             </div>
-            <div class="data-card">
+            <div class="data-card speakable">
                 <span class="data-label">04. O Governo Onisciente</span>
                 <div class="data-content">
-                    A fusão entre dados privados e estatais criou um aparato de controle sem precedentes. Câmeras de reconhecimento facial nas ruas julgam você em tempo real.
+                    A fusão perigosa entre dados privados e estatais criou um aparato de controle sem precedentes. Câmeras de reconhecimento facial nas ruas julgam você em tempo real, atribuindo escores de risco baseados em algoritmos opacos e enviesados.
                 </div>
             </div>
         </div>
 
-        <h2>O Mapa de Fuga</h2>
+        <h2 class="speakable">O Mapa de Fuga</h2>
 
-        <p>Se você sente um desconforto crescente, uma sensação de que algo fundamental foi quebrado na experiência humana, você não está louco. Você está acordando. O que está em jogo aqui não é apenas a "privacidade", mas o próprio <strong>Livre Arbítrio</strong>.</p>
+        <p class="speakable">Se você sente um desconforto crescente lendo isso, uma sensação física de que algo fundamental foi quebrado na experiência humana, você não está louco. Você está acordando. O que está em jogo aqui não é apenas a abstrata "privacidade", mas o próprio <strong>Livre Arbítrio</strong>. Se suas escolhas são previstas e manipuladas antes de acontecerem, elas ainda são suas?</p>
         
-        <p>Mas não estamos desarmados. Existe uma contra-cultura vibrante crescendo nos esgotos da web e nas margens da sociedade. Neste livro, vamos além do diagnóstico; vamos ao plano de ataque.</p>
+        <p class="speakable">Mas não estamos desarmados. Existe uma contra-cultura vibrante crescendo nos esgotos da web e nas margens da sociedade vigiada. Neste livro, vamos além do diagnóstico paralisante; vamos ao plano de ataque tático e filosófico.</p>
 
-        <p>Veremos como sistemas de <strong>Código Aberto (como Linux)</strong> devolvem a transparência ao usuário, permitindo que vejamos as engrenagens da máquina. Discutiremos o papel paradoxal das <strong>Criptomoedas</strong> e da criptografia na defesa do anonimato financeiro contra bancos e governos. E analisaremos como novas <strong>Legislações de Privacidade</strong> globais estão tentando erguer barreiras jurídicas desesperadas contra esse tsunami de vigilância.</p>
+        <p class="speakable">Veremos como sistemas de <strong>Código Aberto</strong> devolvem a transparência ao usuário, permitindo que vejamos as engrenagens da máquina. Discutiremos o papel paradoxal da Criptografia na defesa do anonimato financeiro e comunicacional contra bancos e governos autoritários. E analisaremos como novas Legislações de Privacidade globais estão tentando erguer barreiras jurídicas desesperadas contra esse tsunami de vigilância.</p>
         
-        <p>Vamos aprender a usar a <strong>Ofuscação</strong> para nos tornarmos invisíveis em plena luz do dia. Vamos reivindicar nossos <strong>Neuro-direitos</strong>. Vamos explorar o <strong>Solarpunk</strong> para imaginar um futuro onde a tecnologia sirva à vida, e não ao lucro.</p>
+        <p class="speakable">Vamos aprender a usar a <strong>Ofuscação</strong> para nos tornarmos invisíveis em plena luz do dia, injetando ruído no sinal. Vamos reivindicar nossos <strong>Neuro-direitos</strong> antes que nossos pensamentos sejam lidos. Vamos explorar o <strong>Solarpunk</strong> para imaginar um futuro onde a tecnologia sirva à regeneração da vida, e não apenas ao lucro dos acionistas.</p>
         
-        <p>A era da inocência digital acabou. A era da <span class="glitch-text">Resistência Ontológica</span> começa agora.</p>
+        <p class="speakable">A era da inocência digital acabou. A era da <span class="glitch-text">Resistência Ontológica</span> começa agora.</p>
         
-        <p>Respire fundo. A partir da próxima página, nada será automático.</p>
+        <div class="action-box speakable">
+            <span class="action-header">💊 A Pílula Vermelha</span>
+            <p>Respire fundo. A partir da próxima página, nada será automático. Você deixará de ser um passageiro passivo para se tornar um mecânico da sua própria realidade. O caminho não é confortável, mas é o único que leva para fora da caverna.</p>
+        </div>
     </div>
 
     <script>
-        /* Sincronia */
+        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
         window.addEventListener('message', function(event) {
-            if (event.data === 'toggleTheme') document.body.classList.toggle('light-mode');
+            const data = event.data;
+            
+            // 1. Controle de Tema
+            if (data.type === 'theme') {
+                if (data.mode === 'light') {
+                    document.body.classList.add('light-mode');
+                } else {
+                    document.body.classList.remove('light-mode');
+                }
+            }
+
+            // 2. Controle de TTS (Voz)
+            if (data.type === 'tts-toggle') {
+                toggleSpeech();
+            }
+            if (data.type === 'tts-rate') {
+                updateSpeechRate(data.value);
+            }
         });
-        if (window.parent && window.parent.document.body.classList.contains('light-mode')) {
-            document.body.classList.add('light-mode');
-        }
 
-        /* Fonte */
-        let currentSize = 19;
-        function changeFontSize(amount) {
-            currentSize += amount;
-            if (currentSize < 14) currentSize = 14; 
-            if (currentSize > 26) currentSize = 26;
-            document.documentElement.style.setProperty('--base-size', currentSize + 'px');
-        }
-
-        /* TTS */
+        /* --- ENGINE TTS SINCRONIZADA --- */
+        let speechQueue = [];
+        let currentIndex = 0;
         let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+
+        // Prepara a fila de leitura baseada na classe .speakable
+        function prepareQueue() {
+            const elements = document.querySelectorAll('.speakable');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+        }
+
         function toggleSpeech() {
+            if (speechQueue.length === 0) prepareQueue();
+
             if (isSpeaking) {
-                window.speechSynthesis.cancel();
+                // Pausar/Parar
+                synthesis.cancel();
                 isSpeaking = false;
-                document.getElementById('btn-speak').innerHTML = '▶ <span>OUVIR</span>';
-                document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+                clearHighlights();
+                reportStatus(false);
             } else {
-                const text = document.getElementById('content-area').innerText;
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'pt-BR';
-                utterance.rate = 1.1;
-                utterance.onend = () => { isSpeaking = false; document.getElementById('btn-speak').innerHTML = '▶ <span>OUVIR</span>'; };
-                window.speechSynthesis.speak(utterance);
+                // Iniciar/Retomar
                 isSpeaking = true;
-                document.getElementById('btn-speak').innerHTML = '⏹ <span>PARAR</span>';
+                reportStatus(true);
+                speakNext();
             }
         }
+
+        function updateSpeechRate(rate) {
+            speechRate = rate;
+            if (isSpeaking) {
+                // Reinicia o trecho atual com nova velocidade
+                synthesis.cancel();
+                speakNext();
+            }
+        }
+
+        function speakNext() {
+            if (!isSpeaking) return;
+            if (currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentIndex = 0;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
+            const element = speechQueue[currentIndex];
+            const text = element.innerText;
+
+            // Visual: Scroll e Highlight
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Áudio
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            
+            // Tratamento de fim e erro
+            utterance.onend = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+            
+            utterance.onerror = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+        }
+
+        // Informa ao Index se está tocando ou não
+        function reportStatus(playing) {
+            window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*');
+        }
+
+        // Clique para ler parágrafo específico
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) prepareQueue();
+                const index = speechQueue.indexOf(target);
+                if (index !== -1) {
+                    synthesis.cancel();
+                    currentIndex = index;
+                    isSpeaking = true;
+                    reportStatus(true);
+                    speakNext();
+                }
+            }
+        });
+
+        // Limpeza ao sair
+        window.onbeforeunload = function() {
+            synthesis.cancel();
+        };
     </script>
 </body>
 </html>
