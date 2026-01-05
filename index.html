@@ -296,7 +296,7 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <span class="sys-badge">SYSTEM V5.1</span>
+            <span class="sys-badge">SYSTEM V5.2</span>
             <button class="ctrl-btn" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
         </div>
 
@@ -356,6 +356,10 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                     </button>
                 </div>
+
+                <button class="ctrl-btn" onclick="toggleFullScreen()" title="Tela Cheia">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                </button>
 
                 <button class="ctrl-btn" onclick="toggleTheme()" title="Tema Claro/Escuro">
                     <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -417,6 +421,15 @@
             }
         }
 
+        /* --- CONTROLE DE TELA CHEIA (FATOR X - RESTORED) --- */
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(e => console.log(e));
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
         /* --- CONTROLE GLOBAL DE VOZ (FATOR X REFINADO) --- */
         let ttsRate = 1.0;
         let isPlaying = false;
@@ -441,7 +454,7 @@
             ttsRate = Math.round(ttsRate * 100) / 100;
             document.getElementById('tts-rate-display').innerText = ttsRate + 'x';
 
-            // Envia APENAS o sinal de velocidade. 
+            // Envia APENAS o sinal de velocidade.
             // O capítulo receberá isso e reiniciará a frase atual seamlessmente.
             frame.contentWindow.postMessage({ type: 'tts-rate', value: ttsRate }, '*');
         }
