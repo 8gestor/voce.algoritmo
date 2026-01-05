@@ -2,209 +2,393 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Capítulo 07: O Patrão Invisível. Bossware, Time Off Task, Semiocapitalismo e a luta pelo Direito à Desconexão.">
+    <meta name="keywords" content="Bossware, Time Off Task, Amazon TOT, Semiocapitalismo, Franco Berardi, Ghost Work, Mary L. Gray, Direito à Desconexão, Taylorismo Digital, Vigilância no Trabalho">
     <title>Capítulo 07 // O Patrão Invisível</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- FÓRMULA X GLOBAIS --- */
-            --bg-app: #050505; --bg-panel: rgba(20, 20, 23, 0.98); 
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-primary: #ededed; --text-secondary: #888888;
-            --accent: #3b82f6; --accent-bio: #10b981; --accent-warn: #d946ef; --accent-alert: #ef4444;
-            --radius: 8px;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --transition: all 0.2s ease; --blur: blur(12px);
-            --reading-size: 14px; 
+            /* --- DESIGN SYSTEM FATOR X (Theme: Burnout & System Load) --- */
+            --bg-app: #050505;        
+            --text-primary: #e5e5e5;
+            --text-secondary: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.12);
+            
+            /* ALMA DO CAPÍTULO: SISTEMA NERVOSO (Roxo) & ALERTAS (Amarelo) */
+            --nerve-purple: #8b5cf6;  /* Roxo Psíquico */
+            --nerve-dim: rgba(139, 92, 246, 0.08);
+            --nerve-glow: 0 0 20px rgba(139, 92, 246, 0.2);
+            --system-alert: #f59e0b;  /* Amarelo Carga */
+            --clinical-gray: #475569;
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; /* Controlado pelo Index */
+            --line-height: 1.8;
+            
+            --transition: all 0.3s ease;
         }
 
         body.light-mode {
-            --bg-app: #f2f2f7; --bg-panel: rgba(255, 255, 255, 0.98); 
-            --border-color: rgba(0, 0, 0, 0.08);
-            --text-primary: #1c1c1e; --text-secondary: #6c6c70;
-            --accent: #007aff; --accent-bio: #16a34a; --accent-warn: #af52de;
+            --bg-app: #f2f2f7;
+            --text-primary: #1c1c1e;
+            --text-secondary: #4b5563;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --nerve-purple: #7c3aed;
+            --nerve-dim: rgba(124, 58, 237, 0.05);
+            --system-alert: #d97706;
+            --clinical-gray: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-primary); font-family: var(--font-ui); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        /* HUD CLEAN */
-        .reading-hud { height: 60px; flex-shrink: 0; background: var(--bg-panel); backdrop-filter: var(--blur); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; z-index: 100; padding: 0 15px; }
-        .hud-btn { width: 40px; height: 40px; flex-shrink: 0; background: transparent; border: 1px solid transparent; color: var(--text-secondary); border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .hud-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); border-color: var(--border-color); }
-        .hud-btn.active { color: var(--text-primary); border-color: var(--border-color); background: rgba(255,255,255,0.05); }
-        .hud-divider { width: 1px; height: 18px; background: var(--border-color); margin: 0 2px; }
-        .speed-indicator { font-family: var(--font-tech); font-size: 12px; color: var(--text-secondary); min-width: 35px; text-align: center; letter-spacing: -0.5px; }
-        @media (max-width: 600px) { .reading-hud { padding: 0 5px; gap: 2px; justify-content: space-between; } .hud-btn { width: 38px; height: 38px; } .hud-divider { display: none; } }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            font-size: var(--base-size);
+            line-height: var(--line-height);
+            transition: var(--transition);
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
 
-        /* CONTENT */
-        .content-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 100px 20px; scroll-behavior: smooth; }
-        .book-container { max-width: 750px; margin: 0 auto; font-size: var(--reading-size); line-height: 1.8; }
-        h1 { font-family: var(--font-tech); font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; color: var(--text-primary); border-bottom: 2px solid var(--accent); padding-bottom: 20px; margin-bottom: 40px; text-align: center; }
-        h2 { font-family: var(--font-tech); font-size: 1.5em; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-top: 3em; margin-bottom: 1em; display: flex; align-items: center; gap: 10px; }
+        /* --- CONTAINER DE LEITURA --- */
+        .reader-container {
+            width: 100%;
+            max-width: 720px; 
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        p {
+            margin-bottom: 2em; 
+            text-align: justify; 
+            hyphens: auto; 
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+        }
+
+        strong { color: var(--text-primary); font-weight: 700; }
+
+        /* --- TIPOGRAFIA TECH --- */
+        .chapter-meta {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--nerve-purple);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block;
+            border-left: 2px solid var(--nerve-purple); padding-left: 10px;
+        }
+
+        h1 {
+            font-family: var(--font-tech); font-size: 2.2rem; line-height: 1.2;
+            text-transform: uppercase; margin-bottom: 50px; 
+            color: var(--text-primary); letter-spacing: -1px;
+            border-bottom: 1px solid var(--nerve-purple); padding-bottom: 20px;
+        }
+
+        h2 {
+            font-family: var(--font-tech); font-size: 1.4rem; color: var(--system-alert);
+            margin-top: 4em; margin-bottom: 1.5em; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
         h2::before { content: '//'; opacity: 0.5; }
-        h3 { font-family: var(--font-ui); font-size: 1.2em; font-weight: 600; color: var(--accent-warn); margin-top: 2em; text-transform: uppercase; }
-        p { margin-bottom: 1.5em; text-align: justify; color: var(--text-primary); opacity: 0.95; transition: opacity 0.2s; } p:hover { opacity: 1; }
-        li { margin-bottom: 0.8em; color: var(--text-primary); opacity: 0.9; }
-        .chapter-meta { text-align: center; font-family: var(--font-tech); font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.7; }
 
-        /* BOXES */
-        .box { border-radius: var(--radius); padding: 25px; margin: 3em 0; font-size: 0.95em; position: relative; }
-        .thesis-box { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.3); border-left: 4px solid var(--accent); }
-        .antithesis-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-left: 4px solid var(--accent-bio); position: relative; }
-        .antithesis-tag { position: absolute; top: -12px; right: 20px; background: var(--bg-app); color: var(--accent-bio); border: 1px solid var(--accent-bio); padding: 2px 10px; font-weight: bold; font-family: var(--font-tech); text-transform: uppercase; font-size: 0.7rem; }
-        .deep-dive-box { border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color); padding: 30px 0; }
-        .action-box { background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); border: 1px solid var(--accent-bio); text-align: center; }
-        .action-title { color: var(--accent-bio); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--nerve-purple); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--nerve-dim); padding-left: 15px;
+        }
+
+        /* --- WIDGETS --- */
+        .box { padding: 30px; border-radius: 8px; margin: 3em 0; border: 1px solid var(--border-color); background: rgba(255,255,255,0.02); }
         
-        .interactive-pause { border-top: 1px dashed var(--accent-warn); border-bottom: 1px dashed var(--accent-warn); padding: 20px; margin: 40px 0; text-align: center; color: var(--accent-warn); font-weight: bold; cursor: pointer; transition: 0.3s; font-family: var(--font-tech); font-size: 0.9rem; }
-        .interactive-pause:hover { background: rgba(217, 70, 239, 0.05); letter-spacing: 1px; }
+        .thesis-box {
+            background: var(--nerve-dim);
+            border-left: 4px solid var(--nerve-purple);
+            text-align: justify;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--nerve-purple); font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* BATTERY */
-        .visual-battery-container { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 30px; margin: 3em 0; text-align: center; font-family: var(--font-tech); cursor: pointer; }
-        .battery-wrapper { display: flex; justify-content: space-around; align-items: flex-end; margin-top: 20px; height: 150px; }
-        .battery { width: 60px; height: 100px; border: 3px solid var(--text-secondary); border-radius: 6px; position: relative; display: flex; flex-direction: column-reverse; background: rgba(255,255,255,0.05); padding: 2px; }
-        .battery::before { content: ''; position: absolute; top: -10px; left: 15px; width: 24px; height: 6px; background: var(--text-secondary); border-radius: 2px 2px 0 0; }
-        .level-natural { height: 90%; background: var(--accent-bio); box-shadow: 0 0 15px var(--accent-bio); animation: charge 4s infinite alternate; }
-        .level-digital { height: 30%; background: var(--accent-alert); box-shadow: 0 0 10px var(--accent-alert); animation: drain 2s infinite alternate; }
-        .battery-label { font-size: 0.7rem; margin-top: 15px; color: var(--text-secondary); font-weight: bold; letter-spacing: 1px; }
-        @keyframes charge { 0% { height: 85%; opacity: 0.7; } 100% { height: 95%; opacity: 1; } }
-        @keyframes drain { 0% { height: 35%; opacity: 0.7; } 100% { height: 15%; opacity: 0.5; } }
+        .deep-dive-box {
+            border-top: 1px dashed var(--border-color); border-bottom: 1px dashed var(--border-color);
+            border-left: none; border-right: none; border-radius: 0;
+            background: rgba(255,255,255,0.01);
+        }
 
-        /* TABLE */
-        .visual-table-container { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; margin: 3em 0; }
-        .visual-header { background: rgba(255,255,255,0.05); padding: 12px; font-family: var(--font-tech); font-size: 0.8em; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+        /* VISUAL: TASK MANAGER (Gerenciador de Tarefas Humano) */
+        .task-manager-container {
+            background: #1e1e1e; border: 1px solid #333; border-radius: 6px;
+            padding: 0; margin: 3em 0; font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;
+        }
+        .tm-header {
+            background: #2d2d2d; padding: 10px 15px; color: #fff; font-size: 0.8rem;
+            display: flex; justify-content: space-between; border-bottom: 1px solid #333;
+        }
+        .tm-body { padding: 20px; }
+        .tm-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .tm-label { width: 120px; color: #ccc; font-size: 0.85rem; font-weight: bold; }
+        .tm-bar-track { flex: 1; height: 20px; background: #333; border-radius: 3px; position: relative; overflow: hidden; }
+        .tm-bar-fill { height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 5px; color: #000; font-size: 0.7rem; font-weight: bold; }
+        
+        .fill-cpu { width: 98%; background: #ef4444; animation: pulse-red 2s infinite; }
+        .fill-ram { width: 92%; background: #f59e0b; }
+        .fill-net { width: 100%; background: #8b5cf6; }
+        
+        .tm-footer { 
+            padding: 10px 20px; background: #252526; color: #ef4444; 
+            font-family: var(--font-tech); font-size: 0.75rem; text-align: right;
+        }
 
-        .reading-highlight { background: rgba(59, 130, 246, 0.15); border-radius: var(--radius); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); color: #fff; }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+
+        /* Action Box */
+        .action-box {
+            border: 1px dashed var(--system-alert); background: linear-gradient(180deg, rgba(245, 158, 11, 0.05), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px;
+            position: relative; overflow: hidden;
+        }
+        .action-header { 
+            font-family: var(--font-tech); color: var(--system-alert); font-weight: bold; font-size: 1.1rem;
+            margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* --- SINCRONIA DE LEITURA (FATOR X) --- */
+        .reading-highlight { 
+            background: var(--nerve-dim); 
+            color: var(--text-primary); 
+            border-left: 4px solid var(--nerve-purple);
+            padding-left: 15px;
+            margin-left: -19px;
+            border-radius: 0 4px 4px 0;
+            box-shadow: var(--nerve-glow);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 700px) {
+            .reader-container { padding: 40px 20px; }
+            h1 { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="reading-hud">
-        <button class="hud-btn" onclick="toggleTheme()" title="Tema">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeFontSize(-1)" title="Diminuir Fonte">A-</button>
-        <button class="hud-btn" onclick="changeFontSize(1)" title="Aumentar Fonte">A+</button>
-        <div class="hud-divider"></div>
-        <button class="hud-btn" onclick="changeSpeed(-0.25)" title="Lento">«</button>
-        <span class="speed-indicator" id="speed-val">1.0x</span>
-        <button class="hud-btn" onclick="changeSpeed(0.25)" title="Rápido">»</button>
-        <button class="hud-btn" id="btn-speak" onclick="toggleSpeech()" title="Narrar">
-            <svg id="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-    </div>
+    <div class="reader-container" id="content-area">
+        <span class="chapter-meta">PARTE III: A SOCIEDADE E A VERDADE | CAPÍTULO 07</span>
+        
+        <h1 class="speakable">O Patrão Invisível:<br>Taylorismo Digital</h1>
 
-    <div class="content-scroll-area" id="content-area">
-        <div class="book-container">
-            <div class="chapter-meta">Parte III: A Sociedade e a Verdade | Capítulo 07</div>
-            <h1>O Patrão Invisível e a Sociedade do Cansaço</h1>
+        <p class="speakable">Responda rápido: quando foi a última vez que você não fez <em>nada</em>? Não estou falando de "assistir a uma série" (consumir conteúdo). Não estou falando de "meditar" (otimizar a mente para voltar a produzir). Estou falando de inatividade radical. O olhar vago. O silêncio mental.</p>
+        
+        <p class="speakable">Se você sentiu uma pontada de culpa só de imaginar essa cena, o algoritmo já está rodando dentro de você. O <strong>Patrão Invisível</strong> não precisa mais de chicote, nem de cartão de ponto físico. Ele vive na sua consciência, sussurrando que cada segundo não monetizado é um erro de sistema.</p>
 
-            <p>Responda rápido: quando foi a última vez que você não fez <em>nada</em>? </p>
-            <p>Não estou falando de "assistir a uma série" (consumir conteúdo). Não estou falando de "meditar" (otimizar a mente). Não estou falando de dormir (recarregar para o trabalho). Estou falando de inatividade radical. Olhar para o teto. Deixar a mente vagar sem rumo.</p>
-            
-            <p>Se você sentiu uma pontada de culpa só de imaginar essa cena, parabéns: o algoritmo já está rodando dentro de você. O <strong>Patrão Invisível</strong> não precisa mais de chicote, nem de cartão de ponto. Ele vive na sua consciência, sussurrando que cada segundo não monetizado ou não otimizado é um pecado mortal.</p>
+        <p class="speakable">Não estamos mais no modelo clássico de exploração industrial. Entramos na era do <strong>Taylorismo Digital</strong>, onde a eficiência não é medida por peças produzidas, mas pela captura total da atenção e do sistema nervoso do trabalhador.</p>
 
-            <h2>A Tese: Gamificação e Auto-Exploração</h2>
+        <div class="box thesis-box speakable">
+            <span class="thesis-header">// Semiocapitalismo e o Colapso Nervoso</span>
+            "O filósofo italiano <strong>Franco 'Bifo' Berardi</strong> define nosso momento como <strong>Semiocapitalismo</strong>. O capital não explora mais apenas os músculos (fábrica), mas a nossa capacidade linguística, criativa e emocional. A mais-valia é extraída do nosso sistema nervoso. O resultado não é o cansaço muscular, mas a 'superestimulação nervosa', que leva ao pânico, à depressão e ao que chamamos superficialmente de Burnout. O Burnout não é cansaço; é o curto-circuito da alma."
+        </div>
 
-            <p>No passado, na "Sociedade Disciplinar" descrita por Foucault, o controle vinha de fora: o capataz, o chefe, a sirene da fábrica. Hoje, o controle foi internalizado e gamificado.</p>
-            
-            <p>Aplicativos de entrega (Uber, iFood) utilizam técnicas de videogame para gerenciar trabalhadores sem nunca falar com eles. "Complete mais 3 corridas para ganhar um bônus de Nível Prata". "A demanda está alta, não pare agora". O trabalhador sente que está jogando, que tem autonomia, que é um "empreendedor". Mas ele é um peão em um tabuleiro cujas regras mudam a cada atualização de software.</p>
+        <h2 class="speakable">Bossware: A Vigilância no Home Office</h2>
 
-            <div class="box thesis-box">
-                <strong style="color: var(--accent); text-transform: uppercase; font-family: var(--font-tech);">// O Mito do Empreendedor de Si Mesmo:</strong><br><br>
-                "O capitalismo de plataforma convenceu você de que a precarização é liberdade. Você não tem chefe; você tem 'clientes'. Você não tem horário fixo; você está 'disponível 24/7'. A liberdade de trabalhar de qualquer lugar tornou-se a condenação de trabalhar em todos os lugares. O escritório agora é o seu bolso."
+        <p class="speakable">Com a migração para o trabalho remoto, as empresas não confiaram na autonomia de seus funcionários. Elas instalaram o panóptico dentro de seus quartos. Softwares de monitoramento, conhecidos como <strong>Bossware</strong> (como <em>Hubstaff</em>, <em>Teramind</em> e <em>Time Doctor</em>), operam com uma premissa algorítmica brutal: se você não está clicando, você não está trabalhando.</p>
+
+        <p class="speakable">Essas ferramentas usam <em>Keylogging</em> (registro de cada tecla digitada), capturas de tela aleatórias a cada 10 minutos e até rastreamento ocular via webcam. Elas criam um "Score de Produtividade" baseado na atividade constante. O problema? O trabalho intelectual exige pausa. Exige olhar para o teto para conectar ideias. Mas para o Bossware, o "pensar" é indistinguível do "vagabundear". O algoritmo pune a reflexão e premia a atividade frenética e vazia.</p>
+
+        <div class="task-manager-container speakable">
+            <div class="tm-header">
+                <span>Task Manager (Human.exe)</span>
+                <span>PID: 1984</span>
             </div>
-
-            <div class="box deep-dive-box">
-                <h3>Fator X: O Precariado</h3>
-                <p>O economista <strong>Guy Standing</strong> identifica uma nova classe social: o <strong>Precariado</strong>. Diferente do proletariado (que tinha estabilidade e direitos), o precariado vive na incerteza crônica. Ele não tem identidade ocupacional fixa ("faço bicos") e vive sob o medo constante de perder a conexão com a plataforma. É uma classe de "nômades digitais" forçados, cuja sobrevivência depende de agradar um algoritmo que eles não compreendem.</p>
-            </div>
-
-            <p>Isso se estende aos escritórios corporativos com softwares de <strong>Bossware</strong> que tiram prints da sua tela a cada 10 minutos para garantir que você não está ocioso. A ociosidade, que antigamente era a mãe da criatividade, agora é tratada como "roubo de tempo".</p>
-
-            <div class="interactive-pause">
-                🛑 PAUSA DE RETENÇÃO<br>
-                <span style="font-size: 0.8rem; font-weight: normal; opacity: 0.8; font-family: var(--font-ui);">
-                Seus ombros estão tensos agora? Sua mandíbula está travada? <br>
-                O algoritmo mantém seu corpo em estado de "lutar ou fugir" mesmo quando você está sentado. <br>
-                Solte os ombros. Respire. Isso é um ato político.
-                </span>
-            </div>
-
-            <h2>Antítese: Psicopolítica e o Infarto da Alma</h2>
-
-            <p>Para entender a profundidade dessa doença, invocamos o filósofo sul-coreano <strong>Byung-Chul Han</strong>. Em <em>Sociedade do Cansaço</em> e <em>Psicopolítica</em>, ele argumenta que não vivemos mais sob o regime do "Não Pode" (proibição), mas sob o regime do "Você Pode" (positividade).</p>
-
-            <p>O slogan da Nike, <em>Just Do It</em>, é o mantra dessa era. A violência não é mais infligida por um inimigo externo; é auto-infligida. Nós nos exploramos voluntariamente e apaixonadamente, acreditando que estamos nos "realizando".</p>
-
-            <div class="box antithesis-box">
-                <span class="antithesis-tag">O Diagnóstico de Han</span>
-                <p><strong>A Violência da Positividade:</strong></p>
-                <p>O excesso de positividade leva a uma saturação do Eu. O resultado não é a revolução, mas a depressão e o <strong>Burnout</strong>. O Burnout não é apenas cansaço; é o "infarto da alma". É quando a bateria pifa porque o sistema de carregamento foi hackeado.</p>
-                <p>Han propõe que a verdadeira liberdade reside no "Não-Fazer". É a capacidade de dizer <strong>NÃO</strong> aos estímulos. É o "Tédio Profundo" (Deep Boredom). Sem o tédio, não há criatividade, apenas reprodução acelerada do mesmo. A máquina nunca fica entediada; ela apenas processa. Ser humano é ser capaz de parar.</p>
-            </div>
-
-            <div class="visual-table-container">
-                <div class="visual-header">🧠 EVOLUÇÃO DO CONTROLE: FOUCAULT VS. HAN</div>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td style="color:var(--accent);"><strong>Sociedade Disciplinar (Foucault)</strong></td>
-                            <td>Regime do "Dever". Negatividade. Hospitais, Prisões, Fábricas. Gera Loucos e Criminosos.</td>
-                        </tr>
-                        <tr>
-                            <td style="color:var(--accent-warn);"><strong>Sociedade do Desempenho (Han)</strong></td>
-                            <td>Regime do "Poder". Positividade. Academias, Escritórios, Apps. Gera Depressivos e Fracassados.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="visual-battery-container">
-                <span style="color:var(--accent-alert); font-weight:bold; display:block; margin-bottom:20px;">🔋 RECURSO VISUAL 8: A BATERIA HUMANA</span>
-                <div class="battery-wrapper">
-                    <div style="text-align: center;"><div class="battery"><div class="level-natural"></div></div><div class="battery-label">CICLO NATURAL</div></div>
-                    <div style="text-align: center;"><div class="battery"><div class="level-digital"></div></div><div class="battery-label">CICLO DIGITAL</div></div>
+            <div class="tm-body">
+                <div class="tm-row">
+                    <span class="tm-label">CPU (Ansiedade)</span>
+                    <div class="tm-bar-track"><div class="tm-bar-fill fill-cpu">99%</div></div>
+                </div>
+                <div class="tm-row">
+                    <span class="tm-label">RAM (Carga)</span>
+                    <div class="tm-bar-track"><div class="tm-bar-fill fill-ram">94%</div></div>
+                </div>
+                <div class="tm-row">
+                    <span class="tm-label">Rede (Notificações)</span>
+                    <div class="tm-bar-track"><div class="tm-bar-fill fill-net">100%</div></div>
                 </div>
             </div>
-
-            <h2>Síntese: O Direito à Desconexão</h2>
-
-            <p>A resistência à Sociedade do Desempenho não é "trabalhar melhor" ou usar um app de produtividade para organizar suas tarefas. Isso é tentar apagar o fogo com gasolina.</p>
-            
-            <p>A resistência é reivindicar a <strong>Soberania do Tempo</strong>. É entender que seu tempo não é uma moeda; é o tecido da sua vida. Jonathan Crary, em <em>24/7</em>, alerta que o sono é a última barreira que o capitalismo ainda não conseguiu monetizar completamente (embora estejam tentando com apps de monitoramento).</p>
-
-            <p>Seu "Data Double" é produtivo 24 horas por dia. Ele gera dados enquanto você dorme. A versão real de você precisa ser improdutiva para continuar humana. A ineficiência, a lentidão e o silêncio são as únicas coisas que o algoritmo não consegue prever, vender ou imitar.</p>
-
-            <div class="box action-box">
-                <div class="action-title">💤 DESAFIO DE RETOMADA #07</div>
-                <p><strong>O Ritual do Nada (The Do-Nothing Challenge)</strong></p>
-                <p>Este é o exercício mais difícil deste livro até agora.</p>
-                <p><strong>Sua missão:</strong> Coloque um alarme para daqui a 10 minutos. Sente-se em uma cadeira, sem celular, sem livro, sem música e sem fechar os olhos para "meditar". Apenas fique acordado, de olhos abertos, sem fazer nada.</p>
-                <p>Você sentirá uma coceira mental. Uma ansiedade de que deveria estar "aproveitando" esse tempo. Essa ansiedade é a voz do Patrão Invisível morrendo. Deixe-o falar, mas não obedeça. Recupere a dignidade do tédio.</p>
+            <div class="tm-footer">
+                WARNING: SYSTEM OVERHEAT // SLEEP MODE DISABLED
             </div>
+        </div>
+
+        <h2 class="speakable">A Amazonificação: O Corpo como Gargalo</h2>
+
+        <p class="speakable">No chão de fábrica da logística moderna, a desumanização atinge seu ápice. A Amazon utiliza um algoritmo chamado <strong>TOT (Time Off Task)</strong>. Se um funcionário para de escanear pacotes por mais de 3 minutos (para ir ao banheiro ou beber água), o sistema começa a contar "tempo fora da tarefa". Acumule minutos suficientes e o sistema gera uma demissão automática, sem intervenção de um gerente humano.</p>
+        
+        <p class="speakable">Aqui, o corpo biológico é visto como um "gargalo de eficiência". O algoritmo não entende fadiga, bexigas cheias ou dores nas costas. Ele impõe um ritmo maquínico a um organismo de carne e osso. É a gestão por estresse algorítmico.</p>
+
+        <h2 class="speakable">Ghost Work: Os Humanos por Trás da Mágica</h2>
+
+        <p class="speakable">Por trás da "Inteligência Artificial" que parece mágica, existe uma classe invisível de trabalhadores. A antropóloga <strong>Mary L. Gray</strong> e o pesquisador <strong>Siddharth Suri</strong> chamam isso de <strong>Ghost Work</strong> (Trabalho Fantasma).</p>
+        
+        <p class="speakable">Para que o ChatGPT não seja racista ou o Facebook não mostre vídeos de decapitação, milhares de trabalhadores no Quênia, Filipinas e Índia passam o dia moderando conteúdo traumático por menos de 2 dólares a hora. Eles são o filtro humano, o "firewall de carne" que absorve o lixo tóxico da internet para que a experiência do usuário no Norte Global seja limpa. A IA não é autônoma; ela é alimentada por uma linha de montagem global de precariado cognitivo.</p>
+
+        <h2 class="speakable">Síntese: Do Medo à Governança</h2>
+
+        <p class="speakable">Não podemos "hackear" o trabalho para sempre com simuladores de mouse ou truques técnicos. A verdadeira saída é política e estrutural. Precisamos passar da insurgência individual para a <strong>Soberania Laboral</strong>.</p>
+        
+        <p class="speakable">Isso começa com o <strong>Direito à Desconexão</strong>. Países como França e Portugal já legislaram que é ilegal para o patrão contatar o funcionário fora do horário. Isso não é "regalia", é higiene mental básica. Precisamos entender que nossa atenção e nosso sistema nervoso são recursos finitos, e sua extração ilimitada é insustentável.</p>
+        
+        <p class="speakable">A tecnologia deve servir para reduzir a carga de trabalho, não para intensificá-la. Devemos exigir transparência sobre <em>quais</em> métricas estão sendo usadas para nos julgar. Se um algoritmo decide sua demissão ou sua produtividade, você tem o direito ético e legal de auditar a lógica desse algoritmo.</p>
+
+        <div class="box action-box speakable">
+            <span class="action-header">⚖️ DESAFIO DE RETOMADA #07</span>
+            <p><strong>O Protocolo de Limites (The Firewall)</strong></p>
+            <p>Se você não definir as fronteiras, o algoritmo ocupará todo o território.</p>
+            <p><strong>Sua missão:</strong> Estabeleça um "Contrato de Disponibilidade" consigo mesmo e, se possível, comunique-o. Defina uma hora exata para o "Shutdown" digital. Após esse horário, nenhuma notificação de trabalho entra. Remova o e-mail corporativo do celular pessoal.</p>
+            <p>Não é preguiça; é a preservação da ferramenta mais valiosa que você tem: sua sanidade. Trate seu tempo de descanso com a mesma seriedade e rigidez que o sistema trata o seu tempo de trabalho.</p>
         </div>
     </div>
 
     <script>
-        // --- FÓRMULA X ENGINE ---
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        let currentSize = 14; 
-        function changeFontSize(amount) { currentSize += amount; if(currentSize < 14) currentSize = 14; if(currentSize > 32) currentSize = 32; document.documentElement.style.setProperty('--reading-size', currentSize + 'px'); }
-        let speechRate = 1.0, isSpeaking = false, speechQueue = [], currentSpeechIndex = 0, isChangingState = false;
-        function changeSpeed(amount) { speechRate += amount; if(speechRate < 0.5) speechRate = 0.5; if(speechRate > 2.5) speechRate = 2.5; document.getElementById('speed-val').innerText = speechRate.toFixed(1) + 'x'; if(isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } }
-        function toggleSpeech() { const btn = document.getElementById('btn-speak'); if (isSpeaking) { isChangingState = true; window.speechSynthesis.cancel(); isSpeaking = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'; btn.classList.remove('active'); } else { prepareQueue(); if(speechQueue.length > 0) { isSpeaking = true; btn.classList.add('active'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; speakChunk(); } } }
-        function prepareQueue() { const container = document.querySelector('.book-container'); const elements = container.querySelectorAll('p, h1, h2, h3, li, td, .box, .interactive-pause'); speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0); }
-        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-        function speakChunk() { if (!isSpeaking) return; if (currentSpeechIndex >= speechQueue.length) { isSpeaking = false; currentSpeechIndex = 0; toggleSpeech(); return; } const element = speechQueue[currentSpeechIndex]; clearHighlights(); element.classList.add('reading-highlight'); element.scrollIntoView({behavior: "smooth", block: "center"}); const utterance = new SpeechSynthesisUtterance(element.innerText); utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.onend = function() { if (isSpeaking && !isChangingState) { currentSpeechIndex++; speakChunk(); } if(isChangingState) isChangingState = false; }; window.speechSynthesis.speak(utterance); }
-        document.getElementById('content-area').addEventListener('click', function(e) { const target = e.target.closest('p, h1, h2, h3, .box, td, li'); if (target) { prepareQueue(); let index = speechQueue.indexOf(target); if (index !== -1) { isChangingState = true; window.speechSynthesis.cancel(); currentSpeechIndex = index; isSpeaking = true; document.getElementById('btn-speak').classList.add('active'); document.getElementById('btn-speak').innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'; setTimeout(() => { isChangingState = false; speakChunk(); }, 50); } } });
-        window.onbeforeunload = function() { window.speechSynthesis.cancel(); };
+        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            
+            // 1. Controle de Tema
+            if (data.type === 'theme') {
+                if (data.mode === 'light') document.body.classList.add('light-mode');
+                else document.body.classList.remove('light-mode');
+            }
+
+            // 2. Controle de Fonte
+            if (data.type === 'font-resize') {
+                const newSize = 19 * data.value;
+                document.documentElement.style.setProperty('--base-size', newSize + 'px');
+            }
+
+            // 3. Controle de TTS
+            if (data.type === 'tts-toggle') toggleSpeech();
+            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        });
+
+        /* --- ENGINE TTS AVANÇADA (FATOR X) --- */
+        let speechQueue = [];
+        let currentIndex = 0;
+        let isSpeaking = false;
+        let speechRate = 1.0;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+        let selectedVoice = null;
+
+        function loadVoices() {
+            const voices = synthesis.getVoices();
+            selectedVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) ||
+                            voices.find(v => v.lang === 'pt-BR' && v.name.includes('Microsoft')) ||
+                            voices.find(v => v.lang === 'pt-BR');
+        }
+        
+        if (synthesis.onvoiceschanged !== undefined) {
+            synthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function prepareQueue() {
+            const elements = document.querySelectorAll('.speakable');
+            speechQueue = Array.from(elements).filter(el => el.innerText.trim().length > 0);
+        }
+
+        function toggleSpeech() {
+            if (speechQueue.length === 0) prepareQueue();
+
+            if (isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+                clearHighlights();
+                reportStatus(false);
+            } else {
+                isSpeaking = true;
+                reportStatus(true);
+                speakNext();
+            }
+        }
+
+        function updateSpeechRate(rate) {
+            speechRate = rate;
+            if (isSpeaking) {
+                synthesis.cancel();
+                speakNext();
+            }
+        }
+
+        function speakNext() {
+            if (!isSpeaking) return;
+            if (currentIndex >= speechQueue.length) {
+                isSpeaking = false;
+                currentIndex = 0;
+                clearHighlights();
+                reportStatus(false);
+                return;
+            }
+
+            const element = speechQueue[currentIndex];
+            const text = element.innerText;
+
+            clearHighlights();
+            element.classList.add('reading-highlight');
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            utterance.rate = speechRate;
+            
+            if (selectedVoice) utterance.voice = selectedVoice;
+            
+            utterance.onend = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+            
+            utterance.onerror = function() {
+                if (isSpeaking) {
+                    currentIndex++;
+                    speakNext();
+                }
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight'));
+        }
+
+        function reportStatus(playing) {
+            window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*');
+        }
+
+        document.getElementById('content-area').addEventListener('click', function(e) {
+            const target = e.target.closest('.speakable');
+            if (target) {
+                if (speechQueue.length === 0) prepareQueue();
+                const index = speechQueue.indexOf(target);
+                if (index !== -1) {
+                    synthesis.cancel();
+                    currentIndex = index;
+                    isSpeaking = true;
+                    reportStatus(true);
+                    speakNext();
+                }
+            }
+        });
+
+        window.onbeforeunload = function() {
+            synthesis.cancel();
+        };
     </script>
 </body>
 </html>
