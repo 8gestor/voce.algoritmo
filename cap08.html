@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 08</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- FATOR X v4.1: RESPONSIVE & NEON CORE --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
+            
+            /* PALETA CAP 08: VOID PURPLE vs GLITCH GREEN vs FAKE PINK */
+            --c-void: #7c3aed;     /* Roxo (Vazio/Bots) */
+            --c-void-dim: rgba(124, 58, 237, 0.1);
+            --c-void-glow: 0 0 15px rgba(124, 58, 237, 0.4);
+            
+            --c-glitch: #39ff14;   /* Verde (Realidade/Humano) */
+            --c-glitch-dim: rgba(57, 255, 20, 0.1);
+            --c-glitch-glow: 0 0 15px rgba(57, 255, 20, 0.3);
+            
+            --c-fake: #d946ef;     /* Rosa (Sintético) */
+
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px;
+            
+            --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+
+            /* STEALTH SCROLL */
+            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #7c3aed;
+        }
+
+        body.light-mode {
+            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
+            --c-void: #6d28d9; --c-void-dim: rgba(109, 40, 217, 0.08); --c-void-glow: 0 0 10px rgba(109, 40, 217, 0.2);
+            --c-glitch: #15803d; --c-glitch-dim: rgba(21, 128, 61, 0.08); --c-glitch-glow: 0 0 10px rgba(21, 128, 61, 0.2);
+            --c-fake: #be185d;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #6d28d9;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-void: #581c87; --c-void-dim: rgba(88, 28, 135, 0.08); --c-void-glow: none;
+            --c-glitch: #3f6212; --c-glitch-dim: rgba(63, 98, 18, 0.08); --c-glitch-glow: none;
+            --c-fake: #9d174d;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #581c87;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 760px; margin: 0 auto;
+        }
+
+        /* TIPOGRAFIA TECH */
+        h1, h2, h3 { text-transform: uppercase !important; letter-spacing: -0.02em; }
+
+        h1 {
+            font-family: var(--font-tech); color: var(--c-text);
+            font-size: 2rem; margin-bottom: 40px; 
+            border-bottom: 2px solid var(--c-void); 
+            padding-bottom: 20px;
+            text-shadow: var(--c-void-glow);
+        }
+        
+        h2 {
+            font-family: var(--font-tech); color: var(--c-glitch);
+            font-size: 1.2rem; margin: 3em 0 1em 0; 
+            display: flex; align-items: center; gap: 10px;
+            text-shadow: var(--c-glitch-glow);
+        }
+        h2::before { content: '>'; color: var(--c-dim); font-weight: 300; }
+
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--c-void); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--c-void-dim); padding-left: 15px;
+        }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-void); font-weight: 600; text-shadow: 0 0 8px rgba(124, 58, 237, 0.2); }
+        body.sepia-mode strong { text-shadow: none; }
+
+        /* WIDGETS DINÂMICOS */
+        .meta-tag {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-void);
+            border: 1px solid var(--c-void); padding: 4px 8px; border-radius: 4px;
+            display: inline-block; margin-bottom: 20px; text-transform: uppercase;
+            box-shadow: var(--c-void-glow);
+        }
+
+        .thesis-box {
+            background: var(--c-void-dim);
+            border-left: 4px solid var(--c-void);
+            padding: 25px; margin: 2em 0; 
+            font-family: var(--font-tech); font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .thesis-header { color: var(--c-void); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+
+        /* PIE CHART (CSS CONIC) */
+        .visual-pie-container {
+            background: rgba(255,255,255,0.01); border: var(--border-tech);
+            border-radius: 12px; padding: 30px; margin: 3em 0; 
+            display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap;
+            font-family: var(--font-tech); box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+        }
+        .pie-chart {
+            width: 160px; height: 160px; border-radius: 50%;
+            background: conic-gradient(
+                var(--c-fake) 0% 49.6%, 
+                var(--c-void) 49.6% 65%, 
+                var(--c-glitch) 65% 100%
+            );
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.3); margin-bottom: 10px; flex-shrink: 0;
+        }
+        .pie-chart::after {
+            content: "49.6%"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80px; height: 80px; background: var(--c-bg); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: var(--c-text);
+        }
+        .pie-legend { display: flex; flex-direction: column; gap: 10px; min-width: 200px; }
+        .legend-item { display: flex; align-items: center; color: var(--c-text); font-size: 0.8rem; }
+        .dot { width: 12px; height: 12px; border-radius: 2px; margin-right: 10px; display: inline-block; box-shadow: 0 0 5px currentColor; }
+
+        /* ENTROPY SCALE */
+        .entropy-scale {
+            display: flex; flex-direction: column; gap: 8px; margin: 3em 0;
+            padding: 20px; border: var(--border-tech); border-radius: 8px; background: rgba(255,255,255,0.01);
+        }
+        .entropy-bar { height: 10px; background: #333; border-radius: 2px; overflow: hidden; position: relative; }
+        .entropy-fill { 
+            height: 100%; width: 100%; 
+            background: linear-gradient(90deg, var(--c-glitch) 0%, var(--c-void) 50%, var(--c-fake) 100%); 
+        }
+        .entropy-labels { display: flex; justify-content: space-between; font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-dim); text-transform: uppercase; }
+
+        /* TERMINAL WIDGET */
+        .terminal-widget {
+            background: #0f0f0f; border: 1px solid #333; border-radius: 6px; padding: 20px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--c-glitch);
+            margin: 3em 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow-x: auto;
+        }
+        .term-line { margin-bottom: 5px; opacity: 0; animation: typeLine 0.5s forwards; white-space: nowrap; }
+        .term-line:nth-child(1) { animation-delay: 0s; }
+        .term-line:nth-child(2) { animation-delay: 0.5s; color: var(--c-fake); }
+        .term-line:nth-child(3) { animation-delay: 1.0s; color: #eab308; }
+        .term-line:nth-child(4) { animation-delay: 1.5s; }
+
+        /* COMPARISON GRID */
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
+        .comp-card {
+            background: rgba(255,255,255,0.01); border: var(--border-tech);
+            padding: 25px; border-radius: 8px; transition: all 0.3s ease;
+        }
+        .comp-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.03); }
+        
+        .comp-card.extract { border-bottom: 2px solid var(--c-fake); }
+        .comp-card.extract:hover { box-shadow: 0 0 15px rgba(217, 70, 239, 0.2); }
+        
+        .comp-card.garden { border-bottom: 2px solid var(--c-glitch); }
+        .comp-card.garden:hover { box-shadow: var(--c-glitch-glow); }
+
+        .comp-title { 
+            font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; 
+            display: block; margin-bottom: 10px; font-size: 0.8rem;
+        }
+
+        .action-box {
+            background: linear-gradient(180deg, var(--c-void-dim), transparent);
+            border: 1px solid var(--c-void); box-shadow: var(--c-void-glow);
+            border-radius: 12px; padding: 40px 30px; text-align: center; margin-top: 60px;
+            position: relative; overflow: hidden;
+        }
+        .action-icon { font-size: 2rem; display: block; margin-bottom: 10px; text-shadow: 0 0 10px var(--c-void); }
+        .glitch-text { animation: glitch 2s infinite; font-weight: bold; color: var(--c-glitch); display: inline-block; font-family: var(--font-tech); font-size: 0.8rem; letter-spacing: 2px; }
+
+        /* HIGHLIGHT TTS */
+        .speaking {
+            background: var(--c-void-dim); color: var(--c-text);
+            box-shadow: -4px 0 15px var(--c-void-glow); border-left: 4px solid var(--c-void);
+            padding-left: 15px; margin-left: -19px; border-radius: 0 4px 4px 0;
+            transition: all 0.3s;
+        }
+
+        @keyframes typeLine { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes glitch { 
+            0% { transform: skew(0deg); opacity: 1; } 
+            20% { transform: skew(-10deg); opacity: 0.8; } 
+            40% { transform: skew(10deg); opacity: 1; } 
+            60% { transform: skew(-5deg); opacity: 0.9; } 
+            80% { transform: skew(5deg); opacity: 1; } 
+            100% { transform: skew(0deg); opacity: 1; } 
+        }
+
+        /* RESPONSIVIDADE FATOR X */
+        @media (max-width: 600px) {
+            body { padding: 30px 15px 120px 15px; }
+            h1 { font-size: 1.6rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .visual-pie-container { flex-direction: column; gap: 20px; }
+            .pie-legend { width: 100%; }
+            p { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <span class="meta-tag">PARTE III: A SOCIEDADE E A VERDADE | CAPÍTULO 08</span>
+    
+    <h1 class="speakable">A Internet Morta:<br>Colapso da Realidade</h1>
+
+    <p class="speakable">Você tem certeza absoluta de que a pessoa com quem você discutiu nos comentários hoje era biológica? Você tem certeza de que a imagem da paisagem perfeita que você curtiu foi vista por um olho humano antes de ser renderizada? O que antes era uma teoria da conspiração em fóruns obscuros (a <strong>"Dead Internet Theory"</strong>) tornou-se, em 2025, um fato técnico auditável. Não é que a internet "desligou"; ela morreu de espírito. Ela tornou-se um teatro zumbi onde algoritmos de criação de conteúdo (GenAI) conversam com algoritmos de recomendação, em um ciclo infinito de ruído sintético desenhado para extrair valor de olhos humanos cada vez mais raros.</p>
+
+    <p class="speakable">Relatórios de segurança, como o <strong>Bad Bot Report da Imperva</strong>, indicam que quase 50% de todo o tráfego da web já é não-humano. Estamos navegando em um oceano onde metade dos navios são fantasmas. Mas o buraco é mais fundo: não estamos apenas lidando com bots, estamos lidando com o colapso da própria noção de verdade compartilhada, uma crise epistemológica sem precedentes.</p>
+
+    <div class="visual-pie-container speakable">
+        <div class="pie-chart"></div>
+        <div class="pie-legend">
+            <strong style="color: var(--c-text); margin-bottom: 10px; display: block; text-transform: uppercase; font-size: 0.8rem;">DADOS: RELATÓRIO IMPERVA</strong>
+            <div class="legend-item"><span class="dot" style="background: var(--c-fake);"></span> Bots Maliciosos (49.6%)</div>
+            <div class="legend-item"><span class="dot" style="background: var(--c-void);"></span> Crawlers/Indexadores (15%)</div>
+            <div class="legend-item"><span class="dot" style="background: var(--c-glitch);"></span> Humanos Reais (35.4%)</div>
+        </div>
+    </div>
+
+    <h2 class="speakable">O Ouroboros de Dados: Model Collapse</h2>
+
+    <p class="speakable">O fenômeno mais aterrorizante da IA generativa não é a "consciência da máquina" (o mito de Hollywood), mas a <strong>Demência Digital</strong>. Em um estudo publicado na revista <em>Nature</em> (2024), pesquisadores liderados por Ilia Shumailov demonstraram matematicamente o conceito de <strong>Model Collapse</strong> (Colapso do Modelo).</p>
+    
+    <p class="speakable">As IAs atuais (GPT-4, Claude, Llama) foram treinadas raspando a internet humana acumulada por 30 anos (livros, artigos, fóruns reais). Mas, à medida que a internet é inundada por "Slop" (lodo digital gerado por IA), as novas gerações de IA começam a treinar com dados feitos por outras IAs. É um ciclo de incesto digital. A variância diminui, as "alucinações" aumentam e a realidade se distorce. A informação perde a conexão com o fato original, tornando-se uma cópia degradada de uma cópia, como um JPEG salvo e re-salvo mil vezes até virar ruído.</p>
+
+    <div class="entropy-scale speakable">
+        <span style="font-family:var(--font-tech); font-size:0.7rem; font-weight:bold; color:var(--c-text); margin-bottom:5px;">GRÁFICO: A ENTROPIA DA INFORMAÇÃO</span>
+        <div class="entropy-bar"><div class="entropy-fill"></div></div>
+        <div class="entropy-labels">
+            <span>DADOS HUMANOS (Puro/Caótico)</span>
+            <span>IA Geração 1 (Padrão)</span>
+            <span>IA Geração 5 (Ruído/Colapso)</span>
+        </div>
+    </div>
+
+    <div class="thesis-box speakable">
+        <span class="thesis-header">// A Crise da Atenção Subprime</span>
+        "Tim Hwang, em <em>Subprime Attention Crisis</em>, revela que a economia da internet é baseada em uma fraude massiva, comparável à bolha imobiliária de 2008. O mercado de publicidade programática (Ad Tech) movimenta bilhões vendendo a atenção de usuários que não existem. Grandes redes de bots (como a infame <strong>Methbot</strong> russa) assistem a anúncios em sites fantasmas, gerando receita fraudulenta. O sistema financeiro da web depende dessa mentira para inflar métricas de crescimento. A internet não está apenas morta; ela é um esquema de lavagem de dinheiro de atenção."
+    </div>
+
+    <h2 class="speakable">A Teoria da Floresta Negra</h2>
+
+    <p class="speakable">Diante desse ambiente hostil, os humanos estão mudando seu comportamento. O escritor <strong>Yancey Strickler</strong> propôs a <strong>Teoria da Floresta Negra</strong> da Internet. Na ficção científica, civilizações se escondem para não serem destruídas por predadores. Na web, os "predadores" são os bots, os trolls, os anunciantes e os crawlers de IA.</p>
+    
+    <p class="speakable">Em resposta, os humanos estão abandonando a "praça pública" (X, Facebook, Instagram aberto) e recuando para "cavernas escuras" e privadas: grupos de WhatsApp, servidores de Discord, Slacks fechados e Newsletters pagas. A conversa humana real tornou-se subterrânea. O que resta na superfície, visível aos buscadores, é apenas a performance de influenciadores sintéticos e guerra cultural automatizada.</p>
+
+    <h2 class="speakable">O Dividendo do Mentiroso (Liar's Dividend)</h2>
+
+    <p class="speakable">Em um mundo saturado por <em>Deepfakes</em>, o maior perigo não é apenas acreditar na mentira, mas a morte da verdade. Os juristas <strong>Robert Chesney</strong> e <strong>Danielle Citron</strong> cunharam o termo <strong>"Liar's Dividend"</strong> (O Dividendo do Mentiroso).</p>
+    
+    <p class="speakable">Quando qualquer vídeo pode ser falsificado, a realidade torna-se negável. Um político corrupto pego em flagrante em vídeo real pode simplesmente dizer: 'Isso é IA'. Um criminoso de guerra pode alegar que as filmagens de seus crimes são fabricações digitais. A dúvida torna-se a arma definitiva. Se nada é provável, tudo é permitido. A base epistemológica da democracia e do sistema jurídico — a existência de fatos compartilhados — dissolve-se.</p>
+
+    <div class="terminal-widget speakable">
+        > SYSTEM_AUDIT: CHECKING AUTHENTICITY...<br>
+        <div class="term-line">> DETECTED: SYNTHETIC USER ID #99281</div>
+        <div class="term-line">> BEHAVIOR: 24/7 ACTIVITY, NO SLEEP PATTERN</div>
+        <div class="term-line">> CONTENT: GENERATED BY LLM V4.0</div>
+        <div class="term-line">> STATUS: HUMANITY NOT FOUND.</div>
+    </div>
+
+    <h2 class="speakable">Influenciadores Sintéticos: O Capital Sem Corpo</h2>
+
+    <p class="speakable">No mercado da fama, o corpo humano tornou-se um passivo logístico. Ele envelhece, cansa, exige cachê, tem opiniões políticas e comete escândalos. A solução do capital é o <strong>Influenciador Sintético</strong>.</p>
+    
+    <p class="speakable">Perfis como <strong>Lil Miquela</strong> ou a modelo fitness gerada por IA <strong>Aitana Lopez</strong> são a perfeição corporativa. Elas trabalham 24/7, nunca reclamam e dizem exatamente o que a marca quer. Para o público, a interação gera dopamina real (relações parassociais); para a empresa, o risco é zero. Estamos treinando uma geração para formar laços emocionais com fantasmas de código, aprofundando a solidão coletiva em escala industrial.</p>
+
+    <h2 class="speakable">Síntese: Jardins Digitais e a Web Humana</h2>
+
+    <p class="speakable">A resistência contra a Internet Morta não é tentar "consertar" o Twitter ou o Google. Essas plataformas já foram cedidas aos bots. A solução é a construção de <strong>Jardins Digitais</strong>.</p>
+    
+    <p class="speakable">Precisamos redescobrir a <strong>Small Web</strong>. É o movimento de retorno aos blogs pessoais, aos sites estáticos feitos à mão (HTML/CSS), às newsletters diretas e aos leitores de RSS. É a adoção do protocolo <strong>POSSE</strong> (Publish on your Own Site, Syndicate Elsewhere): publique no seu terreno, onde você é dono, e apenas distribua o link nas redes.</p>
+
+    <div class="comparison-grid">
+        <div class="comp-card extract">
+            <span class="comp-title" style="color:var(--c-fake)">WEB EXTRATIVA (Plataforma)</span>
+            <div class="comp-content speakable">
+                Otimizada para engajamento (ódio/vício). Conteúdo efêmero. Algoritmo decide o que você vê. Você é o produto vendido aos anunciantes.
+            </div>
+        </div>
+        <div class="comp-card garden">
+            <span class="comp-title" style="color:var(--c-glitch)">WEB GENERATIVA (Jardim)</span>
+            <div class="comp-content speakable">
+                Otimizada para conexão e profundidade. Conteúdo perene. Curadoria humana. Você é o dono do território e das regras.
+            </div>
+        </div>
+    </div>
+
+    <div class="action-box speakable">
+        <span class="action-icon">🌱</span>
+        <strong style="color:var(--c-void); text-transform:uppercase; display:block; margin-bottom:10px; font-family:var(--font-tech);">DESAFIO DE RETOMADA #08</strong>
+        <p style="font-weight:bold;">Cultive o Seu Terreno</p>
+        <p>Se o Instagram acabar amanhã, você perde todo o seu histórico e conexões. Isso é viver de aluguel em terreno hostil.</p>
+        <p><strong>Sua missão:</strong> Dê o primeiro passo para a desintermediação. Instale um leitor de <strong>RSS</strong> (como Feedly ou Inoreader) e comece a seguir 5 blogs ou sites diretamente, sem passar pelo filtro de uma rede social. Ou, se for corajoso, comece seu próprio "Digital Garden" (um blog simples, sem likes, sem comentários). Tenha um endereço na web que você pague com dinheiro, não com sua alma.</p>
+        <p class="glitch-text">>> SAIA DA MATRIX. CULTIVE O REAL.</p>
+    </div>
+
+    <script>
+        let ttsQueue = [];
+        let ttsIndex = 0;
+        let ttsRate = 1.0;
+        let isPlaying = false;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+
+        window.addEventListener('message', (e) => {
+            const d = e.data;
+            if(d.type === 'theme') document.body.className = d.value + '-mode';
+            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+            if(d.type === 'rate') {
+                ttsRate = d.value;
+                if(isPlaying) { synthesis.cancel(); speakStep(false); }
+            }
+            if(d.type === 'tts-toggle') toggleTTS();
+        });
+
+        function getVoices() {
+            const v = synthesis.getVoices();
+            return v.find(x => x.lang === 'pt-BR' && x.name.includes('Google')) ||
+                   v.find(x => x.lang === 'pt-BR');
+        }
+
+        function initTTS() {
+            ttsQueue = Array.from(document.querySelectorAll('.speakable'));
+        }
+
+        function toggleTTS() {
+            if(ttsQueue.length === 0) initTTS();
+            
+            if(isPlaying) {
+                synthesis.cancel();
+                isPlaying = false;
+                updateHighlight(null);
+                reportState(false);
+            } else {
+                isPlaying = true;
+                reportState(true);
+                if(ttsIndex >= ttsQueue.length) ttsIndex = 0;
+                speakStep(false); 
+            }
+        }
+
+        function speakStep(advance) {
+            if(!isPlaying) return;
+            if(advance) ttsIndex++;
+            
+            if(ttsIndex >= ttsQueue.length) {
+                isPlaying = false;
+                reportState(false);
+                updateHighlight(null);
+                ttsIndex = 0;
+                return;
+            }
+
+            const el = ttsQueue[ttsIndex];
+            updateHighlight(el);
+            el.scrollIntoView({behavior: "smooth", block: "center"});
+
+            utterance = new SpeechSynthesisUtterance(el.innerText);
+            utterance.lang = 'pt-BR';
+            utterance.rate = ttsRate;
+            utterance.voice = getVoices();
+            utterance.onend = () => { if(isPlaying) speakStep(true); };
+            utterance.onerror = () => { if(isPlaying) speakStep(true); };
+
+            synthesis.speak(utterance);
+        }
+
+        function updateHighlight(el) {
+            document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking'));
+            if(el) el.classList.add('speaking');
+        }
+
+        function reportState(bool) {
+            window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*');
+        }
+
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('.speakable');
+            if(target) {
+                if(ttsQueue.length === 0) initTTS();
+                const idx = ttsQueue.indexOf(target);
+                if(idx !== -1) {
+                    synthesis.cancel();
+                    ttsIndex = idx;
+                    isPlaying = true;
+                    reportState(true);
+                    speakStep(false);
+                }
+            }
+        });
+
+        window.onbeforeunload = () => synthesis.cancel();
+    </script>
+</body>
+</html>

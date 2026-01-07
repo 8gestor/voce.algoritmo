@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 07</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- FATOR X v4.1: RESPONSIVE & NEON CORE --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
+            
+            /* PALETA CAP 07: NERVE PURPLE vs SYSTEM ALERT AMBER */
+            --c-nerve: #8b5cf6;    /* Roxo (Mental/Nervoso) */
+            --c-nerve-dim: rgba(139, 92, 246, 0.1);
+            --c-nerve-glow: 0 0 15px rgba(139, 92, 246, 0.4);
+            
+            --c-alert: #f59e0b;    /* Âmbar (Carga/Aviso) */
+            --c-alert-dim: rgba(245, 158, 11, 0.1);
+            --c-alert-glow: 0 0 15px rgba(245, 158, 11, 0.3);
+
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px;
+            
+            --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+
+            /* SCROLLBAR */
+            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #8b5cf6;
+        }
+
+        body.light-mode {
+            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
+            --c-nerve: #7c3aed; --c-nerve-dim: rgba(124, 58, 237, 0.08); --c-nerve-glow: 0 0 10px rgba(124, 58, 237, 0.2);
+            --c-alert: #d97706; --c-alert-dim: rgba(217, 119, 6, 0.08); --c-alert-glow: 0 0 10px rgba(217, 119, 6, 0.2);
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #7c3aed;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-nerve: #5b21b6; --c-nerve-dim: rgba(91, 33, 182, 0.08); --c-nerve-glow: none;
+            --c-alert: #92400e; --c-alert-dim: rgba(146, 64, 14, 0.08); --c-alert-glow: none;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #5b21b6;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 720px; margin: 0 auto;
+        }
+
+        /* TIPOGRAFIA TECH */
+        h1, h2, h3 { text-transform: uppercase !important; letter-spacing: -0.02em; }
+
+        h1 {
+            font-family: var(--font-tech); color: var(--c-text);
+            font-size: 2rem; margin-bottom: 40px; 
+            border-bottom: 2px solid var(--c-nerve); 
+            padding-bottom: 20px;
+            text-shadow: var(--c-nerve-glow);
+        }
+        
+        h2 {
+            font-family: var(--font-tech); color: var(--c-alert);
+            font-size: 1.2rem; margin: 3em 0 1em 0; 
+            display: flex; align-items: center; gap: 10px;
+            text-shadow: var(--c-alert-glow);
+        }
+        h2::before { content: '>'; color: var(--c-dim); font-weight: 300; }
+
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--c-nerve); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--c-nerve-dim); padding-left: 15px;
+        }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-nerve); font-weight: 600; text-shadow: 0 0 8px rgba(139, 92, 246, 0.2); }
+        body.sepia-mode strong { text-shadow: none; }
+
+        /* WIDGETS DINÂMICOS */
+        .meta-tag {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-nerve);
+            border: 1px solid var(--c-nerve); padding: 4px 8px; border-radius: 4px;
+            display: inline-block; margin-bottom: 20px; text-transform: uppercase;
+            box-shadow: var(--c-nerve-glow);
+        }
+
+        .thesis-box {
+            background: var(--c-nerve-dim);
+            border-left: 4px solid var(--c-nerve);
+            padding: 25px; margin: 2em 0; 
+            font-family: var(--font-tech); font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .thesis-header { color: var(--c-nerve); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+
+        .deep-dive-box {
+            border-top: 1px dashed var(--c-dim); border-bottom: 1px dashed var(--c-dim);
+            padding: 30px 0; margin: 3em 0;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.05), transparent);
+        }
+
+        /* WIDGET: TASK MANAGER (SYSTEM MONITOR) */
+        .task-manager-container {
+            background: #111; border: 1px solid var(--c-dim); border-radius: 6px;
+            padding: 0; margin: 3em 0; font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden;
+        }
+        .tm-header {
+            background: #222; padding: 10px 15px; color: #fff; font-size: 0.8rem;
+            display: flex; justify-content: space-between; border-bottom: 1px solid #333;
+        }
+        .tm-body { padding: 20px; }
+        .tm-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .tm-label { width: 120px; color: #ccc; font-size: 0.85rem; font-weight: bold; flex-shrink: 0; }
+        .tm-bar-track { flex: 1; height: 20px; background: #333; border-radius: 3px; position: relative; overflow: hidden; }
+        .tm-bar-fill { 
+            height: 100%; display: flex; align-items: center; justify-content: flex-end; 
+            padding-right: 5px; color: #000; font-size: 0.7rem; font-weight: bold; 
+            transition: width 1s ease-in-out;
+        }
+        
+        .fill-cpu { width: 99%; background: #ef4444; animation: pulse-red 2s infinite; }
+        .fill-ram { width: 94%; background: var(--c-alert); }
+        .fill-net { width: 100%; background: var(--c-nerve); }
+        
+        .tm-footer { 
+            padding: 10px 20px; background: #1a1a1a; color: #ef4444; 
+            font-family: var(--font-tech); font-size: 0.7rem; text-align: right; letter-spacing: 1px;
+        }
+
+        /* GRID DE LEIS */
+        .law-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 2em 0; }
+        .law-card { 
+            background: rgba(255,255,255,0.01); border: var(--border-tech);
+            padding: 20px; border-radius: 8px; transition: transform 0.2s;
+        }
+        .law-card:hover { border-color: var(--c-nerve); transform: translateY(-3px); box-shadow: var(--c-nerve-glow); }
+        .law-country { font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-alert); text-transform: uppercase; margin-bottom: 5px; display: block; font-weight: bold; }
+        .law-name { font-weight: bold; color: var(--c-text); margin-bottom: 8px; display: block; text-transform: uppercase; font-size: 0.9rem; }
+        .law-desc { font-size: 0.85rem; color: var(--c-dim); line-height: 1.5; }
+
+        .action-box {
+            background: linear-gradient(180deg, var(--c-alert-dim), transparent);
+            border: 1px solid var(--c-alert); box-shadow: var(--c-alert-glow);
+            border-radius: 12px; padding: 40px 30px; text-align: center; margin-top: 60px;
+            position: relative; overflow: hidden;
+        }
+        .action-icon { font-size: 2rem; display: block; margin-bottom: 10px; text-shadow: 0 0 10px var(--c-alert); }
+
+        /* HIGHLIGHT TTS */
+        .speaking {
+            background: var(--c-nerve-dim); color: var(--c-text);
+            box-shadow: -4px 0 15px var(--c-nerve-glow); border-left: 4px solid var(--c-nerve);
+            padding-left: 15px; margin-left: -19px; border-radius: 0 4px 4px 0;
+            transition: all 0.3s;
+        }
+
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        /* RESPONSIVIDADE FATOR X */
+        @media (max-width: 600px) {
+            body { padding: 30px 15px 120px 15px; }
+            h1 { font-size: 1.6rem; }
+            .law-grid { grid-template-columns: 1fr; }
+            .tm-header { flex-direction: column; gap: 5px; }
+            .tm-label { width: 90px; font-size: 0.75rem; }
+            p { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <span class="meta-tag">PARTE III: A SOCIEDADE E A VERDADE | CAPÍTULO 07</span>
+    
+    <h1 class="speakable">O Patrão Invisível:<br>Taylorismo Digital</h1>
+
+    <p class="speakable">Responda rápido: quando foi a última vez que você não fez <em>nada</em>? Não estou falando de "assistir a uma série" (consumir conteúdo). Não estou falando de "meditar" (otimizar a mente para voltar a produzir). Estou falando de inatividade radical. O olhar vago. O silêncio mental.</p>
+    
+    <p class="speakable">Se você sentiu uma pontada de culpa só de imaginar essa cena, o algoritmo já está rodando dentro de você. O <strong>Patrão Invisível</strong> não precisa mais de chicote, nem de cartão de ponto físico. Ele vive na sua consciência, sussurrando que cada segundo não monetizado é um erro de sistema.</p>
+
+    <div class="thesis-box speakable">
+        <span class="thesis-header">// Semiocapitalismo: O Colapso Nervoso</span>
+        "O filósofo italiano <strong>Franco 'Bifo' Berardi</strong> define nosso momento como <strong>Semiocapitalismo</strong>. O capital não explora mais apenas os músculos (fábrica), mas a nossa capacidade linguística, criativa e emocional. A mais-valia é extraída diretamente do sistema nervoso. O resultado não é o cansaço muscular que um banho resolve, mas a 'superestimulação nervosa', que leva ao pânico, à depressão e ao que chamamos superficialmente de Burnout. O Burnout não é cansaço; é o curto-circuito da alma."
+    </div>
+
+    <h2 class="speakable">O Olho do Banco: Bossware e a Vigilância no Teclado</h2>
+
+    <p class="speakable">Com a migração para o trabalho remoto, as empresas não confiaram na autonomia de seus funcionários. Elas instalaram o panóptico dentro de seus quartos. Softwares de monitoramento, conhecidos como <strong>Bossware</strong> (como <em>Hubstaff</em>, <em>Teramind</em> e <em>Time Doctor</em>), operam com uma premissa algorítmica brutal: se você não está clicando, você não está trabalhando.</p>
+
+    <div class="deep-dive-box speakable">
+        <h3 style="margin-top:0;">O Caso Wells Fargo e a Realidade Brasileira</h3>
+        <p>Em 2024, o gigante bancário americano <strong>Wells Fargo</strong> demitiu mais de uma dúzia de funcionários após uma investigação revelar o uso de "mouse jigglers" (dispositivos que simulam o movimento do mouse). A mensagem foi clara: o banco não mede a entrega (resultado), mas a <em>simulação</em> de presença digital.</p>
+        <p>No Brasil, a situação espelha essa distopia. O <strong>Ministério Público do Trabalho (MPT)</strong> abriu inquéritos para investigar grandes instituições financeiras (como o Itaú) por práticas de "assédio moral digital". Denúncias apontam para o uso de softwares que monitoram o tempo de ociosidade do teclado e exigem que a webcam permaneça ligada, criando um clima de terror onde o trabalhador tem medo até de ir ao banheiro.</p>
+    </div>
+
+    <div class="task-manager-container speakable">
+        <div class="tm-header">
+            <span>TASK MANAGER (HUMAN.EXE)</span>
+            <span>PID: 1984 // STATUS: CRITICAL</span>
+        </div>
+        <div class="tm-body">
+            <div class="tm-row">
+                <span class="tm-label">CPU (Ansiedade)</span>
+                <div class="tm-bar-track"><div class="tm-bar-fill fill-cpu">99%</div></div>
+            </div>
+            <div class="tm-row">
+                <span class="tm-label">RAM (Carga)</span>
+                <div class="tm-bar-track"><div class="tm-bar-fill fill-ram">94%</div></div>
+            </div>
+            <div class="tm-row">
+                <span class="tm-label">Rede (Teams)</span>
+                <div class="tm-bar-track"><div class="tm-bar-fill fill-net">100%</div></div>
+            </div>
+        </div>
+        <div class="tm-footer">
+            WARNING: SYSTEM OVERHEAT // SLEEP MODE DISABLED
+        </div>
+    </div>
+
+    <h2 class="speakable">A Grande Substituição: Deslocamento de Tarefas</h2>
+
+    <p class="speakable">Não é apenas vigilância; é substituição. Os economistas <strong>Daron Acemoglu</strong> (MIT) e <strong>Pascual Restrepo</strong> (Boston University) cunharam o termo <strong>"Task Displacement"</strong> (Deslocamento de Tarefas).</p>
+    
+    <p class="speakable">Diferente da Revolução Industrial, onde máquinas tornaram o homem mais produtivo, a IA atual muitas vezes cria o que eles chamam de <strong>"So-so Automation"</strong> (Automação Medíocre). Ela é "boa o suficiente" para substituir o humano (reduzindo custos trabalhistas), mas não boa o suficiente para aumentar a produtividade real da economia. O resultado é a destruição de empregos de classe média sem a criação proporcional de novas funções, empurrando a massa para o subemprego digital (Ghost Work).</p>
+
+    <h2 class="speakable">O Escudo Legislativo: O Mundo Reage</h2>
+
+    <p class="speakable">Diante da invasão tecnológica, governos estão sendo forçados a atualizar leis trabalhistas do século XX para a realidade algorítmica do século XXI. A luta agora é pelo controle do tempo:</p>
+
+    <div class="law-grid speakable">
+        <div class="law-card">
+            <span class="law-country">FRANÇA & AUSTRÁLIA</span>
+            <span class="law-name">Direito à Desconexão</span>
+            <span class="law-desc">Leis que tornam ilegal punir funcionários por ignorarem e-mails ou mensagens fora do horário de expediente. É o reconhecimento legal de que o cérebro precisa desligar.</span>
+        </div>
+        <div class="law-card">
+            <span class="law-country">ESPANHA</span>
+            <span class="law-name">Lei Rider (2021)</span>
+            <span class="law-desc">Pioneira, presume que entregadores de aplicativos são empregados e não "parceiros", obrigando as plataformas a revelarem os algoritmos que distribuem as tarefas.</span>
+        </div>
+        <div class="law-card">
+            <span class="law-country">PORTUGAL</span>
+            <span class="law-name">Dever de Abstenção</span>
+            <span class="law-desc">Proíbe o empregador de contatar o trabalhador no período de descanso, salvo força maior, sob pena de multa pesada.</span>
+        </div>
+        <div class="law-card">
+            <span class="law-country">BRASIL</span>
+            <span class="law-name">Em Disputa (MPT)</span>
+            <span class="law-desc">Ainda sem lei específica de desconexão robusta, a defesa se dá via jurisprudência do MPT sobre "Teleassédio" e controle telemático abusivo.</span>
+        </div>
+    </div>
+
+    <h2 class="speakable">Síntese: Soberania Laboral e Governança</h2>
+
+    <p class="speakable">Não podemos "hackear" o trabalho para sempre com simuladores de mouse. A verdadeira saída é estrutural. Precisamos passar da insurgência individual para a <strong>Soberania Laboral Participativa</strong>.</p>
+    
+    <p class="speakable">A tecnologia deve servir para reduzir a carga de trabalho, não para intensificá-la. O caminho é exigir <strong>Transparência Algorítmica</strong>: se um software mede sua produtividade, você tem o direito de ver o código e as métricas. Se um algoritmo define sua demissão, ele deve ser auditável. Não somos contra a tecnologia, somos contra a opacidade que a transforma em arma.</p>
+
+    <div class="action-box speakable">
+        <span class="action-icon">⚖️</span>
+        <strong style="color:var(--c-alert); text-transform:uppercase; display:block; margin-bottom:10px; font-family:var(--font-tech);">DESAFIO DE RETOMADA #07</strong>
+        <p style="font-weight:bold;">O Protocolo de Limites (The Firewall)</p>
+        <p>Se você não definir as fronteiras, o algoritmo ocupará todo o território.</p>
+        <p><strong>Sua missão:</strong> Estabeleça um "Contrato de Disponibilidade" consigo mesmo. Defina uma hora exata para o "Shutdown" digital. Após esse horário, ative o modo "Não Perturbe" ou remova o e-mail corporativo do celular pessoal.</p>
+        <p>Não é preguiça; é a preservação da ferramenta mais valiosa que você tem: sua sanidade. Trate seu tempo de descanso com a mesma seriedade contratual que o sistema trata o seu tempo de trabalho.</p>
+    </div>
+
+    <script>
+        let ttsQueue = [];
+        let ttsIndex = 0;
+        let ttsRate = 1.0;
+        let isPlaying = false;
+        let synthesis = window.speechSynthesis;
+        let utterance = null;
+
+        window.addEventListener('message', (e) => {
+            const d = e.data;
+            if(d.type === 'theme') document.body.className = d.value + '-mode';
+            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+            if(d.type === 'rate') {
+                ttsRate = d.value;
+                if(isPlaying) { synthesis.cancel(); speakStep(false); }
+            }
+            if(d.type === 'tts-toggle') toggleTTS();
+        });
+
+        function getVoices() {
+            const v = synthesis.getVoices();
+            return v.find(x => x.lang === 'pt-BR' && x.name.includes('Google')) ||
+                   v.find(x => x.lang === 'pt-BR');
+        }
+
+        function initTTS() {
+            ttsQueue = Array.from(document.querySelectorAll('.speakable'));
+        }
+
+        function toggleTTS() {
+            if(ttsQueue.length === 0) initTTS();
+            
+            if(isPlaying) {
+                synthesis.cancel();
+                isPlaying = false;
+                updateHighlight(null);
+                reportState(false);
+            } else {
+                isPlaying = true;
+                reportState(true);
+                if(ttsIndex >= ttsQueue.length) ttsIndex = 0;
+                speakStep(false); 
+            }
+        }
+
+        function speakStep(advance) {
+            if(!isPlaying) return;
+            if(advance) ttsIndex++;
+            
+            if(ttsIndex >= ttsQueue.length) {
+                isPlaying = false;
+                reportState(false);
+                updateHighlight(null);
+                ttsIndex = 0;
+                return;
+            }
+
+            const el = ttsQueue[ttsIndex];
+            updateHighlight(el);
+            el.scrollIntoView({behavior: "smooth", block: "center"});
+
+            utterance = new SpeechSynthesisUtterance(el.innerText);
+            utterance.lang = 'pt-BR';
+            utterance.rate = ttsRate;
+            utterance.voice = getVoices();
+            utterance.onend = () => { if(isPlaying) speakStep(true); };
+            utterance.onerror = () => { if(isPlaying) speakStep(true); };
+
+            synthesis.speak(utterance);
+        }
+
+        function updateHighlight(el) {
+            document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking'));
+            if(el) el.classList.add('speaking');
+        }
+
+        function reportState(bool) {
+            window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*');
+        }
+
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('.speakable');
+            if(target) {
+                if(ttsQueue.length === 0) initTTS();
+                const idx = ttsQueue.indexOf(target);
+                if(idx !== -1) {
+                    synthesis.cancel();
+                    ttsIndex = idx;
+                    isPlaying = true;
+                    reportState(true);
+                    speakStep(false);
+                }
+            }
+        });
+
+        window.onbeforeunload = () => synthesis.cancel();
+    </script>
+</body>
+</html>
