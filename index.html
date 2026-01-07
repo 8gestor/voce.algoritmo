@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- FATOR X v4.0: VARIÁVEIS GLOBAIS & MOBILE CORE --- */
+        /* --- FATOR X v4.1: SYSTEM CORE --- */
         :root {
             /* DARK (Default) */
             --c-bg: #050505;
@@ -20,13 +20,12 @@
             --font-tech: 'JetBrains Mono', monospace;
             --font-ui: 'Inter', sans-serif;
             
-            /* STEALTH SCROLLBAR COLORS */
+            /* SCROLLBAR */
             --scroll-track: #050505;
             --scroll-thumb: #333333;
             --scroll-hover: #555555;
         }
 
-        /* LIGHT MODE */
         body.light-mode {
             --c-bg: #F2F2F7;
             --c-panel: #FFFFFF;
@@ -38,7 +37,6 @@
             --scroll-hover: #A0A0A3;
         }
 
-        /* SEPIA MODE */
         body.sepia-mode {
             --c-bg: #F4ECD8;
             --c-panel: #E8DEC0;
@@ -50,31 +48,25 @@
             --scroll-hover: #8C4B2F;
         }
 
-        /* --- MÓDULO STEALTH SCROLL --- */
-        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { 
-            background: var(--scroll-thumb); 
-            border-radius: 3px; 
-        }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
-
         /* RESET & BASE */
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         html, body { height: 100%; width: 100%; overflow: hidden; background-color: var(--c-bg); color: var(--c-text); }
         body { display: flex; font-family: var(--font-ui); transition: background 0.4s ease, color 0.4s ease; }
 
-        /* SIDEBAR (MENU LATERAL) */
+        /* STEALTH SCROLL */
+        html { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        /* SIDEBAR (Overlay no Mobile) */
         aside.sidebar {
             width: 280px; background: var(--c-panel); border-right: 1px solid var(--c-border);
-            display: flex; flex-direction: column; z-index: 1000; /* Acima de tudo */
+            display: flex; flex-direction: column; z-index: 1000;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             flex-shrink: 0;
         }
-        
-        /* Estado colapsado (Desktop: empurra / Mobile: esconde fora da tela) */
         aside.sidebar.collapsed { transform: translateX(-280px); position: absolute; height: 100%; }
         
         .sidebar-header { 
@@ -83,7 +75,7 @@
             font-family: var(--font-tech); font-weight: 700; color: var(--c-accent); letter-spacing: 1px;
         }
 
-        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
+        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px; }
         .nav-cat { 
             font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-text); opacity: 0.6; 
             margin: 25px 0 10px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
@@ -103,13 +95,12 @@
         /* MAIN DASHBOARD */
         main.dashboard { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; overflow: hidden; }
 
-        /* HEADER SUPERIOR */
+        /* HEADER */
         .master-header {
             background: var(--c-panel); border-bottom: 1px solid var(--c-border);
             display: flex; flex-direction: column; width: 100%; z-index: 400; flex-shrink: 0;
         }
 
-        /* Linha de Título (BRANDING) */
         .branding-bar {
             height: 30px; background: var(--c-bg); border-bottom: 1px solid var(--c-border);
             display: flex; align-items: center; justify-content: center; padding: 0 15px;
@@ -121,38 +112,37 @@
             max-width: 100%;
         }
 
-        /* Linha de Controles */
+        /* Controles Responsivos */
         .controls-bar {
-            height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
-            overflow-x: auto; /* Permite scroll horizontal se faltar espaço */
+            height: 50px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 10px; overflow-x: auto; /* Permite scroll se necessário */
             -webkit-overflow-scrolling: touch;
         }
-        /* Esconder scrollbar na barra de controles para estética */
-        .controls-bar::-webkit-scrollbar { display: none; }
+        .controls-bar::-webkit-scrollbar { display: none; } /* Ocultar scrollbar */
 
         .ctrl-group { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
         
         .btn-icon {
             width: 36px; height: 36px; background: transparent; border: 1px solid var(--c-border);
             color: var(--c-text); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; font-family: var(--font-tech); font-size: 0.9rem;
+            transition: all 0.2s; font-family: var(--font-tech); font-size: 0.9rem; flex-shrink: 0;
         }
         .btn-icon:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(125,125,125,0.05); }
         .btn-icon.active { background: var(--c-accent); color: var(--c-bg); border-color: var(--c-accent); }
 
         .speed-control { 
             display: flex; align-items: center; border: 1px solid var(--c-border); 
-            border-radius: 6px; height: 36px; overflow: hidden; 
+            border-radius: 6px; height: 36px; overflow: hidden; flex-shrink: 0;
         }
         .speed-btn { width: 30px; height: 100%; background: transparent; border: none; color: var(--c-text); cursor: pointer; font-weight: bold; }
         .speed-btn:hover { background: rgba(125,125,125,0.1); }
         #speed-display { font-family: var(--font-tech); font-size: 0.7rem; width: 35px; text-align: center; font-weight: 700; color: var(--c-accent); }
 
-        /* VIEWPORT (IFRAME) */
+        /* VIEWPORT */
         .viewport { flex: 1; background: var(--c-bg); position: relative; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* FOOTER DE NAVEGAÇÃO */
+        /* FOOTER */
         footer.bottom-hud {
             height: 50px; background: var(--c-panel); border-top: 1px solid var(--c-border);
             display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
@@ -160,46 +150,30 @@
         }
         .progress-bar { flex: 1; height: 4px; background: var(--c-border); margin: 0 15px; position: relative; border-radius: 2px; }
         .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--c-accent); width: 0%; transition: width 0.3s; border-radius: 2px; }
-        .nav-btn { 
-            background: none; border: none; color: var(--c-text); cursor: pointer; 
-            font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; 
-            text-transform: uppercase; padding: 10px; 
-        }
+        .nav-btn { background: none; border: none; color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; text-transform: uppercase; padding: 10px; }
         .nav-btn:hover { color: var(--c-accent); }
 
-        /* --- MEDIA QUERIES (MOBILE) --- */
+        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 768px) {
-            /* Sidebar vira Overlay flutuante */
             aside.sidebar { 
-                position: absolute; height: 100%; 
-                width: 85%; max-width: 320px;
-                transform: translateX(-100%); 
-                box-shadow: none;
-                border-right: 1px solid var(--c-accent);
+                position: absolute; height: 100%; width: 85%; max-width: 320px;
+                transform: translateX(-100%); box-shadow: none; border-right: 1px solid var(--c-accent);
             }
-            aside.sidebar.open { 
-                transform: translateX(0); 
-                box-shadow: 10px 0 100px rgba(0,0,0,0.8);
-            }
+            aside.sidebar.open { transform: translateX(0); box-shadow: 10px 0 100px rgba(0,0,0,0.8); }
             
-            /* Título menor */
             .branding-text { font-size: 0.55rem; letter-spacing: 1px; }
             
-            /* Ajustes de botões para dedos */
-            .btn-icon, .speed-control { width: 40px; height: 40px; } /* Alvo de toque maior */
+            /* Melhor toque */
+            .btn-icon, .speed-control { width: 40px; height: 40px; }
             .speed-btn { width: 35px; }
-            
-            /* Esconde o botão de tela cheia no mobile (pouco suporte/útil) */
-            .btn-fullscreen { display: none; }
         }
-        
-        /* Backdrop escuro quando sidebar abre no mobile */
+
+        /* Backdrop para Mobile */
         #backdrop {
             position: absolute; inset: 0; background: rgba(0,0,0,0.7); 
             z-index: 900; display: none; opacity: 0; transition: opacity 0.3s;
         }
         #backdrop.active { display: block; opacity: 1; }
-
     </style>
 </head>
 <body class="dark-mode">
@@ -235,9 +209,9 @@
                         <button class="speed-btn" onclick="adjustSpeed(0.25)">+</button>
                     </div>
 
-                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')" title="Ler em Voz Alta">▶</button>
+                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')" title="Ler/Pausar">▶</button>
                     <button class="btn-icon" id="btn-theme" onclick="cycleTheme()" title="Mudar Tema">◐</button>
-                    <button class="btn-icon btn-fullscreen" onclick="toggleFullScreen()" title="Tela Cheia">⛶</button>
+                    <button class="btn-icon" onclick="toggleFullScreen()" title="Tela Cheia">⛶</button>
                 </div>
             </div>
         </div>
@@ -254,7 +228,6 @@
     </main>
 
     <script>
-        /* CONFIGURAÇÃO DOS CAPÍTULOS */
         const structure = [
             { t: "Introdução", f: "introducao.html", cat: "BOOT SEQUENCE" },
             { t: "Capítulo 01", f: "cap01.html", cat: "MÓDULO MENTAL" },
@@ -299,7 +272,6 @@
                 btn.onclick = (e) => { 
                     e.preventDefault(); 
                     loadChapter(i); 
-                    // Auto-fecha sidebar no mobile ao clicar
                     if(window.innerWidth < 768) toggleSidebar(); 
                 };
                 nav.appendChild(btn);
@@ -310,11 +282,16 @@
         function loadChapter(idx) {
             currentIdx = idx;
             const frame = document.getElementById('content-frame');
+            
+            // CORREÇÃO 2: Reset visual do botão TTS ao mudar de capítulo (evita travar em 'stop')
+            const btnTts = document.getElementById('btn-tts');
+            btnTts.innerText = '▶';
+            btnTts.classList.remove('active');
+
             frame.src = structure[idx].f;
             
             document.getElementById('p-bar').style.width = ((idx + 1) / structure.length * 100) + "%";
 
-            // Atualiza UI da Sidebar
             document.querySelectorAll('.chapter-link').forEach((el, i) => {
                 el.classList.toggle('active', i === idx);
             });
@@ -335,8 +312,7 @@
             sendMsg('rate', ttsRate);
         }
 
-        /* --- CONTROLES FATOR X --- */
-        
+        // --- CONTROLES ---
         function cycleTheme() {
             themeState = (themeState + 1) % 3;
             const mode = themes[themeState];
@@ -346,13 +322,16 @@
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(e => console.log(e));
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Erro ao ativar tela cheia: ${err.message}`);
+                });
             } else {
                 if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
         function adjustSpeed(delta) {
+            // CORREÇÃO 3: Garante que a velocidade não congele a narração
             ttsRate = Math.max(0.5, Math.min(3.0, ttsRate + delta));
             ttsRate = Math.round(ttsRate * 100) / 100;
             document.getElementById('speed-display').innerText = ttsRate;
@@ -369,11 +348,9 @@
             const bd = document.getElementById('backdrop');
             
             if(window.innerWidth < 768) {
-                // Lógica Mobile (Overlay)
                 sb.classList.toggle('open');
                 bd.classList.toggle('active');
             } else {
-                // Lógica Desktop (Collapse)
                 sb.classList.toggle('collapsed');
             }
         }
@@ -386,7 +363,7 @@
             if(currentIdx > 0) loadChapter(currentIdx - 1);
         }
 
-        /* ESCUTA RETORNO DO TTS (PLAY/PAUSE ICON) */
+        // Listener de Estado do TTS (Vem do Capítulo)
         window.addEventListener('message', (e) => {
             if(e.data.type === 'tts-state') {
                 const btn = document.getElementById('btn-tts');
