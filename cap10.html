@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capítulo 10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- FATOR X v4.2: RESPONSIVE & NEON CORE --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
+            
+            /* PALETA CAP 10: NEURAL PURPLE vs SHIELD GOLD */
+            --c-neural: #a855f7;
+            --c-neural-dim: rgba(168, 85, 247, 0.1);
+            --c-neural-glow: 0 0 15px rgba(168, 85, 247, 0.4);
+            
+            --c-shield: #fbbf24;
+            --c-alert: #ef4444;
+
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px;
+            --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* STEALTH SCROLL */
+            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #a855f7;
+        }
+
+        body.light-mode {
+            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
+            --c-neural: #7e22ce; --c-neural-dim: rgba(126, 34, 206, 0.08); --c-neural-glow: 0 0 10px rgba(126, 34, 206, 0.2);
+            --c-shield: #d97706;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #7e22ce;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-neural: #5b21b6; --c-neural-dim: rgba(91, 33, 182, 0.08); --c-neural-glow: none;
+            --c-shield: #92400e;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #5b21b6;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 760px; margin: 0 auto;
+        }
+
+        /* TIPOGRAFIA TECH & CABEÇALHO UNIFICADO */
+        h1, h2, h3 { text-transform: uppercase !important; letter-spacing: -0.02em; }
+
+        h1 {
+            font-family: var(--font-tech); color: var(--c-text);
+            font-size: 2rem; margin-bottom: 40px; 
+            border-bottom: 2px solid var(--c-neural); padding-bottom: 20px;
+            text-shadow: var(--c-neural-glow);
+        }
+        
+        h2 {
+            font-family: var(--font-tech); color: var(--c-shield);
+            font-size: 1.2rem; margin: 3em 0 1em 0; 
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-tech); padding-bottom: 10px;
+        }
+        h2::before { content: '>'; opacity: 0.5; color: var(--c-neural); }
+
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--c-neural); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--c-neural-dim); padding-left: 15px;
+        }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-neural); font-weight: 600; text-shadow: 0 0 8px rgba(168, 85, 247, 0.2); }
+        body.sepia-mode strong { text-shadow: none; }
+
+        /* WIDGETS */
+        .meta-tag {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-neural);
+            border: 1px solid var(--c-neural); padding: 4px 8px; border-radius: 4px;
+            display: inline-block; margin-bottom: 20px; text-transform: uppercase;
+            box-shadow: var(--c-neural-glow);
+        }
+        
+        .thesis-box {
+            background: var(--c-neural-dim); border-left: 4px solid var(--c-neural);
+            padding: 25px; margin: 2em 0; font-family: var(--font-tech); font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--c-neural); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
+
+        .deep-dive-box {
+            border-top: 1px dashed var(--c-dim); border-bottom: 1px dashed var(--c-dim);
+            padding: 30px 0; margin: 3em 0;
+            background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.05), transparent);
+        }
+
+        /* SPECTRUM BAR */
+        .spectrum-bar {
+            display: flex; height: 30px; border-radius: 15px; overflow: hidden; margin: 20px 0;
+            font-family: var(--font-tech); font-size: 0.65rem; font-weight: bold; color: #000;
+        }
+        .sb-1 { width: 33%; background: #4ade80; display: flex; align-items: center; justify-content: center; }
+        .sb-2 { width: 33%; background: #fbbf24; display: flex; align-items: center; justify-content: center; }
+        .sb-3 { width: 34%; background: #ef4444; display: flex; align-items: center; justify-content: center; color: #fff; }
+        .spectrum-legend {
+            display: flex; justify-content: space-between; font-size: 0.75rem; 
+            color: var(--c-dim); margin-bottom: 3em;
+        }
+
+        /* NEURO RIGHTS GRID */
+        .neurorights-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 3em 0;
+        }
+        .nr-card {
+            background: rgba(255,255,255,0.03); border: var(--border-tech);
+            padding: 20px; border-radius: 8px; text-align: center;
+            transition: transform 0.3s;
+        }
+        .nr-card:hover { transform: translateY(-5px); border-color: var(--c-shield); box-shadow: 0 0 15px rgba(251, 191, 36, 0.2); }
+        .nr-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+        .nr-title { font-family: var(--font-tech); font-weight: bold; color: var(--c-text); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .nr-desc { font-size: 0.75rem; color: var(--c-dim); line-height: 1.4; }
+
+        .action-box {
+            border: 1px dashed var(--c-shield); background: linear-gradient(180deg, rgba(251, 191, 36, 0.05), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px; position: relative;
+        }
+        .action-header { font-family: var(--font-tech); color: var(--c-shield); font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+
+        .speaking {
+            background: var(--c-neural-dim); color: var(--c-text);
+            border-left: 4px solid var(--c-neural); padding-left: 15px; margin-left: -19px;
+            border-radius: 0 4px 4px 0; box-shadow: var(--c-neural-glow); transition: all 0.3s;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 30px 15px 120px 15px; }
+            h1 { font-size: 1.8rem; }
+            .neurorights-grid { grid-template-columns: 1fr; }
+            .spectrum-legend { flex-direction: column; gap: 5px; text-align: center; }
+            p { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reader-container" id="content-area">
+        <span class="meta-tag">PARTE IV: CONTRA-MEDIDAS | CAPÍTULO 10</span>
+        
+        <h1 class="speakable">Neuro-direitos:<br>A Mente Hackeada</h1>
+
+        <p class="speakable">Olhe para a pessoa ao seu lado. Você pode ver o rosto dela, as roupas, a postura. Mas você não tem a menor ideia do que ela está pensando. Ela pode estar sorrindo enquanto planeja um crime, ou chorando por dentro enquanto mantém uma cara de paisagem. Esse espaço inviolável — a caixa-preta da mente — é o último refúgio da liberdade humana. É onde a dissidência nasce. É onde o "Eu" real se esconde do "Eu Inferido".</p>
+        
+        <p class="speakable">Agora, imagine que essa caixa foi aberta. Imagine um fone de ouvido que avisa ao seu chefe que sua concentração caiu. Imagine uma pulseira que diz à polícia que você reconheceu o rosto de um suspeito antes mesmo de você falar. Isso não é ficção científica distópica. A tecnologia já existe. Bem-vindo à era da <strong>Transparência Neural Forçada</strong>.</p>
+
+        <div class="thesis-box speakable">
+            <span class="thesis-header">// O Fim do Silêncio Interior</span>
+            "O historiador <strong>Yuval Noah Harari</strong> alerta que 'os humanos são agora animais hackeáveis'. As grandes corporações de tecnologia atingiram um teto na extração de dados comportamentais (onde você vai, o que compra). Para continuar crescendo, elas precisam colonizar o único território virgem restante: a experiência subjetiva humana. Eles não querem apenas prever o que você fará; eles querem decodificar <em>por que</em> você fará, acessando a fonte: seus neurônios."
+        </div>
+
+        <h2 class="speakable">O Hardware da Invasão: Já Está Entre Nós</h2>
+
+        <p class="speakable">A leitura da mente saiu dos laboratórios médicos e entrou nas prateleiras da Best Buy. Dispositivos de consumo, chamados de <strong>Neurotecnologia de Consumo</strong>, estão normalizando a coleta de dados cerebrais (EEG e EMG) sob o pretexto de conveniência e bem-estar.</p>
+
+        <div class="deep-dive-box speakable">
+            <h3 style="margin-top:0;">1. Meta e a Pulseira Neural</h3>
+            <p>A Meta (Facebook) adquiriu a CTRL-labs para desenvolver uma pulseira que lê os sinais elétricos dos seus nervos motores. Ela sabe que você quer mover um dedo milissegundos antes de você movê-lo. A promessa é controlar o Metaverso sem controles; o custo é entregar a <strong>intenção motora</strong> da sua mente para Mark Zuckerberg.</p>
+
+            <h3>2. Apple Vision Pro e Pupilometria</h3>
+            <p>O headset da Apple monitora seus olhos com precisão infravermelha. A dilatação da pupila é uma resposta do sistema nervoso autônomo; ela revela excitação sexual, carga cognitiva e resposta emocional. O dispositivo sabe o que você sente ao olhar para uma imagem antes que você tenha consciência desse sentimento.</p>
+
+            <h3>3. SmartCap: A Vigilância da Fadiga</h3>
+            <p>Já usado em mineradoras e empresas de logística, o SmartCap é um boné com sensores EEG que monitora a fadiga do motorista. Se o cérebro dele entra em estado de sonolência, o sistema alerta a central. Parece seguro, mas cria um precedente: a empresa tem acesso direto ao estado biológico de vigília do funcionário.</p>
+        </div>
+
+        <h2 class="speakable">A Ciência da Traição: A Onda P300</h2>
+
+        <p class="speakable">A maior ameaça à privacidade não é "ler pensamentos" complexos (como frases), mas ler reações involuntárias. O cérebro emite um pico elétrico específico, chamado <strong>Onda P300</strong>, cerca de 300 milissegundos após reconhecer algo familiar ou significativo.</p>
+        
+        <p class="speakable">Em um interrogatório policial, não é necessário torturar. Basta mostrar ao suspeito fotos da cena do crime. Se o cérebro emitir uma P300, ele reconheceu a imagem. É o "Guilty Knowledge Test" (Teste de Conhecimento Culpado). O cérebro confessa antes que a boca possa mentir. A privacidade mental deixa de ser uma escolha e torna-se uma impossibilidade fisiológica.</p>
+
+        <div class="spectrum-bar speakable">
+            <div class="sb-1">COMPORTAMENTAL</div>
+            <div class="sb-2">BIOMÉTRICO</div>
+            <div class="sb-3">NEURAL (Onda P300)</div>
+        </div>
+        <div class="spectrum-legend speakable">
+            <span>Likes/Cliques (Pode mentir)</span>
+            <span>Face/Digital (Pode ocultar)</span>
+            <span>Cérebro (Não pode conter)</span>
+        </div>
+
+        <h2 class="speakable">A Defesa Legal: Os 5 Neuro-Direitos</h2>
+
+        <p class="speakable">Diante desse cenário, a legislação atual (LGPD/GDPR) é obsoleta. Ela protege "dados", mas não a "integridade do eu". O neurocientista <strong>Rafael Yuste</strong> (Universidade de Columbia), líder do Projeto BRAIN, fundou a <strong>Neurorights Foundation</strong> para criar uma nova categoria de direitos humanos.</p>
+        
+        <p class="speakable">Em 2021, o <strong>Chile</strong> tornou-se o primeiro país do mundo a alterar sua Constituição (Lei 21.383) para proteger a atividade cerebral e a integridade mental. Yuste propõe cinco direitos fundamentais que devem ser adotados globalmente:</p>
+
+        <div class="neurorights-grid speakable">
+            <div class="nr-card">
+                <span class="nr-icon">🔒</span>
+                <span class="nr-title">Privacidade Mental</span>
+                <span class="nr-desc">Seus dados neurais não podem ser decodificados ou vendidos sem consentimento explícito e estrito.</span>
+            </div>
+            <div class="nr-card">
+                <span class="nr-icon">🆔</span>
+                <span class="nr-title">Identidade Pessoal</span>
+                <span class="nr-desc">Proteção contra tecnologias que alterem a percepção do "Eu" ou a consciência.</span>
+            </div>
+            <div class="nr-card">
+                <span class="nr-icon">🗽</span>
+                <span class="nr-title">Livre Arbítrio</span>
+                <span class="nr-desc">Garantia de que decisões são tomadas sem manipulação neural subconsciente.</span>
+            </div>
+            <div class="nr-card">
+                <span class="nr-icon">⚖️</span>
+                <span class="nr-title">Acesso Equitativo</span>
+                <span class="nr-desc">Evitar a criação de uma elite cognitiva "aumentada" tecnologicamente.</span>
+            </div>
+            <div class="nr-card">
+                <span class="nr-icon">🛡️</span>
+                <span class="nr-title">Proteção contra Viés</span>
+                <span class="nr-desc">Algoritmos não podem discriminar baseados em padrões neurais.</span>
+            </div>
+        </div>
+
+        <h2 class="speakable">Síntese: O Firewall Analógico</h2>
+
+        <p class="speakable"><strong>Nita Farahany</strong>, em <em>The Battle for Your Brain</em>, defende o conceito de <strong>Liberdade Cognitiva</strong>: o direito absoluto de autogovernar nossa vida interior. Se perdermos isso, perdemos a condição humana.</p>
+        
+        <p class="speakable">Enquanto as leis não chegam, sua defesa deve ser prática. O algoritmo quer digitalizar sua vida interior para prever e controlar. A resistência é manter a vida interior <strong>analógica</strong>. Escrever à mão ativa circuitos neurais diferentes da digitação. O papel não tem conexão Wi-Fi. O papel não tem "backdoor" para a NSA ou para a Meta. O que você escreve em um caderno físico é o único dado verdadeiramente criptografado pela física.</p>
+
+        <div class="action-box speakable">
+            <span class="action-icon">🧠</span>
+            <span class="action-header">DESAFIO DE RETOMADA #10</span>
+            <p><strong>O Santuário Offline</strong></p>
+            <p>Compre um caderno. Não um app de notas, um caderno de papel. Use-o para escrever seus sonhos, seus medos mais escuros, seus planos revolucionários.</p>
+            <p><strong>Sua missão:</strong> Crie zonas de "Não-Monitoramento". Se você usa um smartwatch que mede estresse, tire-o quando for ter uma conversa difícil com seu parceiro ou quando estiver em um momento de criação intensa. Negue ao algoritmo os dados dos seus momentos mais humanos. Mantenha o sagrado fora da nuvem.</p>
+        </div>
+    </div>
+
+    <script>
+        let ttsQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, synthesis = window.speechSynthesis, utterance = null;
+
+        window.addEventListener('message', (e) => {
+            const d = e.data;
+            if(d.type === 'theme') document.body.className = d.value + '-mode';
+            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+            if(d.type === 'rate') { speechRate = d.value; if(isSpeaking) { synthesis.cancel(); speakNext(); } }
+            if(d.type === 'tts-toggle') toggleSpeech();
+        });
+
+        function initTTS() { ttsQueue = Array.from(document.querySelectorAll('.speakable')); }
+
+        function toggleSpeech() {
+            if(speechQueue.length === 0) initTTS();
+            if(isSpeaking) { synthesis.cancel(); isSpeaking = false; updateHighlight(null); reportState(false); }
+            else { isSpeaking = true; reportState(true); speakNext(); }
+        }
+
+        function speakNext() {
+            if(!isSpeaking || currentIndex >= speechQueue.length) { isSpeaking = false; reportState(false); updateHighlight(null); return; }
+            const el = speechQueue[currentIndex];
+            updateHighlight(el);
+            el.scrollIntoView({behavior: "smooth", block: "center"});
+            utterance = new SpeechSynthesisUtterance(el.innerText);
+            utterance.lang = 'pt-BR'; utterance.rate = speechRate; 
+            utterance.onend = () => { if(isSpeaking) { currentIndex++; speakNext(); } };
+            synthesis.speak(utterance);
+        }
+
+        function updateHighlight(el) { document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking')); if(el) el.classList.add('speaking'); }
+        function reportState(bool) { window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*'); }
+
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('.speakable');
+            if(target) {
+                if(speechQueue.length === 0) initTTS();
+                synthesis.cancel();
+                currentIndex = speechQueue.indexOf(target);
+                isSpeaking = true;
+                reportState(true);
+                speakNext();
+            }
+        });
+        window.onbeforeunload = () => synthesis.cancel();
+    </script>
+</body>
+</html>

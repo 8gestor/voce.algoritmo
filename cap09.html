@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capítulo 09</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- FATOR X v4.2: TYPOGRAPHY SYNC & NEON CORE --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
+            
+            /* PALETA CAP 09: MAGMA ORANGE vs STONE GRAY */
+            --c-magma: #f97316;    
+            --c-magma-dim: rgba(249, 115, 22, 0.1);
+            --c-magma-glow: 0 0 15px rgba(249, 115, 22, 0.3);
+            
+            --c-stone: #78716c;
+            --c-toxic: #84cc16;
+            --c-water: #3b82f6;
+
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px;
+            --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* STEALTH SCROLL */
+            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #f97316;
+        }
+
+        body.light-mode {
+            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
+            --c-magma: #c2410c; --c-magma-dim: rgba(194, 65, 12, 0.08); --c-magma-glow: 0 0 10px rgba(194, 65, 12, 0.2);
+            --c-stone: #57534e; --c-toxic: #4d7c0f; --c-water: #2563eb;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #c2410c;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-magma: #9a3412; --c-magma-dim: rgba(154, 52, 18, 0.08); --c-magma-glow: none;
+            --c-stone: #78716c; --c-toxic: #365314; --c-water: #1e3a8a;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #9a3412;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 760px; margin: 0 auto;
+        }
+
+        /* TIPOGRAFIA TECH & CABEÇALHO UNIFICADO */
+        h1, h2, h3 { text-transform: uppercase !important; letter-spacing: -0.02em; }
+
+        h1 {
+            font-family: var(--font-tech); color: var(--c-text);
+            font-size: 2rem; margin-bottom: 40px; 
+            border-bottom: 2px solid var(--c-magma); padding-bottom: 20px;
+            text-shadow: var(--c-magma-glow);
+        }
+        
+        h2 {
+            font-family: var(--font-tech); color: var(--c-stone);
+            font-size: 1.2rem; margin: 3em 0 1em 0; 
+            display: flex; align-items: center; gap: 10px;
+            text-shadow: 0 0 10px rgba(120, 113, 108, 0.3);
+        }
+        h2::before { content: '>'; color: var(--c-magma); font-weight: 300; } /* Setinha Neon */
+
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--c-magma); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--c-magma-dim); padding-left: 15px;
+        }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-magma); font-weight: 600; text-shadow: 0 0 8px rgba(249, 115, 22, 0.2); }
+        body.sepia-mode strong { text-shadow: none; }
+
+        /* WIDGETS */
+        .meta-tag {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-magma);
+            border: 1px solid var(--c-magma); padding: 4px 8px; border-radius: 4px;
+            display: inline-block; margin-bottom: 20px; text-transform: uppercase;
+            box-shadow: var(--c-magma-glow);
+        }
+
+        .thesis-box {
+            background: var(--c-magma-dim); border-left: 4px solid var(--c-magma);
+            padding: 25px; margin: 2em 0; font-family: var(--font-tech); font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .thesis-header { color: var(--c-magma); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
+
+        /* PERIODIC TABLE GRID */
+        .periodic-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px; margin: 3em 0;
+        }
+        .element-card {
+            background: rgba(255,255,255,0.03); border: var(--border-tech); border-radius: 6px;
+            padding: 15px; text-align: center; transition: transform 0.3s; position: relative; overflow: hidden;
+        }
+        .element-card:hover { transform: scale(1.05); border-color: var(--c-magma); background: var(--c-magma-dim); }
+        .el-symbol { font-family: var(--font-tech); font-size: 1.8rem; font-weight: bold; display: block; color: var(--c-text); margin-bottom: 5px; }
+        .el-name { font-size: 0.7rem; text-transform: uppercase; display: block; margin-bottom: 5px; color: var(--c-dim); letter-spacing: 1px; }
+        .el-origin { font-size: 0.6rem; color: var(--c-magma); font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--c-magma-dim); }
+
+        /* WATER WIDGET */
+        .water-widget {
+            display: flex; align-items: center; gap: 20px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+            border: 1px solid var(--c-water); padding: 25px; border-radius: 8px; margin: 3em 0;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+        .water-icon { font-size: 2.5rem; animation: float 3s ease-in-out infinite; }
+        .water-highlight { color: var(--c-water); font-weight: bold; text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+
+        /* COMPARISON */
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
+        .comp-card {
+            background: rgba(255,255,255,0.02); border: var(--border-tech);
+            padding: 25px; border-radius: 8px; transition: transform 0.2s;
+        }
+        .comp-card:hover { transform: translateY(-3px); }
+        .comp-title { font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; font-size: 0.8rem; }
+
+        .action-box {
+            background: linear-gradient(180deg, var(--c-magma-dim), transparent);
+            border: 1px solid var(--c-magma); box-shadow: var(--c-magma-glow);
+            border-radius: 12px; padding: 40px 30px; text-align: center; margin-top: 60px;
+            position: relative; overflow: hidden;
+        }
+        .action-icon { font-size: 2rem; display: block; margin-bottom: 10px; text-shadow: 0 0 10px var(--c-magma); }
+
+        /* HIGHLIGHT */
+        .speaking {
+            background: var(--c-magma-dim); color: var(--c-text);
+            border-left: 4px solid var(--c-magma); padding-left: 15px; margin-left: -19px;
+            border-radius: 0 4px 4px 0; box-shadow: var(--c-magma-glow); transition: all 0.3s;
+        }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+
+        /* RESPONSIVIDADE FATOR X */
+        @media (max-width: 700px) {
+            body { padding: 30px 15px 120px 15px; }
+            h1 { font-size: 1.8rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .water-widget { flex-direction: column; text-align: center; }
+            .periodic-grid { grid-template-columns: repeat(2, 1fr); }
+            p { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <span class="meta-tag">PARTE III: A SOCIEDADE E A VERDADE | CAPÍTULO 09</span>
+    
+    <h1 class="speakable">A Nuvem de Pedra:<br>Geologia da Mídia</h1>
+
+    <p class="speakable">A "Nuvem" é o eufemismo mais bem-sucedido da história do marketing corporativo. A palavra foi escolhida a dedo para evocar leveza, imaterialidade, algo branco e fofo flutuando acima das leis da física. É uma mentira projetada para fazer você esquecer que cada byte tem peso, calor e custo.</p>
+    
+    <p class="speakable">A Nuvem não é vapor. A Nuvem é uma megaestrutura industrial de concreto armado, cabos submarinos da grossura de um tronco humano rasgando o assoalho oceânico (e sendo mordidos por tubarões), e galpões do tamanho de cidades consumindo a energia de países inteiros. A Nuvem não flutua; ela queima. A infraestrutura digital é pesada, quente e barulhenta.</p>
+
+    <div class="box thesis-box speakable">
+        <span class="thesis-header">// A Geologia da Mídia</span>
+        "O teórico <strong>Jussi Parikka</strong>, em <em>A Geology of Media</em>, argumenta que a era digital é, na verdade, uma nova era geológica. Para criar a tela onde você lê isso, montanhas inteiras foram movidas. A mídia não é 'sem fio' (wireless); ela é profundamente enraizada na crosta terrestre. O 'tempo profundo' dos minerais colide com o 'tempo real' da rede. Nossos dispositivos são pedras organizadas por raios laser, destinadas a retornar à terra como lixo tóxico."
+    </div>
+
+    <h2 class="speakable">Atlas da Extração: A Tabela Periódica do Conflito</h2>
+
+    <p class="speakable"><strong>Kate Crawford</strong>, em <em>Atlas of AI</em>, não fala de software; ela fala de mineração. Para que o algoritmo "pense", a terra precisa ser esviscerada. Seu smartphone é um cemitério geológico e um mapa de conflitos geopolíticos. Cada componente eletrônico carrega uma história de extração colonial.</p>
+
+    <div class="periodic-grid speakable">
+        <div class="element-card">
+            <span class="el-symbol">Li</span>
+            <span class="el-name">Lítio</span>
+            <span class="el-origin">CHILE/BOLÍVIA</span>
+        </div>
+        <div class="element-card">
+            <span class="el-symbol">Co</span>
+            <span class="el-name">Cobalto</span>
+            <span class="el-origin">CONGO (RDC)</span>
+        </div>
+        <div class="element-card">
+            <span class="el-symbol">Ta</span>
+            <span class="el-name">Tântalo</span>
+            <span class="el-origin">RWANDA</span>
+        </div>
+        <div class="element-card">
+            <span class="el-symbol">Au</span>
+            <span class="el-name">Ouro</span>
+            <span class="el-origin">AMAZÔNIA</span>
+        </div>
+    </div>
+
+    <p class="speakable">O cobalto da sua bateria provavelmente foi extraído por mãos infantis em minas artesanais na República Democrática do Congo. O lítio consumiu lençóis freáticos inteiros no Deserto do Atacama, privando comunidades indígenas de água. O Norte Global fica com a "inteligência artificial" e o lucro; o Sul Global fica com a seca, as crateras e o sangue.</p>
+
+    <h2 class="speakable">A Sede da Máquina: Pegada Hídrica da IA</h2>
+
+    <p class="speakable">A Inteligência Artificial é uma indústria sedenta. Treinar um único modelo de linguagem grande (como o GPT-4) consome tanta água para resfriamento quanto uma pessoa beberia em dezenas de anos. Mas o consumo não para no treinamento; ele continua no uso.</p>
+
+    <div class="water-widget speakable">
+        <span class="water-icon">💧</span>
+        <div class="water-text">
+            Estudos recentes indicam que uma conversa de 20 a 50 perguntas com um chatbot consome cerca de <span class="water-highlight">500ml de água potável</span> nos data centers para dissipar o calor gerado pelas GPUs. Cada vez que você pede para a IA "resumir um texto", você está despejando uma garrafa de água no ralo.
+        </div>
+    </div>
+
+    <h2 class="speakable">O Paradoxo de Jevons</h2>
+
+    <p class="speakable">As Big Techs prometem que a tecnologia será "verde" e "eficiente". Mas a história da economia nos alerta sobre o <strong>Paradoxo de Jevons</strong>. William Stanley Jevons observou, no século XIX, que conforme as máquinas a vapor se tornavam mais eficientes no uso de carvão, o consumo total de carvão <em>aumentava</em>, não diminuía.</p>
+    <p class="speakable">Por quê? Porque a eficiência barateia o recurso, incentivando novos usos. Tornamos os chips mais eficientes, mas agora colocamos chips em geladeiras, tênis e lâmpadas. A eficiência micro gera desperdício macro. A IA tornará a criação de lixo digital (textos, imagens, vídeos) tão barata que inundaremos o mundo e os servidores, exigindo ainda mais energia.</p>
+
+    <h2 class="speakable">O Antrobsceno: Onde os Dispositivos Vão Morrer</h2>
+
+    <p class="speakable">Parikka chama a nossa era de <strong>Antrobsceno</strong>. A obscenidade está no que escondemos. Quando seu iPhone "morre" (muitas vezes por obsolescência programada de software), ele não desaparece. Ele viaja para lugares como <strong>Agbogbloshie</strong>, em Gana.</p>
+    <p class="speakable">Lá, o lixo eletrônico do "primeiro mundo" é queimado a céu aberto por jovens que buscam recuperar o cobre e o ouro de dentro das placas. A fumaça tóxica envenena o solo e os pulmões. A nuvem limpa e branca tem um esgoto preto e tóxico que escorre na África.</p>
+
+    <h2 class="speakable">Síntese: Permacomputação e o Direito ao Reparo</h2>
+
+    <p class="speakable">A solução não é "tecnologia verde" corporativa, que quer te vender um novo celular "sustentável" a cada ano. A solução é <strong>Permacomputação</strong>.</p>
+    <p class="speakable">Inspirada na permacultura, essa filosofia exige uma tecnologia que dure, que possa ser consertada e que use o mínimo de energia. É a recusa da obsolescência. É a estética <strong>Solarpunk</strong> na prática: computadores modulares, redes locais que rodam com a energia de um painel solar, softwares otimizados para rodar em hardware de 10 anos atrás.</p>
+
+    <div class="comparison-grid">
+        <div class="comp-card" style="border-left: 2px solid var(--c-magma);">
+            <span class="comp-title" style="color:var(--c-magma)">OBSOLESCÊNCIA PROGRAMADA</span>
+            <div class="comp-content speakable">
+                Feito para quebrar ou ficar lento. Baterias coladas. Peças proprietárias. Software pesado que inutiliza hardware antigo. Ciclo de troca: 2 anos.
+            </div>
+        </div>
+        <div class="comp-card" style="border-left: 2px solid var(--c-toxic);">
+            <span class="comp-title" style="color:var(--c-toxic)">PERMACOMPUTAÇÃO</span>
+            <div class="comp-content speakable">
+                Feito para durar. Design modular. Direito ao Reparo (Right to Repair). Software leve que revitaliza máquinas antigas. Ciclo de troca: 10+ anos.
+            </div>
+        </div>
+    </div>
+
+    <div class="box action-box speakable">
+        <span class="action-icon">🔧</span>
+        <span class="action-header">DESAFIO DE RETOMADA #09</span>
+        <p><strong>A Greve de Atualização e o Reparo Radical</strong></p>
+        <p>O ato mais revolucionário e ecológico que você pode fazer hoje não é comprar um carro elétrico, é manter seu celular antigo funcionando por mais um ano.</p>
+        <p><strong>Sua missão:</strong> Hoje, faça a manutenção do seu hardware. Limpe a porta de carregamento com cuidado. Delete aplicativos pesados que drenam a bateria. Troque a bateria em vez de trocar o aparelho. Se quebrar, procure um tutorial no iFixit antes de jogar fora. Honre o peso geológico que você carrega no bolso.</p>
+    </div>
+
+    <script>
+        let ttsQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, synthesis = window.speechSynthesis, utterance = null;
+
+        window.addEventListener('message', (e) => {
+            const d = e.data;
+            if(d.type === 'theme') document.body.className = d.value + '-mode';
+            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+            if(d.type === 'rate') { speechRate = d.value; if(isSpeaking) { synthesis.cancel(); speakNext(); } }
+            if(d.type === 'tts-toggle') toggleSpeech();
+        });
+
+        function getVoices() {
+            const v = synthesis.getVoices();
+            return v.find(x => x.lang === 'pt-BR' && x.name.includes('Google')) || v.find(x => x.lang === 'pt-BR');
+        }
+
+        function initTTS() { ttsQueue = Array.from(document.querySelectorAll('.speakable')); }
+
+        function toggleSpeech() {
+            if(speechQueue.length === 0) initTTS();
+            if(isSpeaking) { synthesis.cancel(); isSpeaking = false; updateHighlight(null); reportState(false); }
+            else { isSpeaking = true; reportState(true); speakNext(); }
+        }
+
+        function speakNext() {
+            if(!isSpeaking || currentIndex >= speechQueue.length) { isSpeaking = false; reportState(false); updateHighlight(null); return; }
+            const el = speechQueue[currentIndex];
+            updateHighlight(el);
+            el.scrollIntoView({behavior: "smooth", block: "center"});
+            utterance = new SpeechSynthesisUtterance(el.innerText);
+            utterance.lang = 'pt-BR'; utterance.rate = speechRate; utterance.voice = getVoices();
+            utterance.onend = () => { if(isSpeaking) { currentIndex++; speakNext(); } };
+            synthesis.speak(utterance);
+        }
+
+        function updateHighlight(el) { document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking')); if(el) el.classList.add('speaking'); }
+        function reportState(bool) { window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*'); }
+
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('.speakable');
+            if(target) {
+                if(speechQueue.length === 0) initTTS();
+                synthesis.cancel();
+                currentIndex = speechQueue.indexOf(target);
+                isSpeaking = true;
+                reportState(true);
+                speakNext();
+            }
+        });
+        window.onbeforeunload = () => synthesis.cancel();
+    </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capítulo 11</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- FATOR X v4.2 --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
+            
+            /* PALETA CAP 11: CONSTRUCT BLUE vs HARMONY PURPLE */
+            --c-blue: #3b82f6;
+            --c-blue-dim: rgba(59, 130, 246, 0.1);
+            --c-blue-glow: 0 0 15px rgba(59, 130, 246, 0.3);
+            
+            --c-purple: #8b5cf6;
+            --c-amber: #f59e0b;
+
+            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px;
+            --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* STEALTH SCROLL */
+            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #3b82f6;
+        }
+
+        body.light-mode {
+            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
+            --c-blue: #2563eb; --c-blue-dim: rgba(37, 99, 235, 0.08); --c-blue-glow: 0 0 10px rgba(37, 99, 235, 0.2);
+            --c-purple: #7c3aed; --c-amber: #d97706;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #2563eb;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-blue: #1e3a8a; --c-blue-dim: rgba(30, 58, 138, 0.08); --c-blue-glow: none;
+            --c-purple: #5b21b6; --c-amber: #92400e;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #1e3a8a;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 740px; margin: 0 auto;
+        }
+
+        /* TIPOGRAFIA TECH & CABEÇALHO UNIFICADO */
+        h1, h2, h3 { text-transform: uppercase !important; letter-spacing: -0.02em; }
+
+        h1 {
+            font-family: var(--font-tech); color: var(--c-text);
+            font-size: 2rem; margin-bottom: 40px; 
+            border-bottom: 2px solid var(--c-blue); padding-bottom: 20px;
+            text-shadow: var(--c-blue-glow);
+        }
+        
+        h2 {
+            font-family: var(--font-tech); color: var(--c-purple);
+            font-size: 1.2rem; margin: 3em 0 1em 0; 
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-tech); padding-bottom: 10px;
+        }
+        h2::before { content: '>'; opacity: 0.5; color: var(--c-blue); }
+
+        h3 {
+            font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
+            color: var(--c-blue); margin-top: 2.5em; margin-bottom: 1em;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-left: 3px solid var(--c-blue-dim); padding-left: 15px;
+        }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-blue); font-weight: 600; text-shadow: 0 0 8px rgba(59, 130, 246, 0.2); }
+        body.sepia-mode strong { text-shadow: none; }
+
+        /* WIDGETS */
+        .meta-tag {
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-blue);
+            border: 1px solid var(--c-blue); padding: 4px 8px; border-radius: 4px;
+            display: inline-block; margin-bottom: 20px; text-transform: uppercase;
+            box-shadow: var(--c-blue-glow);
+        }
+        
+        .callout {
+            border-left: 4px solid var(--c-blue); padding: 25px;
+            background: var(--c-blue-dim); margin: 3em 0; font-style: italic;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* DEFENSE DIAGRAM */
+        .defense-diagram {
+            background: rgba(255,255,255,0.01); border: var(--border-tech);
+            border-radius: 12px; padding: 30px; margin: 3em 0;
+        }
+        .diagram-header {
+            font-family: var(--font-tech); font-size: 0.8rem; color: var(--c-blue);
+            margin-bottom: 20px; text-align: center; text-transform: uppercase; font-weight: bold;
+        }
+        .defense-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+        }
+        .defense-node {
+            padding: 15px; border: 1px solid var(--c-dim); background: rgba(255,255,255,0.02);
+            font-family: var(--font-tech); font-size: 0.75rem; text-align: center;
+            border-radius: 4px; transition: 0.3s;
+        }
+        .defense-node:hover { border-color: var(--c-blue); transform: scale(1.02); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
+
+        .heritage-box {
+            border: 1px solid var(--c-amber); background: rgba(245, 158, 11, 0.05);
+            padding: 30px; border-radius: 12px; margin: 3em 0; position: relative;
+        }
+        .heritage-box h3 { color: var(--c-amber); font-family: var(--font-tech); margin-bottom: 15px; border: none; padding: 0; }
+
+        /* HIGHLIGHT */
+        .speaking {
+            background: var(--c-blue-dim); color: var(--c-text);
+            border-left: 4px solid var(--c-blue); padding-left: 15px; margin-left: -19px;
+            border-radius: 0 4px 4px 0; box-shadow: var(--c-blue-glow); transition: all 0.3s;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 30px 15px 120px 15px; }
+            h1 { font-size: 1.8rem; }
+            .defense-grid { grid-template-columns: 1fr; }
+            p { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reader-container" id="content-area">
+        <span class="meta-tag">PARTE IV: CONTRA-MEDIDAS | CAPÍTULO 11</span>
+        
+        <h1 class="speakable">A Cidadania Onlife: De Usuário a Protagonista</h1>
+
+        <p class="speakable">Vivemos em um estado de "Onlife", termo cunhado pelo filósofo <strong>Luciano Floridi</strong> para descrever a natureza híbrida da nossa existência contemporânea. A distinção entre online e offline não apenas desapareceu; ela tornou-se irrelevante. Não "entramos" mais na rede; nós habitamos nela, assim como habitamos a biosfera. Contudo, essa integração profunda trouxe uma armadilha semântica e existencial: a nossa redução à figura do <b>Usuário</b>.</p>
+
+        <p class="speakable">Historicamente, o termo "usuário" era reservado a dois grupos: dependentes químicos e aqueles que utilizam sistemas de computação. Em ambos os casos, a palavra denota uma relação de dependência e passividade em relação a uma estrutura maior que fornece a "dose" ou a interface. Retomar a cidadania significa, antes de tudo, <strong>desinstalar o modo usuário</strong> e reinstalar a soberania individual.</p>
+
+        <div class="callout speakable">
+            "A liberdade não é a ausência de tecnologia, mas a presença de agência sobre ela. Uma ferramenta que você não consegue consertar, modificar ou entender não é uma ferramenta; é um mecanismo de controle."
+        </div>
+
+        <h2 class="speakable">A Tecnologia Convivial de Ivan Illich</h2>
+        <p class="speakable">Para entendermos como retomar o controle, devemos recorrer a <strong>Ivan Illich</strong> e seu conceito de <b>Ferramentas Conviviais</b>. Illich defendia que uma sociedade justa depende de ferramentas que garantam a autonomia dos indivíduos e que permitam a cada pessoa enriquecer o ambiente com sua própria visão. Em contraste, as ferramentas industriais (e as plataformas algorítmicas modernas) tendem a escravizar o indivíduo ao ritmo da máquina.</p>
+
+        <p class="speakable">Uma rede social que decide o que você vê através de um algoritmo opaco é o oposto de uma ferramenta convivial. É uma ferramenta de manipulação de massa. A cidadania onlife exige a busca por <strong>Protocolos</strong> em vez de <strong>Plataformas</strong>. O e-mail, o RSS e o protocolo HTTP são conviviais: ninguém é dono deles, e qualquer um pode construir sobre eles. O Instagram e o X são plataformas: prisões digitais com regras de engajamento ditadas por bilionários.</p>
+
+        <div class="defense-diagram speakable">
+            <div class="diagram-header">Dashboard Operacional: Design Defensivo</div>
+            <div class="defense-grid">
+                <div class="defense-node"><strong>NOTIFICAÇÕES</strong><br>Status: OFF (Prioridade Humana)</div>
+                <div class="defense-node"><strong>ESCALA DE CINZA</strong><br>Neutraliza o Gatilho de Dopamina</div>
+                <div class="defense-node"><strong>MODO FOCO</strong><br>Agendamento de Disponibilidade</div>
+                <div class="defense-node"><strong>HOME SCREEN</strong><br>Apenas Ferramentas de Utilidade</div>
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 20px; text-align: center; font-family: var(--font-tech); color: var(--c-dim);">
+                [!] Ação Recomendada: Configure seu dispositivo para servir à intenção, não à reação.
+            </p>
+        </div>
+
+        <h2 class="speakable">Minimalismo Digital: A Economia da Atenção</h2>
+        <p class="speakable"><strong>Cal Newport</strong>, em seu manifesto sobre o minimalismo digital, argumenta que a atenção é o recurso mais valioso do século XXI. Se você não protege sua atenção, ela será extraída por engenheiros de software cujo único objetivo é maximizar o "tempo de tela". O cidadão onlife pratica a <b>Atenção Intencional</b>. Ele não verifica o telefone por impulso; ele o utiliza como uma ferramenta cirúrgica para fins específicos.</p>
+
+        <p class="speakable">A resistência não é o ludismo (destruir a máquina), mas o uso radical da agência. Isso envolve deletar aplicativos de redes sociais do telefone e acessá-los apenas via desktop; envolve desativar todas as notificações não humanas; envolve, fundamentalmente, redescobrir o prazer da <b>Solitude Profunda</b> — o estado de estar sozinho com seus próprios pensamentos sem a intermediação de uma tela.</p>
+
+        <div class="heritage-box speakable">
+            <h3>🛡️ Protocolo Herança: O Firmware da Próxima Geração</h3>
+            <p>O Fator 1 exige que estendamos a resistência à nossa linhagem. O Protocolo Herança define:</p>
+            <ul style="margin-left: 20px; list-style-type: square; color: var(--c-dim);">
+                <li><strong>Exposição Gradual:</strong> O cérebro em desenvolvimento não possui defesas contra a dopamina algorítmica.</li>
+                <li><strong>Alfabetização da Arquitetura:</strong> Ensine seus filhos não a "usar apps", mas a entender como o scroll infinito foi desenhado para prendê-los.</li>
+                <li><strong>Territórios Livres:</strong> O quarto e a mesa de jantar são zonas de "Silêncio de Dados". Sem telas. Presença Total.</li>
+            </ul>
+        </div>
+
+        <h2 class="speakable">Soberania Digital e o Futuro</h2>
+        <p class="speakable">A cidadania onlife culmina na <b>Soberania Digital</b>. Isso significa ter a posse de seus próprios dados, hospedar seus próprios serviços sempre que possível e apoiar ecossistemas descentralizados. Significa entender que a "nuvem" é apenas o computador de outra pessoa — e que essa pessoa pode não ter seus melhores interesses em mente.</p>
+
+        <p class="speakable">Ao final deste módulo, o convite é para um pacto: deixe de ser o produto e torne-se o arquiteto. A rede é vasta e cheia de potencial, mas ela só servirá à humanidade quando cada um de nós decidir, individualmente, que não aceitaremos mais o papel de meros usuários. Somos os cidadãos da infraestrutura. O sistema só funciona porque nós o alimentamos com nossa vida. É hora de retomar o fluxo.</p>
+
+        <div style="text-align: center; margin-top: 100px; padding: 40px; border-top: 1px dashed var(--c-blue);">
+            <p class="speakable" style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--c-blue);">
+                STATUS DO PROTOCOLO: ATIVO<br>
+                INTEGRIDADE DOS DADOS: 100% (ORIGINAL + EXPANSÃO)<br>
+                PRÓXIMO PASSO: CAPÍTULO 12 // TECNOFEUDALISMO
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let ttsQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, synthesis = window.speechSynthesis, utterance = null;
+
+        window.addEventListener('message', (e) => {
+            const d = e.data;
+            if(d.type === 'theme') document.body.className = d.value + '-mode';
+            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+            if(d.type === 'rate') { speechRate = d.value; if(isSpeaking) { synthesis.cancel(); speakNext(); } }
+            if(d.type === 'tts-toggle') toggleSpeech();
+        });
+
+        function initTTS() { ttsQueue = Array.from(document.querySelectorAll('.speakable')); }
+
+        function toggleSpeech() {
+            if(speechQueue.length === 0) initTTS();
+            if(isSpeaking) { synthesis.cancel(); isSpeaking = false; updateHighlight(null); reportState(false); }
+            else { isSpeaking = true; reportState(true); speakNext(); }
+        }
+
+        function speakNext() {
+            if(!isSpeaking || currentIndex >= speechQueue.length) { isSpeaking = false; reportState(false); updateHighlight(null); return; }
+            const el = speechQueue[currentIndex];
+            updateHighlight(el);
+            el.scrollIntoView({behavior: "smooth", block: "center"});
+            utterance = new SpeechSynthesisUtterance(el.innerText);
+            utterance.lang = 'pt-BR'; utterance.rate = speechRate; 
+            utterance.onend = () => { if(isSpeaking) { currentIndex++; speakNext(); } };
+            synthesis.speak(utterance);
+        }
+
+        function updateHighlight(el) { document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking')); if(el) el.classList.add('speaking'); }
+        function reportState(bool) { window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*'); }
+
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('.speakable');
+            if(target) {
+                if(speechQueue.length === 0) initTTS();
+                synthesis.cancel();
+                currentIndex = speechQueue.indexOf(target);
+                isSpeaking = true;
+                reportState(true);
+                speakNext();
+            }
+        });
+        window.onbeforeunload = () => synthesis.cancel();
+    </script>
+</body>
+</html>
