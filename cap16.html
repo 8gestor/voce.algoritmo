@@ -3,197 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Bibliografia Exaustiva: Firmware Update. O repositório completo de referências, autores e obras que sustentam a arquitetura deste livro.">
-    <title>Capítulo 16 // O Repositório de Firmware</title>
-    
+    <title>Capítulo 16</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
+        /* --- FATOR X v4.2: ARCHIVE CORE --- */
         :root {
-            /* --- DESIGN SYSTEM: KERNEL ARCHIVE --- */
-            --bg-app: #0a0a0c;        
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --arch-amber: #fbbf24;
-            --arch-amber-dim: rgba(251, 191, 36, 0.1);
-            --data-blue: #38bdf8;
-            --border-color: rgba(251, 191, 36, 0.2);
-            --card-bg: #111114;
+            --c-bg: #0a0a0c;        
+            --c-text: #f8fafc;
+            --c-dim: #9ca3af;
             
+            /* PALETA CAP 16: AMBER ARCHIVE vs DATA BLUE */
+            --c-amber: #fbbf24;    /* Âmbar (História/Preservação) */
+            --c-amber-dim: rgba(251, 191, 36, 0.1);
+            --c-amber-glow: 0 0 15px rgba(251, 191, 36, 0.3);
+            
+            --c-blue: #38bdf8;     /* Azul (Dados/Tech) */
+            --c-card: #111114;
+
             --font-ui: 'Inter', sans-serif;
             --font-tech: 'JetBrains Mono', monospace;
-            --base-size: 16px;
-            --line-height: 1.6;
+            --base-size: 19px;
+            --border-tech: 1px solid rgba(251, 191, 36, 0.2);
+            
+            /* STEALTH SCROLL */
+            --scroll-track: #0a0a0c; --scroll-thumb: #333333; --scroll-hover: #fbbf24;
         }
 
         body.light-mode {
-            --bg-app: #f8fafc;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --arch-amber: #d97706;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --card-bg: #ffffff;
+            --c-bg: #f8fafc; --c-text: #0f172a; --c-dim: #475569;
+            --c-amber: #d97706; --c-amber-dim: rgba(217, 119, 6, 0.08); --c-amber-glow: 0 0 10px rgba(217, 119, 6, 0.2);
+            --c-blue: #0284c7; --c-card: #ffffff;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #f8fafc; --scroll-thumb: #C1C1C4; --scroll-hover: #d97706;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-amber: #92400e; --c-amber-dim: rgba(146, 64, 14, 0.08); --c-amber-glow: none;
+            --c-blue: #075985; --c-card: #E8DEC0;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #92400e;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
 
         body {
-            background-color: var(--bg-app);
-            color: var(--text-primary);
-            font-family: var(--font-ui);
-            font-size: var(--base-size);
-            line-height: var(--line-height);
-            transition: all 0.3s ease;
-            overflow-x: hidden;
-            padding-bottom: 100px;
+            background-color: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 900px; margin: 0 auto;
         }
 
-        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 60px 24px; }
+        /* TIPOGRAFIA TECH */
+        h1, h2, h3 { text-transform: uppercase !important; letter-spacing: -0.02em; }
 
-        /* --- CABEÇALHO TÉCNICO --- */
-        .archive-header {
-            border-bottom: 4px double var(--arch-amber);
-            padding-bottom: 40px;
-            margin-bottom: 60px;
+        h1 {
+            font-family: var(--font-tech); color: var(--c-text);
+            font-size: 2.5rem; margin-bottom: 20px; line-height: 1.1;
+            text-shadow: var(--c-amber-glow);
         }
+        h1::after { content: '_'; animation: blink 1s infinite; color: var(--c-amber); }
 
-        .archive-header h1 {
-            font-family: var(--font-tech);
-            font-size: 3rem;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            color: var(--arch-amber);
-            line-height: 0.9;
+        /* WIDGETS DE CABEÇALHO */
+        .archive-header { margin-bottom: 60px; border-bottom: 4px double var(--c-amber); padding-bottom: 40px; }
+        
+        .section-tag {
+            font-family: var(--font-tech); font-size: 0.8rem; color: var(--c-amber);
+            background: var(--c-amber-dim); padding: 4px 12px; border-radius: 4px;
+            display: inline-block; margin-bottom: 20px; border: 1px solid var(--c-amber);
+            box-shadow: var(--c-amber-glow);
         }
 
         .sys-log {
-            font-family: var(--font-tech);
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            text-transform: uppercase;
+            font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-dim);
+            margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px; text-transform: uppercase;
         }
-
         .log-entry { display: flex; align-items: center; gap: 8px; }
-        .log-entry::before { content: '●'; color: var(--arch-amber); font-size: 8px; }
+        .log-entry::before { content: '●'; color: var(--c-amber); font-size: 8px; animation: pulse 2s infinite; }
 
-        /* --- SEÇÕES --- */
-        .section-tag {
-            font-family: var(--font-tech);
-            color: var(--arch-amber);
-            background: var(--arch-amber-dim);
-            padding: 4px 12px;
-            font-size: 0.8rem;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: inline-block;
+        .intro-text { 
+            font-size: 1.1rem; color: var(--c-text); margin-bottom: 60px; 
+            border-left: 3px solid var(--c-amber); padding-left: 25px; 
+            font-style: italic; text-align: justify;
         }
 
-        .section-desc {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            max-width: 700px;
+        /* CATEGORIAS */
+        .category-divider {
+            font-family: var(--font-tech); color: var(--c-blue); font-size: 0.9rem;
+            border-bottom: 1px solid var(--c-dim); padding-bottom: 10px; margin: 4em 0 2em;
+            display: flex; align-items: center; gap: 10px; letter-spacing: 1px;
         }
+        .category-divider::before { content: '>>'; color: var(--c-amber); }
 
-        /* --- GRID DE OBRAS (MASSIVO) --- */
+        /* GRID DE LIVROS */
         .biblio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            margin-bottom: 80px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px; margin-bottom: 40px;
         }
 
         .book-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
+            background: var(--c-card); border: var(--border-tech); padding: 24px;
+            position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; overflow: hidden; border-radius: 6px;
         }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--arch-amber);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .book-card:hover { 
+            transform: translateY(-5px); border-color: var(--c-amber); 
+            box-shadow: var(--c-amber-glow); 
         }
-
         .book-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 0%;
-            background: var(--arch-amber);
-            transition: height 0.3s;
+            content: ""; position: absolute; top: 0; left: 0; width: 3px; height: 0%;
+            background: var(--c-amber); transition: height 0.3s;
         }
         .book-card:hover::before { height: 100%; }
 
         .book-meta {
-            font-family: var(--font-tech);
-            font-size: 0.7rem;
-            color: var(--arch-amber);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
+            font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-dim);
+            text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between;
+            border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;
         }
+        .book-author { font-family: var(--font-tech); font-size: 0.8rem; font-weight: bold; color: var(--c-blue); margin-bottom: 5px; display: block; }
+        .book-title { font-size: 1.1rem; font-weight: 800; line-height: 1.3; margin-bottom: 12px; color: var(--c-text); }
+        .book-summary { font-size: 0.85rem; color: var(--c-dim); line-height: 1.6; margin-bottom: 20px; flex-grow: 1; text-align: justify; }
 
-        .book-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .book-author {
-            font-family: var(--font-tech);
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: var(--data-blue);
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .book-summary {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
+        .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
         .tag {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 3px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
+            font-size: 0.6rem; padding: 3px 8px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+            color: var(--c-dim); text-transform: uppercase; font-family: var(--font-tech);
         }
 
-        /* --- SINCRONIA TTS --- */
-        .reading-highlight { 
-            background: var(--arch-amber-dim); 
-            border-left: 4px solid var(--arch-amber);
-            padding-left: 10px;
-            color: var(--text-primary);
+        /* HIGHLIGHT TTS */
+        .speaking {
+            background: var(--c-amber-dim); color: var(--c-text);
+            border-left: 4px solid var(--c-amber); padding-left: 15px; margin-left: -19px;
+            border-radius: 0 4px 4px 0; box-shadow: var(--c-amber-glow); transition: all 0.3s;
         }
 
-        @media (max-width: 600px) {
-            .archive-header h1 { font-size: 2rem; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 2rem; }
             .biblio-grid { grid-template-columns: 1fr; }
+            .sys-log { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -201,22 +159,22 @@
 
     <div class="container" id="content-area">
         <header class="archive-header">
-            <span class="section-tag">BIBLIOGRAFIA EXAUSTIVA v9.0</span>
+            <span class="section-tag">BIBLIOGRAFIA EXAUSTIVA v9.1</span>
             <h1 class="speakable">FIRMWARE UPDATE:<br>A BIBLIOTECA DA RESISTÊNCIA</h1>
             
             <div class="sys-log">
-                <div class="log-entry">Registros: 40+ Obras</div>
-                <div class="log-entry">Status: Verificado</div>
+                <div class="log-entry">Registros: 25+ Obras</div>
+                <div class="log-entry">Status: Expandido</div>
                 <div class="log-entry">Nível: Root Access</div>
                 <div class="log-entry">Criptografia: Aberta</div>
             </div>
         </header>
 
-        <p class="intro-text speakable" style="margin-bottom: 60px; font-size: 1.2rem; border-left: 2px solid var(--arch-amber); padding-left: 25px;">
+        <p class="intro-text speakable">
             Este repositório não é uma lista de leituras; é o mapa da infraestrutura intelectual deste livro. Cada obra abaixo representa um módulo de código necessário para desinstalar o sistema de controle algorítmico e reinstalar a soberania humana.
         </p>
 
-        <div class="section-tag">CATEGORIA_01 // ECONOMIA POLÍTICA DO DADO</div>
+        <div class="category-divider">CATEGORIA_01 // ECONOMIA POLÍTICA DO DADO</div>
         <div class="biblio-grid">
             
             <div class="book-card speakable">
@@ -252,7 +210,7 @@
             </div>
         </div>
 
-        <div class="section-tag">CATEGORIA_02 // NEURO-ARQUITETURA & ATENÇÃO</div>
+        <div class="category-divider">CATEGORIA_02 // NEURO-ARQUITETURA & ATENÇÃO</div>
         <div class="biblio-grid">
 
             <div class="book-card speakable">
@@ -288,31 +246,31 @@
             </div>
         </div>
 
-        <div class="section-tag">CATEGORIA_03 // CRÍTICA TECNO-SOCIAL</div>
+        <div class="category-divider">CATEGORIA_03 // CRÍTICA TECNO-SOCIAL</div>
         <div class="biblio-grid">
 
             <div class="book-card speakable">
                 <div class="book-meta"><span>ID: 009</span><span>1973</span></div>
                 <span class="book-author">ILLICH, Ivan</span>
                 <div class="book-title">Tools for Conviviality</div>
-                <div class="book-summary">A distinção fundamental entre ferramentas que dão poder ao homem e máquinas que o escravizam. Essencial para o Cap 11.</div>
+                <div class="book-summary">A distinção fundamental entre ferramentas que dão poder ao homem e máquinas que o escravizam. Base do Cap 11.</div>
                 <div class="tag-list"><span class="tag">Autonomia</span><span class="tag">Filosofia</span></div>
             </div>
 
             <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 010</span><span>2009</span></div>
-                <span class="book-author">FISHER, Mark</span>
-                <div class="book-title">Capitalist Realism</div>
-                <div class="book-summary">O diagnóstico da nossa incapacidade de imaginar alternativas ao sistema atual. A base do Capítulo 13.</div>
-                <div class="tag-list"><span class="tag">Futuro</span><span class="tag">Realismo</span></div>
+                <div class="book-meta"><span>ID: 010</span><span>1981</span></div>
+                <span class="book-author">BAUDRILLARD, Jean</span>
+                <div class="book-title">Simulacros e Simulação</div>
+                <div class="book-summary">A obra profética sobre a substituição da realidade por seus signos. Fundamental para entender o "Vale da Estranheza Social".</div>
+                <div class="tag-list"><span class="tag">Filosofia</span><span class="tag">Realidade</span></div>
             </div>
 
             <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 011</span><span>1956</span></div>
-                <span class="book-author">ANDERS, Günther</span>
-                <div class="book-title">The Obsolescence of Man</div>
-                <div class="book-summary">A "Vergonha Prometeica": como nos sentimos inferiores diante da perfeição das nossas próprias máquinas.</div>
-                <div class="tag-list"><span class="tag">Existencialismo</span><span class="tag">Obsolescência</span></div>
+                <div class="book-meta"><span>ID: 011</span><span>2018</span></div>
+                <span class="book-author">HARARI, Yuval Noah</span>
+                <div class="book-title">21 Lições para o Século 21</div>
+                <div class="book-summary">Origem do conceito de que os humanos tornaram-se "animais hackeáveis" pela fusão da biotecnologia com a infotecnologia.</div>
+                <div class="tag-list"><span class="tag">Futuro</span><span class="tag">Biohacking</span></div>
             </div>
 
             <div class="book-card speakable">
@@ -324,31 +282,31 @@
             </div>
         </div>
 
-        <div class="section-tag">CATEGORIA_04 // MATERIALIDADE DA NUVEM</div>
+        <div class="category-divider">CATEGORIA_04 // MATERIALIDADE DA NUVEM</div>
         <div class="biblio-grid">
 
             <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 013</span><span>2021</span></div>
+                <div class="book-meta"><span>ID: 013</span><span>2023</span></div>
+                <span class="book-author">KARA, Siddharth</span>
+                <div class="book-title">Cobalt Red</div>
+                <div class="book-summary">Uma investigação brutal sobre a escravidão moderna nas minas de cobalto do Congo, base da bateria do seu smartphone.</div>
+                <div class="tag-list"><span class="tag">Mineração</span><span class="tag">Direitos Humanos</span></div>
+            </div>
+
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 014</span><span>2021</span></div>
                 <span class="book-author">CRAWFORD, Kate</span>
                 <div class="book-title">Atlas of AI</div>
-                <div class="book-summary">Um mapeamento físico da inteligência artificial: mineração de lítio, trabalho precário e cabos submarinos.</div>
+                <div class="book-summary">Um mapeamento físico da inteligência artificial: mineração de lítio, trabalho precário e uso de água potável.</div>
                 <div class="tag-list"><span class="tag">Materialidade</span><span class="tag">IA</span><span class="tag">Ecologia</span></div>
             </div>
 
             <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 014</span><span>2015</span></div>
+                <div class="book-meta"><span>ID: 015</span><span>2015</span></div>
                 <span class="book-author">PARIKKA, Jussi</span>
                 <div class="book-title">A Geology of Media</div>
-                <div class="book-summary">Propõe que a tecnologia digital deve ser entendida através da extração mineral e do tempo geológico.</div>
+                <div class="book-summary">Propõe que a tecnologia digital deve ser entendida através da extração mineral e do tempo geológico (Antrobsceno).</div>
                 <div class="tag-list"><span class="tag">Geologia</span><span class="tag">Mídia</span></div>
-            </div>
-
-            <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 015</span><span>2019</span></div>
-                <span class="book-author">GABRYS, Jennifer</span>
-                <div class="book-title">Digital Rubbish</div>
-                <div class="book-summary">A história natural da eletrônica através do seu lixo. O que sobra quando a "inovação" morre.</div>
-                <div class="tag-list"><span class="tag">Lixo Eletrônico</span><span class="tag">Sustentabilidade</span></div>
             </div>
 
             <div class="book-card speakable">
@@ -360,27 +318,19 @@
             </div>
         </div>
 
-        <div class="section-tag">CATEGORIA_05 // MANUAIS DE RETOMADA</div>
+        <div class="category-divider">CATEGORIA_05 // MANUAIS DE RETOMADA</div>
         <div class="biblio-grid">
 
             <div class="book-card speakable">
                 <div class="book-meta"><span>ID: 017</span><span>2019</span></div>
-                <span class="book-author">ODEL, Jenny</span>
+                <span class="book-author">ODELL, Jenny</span>
                 <div class="book-title">How to Do Nothing</div>
                 <div class="book-summary">Um guia para resistir à economia da atenção através da observação, do lugar e do desengajamento das plataformas.</div>
                 <div class="tag-list"><span class="tag">Resistência</span><span class="tag">Lugar</span></div>
             </div>
 
             <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 018</span><span>2014</span></div>
-                <span class="book-author">BRIDLE, James</span>
-                <div class="book-title">New Dark Age</div>
-                <div class="book-summary">Por que o aumento de dados não gera clareza, mas sim uma "nova era das trevas" de incompreensão e controle.</div>
-                <div class="tag-list"><span class="tag">Complexidade</span><span class="tag">Clima</span></div>
-            </div>
-
-            <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 019</span><span>2021</span></div>
+                <div class="book-meta"><span>ID: 018</span><span>2021</span></div>
                 <span class="book-author">FLORIDI, Luciano</span>
                 <div class="book-title">The Onlife Manifesto</div>
                 <div class="book-summary">A dissolução das barreiras entre o online e o offline. A base filosófica para a nova cidadania digital.</div>
@@ -388,7 +338,7 @@
             </div>
 
             <div class="book-card speakable">
-                <div class="book-meta"><span>ID: 020</span><span>1986</span></div>
+                <div class="book-meta"><span>ID: 019</span><span>1986</span></div>
                 <span class="book-author">CARSE, James P.</span>
                 <div class="book-title">Finite and Infinite Games</div>
                 <div class="book-summary">A distinção entre jogar para ganhar (finito) e jogar para continuar o jogo (infinito). Essencial para o Epílogo.</div>
@@ -396,91 +346,78 @@
             </div>
         </div>
 
-        <div style="text-align: center; margin-top: 100px; padding: 40px; border-top: 1px dashed var(--arch-amber);">
-            <p class="speakable" style="font-family: var(--font-tech); font-size: 0.9rem; color: var(--arch-amber);">
+        <div class="category-divider">CATEGORIA_06 // EPISTEMOLOGIA E VERDADE</div>
+        <div class="biblio-grid">
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 020</span><span>2023</span></div>
+                <span class="book-author">SHUMAILOV, Ilia et al.</span>
+                <div class="book-title">The Curse of Recursion</div>
+                <div class="book-summary">Estudo técnico publicado na Nature que demonstra o "Model Collapse": IAs treinadas em dados de IA tornam-se dementes.</div>
+                <div class="tag-list"><span class="tag">Paper</span><span class="tag">IA</span><span class="tag">Entropia</span></div>
+            </div>
+
+            <div class="book-card speakable">
+                <div class="book-meta"><span>ID: 021</span><span>2019</span></div>
+                <span class="book-author">CHESNEY, Robert & CITRON, Danielle</span>
+                <div class="book-title">Deep Fakes and the Liar's Dividend</div>
+                <div class="book-summary">Artigo seminal sobre como a existência de deepfakes permite que criminosos neguem a realidade (O Dividendo do Mentiroso).</div>
+                <div class="tag-list"><span class="tag">Paper</span><span class="tag">Fake News</span><span class="tag">Jurídico</span></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 100px; padding: 40px; border-top: 1px dashed var(--c-amber);">
+            <p class="speakable" style="font-family: var(--font-tech); font-size: 0.9rem; color: var(--c-amber);">
                 FIM DO ARQUIVO. O CONHECIMENTO É O ÚNICO FIREWALL.<br>
-                [ TOTAL_ENTRIES: 20 ] [ DISK_SPACE: UNLIMITED ]
+                [ TOTAL_ENTRIES: 25 ] [ DISK_SPACE: UNLIMITED ]
             </p>
         </div>
     </div>
 
     <script>
-        /* --- COMUNICAÇÃO COM A MATRIZ (INDEX) --- */
-        window.addEventListener('message', function(event) {
-            const data = event.data;
-            if (data.type === 'theme') {
-                if (data.mode === 'light') document.body.classList.add('light-mode');
-                else document.body.classList.remove('light-mode');
-            }
-            if (data.type === 'font-resize') {
-                const newSize = 16 * data.value;
-                document.documentElement.style.setProperty('--base-size', newSize + 'px');
-            }
-            if (data.type === 'tts-toggle') toggleSpeech();
-            if (data.type === 'tts-rate') updateSpeechRate(data.value);
+        let ttsQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, synthesis = window.speechSynthesis, utterance = null;
+
+        window.addEventListener('message', (e) => {
+            const d = e.data;
+            if(d.type === 'theme') document.body.className = d.value + '-mode';
+            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+            if(d.type === 'rate') { speechRate = d.value; if(isSpeaking) { synthesis.cancel(); speakNext(); } }
+            if(d.type === 'tts-toggle') toggleSpeech();
         });
 
-        /* --- ENGINE TTS INTEGRADA --- */
-        let speechQueue = [];
-        let currentIndex = 0;
-        let isSpeaking = false;
-        let speechRate = 1.0;
-        let synthesis = window.speechSynthesis;
+        function initTTS() { ttsQueue = Array.from(document.querySelectorAll('.speakable')); }
 
         function toggleSpeech() {
-            if (speechQueue.length === 0) {
-                const elements = document.querySelectorAll('.speakable');
-                speechQueue = Array.from(elements);
-            }
-            if (isSpeaking) {
-                synthesis.cancel();
-                isSpeaking = false;
-                clearHighlights();
-                reportStatus(false);
-            } else {
-                isSpeaking = true;
-                reportStatus(true);
-                speakNext();
-            }
+            if(speechQueue.length === 0) initTTS();
+            if(isSpeaking) { synthesis.cancel(); isSpeaking = false; updateHighlight(null); reportState(false); }
+            else { isSpeaking = true; reportState(true); speakNext(); }
         }
 
         function speakNext() {
-            if (!isSpeaking || currentIndex >= speechQueue.length) {
-                isSpeaking = false;
-                clearHighlights();
-                reportStatus(false);
-                return;
-            }
-
-            const element = speechQueue[currentIndex];
-            clearHighlights();
-            element.classList.add('reading-highlight');
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            const utterance = new SpeechSynthesisUtterance(element.innerText);
-            utterance.lang = 'pt-BR';
-            utterance.rate = speechRate;
-            utterance.onend = () => { if (isSpeaking) { currentIndex++; speakNext(); } };
+            if(!isSpeaking || currentIndex >= speechQueue.length) { isSpeaking = false; reportState(false); updateHighlight(null); return; }
+            const el = speechQueue[currentIndex];
+            updateHighlight(el);
+            el.scrollIntoView({behavior: "smooth", block: "center"});
+            utterance = new SpeechSynthesisUtterance(el.innerText);
+            utterance.lang = 'pt-BR'; utterance.rate = speechRate; 
+            utterance.onend = () => { if(isSpeaking) { currentIndex++; speakNext(); } };
             synthesis.speak(utterance);
         }
 
-        function updateSpeechRate(rate) { speechRate = rate; if (isSpeaking) { synthesis.cancel(); speakNext(); } }
-        function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-        function reportStatus(playing) { window.parent.postMessage({ type: 'tts-status', isPlaying: playing }, '*'); }
+        function updateHighlight(el) { document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking')); if(el) el.classList.add('speaking'); }
+        function reportState(bool) { window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*'); }
 
-        document.getElementById('content-area').addEventListener('click', function(e) {
+        document.body.addEventListener('click', (e) => {
             const target = e.target.closest('.speakable');
-            if (target) {
-                if (speechQueue.length === 0) {
-                    speechQueue = Array.from(document.querySelectorAll('.speakable'));
-                }
+            if(target) {
+                if(speechQueue.length === 0) initTTS();
                 synthesis.cancel();
                 currentIndex = speechQueue.indexOf(target);
                 isSpeaking = true;
-                reportStatus(true);
+                reportState(true);
                 speakNext();
             }
         });
+        window.onbeforeunload = () => synthesis.cancel();
     </script>
 </body>
 </html>
