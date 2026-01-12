@@ -135,17 +135,27 @@
         .legend-item { display: flex; align-items: center; color: var(--c-text); font-size: 0.8rem; }
         .dot { width: 12px; height: 12px; border-radius: 2px; margin-right: 10px; display: inline-block; box-shadow: 0 0 5px currentColor; }
 
-        /* ENTROPY SCALE */
-        .entropy-scale {
-            display: flex; flex-direction: column; gap: 8px; margin: 3em 0;
-            padding: 20px; border: var(--border-tech); border-radius: 8px; background: rgba(255,255,255,0.01);
+        /* DNA DEGRADATION WIDGET */
+        .dna-widget {
+            display: flex; flex-direction: column; gap: 5px; margin: 3em 0;
+            padding: 20px; border: 1px dashed var(--c-dim); border-radius: 8px;
+            font-family: var(--font-tech); font-size: 0.75rem; text-align: center;
         }
-        .entropy-bar { height: 10px; background: #333; border-radius: 2px; overflow: hidden; position: relative; }
-        .entropy-fill { 
-            height: 100%; width: 100%; 
-            background: linear-gradient(90deg, var(--c-glitch) 0%, var(--c-void) 50%, var(--c-fake) 100%); 
+        .dna-strand {
+            letter-spacing: 2px; transition: all 0.5s;
         }
-        .entropy-labels { display: flex; justify-content: space-between; font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-dim); text-transform: uppercase; }
+        .dna-v1 { color: var(--c-glitch); text-shadow: 0 0 5px var(--c-glitch); }
+        .dna-v2 { color: #ccc; opacity: 0.8; }
+        .dna-v3 { color: var(--c-dim); opacity: 0.6; filter: blur(0.5px); }
+        .dna-v4 { color: var(--c-fake); opacity: 0.4; filter: blur(1.5px); text-shadow: 0 0 5px var(--c-fake); }
+        
+        /* LOGBOOK WIDGET */
+        .logbook {
+            background: #0f0f0f; border-left: 1px solid var(--c-dim);
+            padding: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem;
+            color: #bbb; margin: 3em 0; font-style: italic;
+        }
+        .log-date { color: var(--c-void); font-weight: bold; display: block; margin-bottom: 10px; font-family: var(--font-tech); font-style: normal; }
 
         /* TERMINAL WIDGET */
         .terminal-widget {
@@ -220,16 +230,16 @@
 
     <span class="meta-tag">PARTE III: A SOCIEDADE E A VERDADE | CAPÍTULO 08</span>
     
-    <h1 class="speakable">A Internet Morta:<br>Colapso da Realidade</h1>
+    <h1 class="speakable">A Internet Morta:<br>Colapso da Realidade e a Solidão Sintética</h1>
 
-    <p class="speakable">Você tem certeza absoluta de que a pessoa com quem você discutiu nos comentários hoje era biológica? Você tem certeza de que a imagem da paisagem perfeita que você curtiu foi vista por um olho humano antes de ser renderizada? O que antes era uma teoria da conspiração em fóruns obscuros (a <strong>"Dead Internet Theory"</strong>) tornou-se, em 2025, um fato técnico auditável. Não é que a internet "desligou"; ela morreu de espírito. Ela tornou-se um teatro zumbi onde algoritmos de criação de conteúdo (GenAI) conversam com algoritmos de recomendação, em um ciclo infinito de ruído sintético desenhado para extrair valor de olhos humanos cada vez mais raros.</p>
+    <p class="speakable">Você tem certeza absoluta de que a pessoa com quem você discutiu nos comentários hoje era biológica? Tem certeza de que a imagem da paisagem perfeita que você curtiu foi vista por um olho humano antes de ser renderizada? O que antes era uma teoria da conspiração obscura (a <strong>"Dead Internet Theory"</strong>) tornou-se, em 2025, um fato técnico auditável. A rede não "morreu" no sentido de desligar; ela morreu de espírito. Tornou-se um teatro zumbi onde algoritmos de criação (GenAI) conversam com algoritmos de recomendação, em um ciclo infinito de ruído sintético desenhado para extrair valor de olhos humanos cada vez mais raros.</p>
 
-    <p class="speakable">Relatórios de segurança, como o <strong>Bad Bot Report da Imperva</strong>, indicam que quase 50% de todo o tráfego da web já é não-humano. Estamos navegando em um oceano onde metade dos navios são fantasmas. Mas o buraco é mais fundo: não estamos apenas lidando com bots, estamos lidando com o colapso da própria noção de verdade compartilhada, uma crise epistemológica sem precedentes.</p>
+    <p class="speakable">Relatórios de segurança, como o <strong>Bad Bot Report da Imperva</strong>, indicam que quase 50% de todo o tráfego da web já é não-humano. Navegamos em um oceano onde metade dos navios são fantasmas. Mas o buraco é mais fundo: não lidamos apenas com bots, mas com o <strong>Colapso Epistemológico</strong>. Quando o custo de gerar mentiras cai para zero, a verdade torna-se um artigo de luxo inacessível.</p>
 
     <div class="visual-pie-container speakable">
         <div class="pie-chart"></div>
         <div class="pie-legend">
-            <strong style="color: var(--c-text); margin-bottom: 10px; display: block; text-transform: uppercase; font-size: 0.8rem;">DADOS: RELATÓRIO IMPERVA</strong>
+            <strong style="color: var(--c-text); margin-bottom: 10px; display: block; text-transform: uppercase; font-size: 0.8rem;">DADOS: RELATÓRIO IMPERVA (2024)</strong>
             <div class="legend-item"><span class="dot" style="background: var(--c-fake);"></span> Bots Maliciosos (49.6%)</div>
             <div class="legend-item"><span class="dot" style="background: var(--c-void);"></span> Crawlers/Indexadores (15%)</div>
             <div class="legend-item"><span class="dot" style="background: var(--c-glitch);"></span> Humanos Reais (35.4%)</div>
@@ -238,36 +248,34 @@
 
     <h2 class="speakable">O Ouroboros de Dados: Model Collapse</h2>
 
-    <p class="speakable">O fenômeno mais aterrorizante da IA generativa não é a "consciência da máquina" (o mito de Hollywood), mas a <strong>Demência Digital</strong>. Em um estudo publicado na revista <em>Nature</em> (2024), pesquisadores liderados por Ilia Shumailov demonstraram matematicamente o conceito de <strong>Model Collapse</strong> (Colapso do Modelo).</p>
+    <p class="speakable">O fenômeno mais aterrorizante da IA generativa não é a "consciência da máquina" (o mito de Hollywood), mas a <strong>Demência Digital</strong>. Em um estudo publicado na revista <em>Nature</em>, pesquisadores liderados por Ilia Shumailov demonstraram matematicamente o conceito de <strong>Model Collapse</strong> (Colapso do Modelo).</p>
     
-    <p class="speakable">As IAs atuais (GPT-4, Claude, Llama) foram treinadas raspando a internet humana acumulada por 30 anos (livros, artigos, fóruns reais). Mas, à medida que a internet é inundada por "Slop" (lodo digital gerado por IA), as novas gerações de IA começam a treinar com dados feitos por outras IAs. É um ciclo de incesto digital. A variância diminui, as "alucinações" aumentam e a realidade se distorce. A informação perde a conexão com o fato original, tornando-se uma cópia degradada de uma cópia, como um JPEG salvo e re-salvo mil vezes até virar ruído.</p>
+    <p class="speakable">As IAs atuais (GPT-4, Claude) treinaram raspando a internet humana acumulada por 30 anos. Mas, à medida que a web é inundada por "Slop" (lodo digital gerado por IA), as novas gerações de IA treinam com dados feitos por outras IAs. É um ciclo de incesto digital. Assim como a endogamia na realeza causava deformidades físicas (como o Queixo de Habsburgo), a endogamia de dados causa deformidades culturais. A variância diminui, as "alucinações" tornam-se fatos e a realidade se dissolve em uma média bege e sem sentido.</p>
 
-    <div class="entropy-scale speakable">
-        <span style="font-family:var(--font-tech); font-size:0.7rem; font-weight:bold; color:var(--c-text); margin-bottom:5px;">GRÁFICO: A ENTROPIA DA INFORMAÇÃO</span>
-        <div class="entropy-bar"><div class="entropy-fill"></div></div>
-        <div class="entropy-labels">
-            <span>DADOS HUMANOS (Puro/Caótico)</span>
-            <span>IA Geração 1 (Padrão)</span>
-            <span>IA Geração 5 (Ruído/Colapso)</span>
-        </div>
+    <div class="dna-widget speakable">
+        <span style="display:block; margin-bottom:10px; color:var(--c-dim);">SIMULAÇÃO: DEGRADAÇÃO DA INFORMAÇÃO EM 4 GERAÇÕES</span>
+        <span class="dna-strand dna-v1">GERAÇÃO 1: "O gato preto correu pela floresta escura." (Humano)</span>
+        <span class="dna-strand dna-v2">GERAÇÃO 2: "O felino de cor escura moveu-se pela vegetação densa." (IA)</span>
+        <span class="dna-strand dna-v3">GERAÇÃO 3: "A entidade sombria transita no bioma de baixa luminosidade." (IA v2)</span>
+        <span class="dna-strand dna-v4">GERAÇÃO 4: "ERROR 404: SYNTAX_VOID // DARKNESS_ENTITY_NULL." (Colapso)</span>
     </div>
 
-    <div class="thesis-box speakable">
-        <span class="thesis-header">// A Crise da Atenção Subprime</span>
-        "Tim Hwang, em <em>Subprime Attention Crisis</em>, revela que a economia da internet é baseada em uma fraude massiva, comparável à bolha imobiliária de 2008. O mercado de publicidade programática (Ad Tech) movimenta bilhões vendendo a atenção de usuários que não existem. Grandes redes de bots (como a infame <strong>Methbot</strong> russa) assistem a anúncios em sites fantasmas, gerando receita fraudulenta. O sistema financeiro da web depende dessa mentira para inflar métricas de crescimento. A internet não está apenas morta; ela é um esquema de lavagem de dinheiro de atenção."
-    </div>
+    <h2 class="speakable">O Vale da Estranheza Social</h2>
 
-    <h2 class="speakable">A Teoria da Floresta Negra</h2>
-
-    <p class="speakable">Diante desse ambiente hostil, os humanos estão mudando seu comportamento. O escritor <strong>Yancey Strickler</strong> propôs a <strong>Teoria da Floresta Negra</strong> da Internet. Na ficção científica, civilizações se escondem para não serem destruídas por predadores. Na web, os "predadores" são os bots, os trolls, os anunciantes e os crawlers de IA.</p>
+    <p class="speakable">Não é apenas a máquina que está mudando; nós estamos. O sociólogo <strong>Jean Baudrillard</strong>, em <em>Simulacros e Simulação</em>, previu um mundo onde a cópia precede o original. Hoje, vivemos isso. Para serem notados pelo algoritmo do LinkedIn ou do Instagram, humanos começam a escrever e agir <em>como bots</em>. Usam as mesmas hashtags, a mesma estrutura de frase otimizada para SEO, os mesmos filtros faciais.</p>
     
-    <p class="speakable">Em resposta, os humanos estão abandonando a "praça pública" (X, Facebook, Instagram aberto) e recuando para "cavernas escuras" e privadas: grupos de WhatsApp, servidores de Discord, Slacks fechados e Newsletters pagas. A conversa humana real tornou-se subterrânea. O que resta na superfície, visível aos buscadores, é apenas a performance de influenciadores sintéticos e guerra cultural automatizada.</p>
+    <p class="speakable">Entramos no <strong>Vale da Estranheza Social</strong>. Você lê um post emocionado de um amigo e sente um arrepio: "Isso foi escrito por ele ou pelo ChatGPT?". A dúvida corrói a empatia. Se não temos certeza da humanidade do outro, paramos de nos importar. A consequência final da Internet Morta é a solidão absoluta em uma sala lotada de vozes sintéticas.</p>
+
+    <div class="logbook speakable">
+        <span class="log-date">REGISTRO DE NAVEGAÇÃO // DATA ESTELAR: 2030</span>
+        "Passei três horas em um fórum de discussão hoje. Recebi 400 respostas. Todas concordavam comigo. Todas usavam a gramática perfeita. Nenhuma delas entendeu a ironia na minha segunda frase. Acho que sou o único ser biológico neste servidor. A sensação não é de poder, é de estar gritando em um cemitério onde as lápides têm alto-falantes."
+    </div>
 
     <h2 class="speakable">O Dividendo do Mentiroso (Liar's Dividend)</h2>
 
-    <p class="speakable">Em um mundo saturado por <em>Deepfakes</em>, o maior perigo não é apenas acreditar na mentira, mas a morte da verdade. Os juristas <strong>Robert Chesney</strong> e <strong>Danielle Citron</strong> cunharam o termo <strong>"Liar's Dividend"</strong> (O Dividendo do Mentiroso).</p>
+    <p class="speakable">Em um mundo saturado por <em>Deepfakes</em>, o maior perigo não é acreditar na mentira, mas a morte da verdade. Os juristas <strong>Robert Chesney</strong> e <strong>Danielle Citron</strong> cunharam o termo <strong>"Liar's Dividend"</strong> (O Dividendo do Mentiroso).</p>
     
-    <p class="speakable">Quando qualquer vídeo pode ser falsificado, a realidade torna-se negável. Um político corrupto pego em flagrante em vídeo real pode simplesmente dizer: 'Isso é IA'. Um criminoso de guerra pode alegar que as filmagens de seus crimes são fabricações digitais. A dúvida torna-se a arma definitiva. Se nada é provável, tudo é permitido. A base epistemológica da democracia e do sistema jurídico — a existência de fatos compartilhados — dissolve-se.</p>
+    <p class="speakable">Quando qualquer vídeo pode ser falsificado, a realidade torna-se negável. Um político corrupto pego em flagrante em vídeo real pode simplesmente dizer: 'Isso é IA'. Um criminoso de guerra pode alegar que as filmagens de seus crimes são fabricações digitais. A dúvida torna-se a arma definitiva. Se nada é provável, tudo é permitido. A base epistemológica da democracia — a existência de fatos compartilhados — dissolve-se.</p>
 
     <div class="terminal-widget speakable">
         > SYSTEM_AUDIT: CHECKING AUTHENTICITY...<br>
@@ -277,29 +285,29 @@
         <div class="term-line">> STATUS: HUMANITY NOT FOUND.</div>
     </div>
 
-    <h2 class="speakable">Influenciadores Sintéticos: O Capital Sem Corpo</h2>
+    <h2 class="speakable">A Teoria da Floresta Negra</h2>
 
-    <p class="speakable">No mercado da fama, o corpo humano tornou-se um passivo logístico. Ele envelhece, cansa, exige cachê, tem opiniões políticas e comete escândalos. A solução do capital é o <strong>Influenciador Sintético</strong>.</p>
+    <p class="speakable">Diante desse ambiente hostil, os humanos estão mudando seu comportamento. O escritor <strong>Yancey Strickler</strong> propôs a <strong>Teoria da Floresta Negra</strong> da Internet. Na ficção científica, civilizações se escondem para não serem destruídas por predadores. Na web, os "predadores" são os bots, os trolls, os anunciantes e os crawlers de IA que roubam dados para treinamento.</p>
     
-    <p class="speakable">Perfis como <strong>Lil Miquela</strong> ou a modelo fitness gerada por IA <strong>Aitana Lopez</strong> são a perfeição corporativa. Elas trabalham 24/7, nunca reclamam e dizem exatamente o que a marca quer. Para o público, a interação gera dopamina real (relações parassociais); para a empresa, o risco é zero. Estamos treinando uma geração para formar laços emocionais com fantasmas de código, aprofundando a solidão coletiva em escala industrial.</p>
+    <p class="speakable">Em resposta, os humanos estão abandonando a "praça pública" (X, Facebook, Instagram aberto) e recuando para "cavernas escuras" e privadas: grupos de WhatsApp, servidores de Discord, Slacks fechados e Newsletters pagas. A conversa humana real tornou-se subterrânea. O que resta na superfície, visível aos buscadores, é apenas a performance de influenciadores sintéticos (como <strong>Lil Miquela</strong> ou <strong>Aitana Lopez</strong>) e guerra cultural automatizada.</p>
 
     <h2 class="speakable">Síntese: Jardins Digitais e a Web Humana</h2>
 
-    <p class="speakable">A resistência contra a Internet Morta não é tentar "consertar" o Twitter ou o Google. Essas plataformas já foram cedidas aos bots. A solução é a construção de <strong>Jardins Digitais</strong>.</p>
+    <p class="speakable">A resistência contra a Internet Morta não é tentar "consertar" as grandes plataformas. Elas já foram cedidas aos zumbis. A solução é a construção de <strong>Jardins Digitais</strong>.</p>
     
-    <p class="speakable">Precisamos redescobrir a <strong>Small Web</strong>. É o movimento de retorno aos blogs pessoais, aos sites estáticos feitos à mão (HTML/CSS), às newsletters diretas e aos leitores de RSS. É a adoção do protocolo <strong>POSSE</strong> (Publish on your Own Site, Syndicate Elsewhere): publique no seu terreno, onde você é dono, e apenas distribua o link nas redes.</p>
+    <p class="speakable">Precisamos redescobrir a <strong>Small Web</strong>. É o movimento de retorno aos blogs pessoais, aos sites estáticos feitos à mão (HTML/CSS), às newsletters diretas e aos leitores de RSS. É a adoção do protocolo <strong>POSSE</strong> (Publish on your Own Site, Syndicate Elsewhere): publique no seu terreno, onde você é dono, e apenas distribua o link nas redes. Cultive um espaço onde a "ineficiência" humana — o erro de digitação, a opinião impopular, a foto tremida — seja a prova de vida.</p>
 
     <div class="comparison-grid">
         <div class="comp-card extract">
-            <span class="comp-title" style="color:var(--c-fake)">WEB EXTRATIVA (Plataforma)</span>
+            <span class="comp-title" style="color:var(--c-fake)">WEB EXTRATIVA (Cemitério)</span>
             <div class="comp-content speakable">
-                Otimizada para engajamento (ódio/vício). Conteúdo efêmero. Algoritmo decide o que você vê. Você é o produto vendido aos anunciantes.
+                Otimizada para engajamento e extração de dados. Conteúdo efêmero gerado por IA. Algoritmo decide a verdade. Você é o produto vendido aos anunciantes e treinadores de LLM.
             </div>
         </div>
         <div class="comp-card garden">
             <span class="comp-title" style="color:var(--c-glitch)">WEB GENERATIVA (Jardim)</span>
             <div class="comp-content speakable">
-                Otimizada para conexão e profundidade. Conteúdo perene. Curadoria humana. Você é o dono do território e das regras.
+                Otimizada para conexão humana e profundidade. Conteúdo perene e autoral. Curadoria humana via RSS. Você é o jardineiro do seu próprio território e das suas regras.
             </div>
         </div>
     </div>
@@ -307,9 +315,9 @@
     <div class="action-box speakable">
         <span class="action-icon">🌱</span>
         <strong style="color:var(--c-void); text-transform:uppercase; display:block; margin-bottom:10px; font-family:var(--font-tech);">DESAFIO DE RETOMADA #08</strong>
-        <p style="font-weight:bold;">Cultive o Seu Terreno</p>
-        <p>Se o Instagram acabar amanhã, você perde todo o seu histórico e conexões. Isso é viver de aluguel em terreno hostil.</p>
-        <p><strong>Sua missão:</strong> Dê o primeiro passo para a desintermediação. Instale um leitor de <strong>RSS</strong> (como Feedly ou Inoreader) e comece a seguir 5 blogs ou sites diretamente, sem passar pelo filtro de uma rede social. Ou, se for corajoso, comece seu próprio "Digital Garden" (um blog simples, sem likes, sem comentários). Tenha um endereço na web que você pague com dinheiro, não com sua alma.</p>
+        <p style="font-weight:bold;">O Teste de Turing Inverso</p>
+        <p>Pare de tentar provar que você é humano para as máquinas (CAPTCHA). Comece a testar a humanidade do seu feed.</p>
+        <p><strong>Sua missão:</strong> Instale um leitor de <strong>RSS</strong> (como Feedly ou Inoreader). Encontre 5 blogs pessoais escritos por humanos reais (amigos, escritores independentes, especialistas excêntricos) e assine-os diretamente. Remova a intermediação do algoritmo. Crie um canal de informação onde 100% do conteúdo venha de uma mente biológica que você escolheu ouvir.</p>
         <p class="glitch-text">>> SAIA DA MATRIX. CULTIVE O REAL.</p>
     </div>
 
