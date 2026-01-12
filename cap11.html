@@ -54,7 +54,7 @@
             background: var(--c-bg); color: var(--c-text);
             font-family: var(--font-ui); font-size: var(--base-size);
             line-height: 1.7; padding: 40px 20px 100px 20px;
-            transition: all 0.3s ease; max-width: 740px; margin: 0 auto;
+            transition: all 0.3s ease; max-width: 760px; margin: 0 auto;
         }
 
         /* TIPOGRAFIA TECH & CABEÇALHO UNIFICADO */
@@ -97,8 +97,30 @@
         .callout {
             border-left: 4px solid var(--c-blue); padding: 25px;
             background: var(--c-blue-dim); margin: 3em 0; font-style: italic;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: relative;
         }
+        .callout::before { content: "“"; font-size: 3rem; position: absolute; top: -10px; left: 10px; opacity: 0.2; }
+
+        /* MATRIX CONVIVIALIDADE */
+        .convivial-matrix {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0;
+        }
+        .matrix-card {
+            border: 1px solid var(--border-tech); padding: 20px; border-radius: 8px;
+            background: rgba(255,255,255,0.02); transition: 0.3s;
+        }
+        .matrix-card:hover { transform: translateY(-3px); }
+        
+        .mc-good { border-top: 3px solid var(--c-blue); }
+        .mc-good:hover { box-shadow: var(--c-blue-glow); }
+        
+        .mc-bad { border-top: 3px solid var(--c-amber); }
+        .mc-bad:hover { box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
+
+        .mc-title { font-family: var(--font-tech); font-weight: bold; display: block; margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; }
+        .mc-list { list-style: none; padding: 0; font-size: 0.8rem; color: var(--c-dim); }
+        .mc-list li { margin-bottom: 8px; padding-left: 15px; position: relative; }
+        .mc-list li::before { content: '•'; position: absolute; left: 0; color: var(--c-text); }
 
         /* DEFENSE DIAGRAM */
         .defense-diagram {
@@ -115,17 +137,22 @@
         .defense-node {
             padding: 15px; border: 1px solid var(--c-dim); background: rgba(255,255,255,0.02);
             font-family: var(--font-tech); font-size: 0.75rem; text-align: center;
-            border-radius: 4px; transition: 0.3s;
+            border-radius: 4px; transition: 0.3s; cursor: default;
         }
-        .defense-node:hover { border-color: var(--c-blue); transform: scale(1.02); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
+        .defense-node:hover { border-color: var(--c-blue); transform: scale(1.02); box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); background: var(--c-blue-dim); color: var(--c-blue); }
 
         .heritage-box {
-            border: 1px solid var(--c-amber); background: rgba(245, 158, 11, 0.05);
+            border: 1px dashed var(--c-purple); background: rgba(139, 92, 246, 0.05);
             padding: 30px; border-radius: 12px; margin: 3em 0; position: relative;
         }
-        .heritage-box h3 { color: var(--c-amber); font-family: var(--font-tech); margin-bottom: 15px; border: none; padding: 0; }
+        .heritage-box h3 { color: var(--c-purple); font-family: var(--font-tech); margin-bottom: 15px; border: none; padding: 0; font-size: 1rem; }
 
-        /* HIGHLIGHT */
+        .action-box {
+            border: 1px dashed var(--c-blue); background: linear-gradient(180deg, rgba(59, 130, 246, 0.05), transparent);
+            text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px; position: relative;
+        }
+        .action-header { font-family: var(--font-tech); color: var(--c-blue); font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+
         .speaking {
             background: var(--c-blue-dim); color: var(--c-text);
             border-left: 4px solid var(--c-blue); padding-left: 15px; margin-left: -19px;
@@ -135,7 +162,7 @@
         @media (max-width: 700px) {
             body { padding: 30px 15px 120px 15px; }
             h1 { font-size: 1.8rem; }
-            .defense-grid { grid-template-columns: 1fr; }
+            .defense-grid, .convivial-matrix { grid-template-columns: 1fr; }
             p { text-align: left; }
         }
     </style>
@@ -145,60 +172,73 @@
     <div class="reader-container" id="content-area">
         <span class="meta-tag">PARTE IV: CONTRA-MEDIDAS | CAPÍTULO 11</span>
         
-        <h1 class="speakable">A Cidadania Onlife: De Usuário a Protagonista</h1>
+        <h1 class="speakable">A Cidadania Onlife:<br>Manual de Guerrilha Pessoal</h1>
 
-        <p class="speakable">Vivemos em um estado de "Onlife", termo cunhado pelo filósofo <strong>Luciano Floridi</strong> para descrever a natureza híbrida da nossa existência contemporânea. A distinção entre online e offline não apenas desapareceu; ela tornou-se irrelevante. Não "entramos" mais na rede; nós habitamos nela, assim como habitamos a biosfera. Contudo, essa integração profunda trouxe uma armadilha semântica e existencial: a nossa redução à figura do <b>Usuário</b>.</p>
+        <p class="speakable">Vivemos em um estado de "Onlife", termo cunhado pelo filósofo <strong>Luciano Floridi</strong> para descrever o colapso da fronteira entre online e offline. Não "entramos" mais na internet; nós respiramos dentro dela. O problema é que, ao habitar esse espaço, fomos rebaixados. Deixamos de ser cidadãos para nos tornarmos <strong>Usuários</strong>.</p>
 
-        <p class="speakable">Historicamente, o termo "usuário" era reservado a dois grupos: dependentes químicos e aqueles que utilizam sistemas de computação. Em ambos os casos, a palavra denota uma relação de dependência e passividade em relação a uma estrutura maior que fornece a "dose" ou a interface. Retomar a cidadania significa, antes de tudo, <strong>desinstalar o modo usuário</strong> e reinstalar a soberania individual.</p>
+        <p class="speakable">Historicamente, "usuário" é um termo reservado para apenas dois grupos: dependentes químicos e pessoas que interagem com sistemas computacionais. Em ambos, a palavra denota passividade e dependência. O sistema fornece a dose (ou a interface), e você consome. Retomar a cidadania significa <strong>desinstalar o modo usuário</strong> e assumir o modo administrador da própria vida.</p>
 
         <div class="callout speakable">
-            "A liberdade não é a ausência de tecnologia, mas a presença de agência sobre ela. Uma ferramenta que você não consegue consertar, modificar ou entender não é uma ferramenta; é um mecanismo de controle."
+            "A liberdade não é a ausência de tecnologia, mas a presença de agência sobre ela. Uma ferramenta que você não pode consertar, entender ou desligar não é uma ferramenta; é um mecanismo de controle."
         </div>
 
-        <h2 class="speakable">A Tecnologia Convivial de Ivan Illich</h2>
-        <p class="speakable">Para entendermos como retomar o controle, devemos recorrer a <strong>Ivan Illich</strong> e seu conceito de <b>Ferramentas Conviviais</b>. Illich defendia que uma sociedade justa depende de ferramentas que garantam a autonomia dos indivíduos e que permitam a cada pessoa enriquecer o ambiente com sua própria visão. Em contraste, as ferramentas industriais (e as plataformas algorítmicas modernas) tendem a escravizar o indivíduo ao ritmo da máquina.</p>
+        <h2 class="speakable">O Teste de Convivialidade (Ivan Illich)</h2>
+        <p class="speakable">Como saber se uma tecnologia serve a você ou se você serve a ela? Em 1973, o pensador <strong>Ivan Illich</strong> propôs o conceito de <strong>Ferramentas Conviviais</strong>. São ferramentas que ampliam a autonomia humana em vez de substituí-la por processos industriais opacos. Vamos aplicar o teste:</p>
 
-        <p class="speakable">Uma rede social que decide o que você vê através de um algoritmo opaco é o oposto de uma ferramenta convivial. É uma ferramenta de manipulação de massa. A cidadania onlife exige a busca por <strong>Protocolos</strong> em vez de <strong>Plataformas</strong>. O e-mail, o RSS e o protocolo HTTP são conviviais: ninguém é dono deles, e qualquer um pode construir sobre eles. O Instagram e o X são plataformas: prisões digitais com regras de engajamento ditadas por bilionários.</p>
+        <div class="convivial-matrix speakable">
+            <div class="matrix-card mc-good">
+                <span class="mc-title" style="color:var(--c-blue)">FERRAMENTA CONVIVIAL (Liberdade)</span>
+                <ul class="mc-list">
+                    <li><strong>Exemplo:</strong> Bicicleta, E-mail, RSS, Linux.</li>
+                    <li><strong>Autonomia:</strong> Você controla a velocidade e o destino.</li>
+                    <li><strong>Transparência:</strong> Você pode consertar se quebrar.</li>
+                    <li><strong>Efeito:</strong> Amplia sua capacidade natural.</li>
+                </ul>
+            </div>
+            <div class="matrix-card mc-bad">
+                <span class="mc-title" style="color:var(--c-amber)">FERRAMENTA INDUSTRIAL (Controle)</span>
+                <ul class="mc-list">
+                    <li><strong>Exemplo:</strong> Scooter de App, Instagram, Windows.</li>
+                    <li><strong>Dependência:</strong> O app pode bloquear seu acesso.</li>
+                    <li><strong>Opacidade:</strong> Caixa preta. Se quebrar, jogue fora.</li>
+                    <li><strong>Efeito:</strong> Cria vício e passividade.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="speakable">A Fricção da Liberdade: O Preço da Soberania</h2>
+        <p class="speakable">Aqui está a verdade impopular: ser livre dá trabalho. O sistema vende "conveniência" (login com um clique, feed infinito, delivery em 15 min) em troca da sua alma. A conveniência é a anestesia da agência.</p>
+        
+        <p class="speakable">Praticar a <strong>Soberania Digital</strong> exige abraçar a <strong>Fricção</strong>. Ter seus próprios arquivos de música (MP3) dá mais trabalho do que assinar o Spotify. Usar dinheiro vivo dá mais trabalho do que aproximar o relógio da máquina. Mas esse "trabalho" é o exercício muscular da sua liberdade. Quando você terceiriza toda a dificuldade para a nuvem, você terceiriza também a sua competência de viver.</p>
+
+        <h2 class="speakable">A Privação de Solitude: O Medo do Silêncio</h2>
+        <p class="speakable"><strong>Cal Newport</strong> identifica uma nova patologia: a <strong>Privação de Solitude</strong>. Solitude não é solidão; é o estado de estar sozinho com seus próprios pensamentos, livre de *inputs* externos.</p>
+        
+        <p class="speakable">Muitos de nós perderam a capacidade biológica de processar emoções porque nunca estamos "offline". No momento em que sentimos tédio ou ansiedade, sacamos o celular. Isso impede que o cérebro resolva o problema. Estamos acumulando uma dívida emocional impagável, fugindo de nós mesmos através do scroll. A resistência é sentar em um quarto, sem telefone, e encarar o teto até que a angústia se transforme em ideia.</p>
 
         <div class="defense-diagram speakable">
-            <div class="diagram-header">Dashboard Operacional: Design Defensivo</div>
+            <div class="diagram-header">Dashboard: Design de Defesa Pessoal</div>
             <div class="defense-grid">
-                <div class="defense-node"><strong>NOTIFICAÇÕES</strong><br>Status: OFF (Prioridade Humana)</div>
-                <div class="defense-node"><strong>ESCALA DE CINZA</strong><br>Neutraliza o Gatilho de Dopamina</div>
-                <div class="defense-node"><strong>MODO FOCO</strong><br>Agendamento de Disponibilidade</div>
-                <div class="defense-node"><strong>HOME SCREEN</strong><br>Apenas Ferramentas de Utilidade</div>
+                <div class="defense-node"><strong>NOTIFICAÇÕES: OFF</strong><br>O mundo espera. Sua sanidade não.</div>
+                <div class="defense-node"><strong>TELA EM ESCALA DE CINZA</strong><br>Transforme o brinquedo em ferramenta.</div>
+                <div class="defense-node"><strong>DUMBPHONE MODE</strong><br>Remova apps infinitos do celular.</div>
+                <div class="defense-node"><strong>JANELA DE SAGRADO</strong><br>2h por dia sem conexão.</div>
             </div>
-            <p style="font-size: 0.8rem; margin-top: 20px; text-align: center; font-family: var(--font-tech); color: var(--c-dim);">
-                [!] Ação Recomendada: Configure seu dispositivo para servir à intenção, não à reação.
-            </p>
         </div>
-
-        <h2 class="speakable">Minimalismo Digital: A Economia da Atenção</h2>
-        <p class="speakable"><strong>Cal Newport</strong>, em seu manifesto sobre o minimalismo digital, argumenta que a atenção é o recurso mais valioso do século XXI. Se você não protege sua atenção, ela será extraída por engenheiros de software cujo único objetivo é maximizar o "tempo de tela". O cidadão onlife pratica a <b>Atenção Intencional</b>. Ele não verifica o telefone por impulso; ele o utiliza como uma ferramenta cirúrgica para fins específicos.</p>
-
-        <p class="speakable">A resistência não é o ludismo (destruir a máquina), mas o uso radical da agência. Isso envolve deletar aplicativos de redes sociais do telefone e acessá-los apenas via desktop; envolve desativar todas as notificações não humanas; envolve, fundamentalmente, redescobrir o prazer da <b>Solitude Profunda</b> — o estado de estar sozinho com seus próprios pensamentos sem a intermediação de uma tela.</p>
 
         <div class="heritage-box speakable">
-            <h3>🛡️ Protocolo Herança: O Firmware da Próxima Geração</h3>
-            <p>O Fator 1 exige que estendamos a resistência à nossa linhagem. O Protocolo Herança define:</p>
-            <ul style="margin-left: 20px; list-style-type: square; color: var(--c-dim);">
-                <li><strong>Exposição Gradual:</strong> O cérebro em desenvolvimento não possui defesas contra a dopamina algorítmica.</li>
-                <li><strong>Alfabetização da Arquitetura:</strong> Ensine seus filhos não a "usar apps", mas a entender como o scroll infinito foi desenhado para prendê-los.</li>
-                <li><strong>Territórios Livres:</strong> O quarto e a mesa de jantar são zonas de "Silêncio de Dados". Sem telas. Presença Total.</li>
-            </ul>
+            <h3>🛡️ Protocolo Herança: Protegendo o Firmware Futuro</h3>
+            <p>Se você tem filhos ou convive com jovens, sua responsabilidade é dupla. O cérebro em desenvolvimento não tem defesas contra a engenharia de vício do Vale do Silício.</p>
+            <p><strong>A Regra de Ouro:</strong> Não entregue um smartphone antes da adolescência tardia. Dê ferramentas conviviais (Lego, bicicletas, instrumentos musicais, câmeras fotográficas *offline*). Ensine-os a serem criadores no mundo físico antes de serem consumidores no mundo digital. O tédio da criança é o berço da criatividade; o tablet é o caixão dela.</p>
         </div>
 
-        <h2 class="speakable">Soberania Digital e o Futuro</h2>
-        <p class="speakable">A cidadania onlife culmina na <b>Soberania Digital</b>. Isso significa ter a posse de seus próprios dados, hospedar seus próprios serviços sempre que possível e apoiar ecossistemas descentralizados. Significa entender que a "nuvem" é apenas o computador de outra pessoa — e que essa pessoa pode não ter seus melhores interesses em mente.</p>
-
-        <p class="speakable">Ao final deste módulo, o convite é para um pacto: deixe de ser o produto e torne-se o arquiteto. A rede é vasta e cheia de potencial, mas ela só servirá à humanidade quando cada um de nós decidir, individualmente, que não aceitaremos mais o papel de meros usuários. Somos os cidadãos da infraestrutura. O sistema só funciona porque nós o alimentamos com nossa vida. É hora de retomar o fluxo.</p>
-
-        <div style="text-align: center; margin-top: 100px; padding: 40px; border-top: 1px dashed var(--c-blue);">
-            <p class="speakable" style="font-family: var(--font-tech); font-size: 0.8rem; color: var(--c-blue);">
-                STATUS DO PROTOCOLO: ATIVO<br>
-                INTEGRIDADE DOS DADOS: 100% (ORIGINAL + EXPANSÃO)<br>
-                PRÓXIMO PASSO: CAPÍTULO 12 // TECNOFEUDALISMO
-            </p>
+        <div class="action-box speakable">
+            <span class="action-icon">📵</span>
+            <span class="action-header">DESAFIO DE RETOMADA #11</span>
+            <p><strong>O Passeio Desconectado (The Naked Walk)</strong></p>
+            <p>Parece simples, mas para muitos é aterrorizante.</p>
+            <p><strong>Sua missão:</strong> Saia de casa para uma caminhada de 30 minutos. Deixe o celular em casa. Sem música, sem podcast, sem rastreador de passos.</p>
+            <p>Apenas você e o mundo. Observe como sua mão procura o bolso fantasma nos primeiros 10 minutos. Observe a ansiedade. Depois, observe o silêncio. Sinta o mundo real voltar a ter textura. Recupere a capacidade de *estar* em um lugar sem precisar registrar ou transmitir.</p>
         </div>
     </div>
 
