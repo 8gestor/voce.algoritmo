@@ -3,176 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DATA DOUBLE // OS</title>
+    <title>DATA DOUBLE // OS v3.2</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- FATOR X v4.1: SYSTEM CORE --- */
+        /* --- FATOR X v4.4: SYSTEM CORE --- */
         :root {
-            /* DARK (Default) */
-            --c-bg: #050505;
-            --c-panel: #111111;
-            --c-text: #E0E0E0;
-            --c-accent: #00F0FF; /* Cyan Neon */
-            --c-border: rgba(255, 255, 255, 0.1);
-            
-            --font-tech: 'JetBrains Mono', monospace;
-            --font-ui: 'Inter', sans-serif;
-            
-            /* SCROLLBAR */
-            --scroll-track: #050505;
-            --scroll-thumb: #333333;
-            --scroll-hover: #555555;
+            --c-bg: #050505; --c-panel: #0a0a0a; --c-text: #E0E0E0;
+            --c-accent: #00F0FF; --c-border: rgba(255, 255, 255, 0.1);
+            --font-tech: 'JetBrains Mono', monospace; --font-ui: 'Inter', sans-serif;
+            --scroll-track: #050505; --scroll-thumb: #333; --scroll-hover: #00F0FF;
         }
-
         body.light-mode {
-            --c-bg: #F2F2F7;
-            --c-panel: #FFFFFF;
-            --c-text: #1C1C1E;
-            --c-accent: #0066FF; 
-            --c-border: rgba(0, 0, 0, 0.1);
-            --scroll-track: #F2F2F7;
-            --scroll-thumb: #C1C1C4;
-            --scroll-hover: #A0A0A3;
+            --c-bg: #F2F2F7; --c-panel: #FFFFFF; --c-text: #1C1C1E;
+            --c-accent: #0066FF; --c-border: rgba(0, 0, 0, 0.1);
+            --scroll-track: #F2F2F7; --scroll-thumb: #C1C1C4; --scroll-hover: #A0A0A3;
         }
-
         body.sepia-mode {
-            --c-bg: #F4ECD8;
-            --c-panel: #E8DEC0;
-            --c-text: #433422;
-            --c-accent: #8C4B2F;
-            --c-border: rgba(67, 52, 34, 0.15);
-            --scroll-track: #F4ECD8;
-            --scroll-thumb: #D0C5A8;
-            --scroll-hover: #8C4B2F;
+            --c-bg: #F4ECD8; --c-panel: #E8DEC0; --c-text: #433422;
+            --c-accent: #8C4B2F; --c-border: rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #8C4B2F;
         }
-
-        /* RESET & BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         html, body { height: 100%; width: 100%; overflow: hidden; background-color: var(--c-bg); color: var(--c-text); }
         body { display: flex; font-family: var(--font-ui); transition: background 0.4s ease, color 0.4s ease; }
-
-        /* STEALTH SCROLL */
+        
+        /* SCROLLBAR */
         html { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--scroll-track); }
         ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
 
-        /* SIDEBAR (Overlay no Mobile) */
+        /* SIDEBAR */
         aside.sidebar {
-            width: 280px; background: var(--c-panel); border-right: 1px solid var(--c-border);
+            width: 300px; background: var(--c-panel); border-right: 1px solid var(--c-border);
             display: flex; flex-direction: column; z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0;
         }
-        aside.sidebar.collapsed { transform: translateX(-280px); position: absolute; height: 100%; }
+        aside.sidebar.collapsed { transform: translateX(-300px); position: absolute; height: 100%; }
         
         .sidebar-header { 
             height: 60px; display: flex; align-items: center; justify-content: space-between; 
             padding: 0 20px; border-bottom: 1px solid var(--c-border); 
-            font-family: var(--font-tech); font-weight: 700; color: var(--c-accent); letter-spacing: 1px;
+            font-family: var(--font-tech); font-weight: 700; color: var(--c-accent); letter-spacing: 1px; font-size: 0.85rem;
         }
-
         nav.nav-list { flex: 1; overflow-y: auto; padding: 20px; }
+        
         .nav-cat { 
-            font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-text); opacity: 0.6; 
-            margin: 25px 0 10px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
+            font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-text); opacity: 0.5; 
+            margin: 20px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
+            border-bottom: 1px dashed var(--c-border); padding-bottom: 5px;
         }
         .chapter-link { 
-            display: block; padding: 12px 15px; margin-bottom: 4px; 
-            color: var(--c-text); text-decoration: none; font-size: 0.75rem; 
-            font-family: var(--font-tech); text-transform: uppercase; font-weight: 600;
-            border-radius: 4px; transition: all 0.2s; border-left: 2px solid transparent;
+            display: block; padding: 10px 12px; margin-bottom: 2px; 
+            color: var(--c-text); text-decoration: none; font-size: 0.8rem; 
+            font-family: var(--font-ui); font-weight: 500; border-radius: 4px; 
+            transition: all 0.2s; border-left: 2px solid transparent; opacity: 0.8;
         }
-        .chapter-link:hover { background: rgba(125,125,125,0.1); }
+        .chapter-link:hover { background: rgba(255,255,255,0.05); opacity: 1; transform: translateX(4px); }
         .chapter-link.active { 
-            background: rgba(125,125,125,0.1); color: var(--c-accent); 
-            border-left-color: var(--c-accent);
+            background: rgba(255,255,255,0.05); color: var(--c-accent); 
+            border-left-color: var(--c-accent); opacity: 1; font-weight: 700;
         }
+        .chapter-sub { margin-left: 15px; font-size: 0.75rem; border-left: 1px solid var(--c-border); }
 
-        /* MAIN DASHBOARD */
+        /* LAYOUT */
         main.dashboard { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; overflow: hidden; }
-
-        /* HEADER */
-        .master-header {
-            background: var(--c-panel); border-bottom: 1px solid var(--c-border);
-            display: flex; flex-direction: column; width: 100%; z-index: 400; flex-shrink: 0;
-        }
-
-        .branding-bar {
-            height: 30px; background: var(--c-bg); border-bottom: 1px solid var(--c-border);
-            display: flex; align-items: center; justify-content: center; padding: 0 15px;
-        }
-        .branding-text {
-            font-family: var(--font-tech); font-size: 0.65rem; font-weight: 800; 
-            color: var(--c-accent); text-transform: uppercase; letter-spacing: 2px;
-            text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            max-width: 100%;
-        }
-
-        /* Controles Responsivos */
-        .controls-bar {
-            height: 50px; display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 10px; overflow-x: auto; /* Permite scroll se necessário */
-            -webkit-overflow-scrolling: touch;
-        }
-        .controls-bar::-webkit-scrollbar { display: none; } /* Ocultar scrollbar */
-
-        .ctrl-group { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+        .master-header { background: var(--c-panel); border-bottom: 1px solid var(--c-border); display: flex; flex-direction: column; width: 100%; z-index: 400; flex-shrink: 0; }
+        .branding-bar { height: 30px; background: var(--c-bg); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: center; padding: 0 15px; }
+        .branding-text { font-family: var(--font-tech); font-size: 0.65rem; font-weight: 800; color: var(--c-dim); text-transform: uppercase; letter-spacing: 3px; }
         
-        .btn-icon {
-            width: 36px; height: 36px; background: transparent; border: 1px solid var(--c-border);
-            color: var(--c-text); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; font-family: var(--font-tech); font-size: 0.9rem; flex-shrink: 0;
-        }
-        .btn-icon:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(125,125,125,0.05); }
+        .controls-bar { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; overflow-x: auto; }
+        .controls-bar::-webkit-scrollbar { display: none; }
+        .ctrl-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+        
+        .btn-icon { width: 34px; height: 34px; background: transparent; border: 1px solid var(--c-border); color: var(--c-text); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); transition: all 0.2s; flex-shrink: 0; }
+        .btn-icon:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(255,255,255,0.05); }
         .btn-icon.active { background: var(--c-accent); color: var(--c-bg); border-color: var(--c-accent); }
 
-        .speed-control { 
-            display: flex; align-items: center; border: 1px solid var(--c-border); 
-            border-radius: 6px; height: 36px; overflow: hidden; flex-shrink: 0;
-        }
-        .speed-btn { width: 30px; height: 100%; background: transparent; border: none; color: var(--c-text); cursor: pointer; font-weight: bold; }
-        .speed-btn:hover { background: rgba(125,125,125,0.1); }
+        .speed-control { display: flex; align-items: center; border: 1px solid var(--c-border); border-radius: 4px; height: 34px; overflow: hidden; flex-shrink: 0; }
+        .speed-btn { width: 28px; height: 100%; background: transparent; border: none; color: var(--c-text); cursor: pointer; font-weight: bold; font-family: var(--font-tech); }
+        .speed-btn:hover { background: rgba(255,255,255,0.1); }
         #speed-display { font-family: var(--font-tech); font-size: 0.7rem; width: 35px; text-align: center; font-weight: 700; color: var(--c-accent); }
 
-        /* VIEWPORT */
         .viewport { flex: 1; background: var(--c-bg); position: relative; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* FOOTER */
-        footer.bottom-hud {
-            height: 50px; background: var(--c-panel); border-top: 1px solid var(--c-border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 10px;
-            font-family: var(--font-tech); font-size: 0.7rem; flex-shrink: 0;
-        }
-        .progress-bar { flex: 1; height: 4px; background: var(--c-border); margin: 0 15px; position: relative; border-radius: 2px; }
-        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--c-accent); width: 0%; transition: width 0.3s; border-radius: 2px; }
-        .nav-btn { background: none; border: none; color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; text-transform: uppercase; padding: 10px; }
+        footer.bottom-hud { height: 45px; background: var(--c-panel); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-family: var(--font-tech); font-size: 0.7rem; flex-shrink: 0; }
+        .progress-container { flex: 1; margin: 0 20px; display: flex; align-items: center; gap: 10px; }
+        .progress-track { flex: 1; height: 2px; background: var(--c-border); position: relative; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--c-accent); width: 0%; transition: width 0.3s; box-shadow: 0 0 10px var(--c-accent); }
+        .nav-btn { background: none; border: none; color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
         .nav-btn:hover { color: var(--c-accent); }
 
-        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 768px) {
-            aside.sidebar { 
-                position: absolute; height: 100%; width: 85%; max-width: 320px;
-                transform: translateX(-100%); box-shadow: none; border-right: 1px solid var(--c-accent);
-            }
+            aside.sidebar { position: absolute; height: 100%; width: 85%; max-width: 300px; transform: translateX(-100%); box-shadow: none; border-right: 1px solid var(--c-accent); }
             aside.sidebar.open { transform: translateX(0); box-shadow: 10px 0 100px rgba(0,0,0,0.8); }
-            
-            .branding-text { font-size: 0.55rem; letter-spacing: 1px; }
-            
-            /* Melhor toque */
-            .btn-icon, .speed-control { width: 40px; height: 40px; }
-            .speed-btn { width: 35px; }
         }
-
-        /* Backdrop para Mobile */
-        #backdrop {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.7); 
-            z-index: 900; display: none; opacity: 0; transition: opacity 0.3s;
-        }
+        #backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); z-index: 900; display: none; opacity: 0; transition: opacity 0.3s; }
         #backdrop.active { display: block; opacity: 1; }
     </style>
 </head>
@@ -182,8 +112,8 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <span>DATA DOUBLE // V2.0</span>
-            <button class="btn-icon" style="border:none;" onclick="toggleSidebar()">✕</button>
+            <span>DATA DOUBLE <span style="color:var(--c-accent)">// OS v3.2</span></span>
+            <button class="btn-icon" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
         </div>
         <nav class="nav-list" id="nav-container"></nav>
     </aside>
@@ -191,27 +121,23 @@
     <main class="dashboard">
         <div class="master-header">
             <div class="branding-bar">
-                <span class="branding-text">DATA DOUBLE: A VERSÃO DE VOCÊ QUE OS ALGORÍTMOS ACREDITAM QUE VOCÊ É</span>
+                <span class="branding-text">SYSTEM STATUS: <span style="color:var(--c-accent)">ONLINE</span> // SECURE CONNECTION</span>
             </div>
-            
             <div class="controls-bar">
                 <div class="ctrl-group">
-                    <button class="btn-icon" onclick="toggleSidebar()" title="Menu">☰</button>
+                    <button class="btn-icon" onclick="toggleSidebar()" title="Índice">☰</button>
                 </div>
-
                 <div class="ctrl-group">
-                    <button class="btn-icon" onclick="adjustFont(-1)" title="Diminuir Fonte">A-</button>
-                    <button class="btn-icon" onclick="adjustFont(1)" title="Aumentar Fonte">A+</button>
-                    
+                    <button class="btn-icon" onclick="adjustFont(-1)">A-</button>
+                    <button class="btn-icon" onclick="adjustFont(1)">A+</button>
                     <div class="speed-control">
-                        <button class="speed-btn" onclick="adjustSpeed(-0.25)">-</button>
+                        <button class="speed-btn" onclick="adjustSpeed(-0.25)">«</button>
                         <span id="speed-display">1.0</span>
-                        <button class="speed-btn" onclick="adjustSpeed(0.25)">+</button>
+                        <button class="speed-btn" onclick="adjustSpeed(0.25)">»</button>
                     </div>
-
-                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')" title="Ler/Pausar">▶</button>
-                    <button class="btn-icon" id="btn-theme" onclick="cycleTheme()" title="Mudar Tema">◐</button>
-                    <button class="btn-icon" onclick="toggleFullScreen()" title="Tela Cheia">⛶</button>
+                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')">▶</button>
+                    <button class="btn-icon" id="btn-theme" onclick="cycleTheme()">◐</button>
+                    <button class="btn-icon" onclick="toggleFullScreen()">⛶</button>
                 </div>
             </div>
         </div>
@@ -222,29 +148,49 @@
 
         <footer class="bottom-hud">
             <button class="nav-btn" onclick="prevChapter()">← ANT</button>
-            <div class="progress-bar"><div class="progress-fill" id="p-bar"></div></div>
+            <div class="progress-container">
+                <span id="chapter-indicator">00/00</span>
+                <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
+            </div>
             <button class="nav-btn" onclick="nextChapter()">PROX →</button>
         </footer>
     </main>
 
     <script>
+        // --- ESTRUTURA COM SUB-CAPÍTULOS ---
         const structure = [
-            { t: "Introdução", f: "introducao.html", cat: "BOOT SEQUENCE" },
-            { t: "Capítulo 01", f: "cap01.html", cat: "MÓDULO MENTAL" },
-            { t: "Capítulo 02", f: "cap02.html", cat: "MÓDULO MENTAL" },
-            { t: "Capítulo 03", f: "cap03.html", cat: "MÓDULO MENTAL" },
-            { t: "Capítulo 04", f: "cap04.html", cat: "MÓDULO FÍSICO" },
-            { t: "Capítulo 05", f: "cap05.html", cat: "MÓDULO FÍSICO" },
-            { t: "Capítulo 06", f: "cap06.html", cat: "MÓDULO FÍSICO" },
-            { t: "Capítulo 07", f: "cap07.html", cat: "MÓDULO SOCIAL" },
-            { t: "Capítulo 08", f: "cap08.html", cat: "MÓDULO SOCIAL" },
-            { t: "Capítulo 09", f: "cap09.html", cat: "MÓDULO SOCIAL" },
-            { t: "Capítulo 10", f: "cap10.html", cat: "CONTRA-MEDIDAS" },
-            { t: "Capítulo 11", f: "cap11.html", cat: "CONTRA-MEDIDAS" },
-            { t: "Capítulo 12", f: "cap12.html", cat: "CONTRA-MEDIDAS" },
-            { t: "Capítulo 13", f: "cap13.html", cat: "CONTRA-MEDIDAS" },
-            { t: "Epílogo", f: "cap14.html", cat: "CONTRA-MEDIDAS" },
-            { t: "Glossário", f: "cap15.html", cat: "DATABASE" }
+            { t: "BOOT SEQUENCE", f: "introducao.html", cat: "INICIALIZAÇÃO" },
+            
+            // PARTE I
+            { t: "01. O Hardware Biológico", f: "cap01.html", cat: "I. A MENTE" },
+            { t: "02. Sequestro da Atenção", f: "cap02.html", cat: "I. A MENTE" },
+            { t: "03. O Eu Inferido", f: "cap03.html", cat: "I. A MENTE" },
+
+            // PARTE II
+            { t: "04. Necropolítica", f: "cap04.html", cat: "II. O CERCO" },
+            { t: "05. Cidade Sensiente", f: "cap05.html", cat: "II. O CERCO" },
+            { t: "06. Tribunal Algorítmico", f: "cap06.html", cat: "II. O CERCO" },
+            { t: "06.1 Panóptico Financeiro", f: "cap06_1.html", cat: "II. O CERCO", sub: true }, // NOVO ARQUIVO
+
+            // PARTE III
+            { t: "07. Taylorismo Digital", f: "cap07.html", cat: "III. INFRAESTRUTURA" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "08. Internet Morta", f: "cap08.html", cat: "III. INFRAESTRUTURA" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "09. Geologia da Mídia", f: "cap09.html", cat: "III. INFRAESTRUTURA" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "09.1 Deepweb & Tor", f: "cap09_1.html", cat: "III. INFRAESTRUTURA", sub: true }, // NOVO ARQUIVO
+
+            // PARTE IV
+            { t: "10. Neuro-direitos", f: "cap10.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "10.1 Cibersegurança", f: "cap10_1.html", cat: "IV. RESISTÊNCIA", sub: true }, // NOVO ARQUIVO
+            { t: "10.2 Cripto Economia", f: "cap10_2.html", cat: "IV. RESISTÊNCIA", sub: true }, // NOVO ARQUIVO
+            
+            { t: "11. Cidadania Onlife", f: "cap11.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "12. Tecnofeudalismo", f: "cap12.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "13. Solarpunk", f: "cap13.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
+
+            // FINAL
+            { t: "Epílogo", f: "cap14.html", cat: "SYSTEM END" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "Glossário", f: "cap15.html", cat: "DATABASE" }, // ARQUIVO ANTIGO MANTIDO
+            { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" } // ARQUIVO ANTIGO MANTIDO
         ];
 
         let currentIdx = 0;
@@ -265,8 +211,9 @@
                     nav.appendChild(cat);
                     lastCat = item.cat;
                 }
+                
                 const btn = document.createElement('a');
-                btn.className = 'chapter-link';
+                btn.className = item.sub ? 'chapter-link chapter-sub' : 'chapter-link';
                 btn.innerText = item.t;
                 btn.href = "#";
                 btn.onclick = (e) => { 
@@ -282,23 +229,22 @@
         function loadChapter(idx) {
             currentIdx = idx;
             const frame = document.getElementById('content-frame');
-            
-            // CORREÇÃO 2: Reset visual do botão TTS ao mudar de capítulo (evita travar em 'stop')
             const btnTts = document.getElementById('btn-tts');
+            
             btnTts.innerText = '▶';
             btnTts.classList.remove('active');
-
             frame.src = structure[idx].f;
             
-            document.getElementById('p-bar').style.width = ((idx + 1) / structure.length * 100) + "%";
+            const progress = ((idx + 1) / structure.length * 100);
+            document.getElementById('p-bar').style.width = progress + "%";
+            document.getElementById('chapter-indicator').innerText = `${(idx + 1).toString().padStart(2, '0')}/${structure.length}`;
 
             document.querySelectorAll('.chapter-link').forEach((el, i) => {
                 el.classList.toggle('active', i === idx);
+                if(i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             });
 
-            frame.onload = () => {
-                syncAll();
-            }
+            frame.onload = () => { syncAll(); }
         }
 
         function sendMsg(type, val) {
@@ -312,7 +258,6 @@
             sendMsg('rate', ttsRate);
         }
 
-        // --- CONTROLES ---
         function cycleTheme() {
             themeState = (themeState + 1) % 3;
             const mode = themes[themeState];
@@ -322,16 +267,13 @@
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Erro ao ativar tela cheia: ${err.message}`);
-                });
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
             } else {
                 if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
         function adjustSpeed(delta) {
-            // CORREÇÃO 3: Garante que a velocidade não congele a narração
             ttsRate = Math.max(0.5, Math.min(3.0, ttsRate + delta));
             ttsRate = Math.round(ttsRate * 100) / 100;
             document.getElementById('speed-display').innerText = ttsRate;
@@ -355,24 +297,16 @@
             }
         }
 
-        function nextChapter() {
-            if(currentIdx < structure.length - 1) loadChapter(currentIdx + 1);
-        }
-        
-        function prevChapter() {
-            if(currentIdx > 0) loadChapter(currentIdx - 1);
-        }
+        function nextChapter() { if(currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
+        function prevChapter() { if(currentIdx > 0) loadChapter(currentIdx - 1); }
 
-        // Listener de Estado do TTS (Vem do Capítulo)
         window.addEventListener('message', (e) => {
             if(e.data.type === 'tts-state') {
                 const btn = document.getElementById('btn-tts');
                 if(e.data.isPlaying) {
-                    btn.innerText = '■'; 
-                    btn.classList.add('active');
+                    btn.innerText = '■'; btn.classList.add('active');
                 } else {
-                    btn.innerText = '▶';
-                    btn.classList.remove('active');
+                    btn.innerText = '▶'; btn.classList.remove('active');
                 }
             }
         });
