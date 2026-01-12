@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 09.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- FATOR X v4.4: DEEP WEB CORE --- */
+        :root {
+            --c-bg: #020617; --c-text: #e2e8f0; --c-dim: #64748b;
+            --c-onion: #a855f7;    /* Roxo Tor */
+            --c-onion-dim: rgba(168, 85, 247, 0.1);
+            --c-onion-glow: 0 0 15px rgba(168, 85, 247, 0.3);
+            --c-abyss: #0ea5e9;    /* Azul Profundo */
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+            --scroll-track: #020617; --scroll-thumb: #333; --scroll-hover: #a855f7;
+        }
+
+        body.light-mode {
+            --c-bg: #f8fafc; --c-text: #0f172a; --c-dim: #475569;
+            --c-onion: #7e22ce; --c-onion-dim: rgba(126, 34, 206, 0.08); --c-onion-glow: 0 0 10px rgba(126, 34, 206, 0.2);
+            --c-abyss: #0284c7;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #f8fafc; --scroll-thumb: #cbd5e1; --scroll-hover: #7e22ce;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-onion: #6b21a8; --c-onion-dim: rgba(107, 33, 168, 0.08); --c-onion-glow: none;
+            --c-abyss: #0369a1;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #d6d3d1; --scroll-hover: #6b21a8;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 780px; margin: 0 auto;
+        }
+
+        h1 { font-family: var(--font-tech); font-size: 2rem; border-bottom: 2px solid var(--c-onion); padding-bottom: 20px; margin-bottom: 40px; text-shadow: var(--c-onion-glow); text-transform: uppercase; }
+        h2 { font-family: var(--font-tech); color: var(--c-abyss); font-size: 1.2rem; margin: 3em 0 1em 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-tech); padding-bottom: 10px; text-transform: uppercase; }
+        h2::before { content: '>'; opacity: 0.5; color: var(--c-onion); }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-onion); font-weight: 600; text-shadow: 0 0 8px rgba(168, 85, 247, 0.2); }
+
+        .meta-tag { font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-onion); border: 1px solid var(--c-onion); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; box-shadow: var(--c-onion-glow); }
+        
+        .thesis-box { background: var(--c-onion-dim); border-left: 4px solid var(--c-onion); padding: 25px; margin: 2em 0; font-family: var(--font-tech); font-size: 0.9em; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .thesis-header { color: var(--c-onion); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
+
+        .iceberg-container { display: flex; flex-direction: column; margin: 3em 0; border: var(--border-tech); border-radius: 8px; overflow: hidden; }
+        .surface-level { background: linear-gradient(180deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.3)); padding: 20px; border-bottom: 2px solid var(--c-abyss); text-align: center; }
+        .deep-level { background: linear-gradient(180deg, rgba(2, 6, 23, 0.8), rgba(2, 6, 23, 1)); padding: 30px; text-align: center; }
+        
+        .routing-box { background: rgba(0,0,0,0.3); border: 1px solid var(--c-dim); padding: 20px; margin: 2em 0; border-radius: 8px; font-family: var(--font-tech); font-size: 0.8rem; }
+        .route-step { display: flex; align-items: center; margin-bottom: 10px; }
+        .node-circle { width: 10px; height: 10px; border-radius: 50%; background: var(--c-onion); margin-right: 15px; box-shadow: 0 0 5px var(--c-onion); }
+
+        .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 3em 0; }
+        .case-card { background: rgba(255,255,255,0.02); border-left: 3px solid var(--c-abyss); padding: 20px; }
+        
+        .action-box { border: 1px dashed var(--c-onion); background: linear-gradient(180deg, rgba(168, 85, 247, 0.05), transparent); text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px; }
+        
+        .speaking { background: var(--c-onion-dim); color: var(--c-text); border-left: 4px solid var(--c-onion); padding-left: 15px; margin-left: -19px; border-radius: 0 4px 4px 0; box-shadow: var(--c-onion-glow); transition: all 0.3s; }
+        @media (max-width: 700px) { .case-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <span class="meta-tag">PARTE III: INFRAESTRUTURA | CAPÍTULO 09.1</span>
+    <h1 class="speakable">O Oceano Profundo:<br>Tor, Deepweb e a Arquitetura da Fuga</h1>
+
+    <p class="speakable">A mídia popular, muitas vezes alimentada por press releases policiais, retrata a <strong>Deepweb</strong> como um submundo de assassinos de aluguel. Essa é uma distorção conveniente para criminalizar a criptografia. Tecnicamente, a "Deepweb" é apenas a parte da internet não indexada por motores de busca (como seus e-mails privados e dados bancários).</p>
+    
+    <p class="speakable">O que realmente importa para a resistência é a <strong>Darknet</strong> e as redes de sobreposição como o <strong>Tor (The Onion Router)</strong>. Este é o único território digital onde a arquitetura da rede impede, fisicamente, a censura estatal e a vigilância corporativa. Não é um lugar de crime, é um lugar de <strong>física alternativa</strong> onde a identidade não é a moeda de troca.</p>
+
+    <div class="thesis-box speakable">
+        <span class="thesis-header">// O DIREITO À OPACIDADE</span>
+        "O filósofo Édouard Glissant reivindicava o 'direito à opacidade'. Em um mundo onde governos e corporações são caixas-pretas impenetráveis, mas exigem transparência total do cidadão (Glass House), tornar-se opaco é um ato político. Usar ferramentas de anonimato não é 'ter algo a esconder'; é afirmar que a intimidade é um pré-requisito para a dignidade humana."
+    </div>
+
+    <div class="iceberg-container speakable">
+        <div class="surface-level">
+            <strong>SURFACE WEB (4%)</strong><br>
+            <span style="font-size:0.8rem">Google, Meta, Amazon. IP visível. Vigilância por Design.</span>
+        </div>
+        <div class="deep-level">
+            <span style="font-size:2rem">🧅</span><br>
+            <strong style="color:var(--c-onion)">DARKNETS (TOR/I2P)</strong><br>
+            <span style="font-size:0.8rem">Onion Services. Roteamento em Camadas. Resistência à Censura.</span>
+        </div>
+    </div>
+
+    <h2 class="speakable">A Engenharia da Cebola (Onion Routing)</h2>
+    <p class="speakable">A internet normal funciona como um cartão postal: qualquer um que manuseia a mensagem (seu provedor, o governo) vê quem enviou e para onde vai. O Tor muda essa topologia. Ele encapsula seus dados em três camadas de criptografia.</p>
+
+    <div class="routing-box speakable">
+        <div class="route-step"><div class="node-circle"></div> <strong>VOCÊ (Brasil)</strong>: Encripta 3x. Ninguém vê o conteúdo.</div>
+        <div class="route-step"><div class="node-circle"></div> <strong>ENTRY NODE (Alemanha)</strong>: Sabe quem é você, mas não sabe o que você acessa. Remove a camada 1.</div>
+        <div class="route-step"><div class="node-circle"></div> <strong>MIDDLE NODE (Japão)</strong>: Não sabe quem é você, nem o que acessa. Apenas repassa. Remove a camada 2.</div>
+        <div class="route-step"><div class="node-circle"></div> <strong>EXIT NODE (Canadá)</strong>: Sabe o que é acessado, mas não sabe quem solicitou. Remove a camada 3 e entrega.</div>
+    </div>
+
+    <h2 class="speakable">Geopolítica da Rede: A Ferramenta dos Oprimidos</h2>
+    <p class="speakable">Enquanto no ocidente o Tor é debatido teoricamente, no Sul Global ele é infraestrutura crítica de sobrevivência:</p>
+
+    <div class="case-grid speakable">
+        <div class="case-card">
+            <strong>IRÃ (Protestos Mahsa Amini)</strong><br>
+            O regime cortou a internet. Ativistas usaram "Snowflake Bridges" (pontes Tor disfarçadas) para furar o Firewall e enviar vídeos da repressão para o mundo.
+        </div>
+        <div class="case-card">
+            <strong>RÚSSIA (Guerra da Ucrânia)</strong><br>
+            A Rússia é o segundo maior país em usuários de Tor. Cidadãos usam para acessar a BBC News (que lançou um site .onion oficial) e escapar da propaganda estatal.
+        </div>
+        <div class="case-card">
+            <strong>JORNALISMO BLINDADO (SecureDrop)</strong><br>
+            Jornais como o <em>The Guardian</em> e <em>The Intercept</em> usam sistemas baseados em Tor para receber documentos de whistleblowers (como Snowden) sem expor a fonte.
+        </div>
+        <div class="case-card">
+            <strong>CIÊNCIA LIVRE (Sci-Hub)</strong><br>
+            Hospedado na rede Tor, o Sci-Hub permite que estudantes de países pobres acessem milhões de artigos científicos que estão bloqueados por paywalls acadêmicos caríssimos.
+        </div>
+    </div>
+
+    <div class="action-box speakable">
+        <strong style="color:var(--c-onion); display:block; margin-bottom:10px; font-family:var(--font-tech); text-transform:uppercase;">DESAFIO DE RETOMADA #11</strong>
+        <p style="font-weight:bold;">Instalação de Infraestrutura Civil</p>
+        <p>Rompa a barreira do medo técnico. Baixe o <strong>Tor Browser</strong> (apenas do site oficial: torproject.org).</p>
+        <p>Use-o para ler notícias internacionais ou acessar o buscador <strong>DuckDuckGo</strong>. Sinta a lentidão da rede — esse é o "custo" do seu tráfego viajando por três continentes para garantir anonimato. Mantenha-o instalado. No dia em que o STF ou o Executivo bloquear uma rede social ou app de mensagens (como já ocorreu com Telegram/X), essa será sua única rota de saída.</p>
+    </div>
+
+    <script>
+        let ttsQueue=[],idx=0,rate=1;
+        window.addEventListener('message',e=>{ if(e.data.type==='theme')document.body.className=e.data.value+'-mode'; if(e.data.type==='rate')rate=e.data.value; if(e.data.type==='tts-toggle')toggleTTS(); });
+        function initTTS(){ ttsQueue=Array.from(document.querySelectorAll('.speakable')); }
+        function toggleTTS(){ if(ttsQueue.length===0)initTTS(); window.speechSynthesis.cancel(); if(idx<ttsQueue.length){ let u=new SpeechSynthesisUtterance(ttsQueue[idx].innerText); u.lang='pt-BR'; u.rate=rate; u.onend=()=>{idx++;toggleTTS()}; window.speechSynthesis.speak(u); updateHigh(ttsQueue[idx]); } else { updateHigh(null); idx=0; window.parent.postMessage({type:'tts-state',isPlaying:false},'*'); } window.parent.postMessage({type:'tts-state',isPlaying:true},'*'); }
+        function updateHigh(el){ document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); if(el)el.classList.add('speaking'); el?.scrollIntoView({behavior:"smooth",block:"center"}); }
+    </script>
+</body>
+</html>

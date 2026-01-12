@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 10.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- FATOR X v4.4: SECURITY CORE --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-shield: #3b82f6; --c-threat: #f43f5e;
+            --c-lock: #a855f7; --font-ui: 'Inter'; --font-tech: 'JetBrains Mono'; --base-size: 19px;
+            --border-tech: 1px solid rgba(255, 255, 255, 0.1); --scroll-track: #050505; --scroll-thumb: #333; --scroll-hover: #3b82f6;
+        }
+        body.light-mode { --c-bg: #F0F2F5; --c-text: #111; --c-shield: #2563eb; --c-threat: #e11d48; }
+        body.sepia-mode { --c-bg: #F4ECD8; --c-text: #433422; --c-shield: #1e3a8a; --c-threat: #9f1239; }
+        body { background: var(--c-bg); color: var(--c-text); font-family: var(--font-ui); font-size: var(--base-size); line-height: 1.7; padding: 40px 20px; max-width: 760px; margin: 0 auto; }
+        
+        h1 { font-family: var(--font-tech); font-size: 2rem; border-bottom: 2px solid var(--c-shield); padding-bottom: 20px; margin-bottom: 40px; text-shadow: 0 0 15px rgba(59, 130, 246, 0.3); text-transform: uppercase; }
+        h2 { font-family: var(--font-tech); color: var(--c-lock); font-size: 1.2rem; margin: 3em 0 1em 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-tech); padding-bottom: 10px; text-transform: uppercase; }
+        h2::before { content: '>'; opacity: 0.5; color: var(--c-shield); }
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-shield); font-weight: 600; }
+
+        .meta-tag { font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-shield); border: 1px solid var(--c-shield); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        .thesis-box { background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--c-shield); padding: 25px; margin: 2em 0; font-family: var(--font-tech); font-size: 0.9em; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .thesis-header { color: var(--c-shield); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
+
+        .crypto-flow { display: flex; gap: 10px; align-items: center; margin: 2em 0; padding: 20px; border: 1px solid var(--border-tech); border-radius: 8px; font-family: var(--font-tech); font-size: 0.8rem; background: rgba(255,255,255,0.01); justify-content: space-between; }
+        .sandbox-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 3em 0; }
+        .sandbox-box { border: 1px solid var(--c-shield); padding: 15px; border-radius: 6px; text-align: center; background: rgba(59, 130, 246, 0.05); }
+        .sandbox-box.infected { border-color: var(--c-threat); background: rgba(244, 63, 94, 0.1); animation: pulse 2s infinite; }
+        
+        .os-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 2em 0; }
+        .os-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-radius: 6px; border: 1px solid var(--border-tech); background: rgba(255,255,255,0.02); }
+        .os-rank { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-family: var(--font-tech); }
+        
+        .action-box { border: 1px dashed var(--c-shield); background: linear-gradient(180deg, rgba(59, 130, 246, 0.05), transparent); text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px; }
+        .speaking { background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--c-shield); padding-left: 15px; margin-left: -19px; border-radius: 0 4px 4px 0; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); transition: 0.3s; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        @media (max-width: 600px) { .sandbox-container, .os-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <span class="meta-tag">PARTE IV: RESISTÊNCIA | CAPÍTULO 10.1</span>
+    <h1 class="speakable">Fortaleza Digital:<br>Zero Trust e Hardening Tático</h1>
+
+    <p class="speakable">A maioria dos conselhos de segurança ("instale um antivírus") é baseada em um modelo obsoleto. Hoje, o ataque vem de algoritmos de coleta em massa e falhas de dia zero (Zero-Days). Para sobreviver, adotamos o modelo <strong>Zero Trust</strong> (Confiança Zero): assuma que sua rede já está comprometida, que seu provedor é hostil e que o ataque é inevitável. A meta não é impedir a entrada, é mitigar o dano através do <strong>Hardening</strong> (Endurecimento).</p>
+
+    <h2 class="speakable">A Matemática do Segredo (E2EE)</h2>
+    <p class="speakable">Quando você usa Signal ou WhatsApp, ocorre um milagre da matemática: a <strong>Criptografia Assimétrica</strong>. Seu celular gera duas chaves: uma Pública (que tranca o cofre) e uma Privada (que destranca). Se eu quero te mandar uma mensagem, uso sua chave pública. Nem eu, nem o governo, nem a empresa conseguem abrir depois. A segurança reside na impossibilidade matemática de fatorar números primos gigantes, não na "bondade" da empresa.</p>
+
+    <div class="crypto-flow speakable">
+        <div>📱 VOCÊ<br>(Texto Claro)</div>
+        <div>➜ 🔒 REDE ➜</div>
+        <div>📱 DESTINO<br>(Decriptado)</div>
+    </div>
+
+    <h2 class="speakable">A Teoria do Submarino: Compartimentalização</h2>
+    <div class="thesis-box speakable">
+        <span class="thesis-header">// ISOLAMENTO POR DESIGN</span>
+        "Sistemas operacionais comuns são monolíticos: se um vírus entra pelo navegador, ele acessa tudo. Sistemas seguros como <strong>Qubes OS</strong> funcionam como um submarino com compartimentos estanques. Cada app roda em uma máquina virtual isolada. Se você abre um PDF infectado, o vírus fica preso naquela 'sala' e morre quando você fecha a janela. O cofre de senhas permanece intocado."
+    </div>
+
+    <div class="sandbox-container speakable">
+        <div class="sandbox-box"><strong>VAULT</strong><br>Senhas (Seguro)</div>
+        <div class="sandbox-box infected"><strong>WORK</strong><br>PDF Vírus (Contido)</div>
+        <div class="sandbox-box"><strong>SOCIAL</strong><br>Fotos (Seguro)</div>
+    </div>
+
+    <h2 class="speakable">Sistemas Operacionais: A Base da Pirâmide</h2>
+    <p class="speakable">Seu software é tão seguro quanto o sistema onde roda. Windows e macOS enviam telemetria constante para suas sedes.</p>
+
+    <div class="os-grid speakable">
+        <div class="os-card"><span style="font-weight:bold">Qubes OS / Tails</span> <span class="os-rank" style="background:#10b981; color:#000;">S TIER (Paranoico)</span></div>
+        <div class="os-card"><span style="font-weight:bold">GrapheneOS (Pixel)</span> <span class="os-rank" style="background:#10b981; color:#000;">A TIER (Mobile)</span></div>
+        <div class="os-card"><span style="font-weight:bold">Linux (Mint/Ubuntu)</span> <span class="os-rank" style="background:#3b82f6; color:#fff;">B TIER (Privacidade)</span></div>
+        <div class="os-card"><span style="font-weight:bold">Windows / macOS</span> <span class="os-rank" style="background:#ef4444; color:#fff;">D TIER (Vigiado)</span></div>
+    </div>
+
+    <div class="action-box speakable">
+        <strong style="color:var(--c-shield); display:block; margin-bottom:10px; font-family:var(--font-tech); text-transform:uppercase;">DESAFIO DE RETOMADA #13</strong>
+        <p style="font-weight:bold;">Separação de Contextos</p>
+        <p>Você não precisa instalar o Qubes hoje, mas deve compartimentalizar seu comportamento.</p>
+        <p><strong>Missão:</strong> Use navegadores diferentes para tarefas diferentes.
+        <br>1. <strong>Navegador "Sujo":</strong> (Ex: Chrome/Edge) Apenas para o que exige login real (Banco, E-mail oficial, Netflix).
+        <br>2. <strong>Navegador "Limpo":</strong> (Ex: Brave/LibreWolf) Configurado para apagar tudo ao fechar. Use para pesquisas, notícias e navegação aleatória. Isso impede que o Google rastreie seu comportamento de leitura através de cookies cruzados.</p>
+    </div>
+
+    <script>
+        let ttsQueue=[],idx=0,rate=1;
+        window.addEventListener('message',e=>{ if(e.data.type==='theme')document.body.className=e.data.value+'-mode'; if(e.data.type==='rate')rate=e.data.value; if(e.data.type==='tts-toggle')toggleTTS(); });
+        function initTTS(){ ttsQueue=Array.from(document.querySelectorAll('.speakable')); }
+        function toggleTTS(){ if(ttsQueue.length===0)initTTS(); window.speechSynthesis.cancel(); if(idx<ttsQueue.length){ let u=new SpeechSynthesisUtterance(ttsQueue[idx].innerText); u.lang='pt-BR'; u.rate=rate; u.onend=()=>{idx++;toggleTTS()}; window.speechSynthesis.speak(u); updateHigh(ttsQueue[idx]); } else { updateHigh(null); idx=0; window.parent.postMessage({type:'tts-state',isPlaying:false},'*'); } window.parent.postMessage({type:'tts-state',isPlaying:true},'*'); }
+        function updateHigh(el){ document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); if(el)el.classList.add('speaking'); el?.scrollIntoView({behavior:"smooth",block:"center"}); }
+    </script>
+</body>
+</html>

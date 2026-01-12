@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 06.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- FATOR X v4.4: FINANCE CORE --- */
+        :root {
+            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
+            --c-money: #10b981;    /* Verde (Dinheiro/Fluxo) */
+            --c-money-dim: rgba(16, 185, 129, 0.1);
+            --c-money-glow: 0 0 15px rgba(16, 185, 129, 0.3);
+            --c-control: #ef4444;  /* Vermelho (Bloqueio/Estado) */
+            --c-ledger: #eab308;   /* Dourado (Registro) */
+            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
+            --base-size: 19px; --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #10b981;
+        }
+
+        body.light-mode {
+            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
+            --c-money: #059669; --c-money-dim: rgba(5, 150, 105, 0.08); --c-money-glow: 0 0 10px rgba(5, 150, 105, 0.2);
+            --c-control: #dc2626; --c-ledger: #d97706;
+            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #059669;
+        }
+
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
+            --c-money: #15803d; --c-money-dim: rgba(21, 128, 61, 0.08); --c-money-glow: none;
+            --c-control: #991b1b; --c-ledger: #92400e;
+            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #15803d;
+        }
+
+        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+        body {
+            background: var(--c-bg); color: var(--c-text);
+            font-family: var(--font-ui); font-size: var(--base-size);
+            line-height: 1.7; padding: 40px 20px 100px 20px;
+            transition: all 0.3s ease; max-width: 760px; margin: 0 auto;
+        }
+
+        h1 { font-family: var(--font-tech); font-size: 2rem; border-bottom: 2px solid var(--c-money); padding-bottom: 20px; margin-bottom: 40px; text-shadow: var(--c-money-glow); text-transform: uppercase; }
+        h2 { font-family: var(--font-tech); color: var(--c-control); font-size: 1.2rem; margin: 3em 0 1em 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-tech); padding-bottom: 10px; text-transform: uppercase; }
+        h2::before { content: '>'; opacity: 0.5; color: var(--c-money); }
+        
+        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
+        strong { color: var(--c-money); font-weight: 600; text-shadow: 0 0 8px rgba(16, 185, 129, 0.2); }
+
+        .meta-tag { font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-control); border: 1px solid var(--c-control); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
+        
+        .thesis-box { background: var(--c-money-dim); border-left: 4px solid var(--c-money); padding: 25px; margin: 2em 0; font-family: var(--font-tech); font-size: 0.9em; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .thesis-header { color: var(--c-money); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
+
+        .code-block { background: #111; border: 1px solid var(--c-dim); padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #a5b4fc; margin: 2em 0; border-radius: 6px; overflow-x: auto; }
+        .deep-dive-box { border-top: 1px dashed var(--c-dim); border-bottom: 1px dashed var(--c-dim); padding: 30px 0; margin: 3em 0; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.05), transparent); }
+        
+        .action-box { border: 1px dashed var(--c-money); background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), transparent); text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px; }
+        
+        .speaking { background: var(--c-money-dim); color: var(--c-text); border-left: 4px solid var(--c-money); padding-left: 15px; margin-left: -19px; border-radius: 0 4px 4px 0; box-shadow: var(--c-money-glow); transition: all 0.3s; }
+    </style>
+</head>
+<body>
+
+    <span class="meta-tag">PARTE II: O CERCO | CAPÍTULO 06.1</span>
+    
+    <h1 class="speakable">O Panóptico Financeiro:<br>A Engenharia das CBDCs</h1>
+
+    <p class="speakable">O dinheiro físico (papel-moeda) é uma tecnologia de liberdade porque ele é um <strong>ativo ao portador</strong> e <strong>peer-to-peer</strong>. Quando eu te entrego uma nota de 50 reais, a transação liquida instantaneamente, sem intermediários, sem registro em banco de dados e sem possibilidade de censura remota. A transição para o "Cashless Society" (Sociedade sem Dinheiro) não é uma evolução natural de conveniência; é um projeto de engenharia social para transferir a soberania do indivíduo para o emissor da moeda.</p>
+
+    <div class="thesis-box speakable">
+        <span class="thesis-header">// DINHEIRO PROGRAMÁVEL (SMART MONEY)</span>
+        "Ao contrário do saldo que você vê hoje no seu app do banco (que é apenas um registro contábil digital), as <strong>CBDCs (Moedas Digitais de Banco Central)</strong> são tokens programáveis. Isso significa que o Banco Central pode inserir linhas de código ('Smart Contracts') que definem <em>como, quando e onde</em> aquele dinheiro pode ser gasto. O dinheiro deixa de ser uma unidade de valor neutra e passa a ser uma ferramenta de política comportamental ativa."
+    </div>
+
+    <h2 class="speakable">Estudo de Caso: O Yuan Digital e a Expiração</h2>
+
+    <p class="speakable">A China está na vanguarda com o <strong>e-CNY</strong>. Em testes realizados em Shenzhen e Chengdu, o governo experimentou uma funcionalidade aterrorizante: <strong>dinheiro com data de validade</strong>. O cidadão recebia um estímulo econômico que desaparecia da carteira digital se não fosse gasto em 15 dias. </p>
+    
+    <p class="speakable">Sob a ótica da engenharia econômica, isso resolve o "paradoxo da poupança" keynesiano, forçando a velocidade do dinheiro. Sob a ótica da liberdade, isso aniquila a capacidade de acumulação de capital do indivíduo. Se você não pode guardar dinheiro, você não pode planejar o futuro, tornando-se perpetuamente dependente do fluxo permitido pelo Estado.</p>
+
+    <div class="code-block speakable">
+        <span style="color:#6b7280">// LÓGICA DE CONTROLE HIPOTÉTICA (DREX/REAL DIGITAL)</span><br><br>
+        function validarTransacao(usuario, produto) {<br>
+        &nbsp;&nbsp;<span style="color:#6b7280">// Bloqueio Geográfico</span><br>
+        &nbsp;&nbsp;if (usuario.localizacao != "AREA_PERMITIDA") {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;return <span style="color:#ef4444">BLOQUEAR("Você está fora da zona de consumo");</span><br>
+        &nbsp;&nbsp;}<br>
+        <br>
+        &nbsp;&nbsp;<span style="color:#6b7280">// Racionamento Algorítmico</span><br>
+        &nbsp;&nbsp;if (produto.tipo == "CARNE" && usuario.cotaCarbono > 100) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;return <span style="color:#ef4444">BLOQUEAR("Cota de carbono mensal excedida");</span><br>
+        &nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;return APROVAR;<br>
+        }
+    </div>
+
+    <h2 class="speakable">A Arma Financeira: Canadá e Nigéria</h2>
+
+    <div class="deep-dive-box speakable">
+        <h3 style="margin-top:0; color:var(--c-control); font-family:var(--font-tech);">O PRECEDENTE CANADENSE (2022)</h3>
+        <p>Durante os protestos dos caminhoneiros ("Freedom Convoy"), o governo canadense não precisou usar tanques. Eles invocaram a Lei de Emergências para ordenar que os bancos congelassem as contas dos manifestantes e de <em>quem doou para eles</em>. Sem ordem judicial. Sem processo legal. Pessoas comuns descobriram que seus cartões pararam de funcionar no supermercado porque doaram $50 para uma causa política. A bancarização total transforma a dissidência em suicídio financeiro.</p>
+
+        <h3 style="margin-top:2em; color:var(--c-control); font-family:var(--font-tech);">A RESISTÊNCIA NIGERIANA (2021-2023)</h3>
+        <p>A Nigéria lançou a <strong>eNaira</strong> e, para forçar a adoção, limitou drasticamente os saques em dinheiro físico. A população, entendendo a armadilha, rejeitou a moeda estatal. O ágio do Bitcoin disparou no país (chegando a custar 60% a mais que no mercado global), e as pessoas voltaram ao escambo ou usaram dólares físicos. O caso nigeriano prova que, quando a infraestrutura oficial se torna hostil, mercados paralelos emergem como defesa civil.</p>
+    </div>
+
+    <div class="action-box speakable">
+        <strong style="color:var(--c-money); display:block; margin-bottom:10px; font-family:var(--font-tech); text-transform:uppercase;">DESAFIO DE RETOMADA #07</strong>
+        <p style="font-weight:bold;">A Reserva de Soberania (Cash is King)</p>
+        <p>Manter 100% do seu patrimônio em "dígitos bancários" é um risco sistêmico de segurança pessoal.</p>
+        <p><strong>Missão:</strong> Calcule o custo de 2 semanas de sobrevivência básica (comida, combustível, remédios). Saque esse valor em espécie. Guarde em local seguro e não bancário. Além disso, priorize o uso de dinheiro físico para pequenas compras diárias. Cada transação em dinheiro é um voto anônimo contra o panóptico digital.</p>
+    </div>
+
+    <script>
+        let ttsQueue=[],idx=0,rate=1;
+        window.addEventListener('message',e=>{ if(e.data.type==='theme')document.body.className=e.data.value+'-mode'; if(e.data.type==='rate')rate=e.data.value; if(e.data.type==='tts-toggle')toggleTTS(); });
+        function initTTS(){ ttsQueue=Array.from(document.querySelectorAll('.speakable')); }
+        function toggleTTS(){ if(ttsQueue.length===0)initTTS(); window.speechSynthesis.cancel(); if(idx<ttsQueue.length){ let u=new SpeechSynthesisUtterance(ttsQueue[idx].innerText); u.lang='pt-BR'; u.rate=rate; u.onend=()=>{idx++;toggleTTS()}; window.speechSynthesis.speak(u); updateHigh(ttsQueue[idx]); } else { updateHigh(null); idx=0; window.parent.postMessage({type:'tts-state',isPlaying:false},'*'); } window.parent.postMessage({type:'tts-state',isPlaying:true},'*'); }
+        function updateHigh(el){ document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); if(el)el.classList.add('speaking'); el?.scrollIntoView({behavior:"smooth",block:"center"}); }
+    </script>
+</body>
+</html>
