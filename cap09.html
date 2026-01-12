@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capítulo 09</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
@@ -74,7 +74,7 @@
             display: flex; align-items: center; gap: 10px;
             text-shadow: 0 0 10px rgba(120, 113, 108, 0.3);
         }
-        h2::before { content: '>'; color: var(--c-magma); font-weight: 300; } /* Setinha Neon */
+        h2::before { content: '>'; color: var(--c-magma); font-weight: 300; }
 
         h3 {
             font-family: var(--font-ui); font-size: 1.15em; font-weight: 600;
@@ -102,19 +102,31 @@
         }
         .thesis-header { color: var(--c-magma); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
 
-        /* PERIODIC TABLE GRID */
-        .periodic-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 15px; margin: 3em 0;
+        /* PERIODIC TABLE GRID REWORKED */
+        .extraction-flow {
+            border: 1px solid var(--c-stone); border-radius: 8px; padding: 20px; margin: 3em 0;
+            background: rgba(255,255,255,0.01);
         }
-        .element-card {
-            background: rgba(255,255,255,0.03); border: var(--border-tech); border-radius: 6px;
-            padding: 15px; text-align: center; transition: transform 0.3s; position: relative; overflow: hidden;
+        .flow-step {
+            display: flex; gap: 15px; margin-bottom: 15px; border-bottom: 1px dashed var(--c-dim); padding-bottom: 15px;
         }
-        .element-card:hover { transform: scale(1.05); border-color: var(--c-magma); background: var(--c-magma-dim); }
-        .el-symbol { font-family: var(--font-tech); font-size: 1.8rem; font-weight: bold; display: block; color: var(--c-text); margin-bottom: 5px; }
-        .el-name { font-size: 0.7rem; text-transform: uppercase; display: block; margin-bottom: 5px; color: var(--c-dim); letter-spacing: 1px; }
-        .el-origin { font-size: 0.6rem; color: var(--c-magma); font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--c-magma-dim); }
+        .flow-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-icon { 
+            font-size: 1.5rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; 
+            background: rgba(255,255,255,0.05); border-radius: 50%; flex-shrink: 0;
+        }
+        .step-content { display: flex; flex-direction: column; justify-content: center; }
+        .step-title { font-family: var(--font-tech); font-weight: bold; color: var(--c-magma); font-size: 0.8rem; text-transform: uppercase; }
+        .step-desc { font-size: 0.8rem; color: var(--c-dim); }
+
+        /* DEEP TIME WIDGET */
+        .deep-time-bar {
+            width: 100%; height: 40px; background: #333; margin: 20px 0; position: relative;
+            border-radius: 4px; overflow: hidden; display: flex;
+        }
+        .dt-geo { width: 95%; background: var(--c-stone); display: flex; align-items: center; padding-left: 10px; font-size: 0.65rem; color: #000; font-weight: bold; font-family: var(--font-tech); }
+        .dt-use { width: 5%; background: var(--c-magma); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.65rem; font-weight: bold; font-family: var(--font-tech); box-shadow: var(--c-magma-glow); }
+        .dt-label { font-size: 0.75rem; color: var(--c-dim); display: flex; justify-content: space-between; margin-bottom: 3em; }
 
         /* WATER WIDGET */
         .water-widget {
@@ -158,7 +170,6 @@
             h1 { font-size: 1.8rem; }
             .comparison-grid { grid-template-columns: 1fr; }
             .water-widget { flex-direction: column; text-align: center; }
-            .periodic-grid { grid-template-columns: repeat(2, 1fr); }
             p { text-align: left; }
         }
     </style>
@@ -167,83 +178,100 @@
 
     <span class="meta-tag">PARTE III: A SOCIEDADE E A VERDADE | CAPÍTULO 09</span>
     
-    <h1 class="speakable">A Nuvem de Pedra:<br>Geologia da Mídia</h1>
+    <h1 class="speakable">A Nuvem de Pedra:<br>A Geologia Sangrenta da Mídia</h1>
 
-    <p class="speakable">A "Nuvem" é o eufemismo mais bem-sucedido da história do marketing corporativo. A palavra foi escolhida a dedo para evocar leveza, imaterialidade, algo branco e fofo flutuando acima das leis da física. É uma mentira projetada para fazer você esquecer que cada byte tem peso, calor e custo.</p>
+    <p class="speakable">A "Nuvem" é o eufemismo mais bem-sucedido e perverso da história do marketing corporativo. A palavra foi escolhida a dedo para evocar leveza, imaterialidade, algo branco e fofo flutuando acima das leis da física e da responsabilidade moral. Mas a nuvem não é vapor. A nuvem é uma megaestrutura industrial pesada, quente e barulhenta, ancorada na crosta terrestre através de feridas abertas no solo.</p>
     
-    <p class="speakable">A Nuvem não é vapor. A Nuvem é uma megaestrutura industrial de concreto armado, cabos submarinos da grossura de um tronco humano rasgando o assoalho oceânico (e sendo mordidos por tubarões), e galpões do tamanho de cidades consumindo a energia de países inteiros. A Nuvem não flutua; ela queima. A infraestrutura digital é pesada, quente e barulhenta.</p>
+    <p class="speakable">O teórico <strong>Jussi Parikka</strong>, em <em>A Geology of Media</em>, nos convida a entender a era digital não como uma era de informação, mas como uma nova era geológica. Para criar a tela lisa onde você lê este texto, montanhas inteiras foram explodidas. Para que o algoritmo "pense", rios foram desviados para resfriar servidores em brasa. A mídia digital não é "sem fio"; ela é profundamente enraizada na terra, e sua raiz se alimenta de minerais de conflito e água potável.</p>
 
     <div class="box thesis-box speakable">
-        <span class="thesis-header">// A Geologia da Mídia</span>
-        "O teórico <strong>Jussi Parikka</strong>, em <em>A Geology of Media</em>, argumenta que a era digital é, na verdade, uma nova era geológica. Para criar a tela onde você lê isso, montanhas inteiras foram movidas. A mídia não é 'sem fio' (wireless); ela é profundamente enraizada na crosta terrestre. O 'tempo profundo' dos minerais colide com o 'tempo real' da rede. Nossos dispositivos são pedras organizadas por raios laser, destinadas a retornar à terra como lixo tóxico."
+        <span class="thesis-header">// A Tese do Antrobsceno</span>
+        "Parikka cunhou o termo <strong>Antrobsceno</strong> para descrever a obscenidade do Antropoceno Digital. A obscenidade reside no fato de que a nossa 'conveniência' (pedir um Uber, gerar uma imagem de IA) depende diretamente da toxicidade planetária. Nossos dispositivos são, essencialmente, pedras organizadas por raios laser e banhadas em sangue, destinadas a retornar à terra como veneno químico em menos de três anos."
     </div>
 
-    <h2 class="speakable">Atlas da Extração: A Tabela Periódica do Conflito</h2>
+    <h2 class="speakable">O Sangue na Bateria: Os Creuseurs do Congo</h2>
 
-    <p class="speakable"><strong>Kate Crawford</strong>, em <em>Atlas of AI</em>, não fala de software; ela fala de mineração. Para que o algoritmo "pense", a terra precisa ser esviscerada. Seu smartphone é um cemitério geológico e um mapa de conflitos geopolíticos. Cada componente eletrônico carrega uma história de extração colonial.</p>
+    <p class="speakable">Não podemos falar de tecnologia sem falar de <strong>Siddharth Kara</strong> e sua investigação seminal <em>Cobalt Red</em>. O cobalto é o elemento essencial para a estabilidade das baterias de íon-lítio que alimentam todos os smartphones e carros elétricos do mundo. E 75% desse cobalto vem da República Democrática do Congo.</p>
+    
+    <p class="speakable">Esqueça as máquinas de mineração industrial. Uma parte significativa desse minério é extraída por "mineiros artesanais" (<em>creuseurs</em>). São homens, mulheres e crianças que cavam túneis com as próprias mãos, sem equipamento de segurança, respirando poeira tóxica que destrói os pulmões. Eles descem em buracos escuros para buscar a pedra azulada que permite que você dê <em>scroll</em> no Instagram. A cadeia de suprimentos das Big Techs é "lavada" através de intermediários, mas a realidade física é inegável: a base da pirâmide digital é a escravidão moderna.</p>
 
-    <div class="periodic-grid speakable">
-        <div class="element-card">
-            <span class="el-symbol">Li</span>
-            <span class="el-name">Lítio</span>
-            <span class="el-origin">CHILE/BOLÍVIA</span>
+    <div class="extraction-flow speakable">
+        <div class="flow-step">
+            <div class="step-icon">⛏️</div>
+            <div class="step-content">
+                <span class="step-title">1. EXTRAÇÃO (CONGO/CHILE)</span>
+                <span class="step-desc">Trabalho manual perigoso, contaminação de lençóis freáticos, milícias armadas controlando minas.</span>
+            </div>
         </div>
-        <div class="element-card">
-            <span class="el-symbol">Co</span>
-            <span class="el-name">Cobalto</span>
-            <span class="el-origin">CONGO (RDC)</span>
+        <div class="flow-step">
+            <div class="step-icon">🚢</div>
+            <div class="step-content">
+                <span class="step-title">2. REFINO E TRANSPORTE (CHINA)</span>
+                <span class="step-desc">Processamento químico pesado. Emissão massiva de CO2 em navios cargueiros cruzando o oceano.</span>
+            </div>
         </div>
-        <div class="element-card">
-            <span class="el-symbol">Ta</span>
-            <span class="el-name">Tântalo</span>
-            <span class="el-origin">RWANDA</span>
+        <div class="flow-step">
+            <div class="step-icon">📱</div>
+            <div class="step-content">
+                <span class="step-title">3. USO EFÊMERO (VOCÊ)</span>
+                <span class="step-desc">O dispositivo é usado por apenas 2 a 3 anos antes de ser descartado por "bateria viciada".</span>
+            </div>
         </div>
-        <div class="element-card">
-            <span class="el-symbol">Au</span>
-            <span class="el-name">Ouro</span>
-            <span class="el-origin">AMAZÔNIA</span>
+        <div class="flow-step">
+            <div class="step-icon">☠️</div>
+            <div class="step-content">
+                <span class="step-title">4. DESCARTE (GANA/NIGÉRIA)</span>
+                <span class="step-desc">Lixo eletrônico queimado a céu aberto para recuperar cobre. Liberação de neurotoxinas.</span>
+            </div>
         </div>
     </div>
 
-    <p class="speakable">O cobalto da sua bateria provavelmente foi extraído por mãos infantis em minas artesanais na República Democrática do Congo. O lítio consumiu lençóis freáticos inteiros no Deserto do Atacama, privando comunidades indígenas de água. O Norte Global fica com a "inteligência artificial" e o lucro; o Sul Global fica com a seca, as crateras e o sangue.</p>
+    <h2 class="speakable">A Guerra da Água: Data Centers vs. População</h2>
 
-    <h2 class="speakable">A Sede da Máquina: Pegada Hídrica da IA</h2>
-
-    <p class="speakable">A Inteligência Artificial é uma indústria sedenta. Treinar um único modelo de linguagem grande (como o GPT-4) consome tanta água para resfriamento quanto uma pessoa beberia em dezenas de anos. Mas o consumo não para no treinamento; ele continua no uso.</p>
+    <p class="speakable">Enquanto o hardware exige terra, o software exige água. Muita água. A "inteligência" artificial é, termodinamicamente, um processo de geração intensa de calor. Para que os processadores da Google, Microsoft e Amazon não derretam, eles precisam de resfriamento constante.</p>
+    
+    <p class="speakable">O conflito já começou. No Uruguai, protestos eclodiram quando foi revelado que um planejado Data Center da Google consumiria milhões de litros de água potável por dia, em meio à pior seca da história do país. No Arizona (EUA), fazendas de servidores competem pela água escassa do deserto. <strong>Kate Crawford</strong> (<em>Atlas of AI</em>) nos lembra que a IA não é etérea; ela bebe do mesmo copo que nós. Cada pergunta que você faz ao ChatGPT tem um custo hídrico direto.</p>
 
     <div class="water-widget speakable">
         <span class="water-icon">💧</span>
         <div class="water-text">
-            Estudos recentes indicam que uma conversa de 20 a 50 perguntas com um chatbot consome cerca de <span class="water-highlight">500ml de água potável</span> nos data centers para dissipar o calor gerado pelas GPUs. Cada vez que você pede para a IA "resumir um texto", você está despejando uma garrafa de água no ralo.
+            <strong>O Custo da Curiosidade:</strong> Estudos recentes estimam que o treinamento do GPT-3 consumiu 700.000 litros de água doce. Em operação, uma conversa média de 20 a 50 turnos com um chatbot "bebe" cerca de <span class="water-highlight">500ml de água</span> nos sistemas de resfriamento. Multiplique isso por bilhões de usuários.
         </div>
     </div>
 
-    <h2 class="speakable">O Paradoxo de Jevons</h2>
+    <h2 class="speakable">Deep Time: O Descompasso Temporal</h2>
 
-    <p class="speakable">As Big Techs prometem que a tecnologia será "verde" e "eficiente". Mas a história da economia nos alerta sobre o <strong>Paradoxo de Jevons</strong>. William Stanley Jevons observou, no século XIX, que conforme as máquinas a vapor se tornavam mais eficientes no uso de carvão, o consumo total de carvão <em>aumentava</em>, não diminuía.</p>
-    <p class="speakable">Por quê? Porque a eficiência barateia o recurso, incentivando novos usos. Tornamos os chips mais eficientes, mas agora colocamos chips em geladeiras, tênis e lâmpadas. A eficiência micro gera desperdício macro. A IA tornará a criação de lixo digital (textos, imagens, vídeos) tão barata que inundaremos o mundo e os servidores, exigindo ainda mais energia.</p>
+    <p class="speakable">Existe uma violência temporal no coração da tecnologia. Estamos extraindo recursos que a Terra demorou milhões de anos para formar (Tempo Geológico) para criar dispositivos que são projetados para durar apenas alguns meses (Tempo de Mercado).</p>
 
-    <h2 class="speakable">O Antrobsceno: Onde os Dispositivos Vão Morrer</h2>
+    <div class="deep-time-bar speakable">
+        <div class="dt-geo">GEOLÓGICO: 50.000.000 ANOS (FORMAÇÃO)</div>
+        <div class="dt-use">2 ANOS</div>
+    </div>
+    <div class="dt-label">
+        <span>A Terra cria.</span>
+        <span>O Mercado consome.</span>
+    </div>
 
-    <p class="speakable">Parikka chama a nossa era de <strong>Antrobsceno</strong>. A obscenidade está no que escondemos. Quando seu iPhone "morre" (muitas vezes por obsolescência programada de software), ele não desaparece. Ele viaja para lugares como <strong>Agbogbloshie</strong>, em Gana.</p>
-    <p class="speakable">Lá, o lixo eletrônico do "primeiro mundo" é queimado a céu aberto por jovens que buscam recuperar o cobre e o ouro de dentro das placas. A fumaça tóxica envenena o solo e os pulmões. A nuvem limpa e branca tem um esgoto preto e tóxico que escorre na África.</p>
+    <h2 class="speakable">O Paradoxo de Jevons e a Eficiência</h2>
 
-    <h2 class="speakable">Síntese: Permacomputação e o Direito ao Reparo</h2>
+    <p class="speakable">As empresas prometem que a tecnologia ficará mais "eficiente". Mas o economista do século XIX <strong>William Stanley Jevons</strong> já nos alertou: quando a eficiência de um recurso aumenta, o consumo total <em>aumenta</em>, não diminui. Se tornamos o processamento mais barato e eficiente, não usamos menos processamento; nós inventamos geladeiras com Wi-Fi e escovas de dente com Bluetooth. A eficiência alimenta o desperdício.</p>
 
-    <p class="speakable">A solução não é "tecnologia verde" corporativa, que quer te vender um novo celular "sustentável" a cada ano. A solução é <strong>Permacomputação</strong>.</p>
-    <p class="speakable">Inspirada na permacultura, essa filosofia exige uma tecnologia que dure, que possa ser consertada e que use o mínimo de energia. É a recusa da obsolescência. É a estética <strong>Solarpunk</strong> na prática: computadores modulares, redes locais que rodam com a energia de um painel solar, softwares otimizados para rodar em hardware de 10 anos atrás.</p>
+    <h2 class="speakable">Síntese: Permacomputação como Resistência</h2>
+
+    <p class="speakable">Diante da catástrofe material, a resposta não é comprar o novo "iPhone Verde" (que não existe). A resposta é radical: <strong>Permacomputação</strong>.</p>
+    <p class="speakable">Este movimento aplica os princípios da permacultura à computação. Envolve usar hardware antigo até a exaustão, reparar o que quebra, e escrever software leve que não exija supercomputadores. É a recusa ética da obsolescência programada. Manter um laptop de 2015 funcionando em 2025 não é sinal de pobreza; é um ato de sabotagem contra a máquina de extração.</p>
 
     <div class="comparison-grid">
         <div class="comp-card" style="border-left: 2px solid var(--c-magma);">
-            <span class="comp-title" style="color:var(--c-magma)">OBSOLESCÊNCIA PROGRAMADA</span>
+            <span class="comp-title" style="color:var(--c-magma)">CONSUMISMO DIGITAL</span>
             <div class="comp-content speakable">
-                Feito para quebrar ou ficar lento. Baterias coladas. Peças proprietárias. Software pesado que inutiliza hardware antigo. Ciclo de troca: 2 anos.
+                "Novo é melhor". Troca a cada 2 anos. Baterias seladas/coladas. Software inchado que torna o hardware lento. Extração máxima.
             </div>
         </div>
         <div class="comp-card" style="border-left: 2px solid var(--c-toxic);">
             <span class="comp-title" style="color:var(--c-toxic)">PERMACOMPUTAÇÃO</span>
             <div class="comp-content speakable">
-                Feito para durar. Design modular. Direito ao Reparo (Right to Repair). Software leve que revitaliza máquinas antigas. Ciclo de troca: 10+ anos.
+                "Durável é melhor". Ciclo de 10+ anos. Direito ao Reparo. Software otimizado e Linux leve. Regeneração e respeito material.
             </div>
         </div>
     </div>
@@ -251,9 +279,9 @@
     <div class="box action-box speakable">
         <span class="action-icon">🔧</span>
         <span class="action-header">DESAFIO DE RETOMADA #09</span>
-        <p><strong>A Greve de Atualização e o Reparo Radical</strong></p>
-        <p>O ato mais revolucionário e ecológico que você pode fazer hoje não é comprar um carro elétrico, é manter seu celular antigo funcionando por mais um ano.</p>
-        <p><strong>Sua missão:</strong> Hoje, faça a manutenção do seu hardware. Limpe a porta de carregamento com cuidado. Delete aplicativos pesados que drenam a bateria. Troque a bateria em vez de trocar o aparelho. Se quebrar, procure um tutorial no iFixit antes de jogar fora. Honre o peso geológico que você carrega no bolso.</p>
+        <p><strong>A Manutenção Sagrada</strong></p>
+        <p>A revolução começa na bancada de reparos.</p>
+        <p><strong>Sua missão:</strong> Pegue um dispositivo eletrônico "velho" ou "lento" que você encostou. Não compre um novo. Limpe-o. Formate-o. Instale um sistema operacional leve ou limpe o armazenamento. Troque a bateria se necessário (assista a um tutorial no <strong>iFixit</strong>). Estenda a vida útil desse objeto em mais um ano. Cada ano que você evita uma compra é um ano que você nega lucro à mineração de sangue.</p>
     </div>
 
     <script>
