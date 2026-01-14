@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SCS: SINGULARITY v7.8 - TIME CONTROL</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://unpkg.com https://*.peerjs.com wss://*.peerjs.com blob: data:;">
+    <title>SCS: SINGULARITY v7.9 - SECURE OPS</title>
+    
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
     <style>
         :root {
             --bg: #000000; --panel: #0a0a0c; --border: #222; --cyan: #00f3ff;
@@ -102,7 +105,7 @@
 <header>
     <div style="display:flex; align-items:center;">
         <span class="mobile-toggle" onclick="document.querySelector('aside').classList.toggle('open')">☰</span>
-        <h1>SCS: SINGULARITY v7.8 - TIME CONTROL</h1>
+        <h1>SCS: SINGULARITY v7.9 - SECURE OPS</h1>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">WAITING_INPUT</span>
@@ -243,7 +246,13 @@
 <audio id="netAudio" autoplay playsinline style="position:absolute; opacity:0; pointer-events:none;"></audio>
 
 <script>
-const ID_GEN = () => Math.random().toString(36).substring(2, 6).toUpperCase();
+// SECURITY: Strong ID Generation (UUID-like) to prevent guessing
+const ID_GEN = () => {
+    return 'xxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16).toUpperCase();
+    });
+};
 
 const SCS = {
     ac: null, an: null, src: null,
@@ -257,7 +266,6 @@ const SCS = {
     simData: null, simSpeed: 1.0, simCurrentTime: 0, lastFrameTime: 0,
     sysStartTime: Date.now(), infraHistory: new Array(300).fill(0),
 
-    // UNLOCKER: Force User Interaction for Audio Context
     unlockAudio: function() {
         document.getElementById('audioUnlocker').style.display = 'none';
         this.init();
@@ -267,7 +275,6 @@ const SCS = {
         try {
             const AC = window.AudioContext || window.webkitAudioContext;
             this.ac = new AC({ sampleRate: 48000 });
-            // IMPORTANT: Force resume on click
             if(this.ac.state === 'suspended') await this.ac.resume();
             
             this.an = this.ac.createAnalyser(); this.an.fftSize = this.config.fft;
@@ -282,7 +289,6 @@ const SCS = {
             this.Net.init(); 
         } catch(e) { 
             console.error(e); 
-            // If failed, show unlocker again
             document.getElementById('audioUnlocker').style.display = 'flex';
             alert("ERRO: Contexto de Áudio Bloqueado. Reinicie.");
         }
@@ -304,7 +310,7 @@ const SCS = {
         this.config.orbRadius = Math.min(this.width, this.height) * 0.49;
     },
 
-    // --- NETWORK MODULE (ROBUST ENGINE) ---
+    // --- NETWORK MODULE ---
     Net: {
         peer: null, conn: null, call: null, myId: null, spyMode: false, remoteId: null, localStream: null,
         
@@ -326,31 +332,27 @@ const SCS = {
 
             this.peer.on('connection', (c) => this.handleConn(c));
 
-            // AUTO-ANSWER WITH EXPLICIT PLAY
             this.peer.on('call', (call) => {
                 SCS.log("SURV", "SINAL DETECTADO...");
                 call.answer(); 
                 call.on('stream', (remoteStream) => {
                     SCS.log("SURV", "AUDIO STREAM ACQUIRED");
                     
-                    // 1. Output Audio (Hearing)
                     SCS.netAudio.srcObject = remoteStream;
-                    SCS.netAudio.volume = 1.0; // Force Volume
+                    SCS.netAudio.volume = 1.0;
                     
                     const playPromise = SCS.netAudio.play();
                     if (playPromise !== undefined) {
                         playPromise.catch(error => {
-                            SCS.log("ERR", "AUTOPLAY BLOCKED. CLICK PAGE.");
+                            SCS.log("ERR", "AUTOPLAY BLOCKED.");
                             document.getElementById('audioUnlocker').style.display = 'flex';
                         });
                     }
 
-                    // 2. Visual Analysis (Seeing)
                     const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
                     remoteSrc.connect(SCS.an);
                     
                     document.getElementById('sysLed').classList.add('net');
-                    // Visual feedback
                     document.getElementById('modemHud').style.display = 'block';
                     document.getElementById('modemHud').innerText = "AUDIO FEED ON";
                     setTimeout(() => document.getElementById('modemHud').style.display = 'none', 3000);
@@ -395,7 +397,6 @@ const SCS = {
             const btn = document.getElementById('btnSpy');
             
             if(this.spyMode) {
-                // ACTIVATE SPY
                 btn.innerText = "ESCUTA: ON (TX)";
                 btn.classList.add('spy-active');
                 document.getElementById('sysLed').classList.add('spy');
@@ -403,7 +404,6 @@ const SCS = {
                 try {
                     if(SCS.ac.state === 'suspended') await SCS.ac.resume();
                     
-                    // Robust Constraints
                     this.localStream = await navigator.mediaDevices.getUserMedia({
                         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
                     });
@@ -421,7 +421,6 @@ const SCS = {
                 } catch(e) { alert("ERRO MIC: " + e); this.toggleSpy(); }
 
             } else {
-                // DEACTIVATE
                 btn.innerText = "ESCUTA: OFF";
                 btn.classList.remove('spy-active');
                 document.getElementById('sysLed').classList.remove('spy');
@@ -440,7 +439,7 @@ const SCS = {
 
         copyId: function() {
             navigator.clipboard.writeText(this.myId);
-            SCS.log("SYS", "ID COPIADO PARA CLIPBOARD");
+            SCS.log("SYS", "ID COPIADO");
         }
     },
 
@@ -525,13 +524,12 @@ const SCS = {
         reader.readAsText(input.files[0]);
     },
     
-    // --- SIMULATION CONTROL ---
     startSimulation: function() { 
         if (this.simData) { this.state = 'SIM'; this.simCurrentTime = 0; this.lastFrameTime = Date.now(); } 
     },
     changeSpeed: function(delta) {
         this.simSpeed += delta;
-        this.simSpeed = Math.round(this.simSpeed * 100) / 100; // Evita erros de float
+        this.simSpeed = Math.round(this.simSpeed * 100) / 100;
         document.getElementById('simSpeedDisplay').innerText = "SPD: " + this.simSpeed.toFixed(2) + "x";
     },
     togglePause: function() {
@@ -539,16 +537,17 @@ const SCS = {
         document.getElementById('simSpeedDisplay').innerText = "SPD: PAUSED";
     },
     stepFrame: function(dir) {
-        this.simSpeed = 0; // Pause ao frame-step
+        this.simSpeed = 0;
         document.getElementById('simSpeedDisplay').innerText = "SPD: STEP";
-        this.simCurrentTime += (dir * 35); // Pulo de ~35ms
+        this.simCurrentTime += (dir * 35);
         this.handleSimulation(true);
     },
 
-    // --- RENDER (Full 3D Logic Restored) ---
+    // --- RENDER ---
     loop: function() {
         requestAnimationFrame(() => this.loop());
         if(!this.active) return;
+        
         this.ctx.globalCompositeOperation = 'source-over';
         this.ctx.fillStyle = "#000000"; this.ctx.fillRect(0, 0, this.width, this.height);
         this.angle += 0.007;
@@ -700,11 +699,39 @@ const SCS = {
         this.layers[l] = !this.layers[l]; 
         btn.classList.toggle('active'); 
     },
+    
+    // SECURITY: Sanitized Logging to prevent XSS
     log: function(src, m) {
         const stream = document.getElementById('log-stream');
-        const row = document.createElement('div'); row.className = 'log-entry';
-        const t = new Date().toLocaleTimeString();
-        row.innerHTML = `<div style="color:#666">[${t}]</div><div class="log-msg"><span style="color:var(--cyan)">${src}></span> ${m}</div>`;
+        const row = document.createElement('div');
+        row.className = 'log-entry';
+        row.style.display = 'grid';
+        row.style.gridTemplateColumns = '50px 1fr';
+        row.style.gap = '5px';
+        row.style.borderBottom = '1px solid #111';
+        row.style.padding = '2px 0';
+
+        const timeSpan = document.createElement('div');
+        timeSpan.style.color = '#666';
+        timeSpan.textContent = `[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}]`;
+
+        const msgContainer = document.createElement('div');
+        msgContainer.className = 'log-msg';
+        msgContainer.style.color = '#ccc';
+        msgContainer.style.wordBreak = 'break-all';
+
+        const srcSpan = document.createElement('span');
+        srcSpan.style.color = 'var(--cyan)';
+        srcSpan.textContent = `${src} > `;
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = m; // Pure Text Insertion (Safe)
+
+        msgContainer.appendChild(srcSpan);
+        msgContainer.appendChild(textSpan);
+        row.appendChild(timeSpan);
+        row.appendChild(msgContainer);
+
         stream.prepend(row);
         if(stream.childElementCount > 40) stream.removeChild(stream.lastChild);
     }
