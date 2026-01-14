@@ -1,317 +1,444 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DATA DOUBLE // OS v3.2</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SCS: SINGULARITY v7.3 - WEB DEPLOY</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        /* --- FATOR X v4.4: SYSTEM CORE --- */
         :root {
-            --c-bg: #050505; --c-panel: #0a0a0a; --c-text: #E0E0E0;
-            --c-accent: #00F0FF; --c-border: rgba(255, 255, 255, 0.1);
-            --font-tech: 'JetBrains Mono', monospace; --font-ui: 'Inter', sans-serif;
-            --scroll-track: #050505; --scroll-thumb: #333; --scroll-hover: #00F0FF;
+            --bg: #000000; --panel: #0a0a0c; --border: #222; --cyan: #00f3ff;
+            --purple: #bc13fe; --amber: #ffaa00; --green: #00ff66; --rec: #ff0044;
+            --data: #0088ff; --font: 'Consolas', 'Monaco', monospace;
         }
-        body.light-mode {
-            --c-bg: #F2F2F7; --c-panel: #FFFFFF; --c-text: #1C1C1E;
-            --c-accent: #0066FF; --c-border: rgba(0, 0, 0, 0.1);
-            --scroll-track: #F2F2F7; --scroll-thumb: #C1C1C4; --scroll-hover: #A0A0A3;
-        }
-        body.sepia-mode {
-            --c-bg: #F4ECD8; --c-panel: #E8DEC0; --c-text: #433422;
-            --c-accent: #8C4B2F; --c-border: rgba(67, 52, 34, 0.15);
-            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #8C4B2F;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        html, body { height: 100%; width: 100%; overflow: hidden; background-color: var(--c-bg); color: var(--c-text); }
-        body { display: flex; font-family: var(--font-ui); transition: background 0.4s ease, color 0.4s ease; }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; background-color: var(--bg); color: #ccc; font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        header { border-bottom: 1px solid var(--cyan); padding: 0 10px; display: flex; justify-content: space-between; align-items: center; background: var(--panel); height: 45px; flex-shrink: 0; z-index: 100; box-shadow: 0 0 15px rgba(0, 243, 255, 0.15); }
+        h1 { margin: 0; font-size: 11px; letter-spacing: 2px; color: var(--cyan); text-shadow: 0 0 5px var(--cyan); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* SCROLLBAR */
-        html { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+        .status-led { width: 10px; height: 10px; border-radius: 50%; background: #333; transition: 0.3s; border: 1px solid #000; }
+        .status-led.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .status-led.net { background: var(--data); box-shadow: 0 0 10px var(--data); }
+        .status-led.spy { background: var(--rec); box-shadow: 0 0 15px var(--rec); animation: blink 1s infinite; }
 
-        /* SIDEBAR */
-        aside.sidebar {
-            width: 300px; background: var(--c-panel); border-right: 1px solid var(--c-border);
-            display: flex; flex-direction: column; z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0;
-        }
-        aside.sidebar.collapsed { transform: translateX(-300px); position: absolute; height: 100%; }
+        main { display: flex; flex: 1; overflow: hidden; position: relative; }
+        /* Mobile First adjustments */
+        aside { width: 320px; background: var(--panel); border-right: 1px solid var(--border); padding: 8px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex-shrink: 0; z-index: 20; }
         
-        .sidebar-header { 
-            height: 60px; display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; border-bottom: 1px solid var(--c-border); 
-            font-family: var(--font-tech); font-weight: 700; color: var(--c-accent); letter-spacing: 1px; font-size: 0.85rem;
+        @media (max-width: 700px) {
+            main { flex-direction: column; }
+            aside { width: 100%; height: 55%; border-right: none; border-bottom: 1px solid var(--border); order: 2; }
+            #viewport-container { height: 45%; order: 1; }
+            #dashboard { display: none; } /* Hide heavy dashboard on mobile */
         }
-        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px; }
+
+        .module { border: 1px solid #2a2a2a; padding: 8px; position: relative; margin-top: 8px; background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 100%); border-radius: 4px; }
+        .mod-label { position: absolute; top: -7px; left: 6px; background: var(--panel); padding: 0 4px; font-size: 9px; color: var(--cyan); text-transform: uppercase; border: 1px solid #222; letter-spacing: 1px; }
+
+        .row { display: flex; gap: 5px; margin-bottom: 4px; }
+        button { flex: 1; background: #080808; color: #888; border: 1px solid #444; padding: 10px 5px; font-family: inherit; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; border-radius: 2px; }
+        button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0,243,255,0.1); }
+        button:active { transform: translateY(1px); }
+        button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+        button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; background: rgba(255, 0, 68, 0.1); }
+        button.spy-active { background: var(--rec); color: #fff; border-color: var(--rec); box-shadow: 0 0 15px var(--rec); }
         
-        .nav-cat { 
-            font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-text); opacity: 0.5; 
-            margin: 20px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
-            border-bottom: 1px dashed var(--c-border); padding-bottom: 5px;
-        }
-        .chapter-link { 
-            display: block; padding: 10px 12px; margin-bottom: 2px; 
-            color: var(--c-text); text-decoration: none; font-size: 0.8rem; 
-            font-family: var(--font-ui); font-weight: 500; border-radius: 4px; 
-            transition: all 0.2s; border-left: 2px solid transparent; opacity: 0.8;
-        }
-        .chapter-link:hover { background: rgba(255,255,255,0.05); opacity: 1; transform: translateX(4px); }
-        .chapter-link.active { 
-            background: rgba(255,255,255,0.05); color: var(--c-accent); 
-            border-left-color: var(--c-accent); opacity: 1; font-weight: 700;
-        }
-        .chapter-sub { margin-left: 15px; font-size: 0.75rem; border-left: 1px solid var(--c-border); }
-
-        /* LAYOUT */
-        main.dashboard { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; overflow: hidden; }
-        .master-header { background: var(--c-panel); border-bottom: 1px solid var(--c-border); display: flex; flex-direction: column; width: 100%; z-index: 400; flex-shrink: 0; }
-        .branding-bar { height: 30px; background: var(--c-bg); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: center; padding: 0 15px; }
-        .branding-text { font-family: var(--font-tech); font-size: 0.65rem; font-weight: 800; color: var(--c-dim); text-transform: uppercase; letter-spacing: 3px; }
+        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 12px; padding: 8px; margin-bottom: 5px; outline: none; letter-spacing: 1px; text-transform: uppercase; text-align: center;}
         
-        .controls-bar { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; overflow-x: auto; }
-        .controls-bar::-webkit-scrollbar { display: none; }
-        .ctrl-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+        .net-status { font-size: 10px; color: #555; text-align: center; margin-bottom: 5px; font-weight: bold; }
+        .net-status.connected { color: var(--data); }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Graphics */
+        #viewport-container { flex: 1.8; display: flex; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1a1a1a; }
+        #viewport { flex: 1; position: relative; }
+        canvas { width: 100%; height: 100%; display: block; }
         
-        .btn-icon { width: 34px; height: 34px; background: transparent; border: 1px solid var(--c-border); color: var(--c-text); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); transition: all 0.2s; flex-shrink: 0; }
-        .btn-icon:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(255,255,255,0.05); }
-        .btn-icon.active { background: var(--c-accent); color: var(--c-bg); border-color: var(--c-accent); }
+        .hud { position: absolute; pointer-events: none; padding: 15px; z-index: 10; top: 0; left: 0; }
+        .val-big { font-size: 28px; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
+        .modem-hud { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--amber); font-size: 16px; background: rgba(0,0,0,0.9); padding: 15px; border: 1px solid var(--amber); display: none; z-index: 50; text-align: center; font-weight: bold; box-shadow: 0 0 30px rgba(0,0,0,1); }
+        
+        .id-display { font-size: 16px; color: var(--green); text-align: center; padding: 8px; border: 1px dashed #444; margin-bottom: 5px; cursor: pointer; background: #050505; letter-spacing: 2px; }
+        .id-display:active { background: #222; }
 
-        .speed-control { display: flex; align-items: center; border: 1px solid var(--c-border); border-radius: 4px; height: 34px; overflow: hidden; flex-shrink: 0; }
-        .speed-btn { width: 28px; height: 100%; background: transparent; border: none; color: var(--c-text); cursor: pointer; font-weight: bold; font-family: var(--font-tech); }
-        .speed-btn:hover { background: rgba(255,255,255,0.1); }
-        #speed-display { font-family: var(--font-tech); font-size: 0.7rem; width: 35px; text-align: center; font-weight: 700; color: var(--c-accent); }
-
-        .viewport { flex: 1; background: var(--c-bg); position: relative; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; display: block; }
-
-        footer.bottom-hud { height: 45px; background: var(--c-panel); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-family: var(--font-tech); font-size: 0.7rem; flex-shrink: 0; }
-        .progress-container { flex: 1; margin: 0 20px; display: flex; align-items: center; gap: 10px; }
-        .progress-track { flex: 1; height: 2px; background: var(--c-border); position: relative; }
-        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--c-accent); width: 0%; transition: width 0.3s; box-shadow: 0 0 10px var(--c-accent); }
-        .nav-btn { background: none; border: none; color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
-        .nav-btn:hover { color: var(--c-accent); }
-
-        @media (max-width: 768px) {
-            aside.sidebar { position: absolute; height: 100%; width: 85%; max-width: 300px; transform: translateX(-100%); box-shadow: none; border-right: 1px solid var(--c-accent); }
-            aside.sidebar.open { transform: translateX(0); box-shadow: 10px 0 100px rgba(0,0,0,0.8); }
-        }
-        #backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); z-index: 900; display: none; opacity: 0; transition: opacity 0.3s; }
-        #backdrop.active { display: block; opacity: 1; }
+        /* Audio Unlocker Overlay */
+        #audioUnlocker { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; display: none; }
+        .unlock-btn { padding: 20px 40px; border: 2px solid var(--green); color: var(--green); background: transparent; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <div id="backdrop" onclick="toggleSidebar()"></div>
+<div id="audioUnlocker">
+    <div style="color:#fff; margin-bottom:20px; font-size:12px;">INTERAÇÃO NECESSÁRIA PARA ATIVAR O AUDIO</div>
+    <button class="unlock-btn" onclick="SCS.unlockAudio()">INICIAR SISTEMA</button>
+</div>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span>DATA DOUBLE <span style="color:var(--c-accent)">// OS v3.2</span></span>
-            <button class="btn-icon" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
+<header>
+    <h1>SCS: SINGULARITY v7.3 - WEB OPS</h1>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <span id="headerStatus" style="font-size:9px; color:#444;">OFFLINE</span>
+        <div id="sysLed" class="status-led"></div>
+    </div>
+</header>
+
+<main>
+    <aside>
+        <div class="module">
+            <span class="mod-label">01. STATUS & CONTROL</span>
+            <div class="row">
+                <button id="btnInit" onclick="SCS.init()" style="color:var(--green); border-color:var(--green);">LIGAR</button>
+                <button onclick="location.reload()" style="color:var(--amber); border-color:var(--amber);">RESET</button>
+            </div>
+            <div id="netStatus" class="net-status">AGUARDANDO REDE...</div>
         </div>
-        <nav class="nav-list" id="nav-container"></nav>
+
+        <div class="module">
+            <span class="mod-label">02. OSINT LINK (P2P)</span>
+            <div id="myIdDisplay" class="id-display" onclick="SCS.Net.copyId()">...</div>
+            <div style="font-size:8px; color:#666; text-align:center; margin-bottom:5px;">TOQUE ACIMA PARA COPIAR SEU ID</div>
+            <div class="row">
+                <input type="text" id="targetId" placeholder="ID DO PARCEIRO">
+            </div>
+            <div class="row">
+                <button id="btnConnect" onclick="SCS.Net.connect()" disabled style="color:var(--data)">🔗 LINKAR</button>
+            </div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">03. AUDIO SURVEILLANCE</span>
+            <div class="row">
+                <button id="btnSpy" onclick="SCS.Net.toggleSpy()" disabled style="color:var(--rec); height: 40px;">MIC OFF</button>
+            </div>
+            <div style="font-size:9px; color:#555; text-align:center; margin-top:2px;" id="spyStatusText">MODO PASSIVO</div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">04. SECURE CHAT</span>
+            <input type="text" id="chatMsg" placeholder="MENSAGEM..." onkeypress="if(event.key==='Enter') SCS.DataLink.send()">
+            <div class="row">
+                <button id="btnTx" onclick="SCS.DataLink.send()" disabled style="color:var(--green)">ENVIAR</button>
+            </div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">05. LOGS & FILES</span>
+            <div class="row">
+                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR</button>
+                <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 BAIXAR</button>
+            </div>
+        </div>
     </aside>
 
-    <main class="dashboard">
-        <div class="master-header">
-            <div class="branding-bar">
-                <span class="branding-text">SYSTEM STATUS: <span style="color:var(--c-accent)">ONLINE</span> // SECURE CONNECTION</span>
+    <div id="viewport-container">
+        <div id="viewport">
+            <canvas id="scope"></canvas>
+            <div class="hud">
+                <div style="font-size:9px; color:var(--cyan); letter-spacing:1px; font-weight:bold;">FREQ PEAK</div>
+                <div class="val-big" id="hudFreq">0.0</div>
+                <div id="hudTime" style="color:#444; font-size:9px; margin-top:2px;">00:00:00</div>
             </div>
-            <div class="controls-bar">
-                <div class="ctrl-group">
-                    <button class="btn-icon" onclick="toggleSidebar()" title="Índice">☰</button>
-                </div>
-                <div class="ctrl-group">
-                    <button class="btn-icon" onclick="adjustFont(-1)">A-</button>
-                    <button class="btn-icon" onclick="adjustFont(1)">A+</button>
-                    <div class="speed-control">
-                        <button class="speed-btn" onclick="adjustSpeed(-0.25)">«</button>
-                        <span id="speed-display">1.0</span>
-                        <button class="speed-btn" onclick="adjustSpeed(0.25)">»</button>
-                    </div>
-                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')">▶</button>
-                    <button class="btn-icon" id="btn-theme" onclick="cycleTheme()">◐</button>
-                    <button class="btn-icon" onclick="toggleFullScreen()">⛶</button>
-                </div>
-            </div>
+            <div id="modemHud" class="modem-hud">LINK_ACTIVE</div>
         </div>
+    </div>
+</main>
 
-        <div class="viewport">
-            <iframe id="content-frame" name="viewer" src="introducao.html"></iframe>
-        </div>
+<audio id="audioEl" hidden crossorigin="anonymous"></audio>
+<audio id="netAudio" hidden autoplay playsinline></audio>
 
-        <footer class="bottom-hud">
-            <button class="nav-btn" onclick="prevChapter()">← ANT</button>
-            <div class="progress-container">
-                <span id="chapter-indicator">00/00</span>
-                <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
-            </div>
-            <button class="nav-btn" onclick="nextChapter()">PROX →</button>
-        </footer>
-    </main>
+<script>
+const ID_GEN = () => Math.random().toString(36).substring(2, 6).toUpperCase();
 
-    <script>
-        // --- ESTRUTURA COM SUB-CAPÍTULOS ---
-        const structure = [
-            { t: "BOOT SEQUENCE", f: "introducao.html", cat: "INICIALIZAÇÃO" },
+const SCS = {
+    ac: null, an: null, src: null,
+    cvs: document.getElementById('scope'), ctx: document.getElementById('scope').getContext('2d'),
+    netAudio: document.getElementById('netAudio'),
+    config: { fft: 2048, orbRadius: 0, fov: 650 }, // Reduced FFT for Mobile Performance
+    active: false, state: 'IDLE', angle: 0, peaks: [], isRecording: false, logBuffer: [], 
+    sysStartTime: Date.now(),
+
+    unlockAudio: function() {
+        document.getElementById('audioUnlocker').style.display = 'none';
+        this.init();
+    },
+
+    init: async function() {
+        try {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            this.ac = new AC({ sampleRate: 44100 }); // Standard rate
+            if(this.ac.state === 'suspended') await this.ac.resume(); // Force resume
             
-            // PARTE I
-            { t: "01. O Hardware Biológico", f: "cap01.html", cat: "I. A MENTE" },
-            { t: "02. Sequestro da Atenção", f: "cap02.html", cat: "I. A MENTE" },
-            { t: "03. O Eu Inferido", f: "cap03.html", cat: "I. A MENTE" },
+            this.an = this.ac.createAnalyser(); 
+            this.an.fftSize = this.config.fft;
+            this.an.smoothingTimeConstant = 0.85;
 
-            // PARTE II
-            { t: "04. Necropolítica", f: "cap04.html", cat: "II. O CERCO" },
-            { t: "05. Cidade Sensiente", f: "cap05.html", cat: "II. O CERCO" },
-            { t: "06. Tribunal Algorítmico", f: "cap06.html", cat: "II. O CERCO" },
-            { t: "06.1 Panóptico Financeiro", f: "cap06_1.html", cat: "II. O CERCO", sub: true }, // NOVO ARQUIVO
-
-            // PARTE III
-            { t: "07. Taylorismo Digital", f: "cap07.html", cat: "III. INFRAESTRUTURA" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "08. Internet Morta", f: "cap08.html", cat: "III. INFRAESTRUTURA" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "09. Geologia da Mídia", f: "cap09.html", cat: "III. INFRAESTRUTURA" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "09.1 Deepweb & Tor", f: "cap09_1.html", cat: "III. INFRAESTRUTURA", sub: true }, // NOVO ARQUIVO
-
-            // PARTE IV
-            { t: "10. Neuro-direitos", f: "cap10.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "10.1 Cibersegurança", f: "cap10_1.html", cat: "IV. RESISTÊNCIA", sub: true }, // NOVO ARQUIVO
-            { t: "10.2 Cripto Economia", f: "cap10_2.html", cat: "IV. RESISTÊNCIA", sub: true }, // NOVO ARQUIVO
-            
-            { t: "11. Cidadania Onlife", f: "cap11.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "12. Tecnofeudalismo", f: "cap12.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "13. Solarpunk", f: "cap13.html", cat: "IV. RESISTÊNCIA" }, // ARQUIVO ANTIGO MANTIDO
-
-            // FINAL
-            { t: "Epílogo", f: "cap14.html", cat: "SYSTEM END" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "Glossário", f: "cap15.html", cat: "DATABASE" }, // ARQUIVO ANTIGO MANTIDO
-            { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" } // ARQUIVO ANTIGO MANTIDO
-        ];
-
-        let currentIdx = 0;
-        let ttsRate = 1.0;
-        let currentFont = 19; 
-        let themeState = 0; 
-        const themes = ['dark', 'light', 'sepia'];
-
-        function init() {
-            const nav = document.getElementById('nav-container');
-            let lastCat = "";
-            
-            structure.forEach((item, i) => {
-                if(item.cat !== lastCat) {
-                    const cat = document.createElement('div');
-                    cat.className = 'nav-cat';
-                    cat.innerText = item.cat;
-                    nav.appendChild(cat);
-                    lastCat = item.cat;
-                }
-                
-                const btn = document.createElement('a');
-                btn.className = item.sub ? 'chapter-link chapter-sub' : 'chapter-link';
-                btn.innerText = item.t;
-                btn.href = "#";
-                btn.onclick = (e) => { 
-                    e.preventDefault(); 
-                    loadChapter(i); 
-                    if(window.innerWidth < 768) toggleSidebar(); 
-                };
-                nav.appendChild(btn);
-            });
-            loadChapter(0);
+            this.resize(); window.onresize = () => this.resize();
+            this.active = true;
+            document.getElementById('btnInit').disabled = true;
+            this.enableControls();
+            document.getElementById('sysLed').classList.add('on');
+            document.getElementById('headerStatus').innerText = "SYSTEM_READY";
+            this.sysStartTime = Date.now();
+            this.loop();
+            this.Net.init(); 
+        } catch(e) { 
+            console.error(e); 
+            // If failed, show unlocker
+            document.getElementById('audioUnlocker').style.display = 'flex';
         }
+    },
 
-        function loadChapter(idx) {
-            currentIdx = idx;
-            const frame = document.getElementById('content-frame');
-            const btnTts = document.getElementById('btn-tts');
-            
-            btnTts.innerText = '▶';
-            btnTts.classList.remove('active');
-            frame.src = structure[idx].f;
-            
-            const progress = ((idx + 1) / structure.length * 100);
-            document.getElementById('p-bar').style.width = progress + "%";
-            document.getElementById('chapter-indicator').innerText = `${(idx + 1).toString().padStart(2, '0')}/${structure.length}`;
-
-            document.querySelectorAll('.chapter-link').forEach((el, i) => {
-                el.classList.toggle('active', i === idx);
-                if(i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
-
-            frame.onload = () => { syncAll(); }
-        }
-
-        function sendMsg(type, val) {
-            const win = document.getElementById('content-frame').contentWindow;
-            if(win) win.postMessage({ type, value: val }, '*');
-        }
-
-        function syncAll() {
-            sendMsg('theme', themes[themeState]);
-            sendMsg('font', currentFont);
-            sendMsg('rate', ttsRate);
-        }
-
-        function cycleTheme() {
-            themeState = (themeState + 1) % 3;
-            const mode = themes[themeState];
-            document.body.className = mode + '-mode';
-            sendMsg('theme', mode);
-        }
-
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => console.log(err));
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
-        }
-
-        function adjustSpeed(delta) {
-            ttsRate = Math.max(0.5, Math.min(3.0, ttsRate + delta));
-            ttsRate = Math.round(ttsRate * 100) / 100;
-            document.getElementById('speed-display').innerText = ttsRate;
-            sendMsg('rate', ttsRate);
-        }
-
-        function adjustFont(delta) {
-            currentFont = Math.max(14, Math.min(28, currentFont + delta));
-            sendMsg('font', currentFont);
-        }
-
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            const bd = document.getElementById('backdrop');
-            
-            if(window.innerWidth < 768) {
-                sb.classList.toggle('open');
-                bd.classList.toggle('active');
-            } else {
-                sb.classList.toggle('collapsed');
-            }
-        }
-
-        function nextChapter() { if(currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
-        function prevChapter() { if(currentIdx > 0) loadChapter(currentIdx - 1); }
-
-        window.addEventListener('message', (e) => {
-            if(e.data.type === 'tts-state') {
-                const btn = document.getElementById('btn-tts');
-                if(e.data.isPlaying) {
-                    btn.innerText = '■'; btn.classList.add('active');
-                } else {
-                    btn.innerText = '▶'; btn.classList.remove('active');
-                }
-            }
+    enableControls: function() {
+        ['btnRec','btnExport','btnTx','btnConnect','btnSpy'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).disabled = false;
         });
+    },
 
-        init();
-    </script>
+    resize: function() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = this.cvs.parentElement.getBoundingClientRect();
+        this.cvs.width = rect.width * dpr; this.cvs.height = rect.height * dpr;
+        this.ctx.scale(dpr, dpr); this.width = rect.width; this.height = rect.height;
+        this.config.orbRadius = Math.min(this.width, this.height) * 0.45;
+    },
+
+    // --- NETWORK MODULE ---
+    Net: {
+        peer: null, conn: null, call: null, myId: null, spyMode: false, remoteId: null, localStream: null,
+        
+        init: function() {
+            this.myId = ID_GEN();
+            document.getElementById('myIdDisplay').innerText = `${this.myId}`;
+            
+            // PeerJS Cloud Connection
+            this.peer = new Peer(this.myId, { debug: 1 });
+
+            this.peer.on('open', (id) => {
+                document.getElementById('netStatus').innerText = "REDE: ONLINE (HTTPS)";
+                document.getElementById('netStatus').classList.add('connected');
+                SCS.log("ID: " + id);
+            });
+
+            this.peer.on('error', (err) => {
+                document.getElementById('netStatus').innerText = "FALHA DE REDE";
+                alert("Erro P2P: " + err.type);
+            });
+
+            this.peer.on('connection', (c) => this.handleConn(c));
+
+            // AUTO-ANSWER WITH AUDIO FORCE
+            this.peer.on('call', (call) => {
+                console.log("Chamada recebida...");
+                document.getElementById('modemHud').style.display = 'block';
+                document.getElementById('modemHud').innerText = "RECEBENDO AUDIO...";
+                setTimeout(() => document.getElementById('modemHud').style.display = 'none', 2000);
+
+                call.answer(); 
+                call.on('stream', (remoteStream) => {
+                    // Connect to Audio Element (Hearing)
+                    SCS.netAudio.srcObject = remoteStream;
+                    const playPromise = SCS.netAudio.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log("Autoplay preventido. Mostrando botão de desbloqueio.");
+                            document.getElementById('audioUnlocker').style.display = 'flex';
+                        });
+                    }
+
+                    // Connect to Analyzer (Seeing)
+                    const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
+                    remoteSrc.connect(SCS.an);
+                    
+                    document.getElementById('sysLed').classList.add('net');
+                    document.getElementById('spyStatusText').innerText = "AUDIO REMOTO ATIVO";
+                    document.getElementById('spyStatusText').style.color = "var(--cyan)";
+                });
+            });
+        },
+
+        connect: function() {
+            const target = document.getElementById('targetId').value.toUpperCase();
+            if(target.length < 2) return alert("ID INVALIDO");
+            const conn = this.peer.connect(target);
+            this.handleConn(conn);
+        },
+
+        handleConn: function(c) {
+            this.conn = c;
+            this.remoteId = c.peer;
+            this.conn.on('open', () => {
+                document.getElementById('btnConnect').innerText = "LINK OK";
+                document.getElementById('btnConnect').disabled = true;
+                if(!document.getElementById('targetId').value) document.getElementById('targetId').value = this.remoteId;
+            });
+            this.conn.on('data', (data) => {
+                document.getElementById('modemHud').style.display = 'block';
+                document.getElementById('modemHud').innerText = "MSG: " + data;
+                setTimeout(() => document.getElementById('modemHud').style.display = 'none', 3000);
+            });
+            this.conn.on('close', () => {
+                document.getElementById('btnConnect').disabled = false;
+                document.getElementById('btnConnect').innerText = "LINKAR";
+            });
+        },
+
+        toggleSpy: async function() {
+            this.spyMode = !this.spyMode;
+            const btn = document.getElementById('btnSpy');
+            
+            if(this.spyMode) {
+                // ACTIVATE SPY
+                try {
+                    if(SCS.ac.state === 'suspended') await SCS.ac.resume();
+                    
+                    // Mobile compatible constraints
+                    this.localStream = await navigator.mediaDevices.getUserMedia({
+                        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+                    });
+
+                    // Connect local to graph
+                    const src = SCS.ac.createMediaStreamSource(this.localStream);
+                    SCS.connect(src);
+                    
+                    if(this.remoteId) {
+                        btn.innerText = "TX: ON";
+                        btn.classList.add('spy-active');
+                        document.getElementById('spyStatusText').innerText = "TRANSMITINDO PARA " + this.remoteId;
+                        document.getElementById('spyStatusText').style.color = "var(--rec)";
+                        this.call = this.peer.call(this.remoteId, this.localStream);
+                    } else {
+                        btn.innerText = "MIC LOCAL";
+                        document.getElementById('spyStatusText').innerText = "SEM ALVO LINKADO";
+                    }
+                    SCS.askRecord();
+                } catch(e) { 
+                    alert("ERRO MIC: " + e.message); 
+                    this.spyMode = false;
+                }
+
+            } else {
+                // DEACTIVATE
+                btn.innerText = "MIC OFF";
+                btn.classList.remove('spy-active');
+                document.getElementById('spyStatusText').innerText = "MODO PASSIVO";
+                document.getElementById('spyStatusText').style.color = "#555";
+                
+                if(this.localStream) {
+                    this.localStream.getTracks().forEach(t => t.stop());
+                }
+                if(this.call) {
+                    this.call.close();
+                }
+            }
+        },
+
+        copyId: function() {
+            navigator.clipboard.writeText(this.myId);
+            alert("ID COPIADO: " + this.myId);
+        }
+    },
+
+    // --- DATA LINK ---
+    DataLink: {
+        send: function() {
+            const input = document.getElementById('chatMsg');
+            const msg = input.value;
+            if(!msg) return;
+            if(SCS.Net.conn && SCS.Net.conn.open) {
+                SCS.Net.conn.send(msg);
+                input.value = "";
+            } else {
+                alert("Sem Link de Dados P2P");
+            }
+        }
+    },
+
+    // --- CORE ---
+    askRecord: function() {
+        // Auto-accept for smoother UX on mobile
+        if(!this.isRecording) this.toggleRecording();
+    },
+    connect: function(src) {
+        if(this.src) this.src.disconnect();
+        this.src = src; this.src.connect(this.an);
+    },
+    toggleRecording: function() {
+        this.isRecording = !this.isRecording;
+        const btn = document.getElementById('btnRec');
+        btn.classList.toggle('recording');
+        if(!this.isRecording) { this.exportLog(); }
+    },
+    exportLog: function() {
+        if(this.logBuffer.length === 0) return;
+        const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `SCS_${Date.now()}.json`; a.click();
+        this.logBuffer = []; // Clear after export
+    },
+
+    // --- RENDER ---
+    loop: function() {
+        requestAnimationFrame(() => this.loop());
+        if(!this.active) return;
+        
+        // Background
+        this.ctx.fillStyle = "#000000"; this.ctx.fillRect(0, 0, this.width, this.height);
+        this.angle += 0.007;
+        
+        const now = Date.now();
+        const diff = new Date(now - this.sysStartTime);
+        document.getElementById('hudTime').innerText = diff.toISOString().substr(11, 8);
+
+        const data = new Uint8Array(this.an.frequencyBinCount);
+        this.an.getByteFrequencyData(data);
+        this.analyze(data);
+        
+        if (this.isRecording) this.logBuffer.push({ t: now, p: this.peaks.slice(0,4) }); // Optimize log size
+        
+        this.drawGalaxy();
+    },
+
+    analyze: function(data) {
+        let p = [];
+        // Simplified analysis for performance
+        for(let i=4; i<data.length-4; i+=2) {
+            if(data[i] > 100 && data[i] > data[i-1] && data[i] > data[i+1]) {
+                p.push({ f: i * (this.ac.sampleRate / this.config.fft), v: data[i] });
+            }
+        }
+        this.peaks = p.sort((a,b) => b.v - a.v).slice(0, 5); // Max 5 drones
+        if(this.peaks[0]) document.getElementById('hudFreq').innerText = this.peaks[0].f.toFixed(0);
+    },
+
+    drawGalaxy: function() {
+        const cx = this.width / 2, cy = this.height / 2;
+        
+        // ORB
+        this.ctx.beginPath();
+        const g = this.ctx.createRadialGradient(cx, cy, 0, cx, cy, this.config.orbRadius);
+        g.addColorStop(0.8, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(0,243,255,0.15)");
+        this.ctx.fillStyle = g; this.ctx.arc(cx, cy, this.config.orbRadius, 0, Math.PI*2); this.ctx.fill();
+
+        this.peaks.forEach((peak, i) => {
+            const t = this.angle + (i * (Math.PI * 2 / this.peaks.length));
+            const dist = (peak.v / 255) * this.config.orbRadius;
+            const x = cx + Math.cos(t) * dist;
+            const y = cy + Math.sin(t) * dist;
+            
+            // Drone
+            this.ctx.fillStyle = `hsl(${peak.f%360}, 100%, 50%)`;
+            this.ctx.beginPath(); this.ctx.arc(x, y, 4, 0, Math.PI*2); this.ctx.fill();
+            
+            // Connection
+            this.ctx.strokeStyle = "rgba(0,255,255,0.2)";
+            this.ctx.beginPath(); this.ctx.moveTo(cx, cy); this.ctx.lineTo(x, y); this.ctx.stroke();
+        });
+    },
+
+    log: function(m) { console.log(m); }
+};
+</script>
 </body>
 </html>
