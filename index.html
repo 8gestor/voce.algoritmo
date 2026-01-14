@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SCS: SINGULARITY v7.4 - ARCHITECT FUSION</title>
+    <title>SCS: SINGULARITY v7.5 - INTEGRITY RESTORE</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
@@ -14,7 +14,7 @@
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background-color: var(--bg); color: #ccc; font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* AUDIO UNLOCK OVERLAY (ESSENTIAL FOR WEB/MOBILE) */
+        /* OVERLAY OBRIGATÓRIO PARA ÁUDIO WEB */
         #audioUnlocker { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .unlock-btn { padding: 20px 40px; border: 2px solid var(--cyan); color: var(--cyan); background: transparent; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); animation: pulse 2s infinite; }
 
@@ -29,7 +29,6 @@
         main { display: flex; flex: 1; overflow: hidden; }
         aside { width: 340px; background: var(--panel); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
         
-        /* Mobile adjustment for sidebar */
         @media (max-width: 700px) {
             aside { width: 280px; position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); transition: 0.3s; box-shadow: 10px 0 20px rgba(0,0,0,0.8); }
             aside.open { transform: translateX(0); }
@@ -92,14 +91,14 @@
 <body>
 
 <div id="audioUnlocker">
-    <div style="color:#fff; margin-bottom:20px; font-size:12px; font-family: monospace;">INICIALIZAÇÃO DO SISTEMA NECESSÁRIA</div>
-    <button class="unlock-btn" onclick="SCS.unlockAudio()">>>> INICIAR ENGINE <<<</button>
+    <div style="color:#fff; margin-bottom:20px; font-size:12px; font-family: monospace;">INICIALIZAÇÃO DO SUBSISTEMA DE ÁUDIO NECESSÁRIA</div>
+    <button class="unlock-btn" onclick="SCS.unlockAudio()">>>> START SYSTEM <<<</button>
 </div>
 
 <header>
     <div style="display:flex; align-items:center;">
         <span class="mobile-toggle" onclick="document.querySelector('aside').classList.toggle('open')">☰</span>
-        <h1>SCS: SINGULARITY v7.4 - FUSION</h1>
+        <h1>SCS: SINGULARITY v7.5 - INTEGRITY RESTORE</h1>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">WAITING_INPUT</span>
@@ -235,7 +234,7 @@
 </main>
 
 <audio id="audioEl" hidden crossorigin="anonymous"></audio>
-<audio id="netAudio" hidden autoplay playsinline></audio>
+<audio id="netAudio" autoplay playsinline style="position:absolute; opacity:0; pointer-events:none;"></audio>
 
 <script>
 const ID_GEN = () => Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -262,6 +261,7 @@ const SCS = {
         try {
             const AC = window.AudioContext || window.webkitAudioContext;
             this.ac = new AC({ sampleRate: 48000 });
+            // IMPORTANT: Force resume on click
             if(this.ac.state === 'suspended') await this.ac.resume();
             
             this.an = this.ac.createAnalyser(); this.an.fftSize = this.config.fft;
@@ -278,7 +278,7 @@ const SCS = {
             console.error(e); 
             // If failed, show unlocker again
             document.getElementById('audioUnlocker').style.display = 'flex';
-            alert("ERRO: Contexto de Áudio Bloqueado. Toque no botão de Iniciar.");
+            alert("ERRO: Contexto de Áudio Bloqueado. Reinicie.");
         }
     },
 
@@ -298,7 +298,7 @@ const SCS = {
         this.config.orbRadius = Math.min(this.width, this.height) * 0.49;
     },
 
-    // --- NETWORK MODULE (ROBUST v7.3 ENGINE) ---
+    // --- NETWORK MODULE (FIXED FOR AUDIO) ---
     Net: {
         peer: null, conn: null, call: null, myId: null, spyMode: false, remoteId: null, localStream: null,
         
@@ -308,7 +308,7 @@ const SCS = {
             this.peer = new Peer(this.myId, { debug: 1 });
 
             this.peer.on('open', (id) => {
-                document.getElementById('netStatus').innerText = "REDE: ONLINE (HTTPS)";
+                document.getElementById('netStatus').innerText = "REDE: ONLINE";
                 document.getElementById('netStatus').classList.add('connected');
                 SCS.log("SYS", "NODE ID: " + id);
             });
@@ -320,17 +320,22 @@ const SCS = {
 
             this.peer.on('connection', (c) => this.handleConn(c));
 
-            // AUTO-ANSWER LOGIC
+            // AUTO-ANSWER WITH EXPLICIT PLAY
             this.peer.on('call', (call) => {
-                SCS.log("SURV", "RECEBENDO SINAL DE ÁUDIO...");
+                SCS.log("SURV", "SINAL DETECTADO...");
                 call.answer(); 
                 call.on('stream', (remoteStream) => {
+                    SCS.log("SURV", "AUDIO STREAM ACQUIRED");
+                    
                     // 1. Output Audio (Hearing)
                     SCS.netAudio.srcObject = remoteStream;
+                    SCS.netAudio.volume = 1.0; // Force Volume
+                    
                     const playPromise = SCS.netAudio.play();
                     if (playPromise !== undefined) {
                         playPromise.catch(error => {
-                            SCS.log("ERR", "Autoplay bloqueado. Toque na tela.");
+                            SCS.log("ERR", "AUTOPLAY BLOCKED. CLICK PAGE.");
+                            document.getElementById('audioUnlocker').style.display = 'flex';
                         });
                     }
 
@@ -339,6 +344,10 @@ const SCS = {
                     remoteSrc.connect(SCS.an);
                     
                     document.getElementById('sysLed').classList.add('net');
+                    // Visual feedback
+                    document.getElementById('modemHud').style.display = 'block';
+                    document.getElementById('modemHud').innerText = "AUDIO FEED ON";
+                    setTimeout(() => document.getElementById('modemHud').style.display = 'none', 3000);
                 });
             });
         },
@@ -388,7 +397,7 @@ const SCS = {
                 try {
                     if(SCS.ac.state === 'suspended') await SCS.ac.resume();
                     
-                    // Mobile compatible constraints
+                    // Robust Constraints
                     this.localStream = await navigator.mediaDevices.getUserMedia({
                         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
                     });
@@ -397,7 +406,7 @@ const SCS = {
                     SCS.connect(src, "MIC");
                     
                     if(this.remoteId) {
-                        SCS.log("SPY", "ENVIANDO AUDIO OCULTO -> " + this.remoteId);
+                        SCS.log("SPY", "TRANSMITINDO AUDIO -> " + this.remoteId);
                         this.call = this.peer.call(this.remoteId, this.localStream);
                     } else {
                         SCS.log("SPY", "MIC ABERTO (SEM ALVO)");
