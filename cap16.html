@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY v7.1 - AUDIO SURVEILLANCE</title>
+    <title>SCS: SINGULARITY v7.2 - STABLE AUDIO LINK</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
@@ -16,6 +16,7 @@
 
         header { border-bottom: 1px solid var(--cyan); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: var(--panel); height: 40px; flex-shrink: 0; z-index: 100; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
         h1 { margin: 0; font-size: 13px; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+        
         .status-led { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
         .status-led.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
         .status-led.net { background: var(--data); box-shadow: 0 0 10px var(--data); }
@@ -41,6 +42,7 @@
 
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
+        /* Graphics */
         .spec-row { display: flex; align-items: center; gap: 10px; font-size: 9px; margin-bottom: 4px; }
         .spec-name { width: 40px; text-align: right; color: #777; }
         .bar-container { flex: 1; height: 4px; background: #111; border: 1px solid #333; }
@@ -65,7 +67,6 @@
         .log-msg { color: #ccc; word-break: break-all; }
         
         #infra-dash { flex: 1; position: relative; background: #010102; overflow: hidden; height: 100%; }
-
         .hud { position: absolute; pointer-events: none; padding: 20px; z-index: 10; }
         .val-big { font-size: 38px; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
         .modem-hud { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--amber); font-size: 14px; background: rgba(0,0,0,0.8); padding: 10px; border: 1px solid var(--amber); display: none; z-index: 20; text-align: center; font-weight: bold; }
@@ -78,7 +79,7 @@
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY v7.1 - AUDIO SURVEILLANCE</h1>
+    <h1>SCS: SINGULARITY v7.2 - STABLE AUDIO</h1>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">OFFLINE</span>
         <div id="sysLed" class="status-led"></div>
@@ -213,6 +214,7 @@
 </main>
 
 <audio id="audioEl" hidden crossorigin="anonymous"></audio>
+<audio id="netAudio" hidden autoplay></audio>
 
 <script>
 const ID_GEN = () => Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -222,6 +224,7 @@ const SCS = {
     cvs: document.getElementById('scope'), ctx: document.getElementById('scope').getContext('2d'),
     infCvs: document.getElementById('infraCanvas'), infCtx: document.getElementById('infraCanvas').getContext('2d'),
     elAudio: document.getElementById('audioEl'),
+    netAudio: document.getElementById('netAudio'),
     config: { fft: 4096, orbRadius: 0, fov: 650, maxMainDrones: 8, harmonicsPerPoint: 4, subHarmonics: 3, baseFontSize: 14, droneSize: 7, lineWidth: 2.2 },
     active: false, state: 'IDLE', layers: { ORB: true, RAYS: true, DRONES: true, HARMONICS: true },
     angle: 0, peaks: [], isRecording: false, logBuffer: [], 
@@ -283,15 +286,19 @@ const SCS = {
 
             this.peer.on('connection', (c) => this.handleConn(c));
 
-            // AUTO-ANSWER (Listening Device Logic)
+            // AUTO-ANSWER (Listening Logic Fix)
             this.peer.on('call', (call) => {
-                SCS.log("SURV", "SINAL DE AUDIO RECEBIDO.");
-                call.answer(); // Atende sem enviar stream (apenas ouve)
+                SCS.log("SURV", "RECEBENDO AUDIO...");
+                call.answer(); 
                 call.on('stream', (remoteStream) => {
-                    SCS.log("SURV", "AUDIO REMOTO ATIVO.");
+                    // 1. VISUAL
                     const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
-                    remoteSrc.connect(SCS.an); // Visualiza
-                    remoteSrc.connect(SCS.ac.destination); // Ouve
+                    remoteSrc.connect(SCS.an);
+                    
+                    // 2. AUDIO OUTPUT (CRITICAL FIX: Use HTML Element)
+                    SCS.netAudio.srcObject = remoteStream;
+                    SCS.netAudio.play().catch(e => SCS.log("ERR", "Autoplay Blocked: " + e));
+                    
                     document.getElementById('sysLed').classList.add('net');
                 });
             });
@@ -313,7 +320,6 @@ const SCS = {
                 document.getElementById('conn-indicator').style.color = "#00ff66";
                 document.getElementById('btnConnect').innerText = "LINK OK";
                 document.getElementById('btnConnect').disabled = true;
-                // Sync remote ID field if incoming connection
                 if(!document.getElementById('targetId').value) document.getElementById('targetId').value = this.remoteId;
             });
             this.conn.on('data', (data) => {
@@ -341,16 +347,19 @@ const SCS = {
                 document.getElementById('sysLed').classList.add('spy');
                 
                 try {
-                    this.localStream = await navigator.mediaDevices.getUserMedia({audio: true});
+                    // Ensure Audio Context is Running
+                    if(SCS.ac.state === 'suspended') await SCS.ac.resume();
+
+                    this.localStream = await navigator.mediaDevices.getUserMedia({audio: { echoCancellation: true, noiseSuppression: true }});
                     // Connect local to graph
                     const src = SCS.ac.createMediaStreamSource(this.localStream);
                     SCS.connect(src, "MIC");
                     
                     if(this.remoteId) {
-                        SCS.log("SPY", "INICIANDO TRANSMISSÃO OCULTA PARA " + this.remoteId);
+                        SCS.log("SPY", "ENVIANDO AUDIO OCULTO -> " + this.remoteId);
                         this.call = this.peer.call(this.remoteId, this.localStream);
                     } else {
-                        SCS.log("SPY", "MIC ABERTO (SEM ALVO LINKADO)");
+                        SCS.log("SPY", "MIC ABERTO (SEM ALVO)");
                     }
                     SCS.askRecord();
                 } catch(e) { alert("ERRO MIC: " + e); this.toggleSpy(); }
@@ -419,6 +428,7 @@ const SCS = {
         }
     },
     useMic: async function() {
+        if(SCS.ac.state === 'suspended') await SCS.ac.resume();
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
         this.connect(this.ac.createMediaStreamSource(s), "MIC");
         this.askRecord();
