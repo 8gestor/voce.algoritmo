@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY ENGINE v5.8 - ARCHITECT</title>
+    <title>SCS: SINGULARITY ENGINE v5.9 - ARCHITECT</title>
     <style>
         :root {
             --bg: #000000;
@@ -33,12 +33,13 @@
         .mod-label { position: absolute; top: -7px; left: 8px; background: var(--panel); padding: 0 5px; font-size: 8px; color: var(--cyan); text-transform: uppercase; border: 1px solid #222; }
 
         .row { display: flex; gap: 5px; margin-bottom: 6px; }
-        button { flex: 1; background: #080808; color: #888; border: 1px solid #444; padding: 8px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; border-radius: 2px; }
+        button { flex: 1; background: #080808; color: #888; border: 1px solid #444; padding: 8px; font-family: inherit; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; border-radius: 2px; }
         button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0,243,255,0.1); }
         button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
         button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; }
         
-        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 10px; padding: 8px; margin-bottom: 5px; outline: none; }
+        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 10px; padding: 8px; margin-bottom: 5px; outline: none; transition: 0.3s; }
+        input[type="text"]:focus { border-color: var(--cyan); box-shadow: 0 0 5px rgba(0, 243, 255, 0.2); }
         
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
@@ -71,7 +72,7 @@
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY ENGINE v5.8 - ARCHITECT</h1>
+    <h1>SCS: SINGULARITY ENGINE v5.9 - ARCHITECT</h1>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">SYS_STANDBY</span>
         <div id="sysLed" class="status-led"></div>
@@ -83,7 +84,7 @@
         <div class="module">
             <span class="mod-label">00. Hardware Ignition</span>
             <div class="row">
-                <button id="btnInit" onclick="SCS.init()" style="color:var(--green); border-color:var(--green);">INICIALIZAR</button>
+                <button id="btnInit" onclick="SCS.init()" style="color:var(--green); border-color:var(--green);">LIGAR MOTOR</button>
                 <button onclick="location.reload()" style="color:var(--amber); border-color:var(--amber);">REINICIAR</button>
             </div>
         </div>
@@ -103,28 +104,32 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">02. Logging & Data Gen</span>
+            <span class="mod-label">02. Data Generation</span>
             <div class="row">
-                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR LOG</button>
-                <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 EXPORTAR JSON</button>
+                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR TELEMETRIA</button>
+                <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 EXPORTAR (.JSON)</button>
             </div>
         </div>
 
         <div class="module">
-            <span class="mod-label">03. Secure Data-Link</span>
-            <input type="text" id="cryptoKey" placeholder="CHAVE DE CRIPTOGRAFIA...">
+            <span class="mod-label">03. DATA-LINK (Transferência de Arquivos)</span>
+            <input type="text" id="cryptoKey" placeholder="CHAVE DE ACESSO (Necessária p/ Modo Seguro)">
+            
+            <div style="font-size:9px; color:var(--cyan); margin-bottom:5px; text-align:center; letter-spacing:1px;">PROTOCOLO SEGURO (ENCRIPTADO)</div>
             <div class="row">
-                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">📡 TX CRYPTO</button>
-                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">📟 RX CRYPTO</button>
+                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">1. ENVIAR DADOS</button>
+                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">2. RECEBER DADOS</button>
             </div>
+            
+            <div style="border-top:1px solid #222; margin:8px 0; padding-top:8px; font-size:9px; color:#555; text-align:center;">MODO ABERTO (SEM SEGURANÇA)</div>
             <div class="row">
-                <button id="btnTxSimple" onclick="SCS.Modem.transmit(false)" disabled style="color:var(--amber); font-size: 8px;">📡 TX SIMPLE</button>
-                <button id="btnRxSimple" onclick="SCS.Modem.receive(false)" disabled style="color:var(--data); font-size: 8px;">📟 RX SIMPLE</button>
+                <button id="btnTxSimple" onclick="SCS.Modem.transmit(false)" disabled style="color:var(--amber); font-size: 8px;">ENVIAR SIMPLES</button>
+                <button id="btnRxSimple" onclick="SCS.Modem.receive(false)" disabled style="color:var(--data); font-size: 8px;">RECEBER SIMPLES</button>
             </div>
         </div>
 
         <div class="module">
-            <span class="mod-label">04. Archive & Simulation</span>
+            <span class="mod-label">04. Archive Simulation</span>
             <div class="row">
                 <button id="btnImport" onclick="document.getElementById('fLog').click()" disabled>📂 CARREGAR LOG</button>
                 <input type="file" id="fLog" hidden accept=".json" onchange="SCS.importLog(this)">
@@ -133,7 +138,7 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">05. Spectral Monitor</span>
+            <span class="mod-label">05. Real-Time Spectral Monitor</span>
             <div class="spec-row">
                 <span class="spec-name">INFRA</span>
                 <div class="bar-container"><div id="barInfra" class="bar-fill bar-infra"></div></div>
@@ -192,7 +197,6 @@
 
 <script>
 const SCS = {
-    // Hardware & Core
     ac: null, an: null, src: null,
     cvs: document.getElementById('scope'),
     ctx: document.getElementById('scope').getContext('2d'),
@@ -256,7 +260,6 @@ const SCS = {
         this.state = 'LIVE';
     },
 
-    // --- DATA-LINK MODULE ---
     Modem: {
         scramble: function(data, key) {
             if(!key) return data;
@@ -269,9 +272,11 @@ const SCS = {
             return scrambled.join('');
         },
         transmit: function(encrypted) {
-            if(SCS.logBuffer.length === 0) return;
+            if(SCS.logBuffer.length === 0) { alert("ERRO: O Buffer de Log está vazio. Grave telemetria antes de transmitir."); return; }
             SCS.modem.active = true; SCS.modem.mode = 'TX'; SCS.modem.isEncrypted = encrypted;
             SCS.modem.key = document.getElementById('cryptoKey').value;
+            if(encrypted && !SCS.modem.key) { alert("ALERTA: Chave de acesso necessária para modo encriptado."); return; }
+            
             document.getElementById('modemHud').style.display = 'block';
             let dataStr = "";
             for(let i=0; i<Math.min(SCS.logBuffer.length, 64); i++) {
@@ -291,14 +296,13 @@ const SCS = {
             const now = SCS.ac.currentTime;
             g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + (SCS.modem.speed/1000));
             osc.start(); osc.stop(now + (SCS.modem.speed/1000));
-            document.getElementById('modemHud').innerText = `TX: ${SCS.modem.buffer[SCS.modem.idx]}`;
+            document.getElementById('modemHud').innerText = `ENVIANDO: ${SCS.modem.buffer[SCS.modem.idx]}`;
             SCS.modem.idx++; setTimeout(() => this.txLoop(), SCS.modem.speed);
         },
-        receive: function(enc) { SCS.useMic(); SCS.modem.active = true; SCS.modem.mode = 'RX'; document.getElementById('modemHud').style.display = 'block'; document.getElementById('modemHud').innerText = "RX_SCAN..."; },
+        receive: function(enc) { SCS.useMic(); SCS.modem.active = true; SCS.modem.mode = 'RX'; document.getElementById('modemHud').style.display = 'block'; document.getElementById('modemHud').innerText = "ESCANEANDO SINAL..."; },
         stop: function() { SCS.modem.active = false; document.getElementById('modemHud').style.display = 'none'; }
     },
 
-    // --- TELEMETRY ---
     toggleRecording: function() {
         this.isRecording = !this.isRecording;
         document.getElementById('btnRec').classList.toggle('recording');
@@ -316,7 +320,6 @@ const SCS = {
     },
     startSimulation: function() { if (this.simData) { this.state = 'SIM'; this.simStartTime = Date.now(); } },
 
-    // --- RENDER CORE ---
     loop: function() {
         requestAnimationFrame(() => this.loop());
         if(!this.active) return;
