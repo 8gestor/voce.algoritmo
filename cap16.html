@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY ENGINE v7.1 - GHOST NODE PRO</title>
+    <title>SCS: SINGULARITY ENGINE v7.0 - NETWORKED INTELLIGENCE</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
@@ -13,48 +13,76 @@
         }
         * { box-sizing: border-box; user-select: none; }
         body { margin: 0; padding: 0; background-color: var(--bg); color: #ccc; font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
         header { border-bottom: 1px solid var(--cyan); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: var(--panel); height: 40px; flex-shrink: 0; z-index: 100; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
         h1 { margin: 0; font-size: 13px; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
         .status-led { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
         .status-led.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .status-led.net { background: var(--data); box-shadow: 0 0 10px var(--data); }
+
         main { display: flex; flex: 1; overflow: hidden; }
         aside { width: 340px; background: var(--panel); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
+
         .module { border: 1px solid #2a2a2a; padding: 10px; position: relative; margin-top: 5px; background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 100%); border-radius: 4px; }
         .mod-label { position: absolute; top: -7px; left: 8px; background: var(--panel); padding: 0 5px; font-size: 8px; color: var(--cyan); text-transform: uppercase; border: 1px solid #222; }
+
         .row { display: flex; gap: 5px; margin-bottom: 6px; }
         button { flex: 1; background: #080808; color: #888; border: 1px solid #444; padding: 8px; font-family: inherit; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; border-radius: 2px; }
         button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0,243,255,0.1); }
         button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-        button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; }
-        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; text-align: center; }
+        button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; background: rgba(255, 0, 68, 0.1); }
+        
+        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; letter-spacing: 1px; }
+        textarea { height: 45px; resize: none; font-size: 9px; }
+
+        .net-status { font-size: 9px; color: #555; text-align: center; margin-bottom: 5px; }
+        .net-status.connected { color: var(--data); font-weight: bold; }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Spectral Monitor */
         .spec-row { display: flex; align-items: center; gap: 10px; font-size: 9px; margin-bottom: 4px; }
         .spec-name { width: 40px; text-align: right; color: #777; }
         .bar-container { flex: 1; height: 4px; background: #111; border: 1px solid #333; }
         .bar-fill { height: 100%; width: 0%; transition: width 0.1s; }
         .bar-infra { background: var(--purple); } .bar-audio { background: var(--cyan); } .bar-ultra { background: #ff0055; }
+
+        /* VIEWPORT & RULER */
         #viewport-container { flex: 1.8; display: flex; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1a1a1a; }
         #viewport { flex: 1; position: relative; }
         canvas { width: 100%; height: 100%; display: block; }
+        
         #spectral-ruler { width: 40px; background: #050505; border-left: 1px solid #1a1a1a; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0; }
         .ruler-mark { font-size: 7px; color: #444; text-align: center; }
-        #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; z-index: 5; }
+        #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; transition: top 0.1s; z-index: 5; }
+        .ruler-grad { position: absolute; width: 6px; height: 100%; left: 0; background: linear-gradient(to bottom, #ff0055, #00f3ff, #bc13fe); opacity: 0.5; }
+
+        /* DASHBOARD */
         #dashboard { height: 145px; background: #050508; display: flex; border-top: 1px solid var(--cyan); flex-shrink: 0; }
-        .dash-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #1a1a1a; }
-        .dash-label { background: #0d0d0f; color: var(--cyan); font-size: 9px; padding: 3px 12px; font-weight: bold; border-bottom: 1px solid #1a1a1a; }
-        #log-stream { flex: 1; overflow-y: auto; padding: 8px; font-size: 9px; color: #555; }
-        #infra-dash { flex: 1.3; position: relative; background: #010102; overflow: hidden; }
+        .dash-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #1a1a1a; height: 100%; }
+        .dash-label { background: #0d0d0f; color: var(--cyan); font-size: 9px; padding: 3px 12px; font-weight: bold; border-bottom: 1px solid #1a1a1a; flex-shrink: 0; display:flex; justify-content:space-between; }
+        
+        #log-stream { flex: 1; overflow-y: auto; padding: 8px; font-size: 9px; color: #555; display: flex; flex-direction: column-reverse; }
+        .log-entry { margin-bottom: 2px; border-bottom: 1px solid #111; padding-bottom: 2px; display: grid; grid-template-columns: 45px 1fr; gap:5px; }
+        .log-msg { color: #ccc; word-break: break-all; }
+        
+        #infra-dash { flex: 1; position: relative; background: #010102; overflow: hidden; height: 100%; }
+
         .hud { position: absolute; pointer-events: none; padding: 20px; z-index: 10; }
         .val-big { font-size: 38px; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
         .modem-hud { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--amber); font-size: 14px; background: rgba(0,0,0,0.8); padding: 10px; border: 1px solid var(--amber); display: none; z-index: 20; text-align: center; font-weight: bold; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        .sim-ctrl { color: var(--data); font-weight: bold; }
+        .id-display { font-size: 14px; color: var(--green); text-align: center; padding: 5px; border: 1px dashed #333; margin-bottom: 5px; cursor: pointer; }
+        .id-display:hover { background: #111; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY v7.1 - GHOST NODE PRO</h1>
+    <h1>SCS: SINGULARITY v7.0 - NET_INTELLIGENCE</h1>
     <div style="display:flex; align-items:center; gap:10px;">
-        <span id="headerStatus" style="font-size:10px; color:#444;">SYS_READY</span>
+        <span id="headerStatus" style="font-size:10px; color:#444;">OFFLINE</span>
         <div id="sysLed" class="status-led"></div>
     </div>
 </header>
@@ -64,7 +92,7 @@
         <div class="module">
             <span class="mod-label">00. Hardware Control</span>
             <div class="row">
-                <button id="btnInit" onclick="SCS.init()" style="color:var(--green); border-color:var(--green);">LIGAR MOTOR</button>
+                <button id="btnInit" onclick="SCS.init()" style="color:var(--green); border-color:var(--green);">LIGAR SISTEMA</button>
                 <button onclick="location.reload()" style="color:var(--amber); border-color:var(--amber);">REINICIAR</button>
             </div>
         </div>
@@ -72,7 +100,7 @@
         <div class="module">
             <span class="mod-label">01. Signal Source</span>
             <div class="row">
-                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 MIC LOCAL</button>
+                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 MIC</button>
                 <button id="btnFile" onclick="document.getElementById('fAudio').click()" disabled>📂 ARQUIVO</button>
                 <input type="file" id="fAudio" hidden onchange="SCS.useFile(this)">
             </div>
@@ -80,16 +108,6 @@
                 <button id="btnPlay" onclick="SCS.mediaControl('play')" disabled>▶</button>
                 <button id="btnPause" onclick="SCS.mediaControl('pause')" disabled>II</button>
                 <button id="btnStop" onclick="SCS.mediaControl('stop')" disabled>■</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">03. OSINT NODE (Vigilância IP)</span>
-            <div style="font-size:9px; color:#555; margin-bottom:5px;">MEU ID DE NÓ:</div>
-            <div id="myNodeId" style="color:var(--cyan); font-weight:bold; font-size:12px; text-align:center; padding:5px; background:#111; border:1px solid #222; margin-bottom:10px;">STANDBY...</div>
-            <input type="text" id="targetNodeId" placeholder="DIGITE O ID DO ALVO">
-            <div class="row">
-                <button id="btnGhost" onclick="SCS.Ghost.connect()" disabled style="color:var(--data)">CONECTAR AO ALVO</button>
             </div>
         </div>
 
@@ -102,11 +120,26 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">04. Data-Link (Acoustic)</span>
-            <input type="text" id="cryptoKey" placeholder="CHAVE DE SEGURANÇA...">
+            <span class="mod-label">03. OSINT Node (Auto-VoIP)</span>
+            <div id="netStatus" class="net-status">AGUARDANDO REDE...</div>
+            <div id="myIdDisplay" class="id-display" onclick="SCS.Net.copyId()">[ GERANDO ID... ]</div>
             <div class="row">
-                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">ENVIAR</button>
-                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">RECEBER</button>
+                <input type="text" id="targetId" placeholder="DIGITE O ID DO PARCEIRO..." style="text-align:center; font-size:12px; font-weight:bold;">
+            </div>
+            <div class="row">
+                <button id="btnConnect" onclick="SCS.Net.connect()" disabled style="color:var(--data)">📞 CONECTAR</button>
+                <button id="btnDisconnect" onclick="SCS.Net.disconnect()" disabled style="color:var(--rec)">DESLIGAR</button>
+            </div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">04. Data-Link (Secure Chat)</span>
+            <input type="text" id="chatMsg" placeholder="MENSAGEM / DADOS..." onkeypress="if(event.key==='Enter') SCS.DataLink.send()">
+            <div class="row">
+                <button id="btnTx" onclick="SCS.DataLink.send()" disabled style="color:var(--green)">ENVIAR (AUTO)</button>
+            </div>
+            <div style="font-size:8px; color:#555; text-align:center;">
+                PRIORIDADE: IP LINK > ACUSTICO (BEEP)
             </div>
         </div>
 
@@ -116,6 +149,11 @@
                 <button id="btnImport" onclick="document.getElementById('fLog').click()" disabled>📂 CARREGAR</button>
                 <input type="file" id="fLog" hidden accept=".json" onchange="SCS.importLog(this)">
                 <button id="btnSim" onclick="SCS.startSimulation()" disabled style="color:var(--green)">▶ SIMULAR</button>
+            </div>
+            <div class="row" style="margin-top:5px; border-top:1px solid #222; padding-top:5px;">
+                <button onclick="SCS.changeSpeed(-0.25)" class="sim-ctrl">⏪</button>
+                <div style="flex:1; text-align:center; font-size:10px; color:#fff;" id="simSpeedDisplay">SPD: 1.0x</div>
+                <button onclick="SCS.changeSpeed(0.25)" class="sim-ctrl">⏩</button>
             </div>
         </div>
 
@@ -144,28 +182,33 @@
             <div id="viewport">
                 <canvas id="scope"></canvas>
                 <div class="hud">
-                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">SPECTRAL PEAK</div>
+                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">RESONANCE PEAK</div>
                     <div class="val-big" id="hudFreq">0.0</div>
                     <div id="hudTime" style="color:#444; font-size:10px; margin-top:2px;">T+ 00:00:00</div>
                 </div>
                 <div id="modemHud" class="modem-hud">LINK_ACTIVE</div>
             </div>
             <div id="spectral-ruler">
+                <div class="ruler-grad"></div>
                 <div id="ruler-pointer"></div>
                 <div class="ruler-mark">20k</div><div class="ruler-mark">15k</div><div class="ruler-mark">10k</div>
                 <div class="ruler-mark">5k</div><div class="ruler-mark">1k</div><div class="ruler-mark">500</div>
                 <div class="ruler-mark">100</div><div class="ruler-mark">20</div><div class="ruler-mark">0</div>
             </div>
         </div>
+
         <div id="dashboard">
             <div class="dash-panel">
-                <div class="dash-label">MATH TELEMETRY STREAM</div>
+                <div class="dash-label">
+                    <span>TELEMETRY & CHAT STREAM</span>
+                    <span id="conn-indicator" style="color:#444;">● P2P LINK</span>
+                </div>
                 <div id="log-stream">
-                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">AWAITING SIGNAL...</div>
+                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">SYSTEM INITIALIZED...</div>
                 </div>
             </div>
             <div class="dash-panel" style="border-right:none;">
-                <div class="dash-label">INFRASONIC MONITOR</div>
+                <div class="dash-label">INFRASONIC MONITOR (Gain x15)</div>
                 <div id="infra-dash"><canvas id="infraCanvas"></canvas></div>
             </div>
         </div>
@@ -175,15 +218,19 @@
 <audio id="audioEl" hidden crossorigin="anonymous"></audio>
 
 <script>
+// --- UTILS ---
+const ID_GEN = () => Math.random().toString(36).substring(2, 6).toUpperCase();
+
 const SCS = {
-    ac: null, an: null, src: null, peer: null, localStream: null,
+    ac: null, an: null, src: null,
     cvs: document.getElementById('scope'), ctx: document.getElementById('scope').getContext('2d'),
     infCvs: document.getElementById('infraCanvas'), infCtx: document.getElementById('infraCanvas').getContext('2d'),
+    elAudio: document.getElementById('audioEl'),
     config: { fft: 4096, orbRadius: 0, fov: 650, maxMainDrones: 8, harmonicsPerPoint: 4, subHarmonics: 3, baseFontSize: 14, droneSize: 7, lineWidth: 2.2 },
     active: false, state: 'IDLE', layers: { ORB: true, RAYS: true, DRONES: true, HARMONICS: true },
-    angle: 0, peaks: [], isRecording: false, logBuffer: [], simData: null, simStartTime: 0, sysStartTime: Date.now(),
-    infraHistory: new Array(300).fill(0),
-    modem: { active: false, mode: null, buffer: [], idx: 0, baseFreq: 4000, stepFreq: 250, speed: 80 },
+    angle: 0, peaks: [], isRecording: false, logBuffer: [], 
+    simData: null, simSpeed: 1.0, simCurrentTime: 0, lastFrameTime: 0,
+    sysStartTime: Date.now(), infraHistory: new Array(300).fill(0),
 
     init: async function() {
         try {
@@ -193,44 +240,19 @@ const SCS = {
             this.resize(); window.onresize = () => this.resize();
             this.active = true;
             document.getElementById('btnInit').disabled = true;
-            ['btnMic','btnFile','btnRec','btnImport','btnTx','btnRx','btnGhost'].forEach(id => {
-                const b = document.getElementById(id); if(b) b.disabled = false;
-            });
+            this.enableControls();
             document.getElementById('sysLed').classList.add('on');
-            document.getElementById('headerStatus').innerText = "LIVE_ON";
+            document.getElementById('headerStatus').innerText = "SYSTEM_ACTIVE";
             this.sysStartTime = Date.now();
-            this.Ghost.init();
             this.loop();
-        } catch(e) { console.error(e); }
+            this.Net.init(); // Auto-start Network
+        } catch(e) { console.error(e); alert("Audio Context Blocked. Interact with page first."); }
     },
 
-    Ghost: {
-        init() {
-            SCS.peer = new Peer('SCS-' + Math.floor(Math.random()*9000 + 1000));
-            SCS.peer.on('open', id => { document.getElementById('myNodeId').innerText = id; });
-            SCS.peer.on('call', call => {
-                SCS.log("REQUISITANDO ACESSO AO MIC PARA RESPOSTA...");
-                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                    SCS.localStream = stream;
-                    call.answer(stream);
-                    call.on('stream', remoteStream => SCS.Ghost.pipe(remoteStream));
-                }).catch(err => SCS.log("ERRO AO ABRIR MIC: " + err.message));
-            });
-        },
-        async connect() {
-            const target = document.getElementById('targetNodeId').value;
-            if(!target) return alert("INSIRA O ID ALVO!");
-            SCS.log("INICIANDO HANDSHAKE COM " + target);
-            SCS.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const call = SCS.peer.call(target, SCS.localStream);
-            call.on('stream', remoteStream => SCS.Ghost.pipe(remoteStream));
-        },
-        pipe(stream) {
-            SCS.log("GHOST_LINK ESTABELECIDO.");
-            const remoteSrc = SCS.ac.createMediaStreamSource(stream);
-            remoteSrc.connect(SCS.an);
-            const audio = new Audio(); audio.srcObject = stream; audio.play();
-        }
+    enableControls: function() {
+        ['btnMic','btnFile','btnStop','btnRec','btnImport','btnTx','btnConnect'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).disabled = false;
+        });
     },
 
     resize: function() {
@@ -243,15 +265,171 @@ const SCS = {
         this.config.orbRadius = Math.min(this.width, this.height) * 0.49;
     },
 
+    // --- NETWORK MODULE (PEERJS AUTOMATION) ---
+    Net: {
+        peer: null, conn: null, call: null, myId: null,
+        init: function() {
+            // Cria um Peer com ID aleatório curto no servidor público gratuito
+            this.myId = ID_GEN();
+            document.getElementById('myIdDisplay').innerText = `MEU ID: ${this.myId}`;
+            
+            // Inicializa PeerJS
+            this.peer = new Peer(this.myId, { debug: 1 });
+
+            this.peer.on('open', (id) => {
+                document.getElementById('netStatus').innerText = "REDE: ONLINE (READY)";
+                document.getElementById('netStatus').classList.add('connected');
+                SCS.log("SYSTEM", "NETWORK NODE INITIALIZED. ID: " + id);
+            });
+
+            this.peer.on('error', (err) => {
+                document.getElementById('netStatus').innerText = "ERRO DE REDE";
+                SCS.log("ERROR", "NET_ERR: " + err.type);
+            });
+
+            // Ao receber conexão de dados
+            this.peer.on('connection', (c) => {
+                this.handleConn(c);
+            });
+
+            // Ao receber chamada de voz
+            this.peer.on('call', (call) => {
+                SCS.log("VOIP", "CHAMADA RECEBIDA...");
+                navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
+                    call.answer(stream); // Resposta automática
+                    this.handleCall(call, stream);
+                }).catch(e => SCS.log("ERROR", "MIC PERMISSION DENIED"));
+            });
+        },
+
+        connect: function() {
+            const target = document.getElementById('targetId').value.toUpperCase();
+            if(target.length < 2) return alert("ID INVALIDO");
+            SCS.log("NET", "CONECTANDO A: " + target);
+            
+            // Conecta Dados
+            const conn = this.peer.connect(target);
+            this.handleConn(conn);
+
+            // Conecta Audio
+            navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
+                const call = this.peer.call(target, stream);
+                this.handleCall(call, stream);
+            }).catch(e => alert("Erro Mic: " + e));
+        },
+
+        handleConn: function(c) {
+            this.conn = c;
+            this.conn.on('open', () => {
+                SCS.log("NET", "DATA LINK ESTABELECIDO: " + this.conn.peer);
+                document.getElementById('conn-indicator').style.color = "#00ff66";
+                document.getElementById('btnDisconnect').disabled = false;
+                document.getElementById('btnConnect').disabled = true;
+            });
+            this.conn.on('data', (data) => {
+                SCS.log("RX_DATA", data);
+                // Visual Effect for data receive
+                document.getElementById('modemHud').style.display = 'block';
+                document.getElementById('modemHud').innerText = "DATA RX: " + data.substring(0,10);
+                setTimeout(() => document.getElementById('modemHud').style.display = 'none', 1000);
+            });
+            this.conn.on('close', () => this.disconnect());
+        },
+
+        handleCall: function(call, localStream) {
+            this.call = call;
+            // Visualizar audio local
+            const localSrc = SCS.ac.createMediaStreamSource(localStream);
+            localSrc.connect(SCS.an); 
+
+            call.on('stream', (remoteStream) => {
+                SCS.log("VOIP", "AUDIO REMOTO ATIVO");
+                const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
+                remoteSrc.connect(SCS.an); // Visualiza audio remoto
+                remoteSrc.connect(SCS.ac.destination); // Toca audio remoto
+                document.getElementById('sysLed').classList.add('net');
+            });
+        },
+
+        disconnect: function() {
+            if(this.conn) this.conn.close();
+            if(this.call) this.call.close();
+            this.conn = null; this.call = null;
+            document.getElementById('conn-indicator').style.color = "#444";
+            document.getElementById('btnDisconnect').disabled = true;
+            document.getElementById('btnConnect').disabled = false;
+            document.getElementById('sysLed').classList.remove('net');
+            SCS.log("NET", "CONEXAO ENCERRADA");
+        },
+
+        copyId: function() {
+            navigator.clipboard.writeText(this.myId);
+            alert("ID COPIADO: " + this.myId);
+        }
+    },
+
+    // --- DATA LINK (HYBRID: IP PRIORITY / ACOUSTIC FALLBACK) ---
+    DataLink: {
+        send: function() {
+            const input = document.getElementById('chatMsg');
+            const msg = input.value;
+            if(!msg) return;
+
+            if(SCS.Net.conn && SCS.Net.conn.open) {
+                // IP MODE
+                SCS.Net.conn.send(msg);
+                SCS.log("TX_IP", msg);
+                input.value = "";
+            } else {
+                // ACOUSTIC FALLBACK
+                SCS.log("TX_AUDIO", "SENDING ACOUSTIC DATA...");
+                this.playAcoustic(msg);
+                input.value = "";
+            }
+        },
+
+        playAcoustic: function(str) {
+            // Simple FSK-like sound effect for "cool factor" visualization
+            const osc = SCS.ac.createOscillator();
+            const g = SCS.ac.createGain();
+            osc.connect(g); g.connect(SCS.ac.destination);
+            
+            document.getElementById('modemHud').style.display = 'block';
+            osc.frequency.setValueAtTime(1200, SCS.ac.currentTime);
+            
+            // Encode visualization
+            let now = SCS.ac.currentTime;
+            for(let i=0; i<Math.min(str.length, 20); i++) {
+                const f = 1000 + (str.charCodeAt(i) % 10) * 200;
+                osc.frequency.setValueAtTime(f, now + (i*0.05));
+                setTimeout(() => document.getElementById('modemHud').innerText = "TX: " + str[i], i*50);
+            }
+            
+            g.gain.setValueAtTime(0.5, now);
+            g.gain.linearRampToValueAtTime(0, now + (str.length*0.05));
+            osc.start(now); osc.stop(now + (str.length*0.05) + 0.1);
+            setTimeout(() => document.getElementById('modemHud').style.display = 'none', str.length*50 + 200);
+        }
+    },
+
+    // --- CORE & RECORDING ---
+    askRecord: function() {
+        if(confirm("SISTEMA: Iniciar gravação do LOG automaticamente?")) {
+            if(!this.isRecording) this.toggleRecording();
+        }
+    },
+
     useMic: async function() {
-        SCS.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        this.connect(this.ac.createMediaStreamSource(SCS.localStream), "MIC");
+        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this.connect(this.ac.createMediaStreamSource(s), "MIC");
+        this.askRecord();
     },
     useFile: function(el) {
-        const url = URL.createObjectURL(el.files[0]);
-        document.getElementById('audioEl').src = url;
-        this.connect(this.ac.createMediaElementSource(document.getElementById('audioEl')), "FILE");
-        ['btnPlay','btnPause','btnStop'].forEach(id => document.getElementById(id).disabled = false);
+        if(!el.files[0]) return;
+        this.elAudio.src = URL.createObjectURL(el.files[0]);
+        this.connect(this.ac.createMediaElementSource(this.elAudio), "FILE");
+        ['btnPlay','btnPause'].forEach(id => document.getElementById(id).disabled = false);
+        this.askRecord();
     },
     connect: function(src, type) {
         if(this.src) this.src.disconnect();
@@ -259,64 +437,70 @@ const SCS = {
         if(type === 'FILE') this.src.connect(this.ac.destination);
         this.state = 'LIVE';
     },
-
     mediaControl: function(action) {
-        const el = document.getElementById('audioEl');
-        if(action === 'play') el.play();
-        if(action === 'pause') el.pause();
-        if(action === 'stop') { el.pause(); el.currentTime = 0; }
+        if(action === 'play') this.elAudio.play();
+        if(action === 'pause') this.elAudio.pause();
+        if(action === 'stop') { this.elAudio.pause(); this.elAudio.currentTime = 0; }
     },
 
-    Modem: {
-        transmit: function() {
-            if(SCS.logBuffer.length === 0) return alert("LOG VAZIO!");
-            SCS.modem.active = true;
-            document.getElementById('modemHud').style.display = 'block';
-            SCS.modem.buffer = SCS.logBuffer.slice(-100).map(f => Math.floor(f.peaks[0].f).toString(16).padStart(4,'0')).join('');
-            SCS.modem.idx = 0; this.txLoop();
-        },
-        txLoop: function() {
-            if(!SCS.modem.active || SCS.modem.idx >= SCS.modem.buffer.length) { SCS.modem.active = false; document.getElementById('modemHud').style.display = 'none'; return; }
-            const freq = SCS.modem.baseFreq + (parseInt(SCS.modem.buffer[SCS.modem.idx], 16) * SCS.modem.stepFreq);
-            const osc = SCS.ac.createOscillator(); const g = SCS.ac.createGain();
-            osc.frequency.value = freq; osc.connect(g); g.connect(SCS.ac.destination);
-            g.gain.setValueAtTime(0.3, SCS.ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, SCS.ac.currentTime + 0.08);
-            osc.start(); osc.stop(SCS.ac.currentTime + 0.08);
-            SCS.modem.idx++; setTimeout(() => this.txLoop(), 80);
-        },
-        receive: function() { SCS.useMic(); SCS.modem.active = true; document.getElementById('modemHud').style.display = 'block'; document.getElementById('modemHud').innerText = "LISTENING..."; }
+    toggleRecording: function() {
+        this.isRecording = !this.isRecording;
+        const btn = document.getElementById('btnRec');
+        btn.classList.toggle('recording');
+        btn.innerText = this.isRecording ? "■ PARAR" : "● GRAVAR LOG";
+        if(!this.isRecording) { this.exportLog(); } // Auto Export
+    },
+    exportLog: function() {
+        if(this.logBuffer.length === 0) return SCS.log("SYS", "BUFFER VAZIO, NADA A EXPORTAR");
+        const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = `SCS_LOG_${Date.now()}.json`; a.click();
+        SCS.log("SYS", "LOG EXPORTADO AUTOMATICAMENTE.");
+    },
+    importLog: function(input) {
+        const reader = new FileReader();
+        reader.onload = (e) => { this.simData = JSON.parse(e.target.result); document.getElementById('btnSim').disabled = false; SCS.log("SYS", "LOG CARREGADO."); };
+        reader.readAsText(input.files[0]);
+    },
+    startSimulation: function() { 
+        if (this.simData) { this.state = 'SIM'; this.simCurrentTime = 0; this.lastFrameTime = Date.now(); } 
+    },
+    changeSpeed: function(delta) {
+        this.simSpeed = Math.max(0.25, Math.min(5.0, this.simSpeed + delta));
+        document.getElementById('simSpeedDisplay').innerText = "SPD: " + this.simSpeed.toFixed(2) + "x";
     },
 
-    toggleRecording: function() { this.isRecording = !this.isRecording; document.getElementById('btnRec').classList.toggle('recording'); },
-    exportLog: function() { const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `SCS_LOG.json`; a.click(); },
-    importLog: function(input) { const reader = new FileReader(); reader.onload = (e) => { this.simData = JSON.parse(e.target.result); document.getElementById('btnSim').disabled = false; }; reader.readAsText(input.files[0]); },
-    startSimulation: function() { if (this.simData) { this.state = 'SIM'; this.simStartTime = Date.now(); } },
-
+    // --- RENDER LOOP ---
     loop: function() {
         requestAnimationFrame(() => this.loop());
         if(!this.active) return;
         this.ctx.globalCompositeOperation = 'source-over';
         this.ctx.fillStyle = "#000000"; this.ctx.fillRect(0, 0, this.width, this.height);
         this.angle += 0.007;
+        
         const now = Date.now();
         const diff = new Date(now - this.sysStartTime);
         document.getElementById('hudTime').innerText = "T+ " + diff.toISOString().substr(11, 8);
+
         if (this.state === 'LIVE') {
             const data = new Uint8Array(this.an.frequencyBinCount);
             this.an.getByteFrequencyData(data);
             this.analyze(data); this.processInfra(data);
-            this.updateSpectralMonitor(data); this.updateDashboardLog(); 
+            this.updateSpectralMonitor(data); 
+            // Log update throttled visually, handled by events mostly
             if (this.isRecording) this.logBuffer.push({ time: now, peaks: JSON.parse(JSON.stringify(this.peaks)) });
-        } else if (this.state === 'SIM') { this.handleSimulation(); this.updateDashboardLog(); }
-        this.drawGalaxy(); this.drawInfraDashboard(); this.updateRuler();
+        } else if (this.state === 'SIM') { this.handleSimulation(); }
+        
+        this.drawGalaxy(); this.drawInfraDashboard();
+        this.updateRuler();
     },
 
     updateRuler: function() {
         if(!this.peaks[0]) return;
-        const pos = Math.min(100, Math.max(0, 100 - (Math.log10(this.peaks[0].f) / 4.3) * 100));
+        const freq = this.peaks[0].f;
+        const pos = Math.min(100, Math.max(0, 100 - (Math.log10(freq) / 4.3) * 100));
         document.getElementById('ruler-pointer').style.top = pos + "%";
     },
-
     analyze: function(data) {
         let p = [];
         for(let i=2; i<data.length-2; i++) {
@@ -327,7 +511,6 @@ const SCS = {
         this.peaks = p.sort((a,b) => b.v - a.v).slice(0, this.config.maxMainDrones);
         if(this.peaks[0]) document.getElementById('hudFreq').innerText = this.peaks[0].f.toFixed(1) + " Hz";
     },
-
     updateSpectralMonitor: function(data) {
         let iSum=0, aSum=0, uSum=0; let iC=0, aC=0, uC=0;
         for(let i=0; i<data.length; i++) {
@@ -338,36 +521,25 @@ const SCS = {
         document.getElementById('barAudio').style.width = Math.min(100, (aSum/aC||1)*2) + "%";
         document.getElementById('barUltra').style.width = Math.min(100, (uSum/uC||1)*2) + "%";
     },
-
     processInfra: function(data) {
         let sum = (data[0] + data[1] + data[2]) / 3;
         this.infraHistory.push(sum); this.infraHistory.shift();
     },
-
-    updateDashboardLog: function() {
-        if (this.peaks.length === 0) return;
-        const stream = document.getElementById('log-stream');
-        if (stream.innerHTML.includes('IDLE')) stream.innerHTML = '';
-        const row = document.createElement('div'); row.className = 'log-entry';
-        const p = this.peaks[0]; const t = new Date().toLocaleTimeString('pt-BR', { hour12: false });
-        row.innerHTML = `<div>[${t}]</div><div>${p.f.toFixed(1)}Hz</div><div>AMP_${p.v}</div><div>NODE_OK</div>`;
-        stream.prepend(row); if(stream.childElementCount > 25) stream.removeChild(stream.lastChild);
-    },
-
     drawInfraDashboard: function() {
         const w = this.infCvs.width, h = this.infCvs.height;
         this.infCtx.fillStyle = "#010102"; this.infCtx.fillRect(0,0,w,h);
         this.infCtx.strokeStyle = "#111"; this.infCtx.lineWidth = 1;
         for(let x=0; x<w; x+=w/10) { this.infCtx.beginPath(); this.infCtx.moveTo(x,0); this.infCtx.lineTo(x,h); this.infCtx.stroke(); }
         this.infCtx.beginPath(); this.infCtx.strokeStyle = "#bc13fe"; this.infCtx.lineWidth = 2;
+        const gain = 15; 
         for(let i=0; i<this.infraHistory.length; i++) {
             let x = (i / this.infraHistory.length) * w;
-            let val = this.infraHistory[i]; let y = h - (val / 255) * h * 0.7 - 15;
+            let val = Math.min(255, this.infraHistory[i] * gain);
+            let y = h - (val / 255) * h * 0.8 - 10;
             if(i === 0) this.infCtx.moveTo(x,y); else this.infCtx.lineTo(x,y);
         }
         this.infCtx.stroke();
     },
-
     drawGalaxy: function() {
         const cx = this.width / 2, cy = this.height / 2;
         if(this.layers.ORB) {
@@ -423,29 +595,31 @@ const SCS = {
                     this.ctx.fillText(Math.floor(obj.f), proj.x+size+3, proj.y);
                 }
             }
-            this.ctx.globalAlpha = 1;
         });
     },
-
     project: function(x, y, z) {
         const s = this.config.fov / (this.config.fov + z);
         return { x: (x * s) + (this.width / 2), y: (y * s) + (this.height / 2), s: s };
     },
-
     handleSimulation: function() {
         if (!this.simData) return;
-        const elapsed = Date.now() - this.simStartTime;
+        const now = Date.now();
+        const dt = now - this.lastFrameTime;
+        this.lastFrameTime = now;
+        this.simCurrentTime += (dt * this.simSpeed);
         const frames = this.simData.frames;
-        const frame = frames.find(f => (f.time - frames[0].time) >= elapsed);
-        if (frame) { this.peaks = frame.peaks; document.getElementById('hudFreq').innerText = this.peaks[0].f.toFixed(1); } else { this.state = 'IDLE'; }
+        if (this.simCurrentTime > (frames[frames.length-1].time - frames[0].time)) { this.simCurrentTime = 0; }
+        const frame = frames.find(f => (f.time - frames[0].time) >= this.simCurrentTime);
+        if (frame) { this.peaks = frame.peaks; document.getElementById('hudFreq').innerText = this.peaks[0] ? this.peaks[0].f.toFixed(1) : "0.0"; }
     },
-
     toggleLayer: function(l) { this.layers[l] = !this.layers[l]; event.target.classList.toggle('active'); },
-    log: function(m) {
+    log: function(src, m) {
         const stream = document.getElementById('log-stream');
         const row = document.createElement('div'); row.className = 'log-entry';
-        row.innerHTML = `<div style="grid-column: 1 / span 4; color:var(--cyan)">> ${m}</div>`;
+        const t = new Date().toLocaleTimeString();
+        row.innerHTML = `<div style="color:#666">[${t}]</div><div class="log-msg"><span style="color:var(--cyan)">${src}></span> ${m}</div>`;
         stream.prepend(row);
+        if(stream.childElementCount > 40) stream.removeChild(stream.lastChild);
     }
 };
 </script>
