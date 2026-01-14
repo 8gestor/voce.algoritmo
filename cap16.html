@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY ENGINE v7.0 - NETWORKED INTELLIGENCE</title>
+    <title>SCS: SINGULARITY v7.1 - AUDIO SURVEILLANCE</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
@@ -19,6 +19,7 @@
         .status-led { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
         .status-led.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
         .status-led.net { background: var(--data); box-shadow: 0 0 10px var(--data); }
+        .status-led.spy { background: var(--rec); box-shadow: 0 0 15px var(--rec); animation: blink 2s infinite; }
 
         main { display: flex; flex: 1; overflow: hidden; }
         aside { width: 340px; background: var(--panel); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
@@ -31,23 +32,21 @@
         button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0,243,255,0.1); }
         button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
         button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; background: rgba(255, 0, 68, 0.1); }
+        button.spy-active { background: var(--rec); color: #000; border-color: var(--rec); box-shadow: 0 0 15px var(--rec); }
         
         input[type="text"], textarea { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; letter-spacing: 1px; }
-        textarea { height: 45px; resize: none; font-size: 9px; }
-
+        
         .net-status { font-size: 9px; color: #555; text-align: center; margin-bottom: 5px; }
         .net-status.connected { color: var(--data); font-weight: bold; }
 
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* Spectral Monitor */
         .spec-row { display: flex; align-items: center; gap: 10px; font-size: 9px; margin-bottom: 4px; }
         .spec-name { width: 40px; text-align: right; color: #777; }
         .bar-container { flex: 1; height: 4px; background: #111; border: 1px solid #333; }
         .bar-fill { height: 100%; width: 0%; transition: width 0.1s; }
         .bar-infra { background: var(--purple); } .bar-audio { background: var(--cyan); } .bar-ultra { background: #ff0055; }
 
-        /* VIEWPORT & RULER */
         #viewport-container { flex: 1.8; display: flex; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1a1a1a; }
         #viewport { flex: 1; position: relative; }
         canvas { width: 100%; height: 100%; display: block; }
@@ -57,7 +56,6 @@
         #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; transition: top 0.1s; z-index: 5; }
         .ruler-grad { position: absolute; width: 6px; height: 100%; left: 0; background: linear-gradient(to bottom, #ff0055, #00f3ff, #bc13fe); opacity: 0.5; }
 
-        /* DASHBOARD */
         #dashboard { height: 145px; background: #050508; display: flex; border-top: 1px solid var(--cyan); flex-shrink: 0; }
         .dash-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #1a1a1a; height: 100%; }
         .dash-label { background: #0d0d0f; color: var(--cyan); font-size: 9px; padding: 3px 12px; font-weight: bold; border-bottom: 1px solid #1a1a1a; flex-shrink: 0; display:flex; justify-content:space-between; }
@@ -80,7 +78,7 @@
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY v7.0 - NET_INTELLIGENCE</h1>
+    <h1>SCS: SINGULARITY v7.1 - AUDIO SURVEILLANCE</h1>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">OFFLINE</span>
         <div id="sysLed" class="status-led"></div>
@@ -120,15 +118,17 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">03. OSINT Node (Auto-VoIP)</span>
+            <span class="mod-label">03. OSINT Node (Surveillance)</span>
             <div id="netStatus" class="net-status">AGUARDANDO REDE...</div>
             <div id="myIdDisplay" class="id-display" onclick="SCS.Net.copyId()">[ GERANDO ID... ]</div>
             <div class="row">
-                <input type="text" id="targetId" placeholder="DIGITE O ID DO PARCEIRO..." style="text-align:center; font-size:12px; font-weight:bold;">
+                <input type="text" id="targetId" placeholder="DIGITE O ID DO ALVO..." style="text-align:center; font-size:12px; font-weight:bold;">
             </div>
             <div class="row">
-                <button id="btnConnect" onclick="SCS.Net.connect()" disabled style="color:var(--data)">📞 CONECTAR</button>
-                <button id="btnDisconnect" onclick="SCS.Net.disconnect()" disabled style="color:var(--rec)">DESLIGAR</button>
+                <button id="btnConnect" onclick="SCS.Net.connect()" disabled style="color:var(--data)">🔗 LINKAR ID</button>
+            </div>
+            <div class="row" style="margin-top:5px;">
+                <button id="btnSpy" onclick="SCS.Net.toggleSpy()" disabled style="color:var(--rec); border:1px solid var(--rec);">ESCUTA: OFF</button>
             </div>
         </div>
 
@@ -137,9 +137,6 @@
             <input type="text" id="chatMsg" placeholder="MENSAGEM / DADOS..." onkeypress="if(event.key==='Enter') SCS.DataLink.send()">
             <div class="row">
                 <button id="btnTx" onclick="SCS.DataLink.send()" disabled style="color:var(--green)">ENVIAR (AUTO)</button>
-            </div>
-            <div style="font-size:8px; color:#555; text-align:center;">
-                PRIORIDADE: IP LINK > ACUSTICO (BEEP)
             </div>
         </div>
 
@@ -218,7 +215,6 @@
 <audio id="audioEl" hidden crossorigin="anonymous"></audio>
 
 <script>
-// --- UTILS ---
 const ID_GEN = () => Math.random().toString(36).substring(2, 6).toUpperCase();
 
 const SCS = {
@@ -245,12 +241,12 @@ const SCS = {
             document.getElementById('headerStatus').innerText = "SYSTEM_ACTIVE";
             this.sysStartTime = Date.now();
             this.loop();
-            this.Net.init(); // Auto-start Network
+            this.Net.init(); 
         } catch(e) { console.error(e); alert("Audio Context Blocked. Interact with page first."); }
     },
 
     enableControls: function() {
-        ['btnMic','btnFile','btnStop','btnRec','btnImport','btnTx','btnConnect'].forEach(id => {
+        ['btnMic','btnFile','btnStop','btnRec','btnImport','btnTx','btnConnect','btnSpy'].forEach(id => {
             if(document.getElementById(id)) document.getElementById(id).disabled = false;
         });
     },
@@ -265,110 +261,125 @@ const SCS = {
         this.config.orbRadius = Math.min(this.width, this.height) * 0.49;
     },
 
-    // --- NETWORK MODULE (PEERJS AUTOMATION) ---
+    // --- NETWORK MODULE ---
     Net: {
-        peer: null, conn: null, call: null, myId: null,
+        peer: null, conn: null, call: null, myId: null, spyMode: false, remoteId: null, localStream: null,
+        
         init: function() {
-            // Cria um Peer com ID aleatório curto no servidor público gratuito
             this.myId = ID_GEN();
             document.getElementById('myIdDisplay').innerText = `MEU ID: ${this.myId}`;
-            
-            // Inicializa PeerJS
             this.peer = new Peer(this.myId, { debug: 1 });
 
             this.peer.on('open', (id) => {
-                document.getElementById('netStatus').innerText = "REDE: ONLINE (READY)";
+                document.getElementById('netStatus').innerText = "REDE: ONLINE";
                 document.getElementById('netStatus').classList.add('connected');
-                SCS.log("SYSTEM", "NETWORK NODE INITIALIZED. ID: " + id);
+                SCS.log("SYS", "NODE ID: " + id);
             });
 
             this.peer.on('error', (err) => {
                 document.getElementById('netStatus').innerText = "ERRO DE REDE";
-                SCS.log("ERROR", "NET_ERR: " + err.type);
+                SCS.log("ERR", err.type);
             });
 
-            // Ao receber conexão de dados
-            this.peer.on('connection', (c) => {
-                this.handleConn(c);
-            });
+            this.peer.on('connection', (c) => this.handleConn(c));
 
-            // Ao receber chamada de voz
+            // AUTO-ANSWER (Listening Device Logic)
             this.peer.on('call', (call) => {
-                SCS.log("VOIP", "CHAMADA RECEBIDA...");
-                navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
-                    call.answer(stream); // Resposta automática
-                    this.handleCall(call, stream);
-                }).catch(e => SCS.log("ERROR", "MIC PERMISSION DENIED"));
+                SCS.log("SURV", "SINAL DE AUDIO RECEBIDO.");
+                call.answer(); // Atende sem enviar stream (apenas ouve)
+                call.on('stream', (remoteStream) => {
+                    SCS.log("SURV", "AUDIO REMOTO ATIVO.");
+                    const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
+                    remoteSrc.connect(SCS.an); // Visualiza
+                    remoteSrc.connect(SCS.ac.destination); // Ouve
+                    document.getElementById('sysLed').classList.add('net');
+                });
             });
         },
 
         connect: function() {
             const target = document.getElementById('targetId').value.toUpperCase();
             if(target.length < 2) return alert("ID INVALIDO");
-            SCS.log("NET", "CONECTANDO A: " + target);
-            
-            // Conecta Dados
+            SCS.log("NET", "LINKANDO COM: " + target);
             const conn = this.peer.connect(target);
             this.handleConn(conn);
-
-            // Conecta Audio
-            navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
-                const call = this.peer.call(target, stream);
-                this.handleCall(call, stream);
-            }).catch(e => alert("Erro Mic: " + e));
         },
 
         handleConn: function(c) {
             this.conn = c;
+            this.remoteId = c.peer;
             this.conn.on('open', () => {
-                SCS.log("NET", "DATA LINK ESTABELECIDO: " + this.conn.peer);
+                SCS.log("NET", "DATA LINK ESTABELECIDO.");
                 document.getElementById('conn-indicator').style.color = "#00ff66";
-                document.getElementById('btnDisconnect').disabled = false;
+                document.getElementById('btnConnect').innerText = "LINK OK";
                 document.getElementById('btnConnect').disabled = true;
+                // Sync remote ID field if incoming connection
+                if(!document.getElementById('targetId').value) document.getElementById('targetId').value = this.remoteId;
             });
             this.conn.on('data', (data) => {
-                SCS.log("RX_DATA", data);
-                // Visual Effect for data receive
+                SCS.log("RX", data);
                 document.getElementById('modemHud').style.display = 'block';
-                document.getElementById('modemHud').innerText = "DATA RX: " + data.substring(0,10);
+                document.getElementById('modemHud').innerText = "DATA RX";
                 setTimeout(() => document.getElementById('modemHud').style.display = 'none', 1000);
             });
-            this.conn.on('close', () => this.disconnect());
-        },
-
-        handleCall: function(call, localStream) {
-            this.call = call;
-            // Visualizar audio local
-            const localSrc = SCS.ac.createMediaStreamSource(localStream);
-            localSrc.connect(SCS.an); 
-
-            call.on('stream', (remoteStream) => {
-                SCS.log("VOIP", "AUDIO REMOTO ATIVO");
-                const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
-                remoteSrc.connect(SCS.an); // Visualiza audio remoto
-                remoteSrc.connect(SCS.ac.destination); // Toca audio remoto
-                document.getElementById('sysLed').classList.add('net');
+            this.conn.on('close', () => {
+                SCS.log("NET", "CONEXAO PERDIDA");
+                document.getElementById('conn-indicator').style.color = "#444";
+                document.getElementById('btnConnect').disabled = false;
+                document.getElementById('btnConnect').innerText = "LINKAR ID";
             });
         },
 
-        disconnect: function() {
-            if(this.conn) this.conn.close();
-            if(this.call) this.call.close();
-            this.conn = null; this.call = null;
-            document.getElementById('conn-indicator').style.color = "#444";
-            document.getElementById('btnDisconnect').disabled = true;
-            document.getElementById('btnConnect').disabled = false;
-            document.getElementById('sysLed').classList.remove('net');
-            SCS.log("NET", "CONEXAO ENCERRADA");
+        toggleSpy: async function() {
+            this.spyMode = !this.spyMode;
+            const btn = document.getElementById('btnSpy');
+            
+            if(this.spyMode) {
+                // ACTIVATE SPY
+                btn.innerText = "ESCUTA: ON (TRANSMITINDO)";
+                btn.classList.add('spy-active');
+                document.getElementById('sysLed').classList.add('spy');
+                
+                try {
+                    this.localStream = await navigator.mediaDevices.getUserMedia({audio: true});
+                    // Connect local to graph
+                    const src = SCS.ac.createMediaStreamSource(this.localStream);
+                    SCS.connect(src, "MIC");
+                    
+                    if(this.remoteId) {
+                        SCS.log("SPY", "INICIANDO TRANSMISSÃO OCULTA PARA " + this.remoteId);
+                        this.call = this.peer.call(this.remoteId, this.localStream);
+                    } else {
+                        SCS.log("SPY", "MIC ABERTO (SEM ALVO LINKADO)");
+                    }
+                    SCS.askRecord();
+                } catch(e) { alert("ERRO MIC: " + e); this.toggleSpy(); }
+
+            } else {
+                // DEACTIVATE
+                btn.innerText = "ESCUTA: OFF";
+                btn.classList.remove('spy-active');
+                document.getElementById('sysLed').classList.remove('spy');
+                
+                if(this.localStream) {
+                    this.localStream.getTracks().forEach(t => t.stop());
+                    this.localStream = null;
+                }
+                if(this.call) {
+                    this.call.close();
+                    this.call = null;
+                }
+                SCS.log("SPY", "TRANSMISSÃO ENCERRADA.");
+            }
         },
 
         copyId: function() {
             navigator.clipboard.writeText(this.myId);
-            alert("ID COPIADO: " + this.myId);
+            SCS.log("SYS", "ID COPIADO PARA CLIPBOARD");
         }
     },
 
-    // --- DATA LINK (HYBRID: IP PRIORITY / ACOUSTIC FALLBACK) ---
+    // --- DATA LINK ---
     DataLink: {
         send: function() {
             const input = document.getElementById('chatMsg');
@@ -376,49 +387,37 @@ const SCS = {
             if(!msg) return;
 
             if(SCS.Net.conn && SCS.Net.conn.open) {
-                // IP MODE
                 SCS.Net.conn.send(msg);
-                SCS.log("TX_IP", msg);
+                SCS.log("TX", msg);
                 input.value = "";
             } else {
-                // ACOUSTIC FALLBACK
-                SCS.log("TX_AUDIO", "SENDING ACOUSTIC DATA...");
+                SCS.log("SYS", "SEM LINK DE DADOS. USANDO AUDIO.");
                 this.playAcoustic(msg);
                 input.value = "";
             }
         },
-
         playAcoustic: function(str) {
-            // Simple FSK-like sound effect for "cool factor" visualization
             const osc = SCS.ac.createOscillator();
             const g = SCS.ac.createGain();
             osc.connect(g); g.connect(SCS.ac.destination);
-            
-            document.getElementById('modemHud').style.display = 'block';
             osc.frequency.setValueAtTime(1200, SCS.ac.currentTime);
-            
-            // Encode visualization
             let now = SCS.ac.currentTime;
             for(let i=0; i<Math.min(str.length, 20); i++) {
                 const f = 1000 + (str.charCodeAt(i) % 10) * 200;
                 osc.frequency.setValueAtTime(f, now + (i*0.05));
-                setTimeout(() => document.getElementById('modemHud').innerText = "TX: " + str[i], i*50);
             }
-            
             g.gain.setValueAtTime(0.5, now);
             g.gain.linearRampToValueAtTime(0, now + (str.length*0.05));
             osc.start(now); osc.stop(now + (str.length*0.05) + 0.1);
-            setTimeout(() => document.getElementById('modemHud').style.display = 'none', str.length*50 + 200);
         }
     },
 
-    // --- CORE & RECORDING ---
+    // --- CORE ---
     askRecord: function() {
         if(confirm("SISTEMA: Iniciar gravação do LOG automaticamente?")) {
             if(!this.isRecording) this.toggleRecording();
         }
     },
-
     useMic: async function() {
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
         this.connect(this.ac.createMediaStreamSource(s), "MIC");
@@ -442,20 +441,19 @@ const SCS = {
         if(action === 'pause') this.elAudio.pause();
         if(action === 'stop') { this.elAudio.pause(); this.elAudio.currentTime = 0; }
     },
-
     toggleRecording: function() {
         this.isRecording = !this.isRecording;
         const btn = document.getElementById('btnRec');
         btn.classList.toggle('recording');
         btn.innerText = this.isRecording ? "■ PARAR" : "● GRAVAR LOG";
-        if(!this.isRecording) { this.exportLog(); } // Auto Export
+        if(!this.isRecording) { this.exportLog(); }
     },
     exportLog: function() {
-        if(this.logBuffer.length === 0) return SCS.log("SYS", "BUFFER VAZIO, NADA A EXPORTAR");
+        if(this.logBuffer.length === 0) return SCS.log("SYS", "BUFFER VAZIO");
         const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
         a.download = `SCS_LOG_${Date.now()}.json`; a.click();
-        SCS.log("SYS", "LOG EXPORTADO AUTOMATICAMENTE.");
+        SCS.log("SYS", "LOG EXPORTADO.");
     },
     importLog: function(input) {
         const reader = new FileReader();
@@ -470,7 +468,7 @@ const SCS = {
         document.getElementById('simSpeedDisplay').innerText = "SPD: " + this.simSpeed.toFixed(2) + "x";
     },
 
-    // --- RENDER LOOP ---
+    // --- RENDER ---
     loop: function() {
         requestAnimationFrame(() => this.loop());
         if(!this.active) return;
@@ -487,14 +485,12 @@ const SCS = {
             this.an.getByteFrequencyData(data);
             this.analyze(data); this.processInfra(data);
             this.updateSpectralMonitor(data); 
-            // Log update throttled visually, handled by events mostly
             if (this.isRecording) this.logBuffer.push({ time: now, peaks: JSON.parse(JSON.stringify(this.peaks)) });
         } else if (this.state === 'SIM') { this.handleSimulation(); }
         
         this.drawGalaxy(); this.drawInfraDashboard();
         this.updateRuler();
     },
-
     updateRuler: function() {
         if(!this.peaks[0]) return;
         const freq = this.peaks[0].f;
