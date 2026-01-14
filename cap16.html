@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY ENGINE v5.9 - ARCHITECT</title>
+    <title>SCS: SINGULARITY ENGINE v6.0 - OSINT ARCHITECT</title>
     <style>
         :root {
             --bg: #000000;
@@ -38,12 +38,12 @@
         button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
         button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; }
         
-        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 10px; padding: 8px; margin-bottom: 5px; outline: none; transition: 0.3s; }
-        input[type="text"]:focus { border-color: var(--cyan); box-shadow: 0 0 5px rgba(0, 243, 255, 0.2); }
+        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 10px; padding: 8px; margin-bottom: 5px; outline: none; transition: 0.3s; }
+        input[type="text"]:focus, textarea:focus { border-color: var(--cyan); box-shadow: 0 0 5px rgba(0, 243, 255, 0.2); }
+        textarea { height: 40px; resize: none; }
         
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* Spectral Monitor */
         .spec-row { display: flex; align-items: center; gap: 10px; font-size: 9px; margin-bottom: 4px; }
         .spec-name { width: 40px; text-align: right; color: #777; }
         .bar-container { flex: 1; height: 4px; background: #111; border: 1px solid #333; }
@@ -52,7 +52,6 @@
         .bar-audio { background: var(--cyan); } 
         .bar-ultra { background: #ff0055; }
 
-        /* VIEWPORT & DASHBOARD */
         #viewport { flex: 1.8; position: relative; background: #000; overflow: hidden; border-bottom: 1px solid #1a1a1a; }
         canvas { width: 100%; height: 100%; display: block; }
 
@@ -72,7 +71,7 @@
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY ENGINE v5.9 - ARCHITECT</h1>
+    <h1>SCS: SINGULARITY ENGINE v6.0 - ARCHITECT</h1>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">SYS_STANDBY</span>
         <div id="sysLed" class="status-led"></div>
@@ -112,19 +111,18 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">03. DATA-LINK (Transferência de Arquivos)</span>
-            <input type="text" id="cryptoKey" placeholder="CHAVE DE ACESSO (Necessária p/ Modo Seguro)">
-            
-            <div style="font-size:9px; color:var(--cyan); margin-bottom:5px; text-align:center; letter-spacing:1px;">PROTOCOLO SEGURO (ENCRIPTADO)</div>
+            <span class="mod-label">03. DATA-LINK (Transferência / OSINT)</span>
+            <input type="text" id="cryptoKey" placeholder="CHAVE DE ACESSO (Opcional)">
             <div class="row">
-                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">1. ENVIAR DADOS</button>
-                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">2. RECEBER DADOS</button>
+                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">ENVIAR DADOS</button>
+                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">RECEBER DADOS</button>
             </div>
             
-            <div style="border-top:1px solid #222; margin:8px 0; padding-top:8px; font-size:9px; color:#555; text-align:center;">MODO ABERTO (SEM SEGURANÇA)</div>
+            <div style="border-top:1px solid #222; margin:8px 0; padding-top:8px; font-size:8px; color:var(--data); text-align:center;">OSINT NODE (VOIP/IP LINK)</div>
+            <textarea id="voipSignaling" placeholder="SIGALING STRING..."></textarea>
             <div class="row">
-                <button id="btnTxSimple" onclick="SCS.Modem.transmit(false)" disabled style="color:var(--amber); font-size: 8px;">ENVIAR SIMPLES</button>
-                <button id="btnRxSimple" onclick="SCS.Modem.receive(false)" disabled style="color:var(--data); font-size: 8px;">RECEBER SIMPLES</button>
+                <button id="btnCall" onclick="SCS.VOIP.startCall()" disabled style="color:var(--green)">LIGAR NODE</button>
+                <button id="btnAnswer" onclick="SCS.VOIP.answerCall()" disabled style="color:var(--cyan)">JOIN NODE</button>
             </div>
         </div>
 
@@ -219,12 +217,74 @@ const SCS = {
             this.resize(); window.onresize = () => this.resize();
             this.active = true;
             document.getElementById('btnInit').disabled = true;
-            ['btnMic','btnFile','btnStop','btnRec','btnImport','btnTx','btnRx','btnTxSimple','btnRxSimple'].forEach(id => document.getElementById(id).disabled = false);
+            ['btnMic','btnFile','btnStop','btnRec','btnImport','btnTx','btnRx','btnTxSimple','btnRxSimple','btnCall','btnAnswer'].forEach(id => {
+                if(document.getElementById(id)) document.getElementById(id).disabled = false;
+            });
             document.getElementById('sysLed').classList.add('on');
             document.getElementById('headerStatus').innerText = "LIVE_ON";
             this.sysStartTime = Date.now();
             this.loop();
         } catch(e) { console.error("INIT_ERR", e); }
+    },
+
+    // --- VOIP / OSINT NODE (NEW) ---
+    VOIP: {
+        pc: null,
+        localStream: null,
+        config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] },
+
+        async startCall() {
+            SCS.VOIP.pc = new RTCPeerConnection(SCS.VOIP.config);
+            SCS.VOIP.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            SCS.VOIP.localStream.getTracks().forEach(track => SCS.VOIP.pc.addTrack(track, SCS.VOIP.localStream));
+            
+            SCS.VOIP.pc.ontrack = (event) => SCS.VOIP.pipeToAnalyzer(event.streams[0]);
+            
+            SCS.VOIP.pc.onicecandidate = (event) => {
+                if (!event.candidate) {
+                    document.getElementById('voipSignaling').value = JSON.stringify(SCS.VOIP.pc.localDescription);
+                }
+            };
+
+            const offer = await SCS.VOIP.pc.createOffer();
+            await SCS.VOIP.pc.setLocalDescription(offer);
+        },
+
+        async answerCall() {
+            const signalingData = document.getElementById('voipSignaling').value;
+            if(!signalingData) return alert("Cole a String de Sinalização!");
+            
+            const remoteDesc = JSON.parse(signalingData);
+            
+            if(!SCS.VOIP.pc) {
+                SCS.VOIP.pc = new RTCPeerConnection(SCS.VOIP.config);
+                SCS.VOIP.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                SCS.VOIP.localStream.getTracks().forEach(track => SCS.VOIP.pc.addTrack(track, SCS.VOIP.localStream));
+                SCS.VOIP.pc.ontrack = (event) => SCS.VOIP.pipeToAnalyzer(event.streams[0]);
+                
+                SCS.VOIP.pc.onicecandidate = (event) => {
+                    if (!event.candidate) {
+                        document.getElementById('voipSignaling').value = JSON.stringify(SCS.VOIP.pc.localDescription);
+                    }
+                };
+
+                await SCS.VOIP.pc.setRemoteDescription(remoteDesc);
+                const answer = await SCS.VOIP.pc.createAnswer();
+                await SCS.VOIP.pc.setLocalDescription(answer);
+            } else {
+                await SCS.VOIP.pc.setRemoteDescription(remoteDesc);
+            }
+        },
+
+        pipeToAnalyzer(stream) {
+            const remoteSrc = SCS.ac.createMediaStreamSource(stream);
+            remoteSrc.connect(SCS.an);
+            // Ouvir o áudio remoto
+            const remoteAudio = new Audio();
+            remoteAudio.srcObject = stream;
+            remoteAudio.play();
+            SCS.log("OSINT NODE CONNECTED. ASSINATURA REMOTA ATIVA.");
+        }
     },
 
     resize: function() {
@@ -272,41 +332,36 @@ const SCS = {
             return scrambled.join('');
         },
         transmit: function(encrypted) {
-            if(SCS.logBuffer.length === 0) { alert("ERRO: O Buffer de Log está vazio. Grave telemetria antes de transmitir."); return; }
-            SCS.modem.active = true; SCS.modem.mode = 'TX'; SCS.modem.isEncrypted = encrypted;
+            if(SCS.logBuffer.length === 0) return alert("LOG VAZIO!");
+            SCS.modem.active = true; SCS.modem.mode = 'TX';
             SCS.modem.key = document.getElementById('cryptoKey').value;
-            if(encrypted && !SCS.modem.key) { alert("ALERTA: Chave de acesso necessária para modo encriptado."); return; }
-            
             document.getElementById('modemHud').style.display = 'block';
             let dataStr = "";
             for(let i=0; i<Math.min(SCS.logBuffer.length, 64); i++) {
                 dataStr += Math.floor(SCS.logBuffer[i].peaks[0].f).toString(16).padStart(4, '0');
             }
-            if(encrypted && SCS.modem.key) { dataStr = this.scramble(dataStr, SCS.modem.key); SCS.modem.speed = 40; SCS.modem.baseFreq = 6000; } 
-            else { SCS.modem.speed = 80; SCS.modem.baseFreq = 4000; }
+            if(encrypted && SCS.modem.key) dataStr = this.scramble(dataStr, SCS.modem.key);
             SCS.modem.buffer = "AAAA" + dataStr + "FFFF"; SCS.modem.idx = 0;
             this.txLoop();
         },
         txLoop: function() {
             if(!SCS.modem.active || SCS.modem.idx >= SCS.modem.buffer.length) { this.stop(); return; }
-            const val = parseInt(SCS.modem.buffer[SCS.modem.idx], 16);
-            const freq = SCS.modem.baseFreq + (val * SCS.modem.stepFreq);
+            const freq = SCS.modem.baseFreq + (parseInt(SCS.modem.buffer[SCS.modem.idx], 16) * SCS.modem.stepFreq);
             const osc = SCS.ac.createOscillator(); const g = SCS.ac.createGain();
             osc.frequency.value = freq; osc.connect(g); g.connect(SCS.ac.destination);
             const now = SCS.ac.currentTime;
-            g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + (SCS.modem.speed/1000));
-            osc.start(); osc.stop(now + (SCS.modem.speed/1000));
+            g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+            osc.start(); osc.stop(now + 0.08);
             document.getElementById('modemHud').innerText = `ENVIANDO: ${SCS.modem.buffer[SCS.modem.idx]}`;
             SCS.modem.idx++; setTimeout(() => this.txLoop(), SCS.modem.speed);
         },
-        receive: function(enc) { SCS.useMic(); SCS.modem.active = true; SCS.modem.mode = 'RX'; document.getElementById('modemHud').style.display = 'block'; document.getElementById('modemHud').innerText = "ESCANEANDO SINAL..."; },
+        receive: function() { SCS.useMic(); SCS.modem.active = true; SCS.modem.mode = 'RX'; document.getElementById('modemHud').style.display = 'block'; document.getElementById('modemHud').innerText = "ESCANEANDO..."; },
         stop: function() { SCS.modem.active = false; document.getElementById('modemHud').style.display = 'none'; }
     },
 
     toggleRecording: function() {
         this.isRecording = !this.isRecording;
         document.getElementById('btnRec').classList.toggle('recording');
-        if(!this.isRecording) document.getElementById('btnExport').disabled = false;
     },
     exportLog: function() {
         const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'});
@@ -416,7 +471,6 @@ const SCS = {
                 }
             }
         });
-
         if(this.layers.RAYS && scene.filter(s=>s.type==='MAIN').length > 1) {
             const mains = scene.filter(s=>s.type==='MAIN').sort((a,b) => a.id - b.id);
             for(let i=0; i<mains.length-1; i++) {
@@ -426,7 +480,6 @@ const SCS = {
                 this.ctx.lineWidth = this.config.lineWidth * p1.s; this.ctx.moveTo(p1.x, p1.y); this.ctx.lineTo(p2.x, p2.y); this.ctx.stroke();
             }
         }
-
         scene.sort((a,b) => b.z - a.z).forEach(obj => {
             const proj = this.project(obj.x, obj.y, obj.z);
             this.ctx.globalCompositeOperation = 'lighter';
@@ -447,6 +500,7 @@ const SCS = {
                     this.ctx.fillText(Math.floor(obj.f), proj.x+size+3, proj.y);
                 }
             }
+            this.ctx.globalAlpha = 1;
         });
     },
 
@@ -463,7 +517,13 @@ const SCS = {
         if (frame) { this.peaks = frame.peaks; document.getElementById('hudFreq').innerText = this.peaks[0].f.toFixed(1); } else { this.state = 'IDLE'; }
     },
 
-    toggleLayer: function(l) { this.layers[l] = !this.layers[l]; event.target.classList.toggle('active'); }
+    toggleLayer: function(l) { this.layers[l] = !this.layers[l]; event.target.classList.toggle('active'); },
+    log: function(m) {
+        const stream = document.getElementById('log-stream');
+        const row = document.createElement('div'); row.className = 'log-entry';
+        row.innerHTML = `<div style="grid-column: 1 / span 4; color:var(--cyan)">> ${m}</div>`;
+        stream.prepend(row);
+    }
 };
 </script>
 </body>
