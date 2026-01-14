@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SCS: SINGULARITY v7.7 - DEFINITIVE</title>
+    <title>SCS: SINGULARITY v7.8 - TIME CONTROL</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
@@ -84,7 +84,10 @@
         .val-big { font-size: 38px; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
         .modem-hud { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--amber); font-size: 14px; background: rgba(0,0,0,0.8); padding: 10px; border: 1px solid var(--amber); display: none; z-index: 20; text-align: center; font-weight: bold; }
         
-        .sim-ctrl { color: var(--data); font-weight: bold; }
+        .sim-ctrl { color: var(--data); font-weight: bold; font-size: 12px !important; }
+        .frame-btn { padding: 8px 4px !important; color: #888; font-size: 9px !important; border-color: #333 !important; max-width: 30px; }
+        .frame-btn:hover { color: #fff; border-color: #666 !important; }
+        
         .id-display { font-size: 14px; color: var(--green); text-align: center; padding: 5px; border: 1px dashed #333; margin-bottom: 5px; cursor: pointer; }
         .id-display:hover { background: #111; }
     </style>
@@ -99,7 +102,7 @@
 <header>
     <div style="display:flex; align-items:center;">
         <span class="mobile-toggle" onclick="document.querySelector('aside').classList.toggle('open')">☰</span>
-        <h1>SCS: SINGULARITY v7.7 - DEFINITIVE</h1>
+        <h1>SCS: SINGULARITY v7.8 - TIME CONTROL</h1>
     </div>
     <div style="display:flex; align-items:center; gap:10px;">
         <span id="headerStatus" style="font-size:10px; color:#444;">WAITING_INPUT</span>
@@ -163,7 +166,7 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">05. Archive Simulation</span>
+            <span class="mod-label">05. Archive Simulation (Time Warp)</span>
             <div class="row">
                 <button id="btnImport" onclick="document.getElementById('fLog').click()" disabled>📂 CARREGAR</button>
                 <input type="file" id="fLog" hidden accept=".json" onchange="SCS.importLog(this)">
@@ -171,7 +174,9 @@
             </div>
             <div class="row" style="margin-top:5px; border-top:1px solid #222; padding-top:5px;">
                 <button onclick="SCS.changeSpeed(-0.25)" class="sim-ctrl">⏪</button>
-                <div style="flex:1; text-align:center; font-size:10px; color:#fff;" id="simSpeedDisplay">SPD: 1.0x</div>
+                <button onclick="SCS.stepFrame(-1)" class="frame-btn">|&lt;</button>
+                <div style="flex:1; text-align:center; font-size:10px; color:#fff; cursor:pointer; padding-top:10px;" id="simSpeedDisplay" onclick="SCS.togglePause()" title="Clique para Pausar">SPD: 1.0x</div>
+                <button onclick="SCS.stepFrame(1)" class="frame-btn">&gt;|</button>
                 <button onclick="SCS.changeSpeed(0.25)" class="sim-ctrl">⏩</button>
             </div>
         </div>
@@ -341,7 +346,6 @@ const SCS = {
                     }
 
                     // 2. Visual Analysis (Seeing)
-                    // Create separate Source just for Analyzing
                     const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
                     remoteSrc.connect(SCS.an);
                     
@@ -520,12 +524,25 @@ const SCS = {
         reader.onload = (e) => { this.simData = JSON.parse(e.target.result); document.getElementById('btnSim').disabled = false; SCS.log("SYS", "LOG CARREGADO."); };
         reader.readAsText(input.files[0]);
     },
+    
+    // --- SIMULATION CONTROL ---
     startSimulation: function() { 
         if (this.simData) { this.state = 'SIM'; this.simCurrentTime = 0; this.lastFrameTime = Date.now(); } 
     },
     changeSpeed: function(delta) {
-        this.simSpeed = Math.max(0.25, Math.min(5.0, this.simSpeed + delta));
+        this.simSpeed += delta;
+        this.simSpeed = Math.round(this.simSpeed * 100) / 100; // Evita erros de float
         document.getElementById('simSpeedDisplay').innerText = "SPD: " + this.simSpeed.toFixed(2) + "x";
+    },
+    togglePause: function() {
+        this.simSpeed = 0;
+        document.getElementById('simSpeedDisplay').innerText = "SPD: PAUSED";
+    },
+    stepFrame: function(dir) {
+        this.simSpeed = 0; // Pause ao frame-step
+        document.getElementById('simSpeedDisplay').innerText = "SPD: STEP";
+        this.simCurrentTime += (dir * 35); // Pulo de ~35ms
+        this.handleSimulation(true);
     },
 
     // --- RENDER (Full 3D Logic Restored) ---
@@ -657,16 +674,27 @@ const SCS = {
         const s = this.config.fov / (this.config.fov + z);
         return { x: (x * s) + (this.width / 2), y: (y * s) + (this.height / 2), s: s };
     },
-    handleSimulation: function() {
+    handleSimulation: function(forceRender) {
         if (!this.simData) return;
         const now = Date.now();
         const dt = now - this.lastFrameTime;
         this.lastFrameTime = now;
-        this.simCurrentTime += (dt * this.simSpeed);
+        
+        if(!forceRender) {
+            this.simCurrentTime += (dt * this.simSpeed);
+        }
+        
         const frames = this.simData.frames;
-        if (this.simCurrentTime > (frames[frames.length-1].time - frames[0].time)) { this.simCurrentTime = 0; }
+        const duration = frames[frames.length-1].time - frames[0].time;
+
+        if (this.simCurrentTime > duration) { this.simCurrentTime = 0; }
+        if (this.simCurrentTime < 0) { this.simCurrentTime = duration; }
+
         const frame = frames.find(f => (f.time - frames[0].time) >= this.simCurrentTime);
-        if (frame) { this.peaks = frame.peaks; document.getElementById('hudFreq').innerText = this.peaks[0] ? this.peaks[0].f.toFixed(1) : "0.0"; }
+        if (frame) { 
+            this.peaks = frame.peaks; 
+            document.getElementById('hudFreq').innerText = this.peaks[0] ? this.peaks[0].f.toFixed(1) : "0.0"; 
+        }
     },
     toggleLayer: function(l, btn) { 
         this.layers[l] = !this.layers[l]; 
