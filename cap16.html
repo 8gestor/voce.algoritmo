@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY ENGINE v6.6 - OSINT NODE PRO</title>
+    <title>SCS: SINGULARITY ENGINE v7.0 - GHOST NODE</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
             --bg: #000000; --panel: #0a0a0c; --border: #222; --cyan: #00f3ff;
@@ -30,8 +31,7 @@
         button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
         button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; }
         
-        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 10px; padding: 8px; margin-bottom: 5px; outline: none; }
-        textarea { height: 45px; resize: none; font-size: 9px; }
+        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; text-align: center; font-weight: bold; letter-spacing: 1px; }
 
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
@@ -49,8 +49,7 @@
         
         #spectral-ruler { width: 40px; background: #050505; border-left: 1px solid #1a1a1a; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0; }
         .ruler-mark { font-size: 7px; color: #444; text-align: center; }
-        #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; transition: top 0.1s; z-index: 5; }
-        .ruler-grad { position: absolute; width: 6px; height: 100%; left: 0; background: linear-gradient(to bottom, #ff0055, #00f3ff, #bc13fe); opacity: 0.5; }
+        #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; z-index: 5; }
 
         /* DASHBOARD */
         #dashboard { height: 145px; background: #050508; display: flex; border-top: 1px solid var(--cyan); flex-shrink: 0; }
@@ -67,9 +66,9 @@
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY v6.6 - OSINT NODE PRO</h1>
+    <h1>SCS: SINGULARITY v7.0 - GHOST NODE</h1>
     <div style="display:flex; align-items:center; gap:10px;">
-        <span id="headerStatus" style="font-size:10px; color:#444;">CORE_STANDBY</span>
+        <span id="headerStatus" style="font-size:10px; color:#444;">ENGINE_READY</span>
         <div id="sysLed" class="status-led"></div>
     </div>
 </header>
@@ -85,9 +84,9 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">01. Signal Source (Captação)</span>
+            <span class="mod-label">01. Signal Source</span>
             <div class="row">
-                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 ATIVAR CAPTAÇÃO (MIC)</button>
+                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 ATIVAR MIC LOCAL</button>
             </div>
             <div class="row">
                 <button id="btnFile" onclick="document.getElementById('fAudio').click()" disabled>📂 ARQUIVO</button>
@@ -96,21 +95,15 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">02. OSINT Node (Transmissão IP)</span>
-            <textarea id="voipSignaling" placeholder="STRING DE SINALIZAÇÃO..."></textarea>
+            <span class="mod-label">03. OSINT NODE (Vigilância IP)</span>
+            <div style="font-size:9px; color:#555; margin-bottom:5px;">ID DESTE DISPOSITIVO:</div>
+            <div id="myNodeId" style="color:var(--cyan); font-weight:bold; font-size:14px; text-align:center; padding:5px; background:#111; border:1px solid #222; margin-bottom:10px;">AGUARDANDO...</div>
+            
+            <input type="text" id="targetNodeId" placeholder="DIGITE O ID DO ALVO...">
             <div class="row">
-                <button id="btnCall" onclick="SCS.VOIP.startCall()" disabled style="color:var(--data)">1. GERAR LINK NODE</button>
-                <button id="btnAnswer" onclick="SCS.VOIP.answerCall()" disabled style="color:var(--cyan)">2. ESTABELECER JOIN</button>
+                <button id="btnGhost" onclick="SCS.Ghost.connect()" disabled style="color:var(--data)">CONEXÃO AUTOMÁTICA</button>
             </div>
-            <button onclick="SCS.VOIP.copySignaling()" style="font-size:8px; margin-top:5px;">📋 COPIAR TOKEN DE SINALIZAÇÃO</button>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">03. Logging & Data</span>
-            <div class="row">
-                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR TELEMETRIA</button>
-                <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 EXPORTAR</button>
-            </div>
+            <p style="font-size:8px; color:#444; margin:0;">* Deixe o Ponto A com o motor ligado para escuta passiva.</p>
         </div>
 
         <div class="module">
@@ -123,7 +116,24 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">05. Diagnostics & Layers</span>
+            <span class="mod-label">02. Logging & Data</span>
+            <div class="row">
+                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR TELEMETRIA</button>
+                <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 EXPORTAR</button>
+            </div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">05. Archive Simulation</span>
+            <div class="row">
+                <button id="btnImport" onclick="document.getElementById('fLog').click()" disabled>📂 CARREGAR</button>
+                <input type="file" id="fLog" hidden accept=".json" onchange="SCS.importLog(this)">
+                <button id="btnSim" onclick="SCS.startSimulation()" disabled style="color:var(--green)">▶ SIMULAR</button>
+            </div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">06. Spectral Monitor</span>
             <div class="spec-row">
                 <span class="spec-name">INFRA</span><div class="bar-container"><div id="barInfra" class="bar-fill bar-infra"></div></div>
             </div>
@@ -133,20 +143,11 @@
             <div class="spec-row">
                 <span class="spec-name">ULTRA</span><div class="bar-container"><div id="barUltra" class="bar-fill bar-ultra"></div></div>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:8px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:10px;">
                 <button id="btnLayOrb" class="active" onclick="SCS.toggleLayer('ORB')">ORB</button>
                 <button id="btnLayRays" class="active" onclick="SCS.toggleLayer('RAYS')">ROTAS</button>
                 <button id="btnLayDrone" class="active" onclick="SCS.toggleLayer('DRONES')">DRONES</button>
                 <button id="btnLayHarm" class="active" onclick="SCS.toggleLayer('HARMONICS')">FRACTAL</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">06. Simulation Archive</span>
-            <div class="row">
-                <button id="btnImport" onclick="document.getElementById('fLog').click()" disabled>📂 CARREGAR</button>
-                <input type="file" id="fLog" hidden accept=".json" onchange="SCS.importLog(this)">
-                <button id="btnSim" onclick="SCS.startSimulation()" disabled style="color:var(--green)">▶ SIMULAR</button>
             </div>
         </div>
     </aside>
@@ -156,14 +157,13 @@
             <div id="viewport">
                 <canvas id="scope"></canvas>
                 <div class="hud">
-                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">OSINT SPECTRAL PEAK</div>
+                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">PEAK ANALYSIS</div>
                     <div class="val-big" id="hudFreq">0.0</div>
                     <div id="hudTime" style="color:#444; font-size:10px; margin-top:2px;">T+ 00:00:00</div>
                 </div>
                 <div id="modemHud" class="modem-hud">LINK_ACTIVE</div>
             </div>
             <div id="spectral-ruler">
-                <div class="ruler-grad"></div>
                 <div id="ruler-pointer"></div>
                 <div class="ruler-mark">20k</div><div class="ruler-mark">15k</div><div class="ruler-mark">10k</div>
                 <div class="ruler-mark">5k</div><div class="ruler-mark">1k</div><div class="ruler-mark">500</div>
@@ -173,9 +173,9 @@
 
         <div id="dashboard">
             <div class="dash-panel">
-                <div class="dash-label">MATH TELEMETRY STREAM (NODE CAPTURE)</div>
+                <div class="dash-label">MATH TELEMETRY STREAM</div>
                 <div id="log-stream">
-                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">AWAITING SIGNAL...</div>
+                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">IDLE...</div>
                 </div>
             </div>
             <div class="dash-panel" style="border-right:none;">
@@ -190,10 +190,9 @@
 
 <script>
 const SCS = {
-    ac: null, an: null, src: null,
+    ac: null, an: null, src: null, peer: null, localStream: null,
     cvs: document.getElementById('scope'), ctx: document.getElementById('scope').getContext('2d'),
     infCvs: document.getElementById('infraCanvas'), infCtx: document.getElementById('infraCanvas').getContext('2d'),
-    elAudio: document.getElementById('audioEl'),
     config: { fft: 4096, orbRadius: 0, fov: 650, maxMainDrones: 8, harmonicsPerPoint: 4, subHarmonics: 3, baseFontSize: 14, droneSize: 7, lineWidth: 2.2 },
     active: false, state: 'IDLE', layers: { ORB: true, RAYS: true, DRONES: true, HARMONICS: true },
     angle: 0, peaks: [], isRecording: false, logBuffer: [], simData: null, simStartTime: 0, sysStartTime: Date.now(),
@@ -208,14 +207,44 @@ const SCS = {
             this.resize(); window.onresize = () => this.resize();
             this.active = true;
             document.getElementById('btnInit').disabled = true;
-            ['btnMic','btnFile','btnRec','btnImport','btnTx','btnRx','btnCall','btnAnswer'].forEach(id => {
-                if(document.getElementById(id)) document.getElementById(id).disabled = false;
-            });
+            ['btnMic','btnFile','btnRec','btnImport','btnTx','btnRx','btnGhost'].forEach(id => document.getElementById(id).disabled = false);
             document.getElementById('sysLed').classList.add('on');
             document.getElementById('headerStatus').innerText = "LIVE_ON";
             this.sysStartTime = Date.now();
+            
+            // Iniciar PeerJS para Sinalização Automática
+            this.Ghost.init();
             this.loop();
         } catch(e) { console.error(e); }
+    },
+
+    // --- OSINT GHOST NODE (AUTOMATIZADO) ---
+    Ghost: {
+        init() {
+            SCS.peer = new Peer('SCS-' + Math.floor(Math.random()*9000 + 1000));
+            SCS.peer.on('open', id => { document.getElementById('myNodeId').innerText = id; });
+            
+            // Ouvinte: Alguém ligou para este Nó
+            SCS.peer.on('call', call => {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                    call.answer(stream); // Responde com o próprio áudio
+                    call.on('stream', remoteStream => SCS.Ghost.pipe(remoteStream));
+                });
+            });
+        },
+        async connect() {
+            const target = document.getElementById('targetNodeId').value;
+            if(!target) return alert("INSIRA O ID ALVO!");
+            SCS.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const call = SCS.peer.call(target, SCS.localStream);
+            call.on('stream', remoteStream => SCS.Ghost.pipe(remoteStream));
+        },
+        pipe(stream) {
+            SCS.log("GHOST_LINK: CONEXÃO ESTABELECIDA. RECEBENDO ÁUDIO.");
+            const remoteSrc = SCS.ac.createMediaStreamSource(stream);
+            remoteSrc.connect(SCS.an);
+            const audio = new Audio(); audio.srcObject = stream; audio.play();
+        }
     },
 
     resize: function() {
@@ -228,83 +257,19 @@ const SCS = {
         this.config.orbRadius = Math.min(this.width, this.height) * 0.49;
     },
 
-    // --- OSINT NODE (VOIP) ---
-    VOIP: {
-        pc: null, localStream: null,
-        async startCall() {
-            if(!SCS.ac) return alert("INICIALIZE O MOTOR PRIMEIRO!");
-            this.pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-            
-            // Captura o mic para enviar
-            this.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            this.localStream.getTracks().forEach(track => this.pc.addTrack(track, this.localStream));
-            
-            this.pc.ontrack = (e) => {
-                SCS.log("CONEXÃO ESTABELECIDA. RECEBENDO ÁUDIO REMOTO...");
-                const remoteSrc = SCS.ac.createMediaStreamSource(e.streams[0]);
-                remoteSrc.connect(SCS.an);
-                // Reproduz áudio fiel do outro lado
-                const remoteAudio = new Audio();
-                remoteAudio.srcObject = e.streams[0];
-                remoteAudio.play();
-            };
-
-            this.pc.onicecandidate = (e) => {
-                if (!e.candidate) document.getElementById('voipSignaling').value = JSON.stringify(this.pc.localDescription);
-            };
-
-            const offer = await this.pc.createOffer();
-            await this.pc.setLocalDescription(offer);
-            SCS.log("TOKEN DE OFERTA GERADO. ENVIE PARA O PONTO B.");
-        },
-
-        async answerCall() {
-            const data = document.getElementById('voipSignaling').value;
-            if(!data) return alert("COLE O TOKEN RECEBIDO!");
-            const desc = JSON.parse(data);
-
-            if(!this.pc) {
-                this.pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-                this.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                this.localStream.getTracks().forEach(track => this.pc.addTrack(track, this.localStream));
-                
-                this.pc.ontrack = (e) => {
-                    SCS.log("JOIN COMPLETO. MONITORANDO NODE REMOTO.");
-                    const remoteSrc = SCS.ac.createMediaStreamSource(e.streams[0]);
-                    remoteSrc.connect(SCS.an);
-                    const remoteAudio = new Audio();
-                    remoteAudio.srcObject = e.streams[0];
-                    remoteAudio.play();
-                };
-
-                this.pc.onicecandidate = (e) => {
-                    if (!e.candidate) document.getElementById('voipSignaling').value = JSON.stringify(this.pc.localDescription);
-                };
-
-                await this.pc.setRemoteDescription(desc);
-                const answer = await this.pc.createAnswer();
-                await this.pc.setLocalDescription(answer);
-                SCS.log("TOKEN DE RESPOSTA GERADO. ENVIE PARA O PONTO A.");
-            } else {
-                await this.pc.setRemoteDescription(desc);
-            }
-        },
-        copySignaling() { document.getElementById('voipSignaling').select(); document.execCommand('copy'); SCS.log("TOKEN COPIADO."); }
-    },
-
     useMic: async function() {
         const s = await navigator.mediaDevices.getUserMedia({ audio: true });
         this.connect(this.ac.createMediaStreamSource(s), "MIC");
-        SCS.log("CAPTAÇÃO LOCAL ATIVA.");
     },
-
     useFile: function(el) {
-        if(!el.files[0]) return;
-        this.elAudio.src = URL.createObjectURL(el.files[0]);
-        this.connect(this.ac.createMediaElementSource(this.elAudio), "FILE");
-        SCS.log("ARQUIVO CARREGADO PARA ANÁLISE.");
+        const url = URL.createObjectURL(el.files[0]);
+        document.getElementById('audioEl').src = url;
+        this.connect(this.ac.createMediaElementSource(document.getElementById('audioEl')), "FILE");
+        ['btnPlay','btnPause','btnStop'].forEach(id => {
+            const btn = document.getElementById(id);
+            if(btn) btn.disabled = false;
+        });
     },
-
     connect: function(src, type) {
         if(this.src) this.src.disconnect();
         this.src = src; this.src.connect(this.an);
@@ -312,51 +277,37 @@ const SCS = {
         this.state = 'LIVE';
     },
 
+    mediaControl: function(action) {
+        const el = document.getElementById('audioEl');
+        if(action === 'play') el.play();
+        if(action === 'pause') el.pause();
+        if(action === 'stop') { el.pause(); el.currentTime = 0; }
+    },
+
     Modem: {
-        transmit: function(encrypted) {
-            if(SCS.logBuffer.length === 0) return alert("GRAVE UM LOG PRIMEIRO!");
-            SCS.modem.active = true; SCS.modem.mode = 'TX';
+        transmit: function(enc) {
+            if(SCS.logBuffer.length === 0) return alert("LOG VAZIO!");
+            SCS.modem.active = true;
             document.getElementById('modemHud').style.display = 'block';
-            let dataStr = "";
-            for(let i=0; i<Math.min(SCS.logBuffer.length, 64); i++) {
-                dataStr += Math.floor(SCS.logBuffer[i].peaks[0].f).toString(16).padStart(4, '0');
-            }
-            SCS.modem.buffer = "AAAA" + dataStr + "FFFF"; SCS.modem.idx = 0;
-            this.txLoop();
+            SCS.modem.buffer = SCS.logBuffer.slice(-100).map(f => Math.floor(f.peaks[0].f).toString(16).padStart(4,'0')).join('');
+            SCS.modem.idx = 0; this.txLoop();
         },
         txLoop: function() {
-            if(!SCS.modem.active || SCS.modem.idx >= SCS.modem.buffer.length) { this.stop(); return; }
+            if(!SCS.modem.active || SCS.modem.idx >= SCS.modem.buffer.length) { SCS.modem.active = false; document.getElementById('modemHud').style.display = 'none'; return; }
             const freq = SCS.modem.baseFreq + (parseInt(SCS.modem.buffer[SCS.modem.idx], 16) * SCS.modem.stepFreq);
             const osc = SCS.ac.createOscillator(); const g = SCS.ac.createGain();
             osc.frequency.value = freq; osc.connect(g); g.connect(SCS.ac.destination);
-            const now = SCS.ac.currentTime;
-            g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-            osc.start(); osc.stop(now + 0.08);
+            g.gain.setValueAtTime(0.3, SCS.ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, SCS.ac.currentTime + 0.08);
+            osc.start(); osc.stop(SCS.ac.currentTime + 0.08);
             SCS.modem.idx++; setTimeout(() => this.txLoop(), 80);
         },
-        receive: function() { SCS.useMic(); SCS.modem.active = true; SCS.modem.mode = 'RX'; document.getElementById('modemHud').style.display = 'block'; },
-        stop: function() { SCS.modem.active = false; document.getElementById('modemHud').style.display = 'none'; }
+        receive: function() { SCS.useMic(); SCS.modem.active = true; document.getElementById('modemHud').style.display = 'block'; document.getElementById('modemHud').innerText = "LISTENING..."; }
     },
 
-    toggleRecording: function() {
-        this.isRecording = !this.isRecording;
-        document.getElementById('btnRec').classList.toggle('recording');
-        SCS.log(this.isRecording ? "GRAVAÇÃO INICIADA." : "GRAVAÇÃO FINALIZADA.");
-    },
-
-    exportLog: function() {
-        const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `SCS_LOG_${Date.now()}.json`; a.click();
-    },
-
-    importLog: function(input) {
-        const reader = new FileReader();
-        reader.onload = (e) => { this.simData = JSON.parse(e.target.result); document.getElementById('btnSim').disabled = false; SCS.log("LOG CARREGADO."); };
-        reader.readAsText(input.files[0]);
-    },
-
-    startSimulation: function() { if (this.simData) { this.state = 'SIM'; this.simStartTime = Date.now(); SCS.log("INICIANDO SIMULAÇÃO GEOMÉTRICA."); } },
+    toggleRecording: function() { this.isRecording = !this.isRecording; document.getElementById('btnRec').classList.toggle('recording'); },
+    exportLog: function() { const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `SCS_LOG.json`; a.click(); },
+    importLog: function(input) { const reader = new FileReader(); reader.onload = (e) => { this.simData = JSON.parse(e.target.result); document.getElementById('btnSim').disabled = false; }; reader.readAsText(input.files[0]); },
+    startSimulation: function() { if (this.simData) { this.state = 'SIM'; this.simStartTime = Date.now(); } },
 
     loop: function() {
         requestAnimationFrame(() => this.loop());
@@ -364,27 +315,22 @@ const SCS = {
         this.ctx.globalCompositeOperation = 'source-over';
         this.ctx.fillStyle = "#000000"; this.ctx.fillRect(0, 0, this.width, this.height);
         this.angle += 0.007;
-        const now = Date.now();
-        const diff = new Date(now - this.sysStartTime);
+        const diff = new Date(Date.now() - this.sysStartTime);
         document.getElementById('hudTime').innerText = "T+ " + diff.toISOString().substr(11, 8);
-
         if (this.state === 'LIVE') {
             const data = new Uint8Array(this.an.frequencyBinCount);
             this.an.getByteFrequencyData(data);
             this.analyze(data); this.processInfra(data);
             this.updateSpectralMonitor(data); this.updateDashboardLog(); 
-            if (this.isRecording) this.logBuffer.push({ time: now, peaks: JSON.parse(JSON.stringify(this.peaks)) });
+            if (this.isRecording) this.logBuffer.push({ time: Date.now(), peaks: JSON.parse(JSON.stringify(this.peaks)) });
         } else if (this.state === 'SIM') { this.handleSimulation(); this.updateDashboardLog(); }
-        
-        this.drawGalaxy(); this.drawInfraDashboard();
-        this.updateRuler();
+        this.drawGalaxy(); this.drawInfraDashboard(); this.updateRuler();
     },
 
     updateRuler: function() {
         if(!this.peaks[0]) return;
-        const pointer = document.getElementById('ruler-pointer');
         const pos = Math.min(100, Math.max(0, 100 - (Math.log10(this.peaks[0].f) / 4.3) * 100));
-        pointer.style.top = pos + "%";
+        document.getElementById('ruler-pointer').style.top = pos + "%";
     },
 
     analyze: function(data) {
@@ -417,10 +363,10 @@ const SCS = {
     updateDashboardLog: function() {
         if (this.peaks.length === 0) return;
         const stream = document.getElementById('log-stream');
-        if (stream.innerHTML.includes('AWAITING')) stream.innerHTML = '';
+        if (stream.innerHTML.includes('IDLE')) stream.innerHTML = '';
         const row = document.createElement('div'); row.className = 'log-entry';
         const p = this.peaks[0]; const t = new Date().toLocaleTimeString('pt-BR', { hour12: false });
-        row.innerHTML = `<div>[${t}]</div><div>${p.f.toFixed(1)}Hz</div><div>AMP_${p.v}</div><div>NODE_CAPTURE</div>`;
+        row.innerHTML = `<div>[${t}]</div><div>${p.f.toFixed(1)}Hz</div><div>AMP_${p.v}</div><div>NODE_OK</div>`;
         stream.prepend(row); if(stream.childElementCount > 25) stream.removeChild(stream.lastChild);
     },
 
