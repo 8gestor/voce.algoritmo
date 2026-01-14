@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCS: SINGULARITY ENGINE v7.0 - GHOST NODE</title>
+    <title>SCS: SINGULARITY ENGINE v7.1 - GHOST NODE PRO</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
@@ -13,62 +13,48 @@
         }
         * { box-sizing: border-box; user-select: none; }
         body { margin: 0; padding: 0; background-color: var(--bg); color: #ccc; font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
         header { border-bottom: 1px solid var(--cyan); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: var(--panel); height: 40px; flex-shrink: 0; z-index: 100; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
         h1 { margin: 0; font-size: 13px; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
         .status-led { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
         .status-led.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
-
         main { display: flex; flex: 1; overflow: hidden; }
         aside { width: 340px; background: var(--panel); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
-
         .module { border: 1px solid #2a2a2a; padding: 10px; position: relative; margin-top: 5px; background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 100%); border-radius: 4px; }
         .mod-label { position: absolute; top: -7px; left: 8px; background: var(--panel); padding: 0 5px; font-size: 8px; color: var(--cyan); text-transform: uppercase; border: 1px solid #222; }
-
         .row { display: flex; gap: 5px; margin-bottom: 6px; }
         button { flex: 1; background: #080808; color: #888; border: 1px solid #444; padding: 8px; font-family: inherit; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; border-radius: 2px; }
         button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0,243,255,0.1); }
         button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
         button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; }
-        
-        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; text-align: center; font-weight: bold; letter-spacing: 1px; }
-
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        /* Spectral Monitor */
+        input[type="text"] { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; text-align: center; }
         .spec-row { display: flex; align-items: center; gap: 10px; font-size: 9px; margin-bottom: 4px; }
         .spec-name { width: 40px; text-align: right; color: #777; }
         .bar-container { flex: 1; height: 4px; background: #111; border: 1px solid #333; }
         .bar-fill { height: 100%; width: 0%; transition: width 0.1s; }
         .bar-infra { background: var(--purple); } .bar-audio { background: var(--cyan); } .bar-ultra { background: #ff0055; }
-
-        /* VIEWPORT & RULER */
         #viewport-container { flex: 1.8; display: flex; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1a1a1a; }
         #viewport { flex: 1; position: relative; }
         canvas { width: 100%; height: 100%; display: block; }
-        
         #spectral-ruler { width: 40px; background: #050505; border-left: 1px solid #1a1a1a; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0; }
         .ruler-mark { font-size: 7px; color: #444; text-align: center; }
         #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; z-index: 5; }
-
-        /* DASHBOARD */
         #dashboard { height: 145px; background: #050508; display: flex; border-top: 1px solid var(--cyan); flex-shrink: 0; }
         .dash-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #1a1a1a; }
         .dash-label { background: #0d0d0f; color: var(--cyan); font-size: 9px; padding: 3px 12px; font-weight: bold; border-bottom: 1px solid #1a1a1a; }
         #log-stream { flex: 1; overflow-y: auto; padding: 8px; font-size: 9px; color: #555; }
         #infra-dash { flex: 1.3; position: relative; background: #010102; overflow: hidden; }
-
         .hud { position: absolute; pointer-events: none; padding: 20px; z-index: 10; }
         .val-big { font-size: 38px; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
         .modem-hud { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--amber); font-size: 14px; background: rgba(0,0,0,0.8); padding: 10px; border: 1px solid var(--amber); display: none; z-index: 20; text-align: center; font-weight: bold; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>SCS: SINGULARITY v7.0 - GHOST NODE</h1>
+    <h1>SCS: SINGULARITY v7.1 - GHOST NODE PRO</h1>
     <div style="display:flex; align-items:center; gap:10px;">
-        <span id="headerStatus" style="font-size:10px; color:#444;">ENGINE_READY</span>
+        <span id="headerStatus" style="font-size:10px; color:#444;">SYS_READY</span>
         <div id="sysLed" class="status-led"></div>
     </div>
 </header>
@@ -86,40 +72,41 @@
         <div class="module">
             <span class="mod-label">01. Signal Source</span>
             <div class="row">
-                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 ATIVAR MIC LOCAL</button>
-            </div>
-            <div class="row">
+                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 MIC LOCAL</button>
                 <button id="btnFile" onclick="document.getElementById('fAudio').click()" disabled>📂 ARQUIVO</button>
                 <input type="file" id="fAudio" hidden onchange="SCS.useFile(this)">
+            </div>
+            <div class="row">
+                <button id="btnPlay" onclick="SCS.mediaControl('play')" disabled>▶</button>
+                <button id="btnPause" onclick="SCS.mediaControl('pause')" disabled>II</button>
+                <button id="btnStop" onclick="SCS.mediaControl('stop')" disabled>■</button>
             </div>
         </div>
 
         <div class="module">
             <span class="mod-label">03. OSINT NODE (Vigilância IP)</span>
-            <div style="font-size:9px; color:#555; margin-bottom:5px;">ID DESTE DISPOSITIVO:</div>
-            <div id="myNodeId" style="color:var(--cyan); font-weight:bold; font-size:14px; text-align:center; padding:5px; background:#111; border:1px solid #222; margin-bottom:10px;">AGUARDANDO...</div>
-            
-            <input type="text" id="targetNodeId" placeholder="DIGITE O ID DO ALVO...">
+            <div style="font-size:9px; color:#555; margin-bottom:5px;">MEU ID DE NÓ:</div>
+            <div id="myNodeId" style="color:var(--cyan); font-weight:bold; font-size:12px; text-align:center; padding:5px; background:#111; border:1px solid #222; margin-bottom:10px;">STANDBY...</div>
+            <input type="text" id="targetNodeId" placeholder="DIGITE O ID DO ALVO">
             <div class="row">
-                <button id="btnGhost" onclick="SCS.Ghost.connect()" disabled style="color:var(--data)">CONEXÃO AUTOMÁTICA</button>
-            </div>
-            <p style="font-size:8px; color:#444; margin:0;">* Deixe o Ponto A com o motor ligado para escuta passiva.</p>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">04. Data-Link (Local Acoustic)</span>
-            <input type="text" id="cryptoKey" placeholder="CHAVE DE SEGURANÇA...">
-            <div class="row">
-                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">ENVIAR</button>
-                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">RECEBER</button>
+                <button id="btnGhost" onclick="SCS.Ghost.connect()" disabled style="color:var(--data)">CONECTAR AO ALVO</button>
             </div>
         </div>
 
         <div class="module">
             <span class="mod-label">02. Logging & Data</span>
             <div class="row">
-                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR TELEMETRIA</button>
+                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR LOG</button>
                 <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 EXPORTAR</button>
+            </div>
+        </div>
+
+        <div class="module">
+            <span class="mod-label">04. Data-Link (Acoustic)</span>
+            <input type="text" id="cryptoKey" placeholder="CHAVE DE SEGURANÇA...">
+            <div class="row">
+                <button id="btnTx" onclick="SCS.Modem.transmit(true)" disabled style="color:var(--rec)">ENVIAR</button>
+                <button id="btnRx" onclick="SCS.Modem.receive(true)" disabled style="color:var(--green)">RECEBER</button>
             </div>
         </div>
 
@@ -133,7 +120,7 @@
         </div>
 
         <div class="module">
-            <span class="mod-label">06. Spectral Monitor</span>
+            <span class="mod-label">06. Diagnostics & Layers</span>
             <div class="spec-row">
                 <span class="spec-name">INFRA</span><div class="bar-container"><div id="barInfra" class="bar-fill bar-infra"></div></div>
             </div>
@@ -143,7 +130,7 @@
             <div class="spec-row">
                 <span class="spec-name">ULTRA</span><div class="bar-container"><div id="barUltra" class="bar-fill bar-ultra"></div></div>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:8px;">
                 <button id="btnLayOrb" class="active" onclick="SCS.toggleLayer('ORB')">ORB</button>
                 <button id="btnLayRays" class="active" onclick="SCS.toggleLayer('RAYS')">ROTAS</button>
                 <button id="btnLayDrone" class="active" onclick="SCS.toggleLayer('DRONES')">DRONES</button>
@@ -157,7 +144,7 @@
             <div id="viewport">
                 <canvas id="scope"></canvas>
                 <div class="hud">
-                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">PEAK ANALYSIS</div>
+                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">SPECTRAL PEAK</div>
                     <div class="val-big" id="hudFreq">0.0</div>
                     <div id="hudTime" style="color:#444; font-size:10px; margin-top:2px;">T+ 00:00:00</div>
                 </div>
@@ -170,12 +157,11 @@
                 <div class="ruler-mark">100</div><div class="ruler-mark">20</div><div class="ruler-mark">0</div>
             </div>
         </div>
-
         <div id="dashboard">
             <div class="dash-panel">
                 <div class="dash-label">MATH TELEMETRY STREAM</div>
                 <div id="log-stream">
-                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">IDLE...</div>
+                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">AWAITING SIGNAL...</div>
                 </div>
             </div>
             <div class="dash-panel" style="border-right:none;">
@@ -207,40 +193,40 @@ const SCS = {
             this.resize(); window.onresize = () => this.resize();
             this.active = true;
             document.getElementById('btnInit').disabled = true;
-            ['btnMic','btnFile','btnRec','btnImport','btnTx','btnRx','btnGhost'].forEach(id => document.getElementById(id).disabled = false);
+            ['btnMic','btnFile','btnRec','btnImport','btnTx','btnRx','btnGhost'].forEach(id => {
+                const b = document.getElementById(id); if(b) b.disabled = false;
+            });
             document.getElementById('sysLed').classList.add('on');
             document.getElementById('headerStatus').innerText = "LIVE_ON";
             this.sysStartTime = Date.now();
-            
-            // Iniciar PeerJS para Sinalização Automática
             this.Ghost.init();
             this.loop();
         } catch(e) { console.error(e); }
     },
 
-    // --- OSINT GHOST NODE (AUTOMATIZADO) ---
     Ghost: {
         init() {
             SCS.peer = new Peer('SCS-' + Math.floor(Math.random()*9000 + 1000));
             SCS.peer.on('open', id => { document.getElementById('myNodeId').innerText = id; });
-            
-            // Ouvinte: Alguém ligou para este Nó
             SCS.peer.on('call', call => {
+                SCS.log("REQUISITANDO ACESSO AO MIC PARA RESPOSTA...");
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                    call.answer(stream); // Responde com o próprio áudio
+                    SCS.localStream = stream;
+                    call.answer(stream);
                     call.on('stream', remoteStream => SCS.Ghost.pipe(remoteStream));
-                });
+                }).catch(err => SCS.log("ERRO AO ABRIR MIC: " + err.message));
             });
         },
         async connect() {
             const target = document.getElementById('targetNodeId').value;
             if(!target) return alert("INSIRA O ID ALVO!");
+            SCS.log("INICIANDO HANDSHAKE COM " + target);
             SCS.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const call = SCS.peer.call(target, SCS.localStream);
             call.on('stream', remoteStream => SCS.Ghost.pipe(remoteStream));
         },
         pipe(stream) {
-            SCS.log("GHOST_LINK: CONEXÃO ESTABELECIDA. RECEBENDO ÁUDIO.");
+            SCS.log("GHOST_LINK ESTABELECIDO.");
             const remoteSrc = SCS.ac.createMediaStreamSource(stream);
             remoteSrc.connect(SCS.an);
             const audio = new Audio(); audio.srcObject = stream; audio.play();
@@ -258,17 +244,14 @@ const SCS = {
     },
 
     useMic: async function() {
-        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-        this.connect(this.ac.createMediaStreamSource(s), "MIC");
+        SCS.localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this.connect(this.ac.createMediaStreamSource(SCS.localStream), "MIC");
     },
     useFile: function(el) {
         const url = URL.createObjectURL(el.files[0]);
         document.getElementById('audioEl').src = url;
         this.connect(this.ac.createMediaElementSource(document.getElementById('audioEl')), "FILE");
-        ['btnPlay','btnPause','btnStop'].forEach(id => {
-            const btn = document.getElementById(id);
-            if(btn) btn.disabled = false;
-        });
+        ['btnPlay','btnPause','btnStop'].forEach(id => document.getElementById(id).disabled = false);
     },
     connect: function(src, type) {
         if(this.src) this.src.disconnect();
@@ -285,7 +268,7 @@ const SCS = {
     },
 
     Modem: {
-        transmit: function(enc) {
+        transmit: function() {
             if(SCS.logBuffer.length === 0) return alert("LOG VAZIO!");
             SCS.modem.active = true;
             document.getElementById('modemHud').style.display = 'block';
@@ -315,14 +298,15 @@ const SCS = {
         this.ctx.globalCompositeOperation = 'source-over';
         this.ctx.fillStyle = "#000000"; this.ctx.fillRect(0, 0, this.width, this.height);
         this.angle += 0.007;
-        const diff = new Date(Date.now() - this.sysStartTime);
+        const now = Date.now();
+        const diff = new Date(now - this.sysStartTime);
         document.getElementById('hudTime').innerText = "T+ " + diff.toISOString().substr(11, 8);
         if (this.state === 'LIVE') {
             const data = new Uint8Array(this.an.frequencyBinCount);
             this.an.getByteFrequencyData(data);
             this.analyze(data); this.processInfra(data);
             this.updateSpectralMonitor(data); this.updateDashboardLog(); 
-            if (this.isRecording) this.logBuffer.push({ time: Date.now(), peaks: JSON.parse(JSON.stringify(this.peaks)) });
+            if (this.isRecording) this.logBuffer.push({ time: now, peaks: JSON.parse(JSON.stringify(this.peaks)) });
         } else if (this.state === 'SIM') { this.handleSimulation(); this.updateDashboardLog(); }
         this.drawGalaxy(); this.drawInfraDashboard(); this.updateRuler();
     },
@@ -439,6 +423,7 @@ const SCS = {
                     this.ctx.fillText(Math.floor(obj.f), proj.x+size+3, proj.y);
                 }
             }
+            this.ctx.globalAlpha = 1;
         });
     },
 
