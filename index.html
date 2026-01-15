@@ -1,741 +1,317 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://unpkg.com https://*.peerjs.com wss://*.peerjs.com blob: data:;">
-    <title>SCS: SINGULARITY v7.9 - SECURE OPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DATA DOUBLE // OS v3.2</title>
     
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
+        /* --- FATOR X v4.4: SYSTEM CORE --- */
         :root {
-            --bg: #000000; --panel: #0a0a0c; --border: #222; --cyan: #00f3ff;
-            --purple: #bc13fe; --amber: #ffaa00; --green: #00ff66; --rec: #ff0044;
-            --data: #0088ff; --font: 'Consolas', 'Monaco', monospace;
+            --c-bg: #050505; --c-panel: #0a0a0a; --c-text: #E0E0E0;
+            --c-accent: #00F0FF; --c-border: rgba(255, 255, 255, 0.1);
+            --font-tech: 'JetBrains Mono', monospace; --font-ui: 'Inter', sans-serif;
+            --scroll-track: #050505; --scroll-thumb: #333; --scroll-hover: #00F0FF;
         }
-        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background-color: var(--bg); color: #ccc; font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* AUDIO UNLOCKER OVERLAY */
-        #audioUnlocker { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .unlock-btn { padding: 20px 40px; border: 2px solid var(--cyan); color: var(--cyan); background: rgba(0, 243, 255, 0.1); font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); animation: pulse 2s infinite; font-weight: bold; }
-
-        header { border-bottom: 1px solid var(--cyan); padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: var(--panel); height: 40px; flex-shrink: 0; z-index: 100; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); }
-        h1 { margin: 0; font-size: 13px; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .status-led { width: 8px; height: 8px; border-radius: 50%; background: #333; transition: 0.3s; }
-        .status-led.on { background: var(--green); box-shadow: 0 0 10px var(--green); }
-        .status-led.net { background: var(--data); box-shadow: 0 0 10px var(--data); }
-        .status-led.spy { background: var(--rec); box-shadow: 0 0 15px var(--rec); animation: blink 1s infinite; }
-
-        main { display: flex; flex: 1; overflow: hidden; }
-        aside { width: 340px; background: var(--panel); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; }
-        
-        /* Mobile Toggle */
-        @media (max-width: 700px) {
-            aside { width: 280px; position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); transition: 0.3s; box-shadow: 10px 0 20px rgba(0,0,0,0.8); }
-            aside.open { transform: translateX(0); }
-            .mobile-toggle { display: block !important; }
+        body.light-mode {
+            --c-bg: #F2F2F7; --c-panel: #FFFFFF; --c-text: #1C1C1E;
+            --c-accent: #0066FF; --c-border: rgba(0, 0, 0, 0.1);
+            --scroll-track: #F2F2F7; --scroll-thumb: #C1C1C4; --scroll-hover: #A0A0A3;
         }
-        .mobile-toggle { display: none; color: var(--cyan); font-size: 20px; cursor: pointer; margin-right: 10px; }
+        body.sepia-mode {
+            --c-bg: #F4ECD8; --c-panel: #E8DEC0; --c-text: #433422;
+            --c-accent: #8C4B2F; --c-border: rgba(67, 52, 34, 0.15);
+            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #8C4B2F;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; background-color: var(--c-bg); color: var(--c-text); }
+        body { display: flex; font-family: var(--font-ui); transition: background 0.4s ease, color 0.4s ease; }
+        
+        /* SCROLLBAR */
+        html { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scroll-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
 
-        .module { border: 1px solid #2a2a2a; padding: 10px; position: relative; margin-top: 5px; background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 100%); border-radius: 4px; }
-        .mod-label { position: absolute; top: -7px; left: 8px; background: var(--panel); padding: 0 5px; font-size: 8px; color: var(--cyan); text-transform: uppercase; border: 1px solid #222; }
+        /* SIDEBAR */
+        aside.sidebar {
+            width: 300px; background: var(--c-panel); border-right: 1px solid var(--c-border);
+            display: flex; flex-direction: column; z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0;
+        }
+        aside.sidebar.collapsed { transform: translateX(-300px); position: absolute; height: 100%; }
+        
+        .sidebar-header { 
+            height: 60px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 20px; border-bottom: 1px solid var(--c-border); 
+            font-family: var(--font-tech); font-weight: 700; color: var(--c-accent); letter-spacing: 1px; font-size: 0.85rem;
+        }
+        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px; }
+        
+        .nav-cat { 
+            font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-text); opacity: 0.5; 
+            margin: 20px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
+            border-bottom: 1px dashed var(--c-border); padding-bottom: 5px;
+        }
+        .chapter-link { 
+            display: block; padding: 10px 12px; margin-bottom: 2px; 
+            color: var(--c-text); text-decoration: none; font-size: 0.8rem; 
+            font-family: var(--font-ui); font-weight: 500; border-radius: 4px; 
+            transition: all 0.2s; border-left: 2px solid transparent; opacity: 0.8;
+        }
+        .chapter-link:hover { background: rgba(255,255,255,0.05); opacity: 1; transform: translateX(4px); }
+        .chapter-link.active { 
+            background: rgba(255,255,255,0.05); color: var(--c-accent); 
+            border-left-color: var(--c-accent); opacity: 1; font-weight: 700;
+        }
+        .chapter-sub { margin-left: 15px; font-size: 0.75rem; border-left: 1px solid var(--c-border); }
 
-        .row { display: flex; gap: 5px; margin-bottom: 6px; }
-        button { flex: 1; background: #080808; color: #888; border: 1px solid #444; padding: 8px; font-family: inherit; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; border-radius: 2px; }
-        button:hover:not(:disabled) { border-color: var(--cyan); color: var(--cyan); background: rgba(0,243,255,0.1); }
-        button.active { border-color: var(--cyan); color: #000; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-        button.recording { border-color: var(--rec); color: var(--rec); animation: blink 1s infinite; background: rgba(255, 0, 68, 0.1); }
-        button.spy-active { background: var(--rec); color: #000; border-color: var(--rec); box-shadow: 0 0 15px var(--rec); }
+        /* LAYOUT */
+        main.dashboard { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; overflow: hidden; }
+        .master-header { background: var(--c-panel); border-bottom: 1px solid var(--c-border); display: flex; flex-direction: column; width: 100%; z-index: 400; flex-shrink: 0; }
+        .branding-bar { height: 30px; background: var(--c-bg); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: center; padding: 0 15px; }
+        .branding-text { font-family: var(--font-tech); font-size: 0.65rem; font-weight: 800; color: var(--c-dim); text-transform: uppercase; letter-spacing: 3px; }
         
-        input[type="text"], textarea { width: 100%; background: #000; border: 1px solid #444; color: var(--green); font-family: inherit; font-size: 11px; padding: 8px; margin-bottom: 5px; outline: none; letter-spacing: 1px; }
+        .controls-bar { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; overflow-x: auto; }
+        .controls-bar::-webkit-scrollbar { display: none; }
+        .ctrl-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
         
-        .net-status { font-size: 9px; color: #555; text-align: center; margin-bottom: 5px; }
-        .net-status.connected { color: var(--data); font-weight: bold; }
+        .btn-icon { width: 34px; height: 34px; background: transparent; border: 1px solid var(--c-border); color: var(--c-text); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); transition: all 0.2s; flex-shrink: 0; }
+        .btn-icon:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(255,255,255,0.05); }
+        .btn-icon.active { background: var(--c-accent); color: var(--c-bg); border-color: var(--c-accent); }
 
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 243, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); } }
+        .speed-control { display: flex; align-items: center; border: 1px solid var(--c-border); border-radius: 4px; height: 34px; overflow: hidden; flex-shrink: 0; }
+        .speed-btn { width: 28px; height: 100%; background: transparent; border: none; color: var(--c-text); cursor: pointer; font-weight: bold; font-family: var(--font-tech); }
+        .speed-btn:hover { background: rgba(255,255,255,0.1); }
+        #speed-display { font-family: var(--font-tech); font-size: 0.7rem; width: 35px; text-align: center; font-weight: 700; color: var(--c-accent); }
 
-        /* Graphics */
-        .spec-row { display: flex; align-items: center; gap: 10px; font-size: 9px; margin-bottom: 4px; }
-        .spec-name { width: 40px; text-align: right; color: #777; }
-        .bar-container { flex: 1; height: 4px; background: #111; border: 1px solid #333; }
-        .bar-fill { height: 100%; width: 0%; transition: width 0.1s; }
-        .bar-infra { background: var(--purple); } .bar-audio { background: var(--cyan); } .bar-ultra { background: #ff0055; }
+        .viewport { flex: 1; background: var(--c-bg); position: relative; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        #viewport-container { flex: 1.8; display: flex; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid #1a1a1a; }
-        #viewport { flex: 1; position: relative; }
-        canvas { width: 100%; height: 100%; display: block; }
-        
-        #spectral-ruler { width: 40px; background: #050505; border-left: 1px solid #1a1a1a; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0; }
-        .ruler-mark { font-size: 7px; color: #444; text-align: center; }
-        #ruler-pointer { position: absolute; width: 100%; height: 2px; background: #fff; left: 0; box-shadow: 0 0 10px #fff; transition: top 0.1s; z-index: 5; }
-        .ruler-grad { position: absolute; width: 6px; height: 100%; left: 0; background: linear-gradient(to bottom, #ff0055, #00f3ff, #bc13fe); opacity: 0.5; }
+        footer.bottom-hud { height: 45px; background: var(--c-panel); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-family: var(--font-tech); font-size: 0.7rem; flex-shrink: 0; }
+        .progress-container { flex: 1; margin: 0 20px; display: flex; align-items: center; gap: 10px; }
+        .progress-track { flex: 1; height: 2px; background: var(--c-border); position: relative; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--c-accent); width: 0%; transition: width 0.3s; box-shadow: 0 0 10px var(--c-accent); }
+        .nav-btn { background: none; border: none; color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+        .nav-btn:hover { color: var(--c-accent); }
 
-        #dashboard { height: 145px; background: #050508; display: flex; border-top: 1px solid var(--cyan); flex-shrink: 0; }
-        .dash-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid #1a1a1a; height: 100%; }
-        .dash-label { background: #0d0d0f; color: var(--cyan); font-size: 9px; padding: 3px 12px; font-weight: bold; border-bottom: 1px solid #1a1a1a; flex-shrink: 0; display:flex; justify-content:space-between; }
-        
-        #log-stream { flex: 1; overflow-y: auto; padding: 8px; font-size: 9px; color: #555; display: flex; flex-direction: column-reverse; }
-        .log-entry { margin-bottom: 2px; border-bottom: 1px solid #111; padding-bottom: 2px; display: grid; grid-template-columns: 45px 1fr; gap:5px; }
-        .log-msg { color: #ccc; word-break: break-all; }
-        
-        #infra-dash { flex: 1; position: relative; background: #010102; overflow: hidden; height: 100%; }
-        .hud { position: absolute; pointer-events: none; padding: 20px; z-index: 10; }
-        .val-big { font-size: 38px; font-weight: bold; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
-        .modem-hud { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--amber); font-size: 14px; background: rgba(0,0,0,0.8); padding: 10px; border: 1px solid var(--amber); display: none; z-index: 20; text-align: center; font-weight: bold; }
-        
-        .sim-ctrl { color: var(--data); font-weight: bold; font-size: 12px !important; }
-        .frame-btn { padding: 8px 4px !important; color: #888; font-size: 9px !important; border-color: #333 !important; max-width: 30px; }
-        .frame-btn:hover { color: #fff; border-color: #666 !important; }
-        
-        .id-display { font-size: 14px; color: var(--green); text-align: center; padding: 5px; border: 1px dashed #333; margin-bottom: 5px; cursor: pointer; }
-        .id-display:hover { background: #111; }
+        @media (max-width: 768px) {
+            aside.sidebar { position: absolute; height: 100%; width: 85%; max-width: 300px; transform: translateX(-100%); box-shadow: none; border-right: 1px solid var(--c-accent); }
+            aside.sidebar.open { transform: translateX(0); box-shadow: 10px 0 100px rgba(0,0,0,0.8); }
+        }
+        #backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); z-index: 900; display: none; opacity: 0; transition: opacity 0.3s; }
+        #backdrop.active { display: block; opacity: 1; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
-<div id="audioUnlocker">
-    <div style="color:#fff; margin-bottom:20px; font-size:12px; font-family: monospace;">INICIALIZAÇÃO DO SISTEMA NECESSÁRIA</div>
-    <button class="unlock-btn" onclick="SCS.unlockAudio()">>>> START SYSTEM <<<</button>
-</div>
+    <div id="backdrop" onclick="toggleSidebar()"></div>
 
-<header>
-    <div style="display:flex; align-items:center;">
-        <span class="mobile-toggle" onclick="document.querySelector('aside').classList.toggle('open')">☰</span>
-        <h1>SCS: SINGULARITY v7.9 - SECURE OPS</h1>
-    </div>
-    <div style="display:flex; align-items:center; gap:10px;">
-        <span id="headerStatus" style="font-size:10px; color:#444;">WAITING_INPUT</span>
-        <div id="sysLed" class="status-led"></div>
-    </div>
-</header>
-
-<main>
-    <aside>
-        <div class="module">
-            <span class="mod-label">00. Hardware Control</span>
-            <div class="row">
-                <button id="btnInit" disabled style="color:var(--green); border-color:var(--green);">ENGINE ON</button>
-                <button onclick="location.reload()" style="color:var(--amber); border-color:var(--amber);">REBOOT</button>
-            </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span>DATA DOUBLE <span style="color:var(--c-accent)">// OS v3.2</span></span>
+            <button class="btn-icon" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
         </div>
-
-        <div class="module">
-            <span class="mod-label">01. Signal Source</span>
-            <div class="row">
-                <button id="btnMic" onclick="SCS.useMic()" disabled>🎤 MIC</button>
-                <button id="btnFile" onclick="document.getElementById('fAudio').click()" disabled>📂 FILE</button>
-                <input type="file" id="fAudio" hidden onchange="SCS.useFile(this)">
-            </div>
-            <div class="row">
-                <button id="btnPlay" onclick="SCS.mediaControl('play')" disabled>▶</button>
-                <button id="btnPause" onclick="SCS.mediaControl('pause')" disabled>II</button>
-                <button id="btnStop" onclick="SCS.mediaControl('stop')" disabled>■</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">02. Logging & Data</span>
-            <div class="row">
-                <button id="btnRec" onclick="SCS.toggleRecording()" disabled>● GRAVAR LOG</button>
-                <button id="btnExport" onclick="SCS.exportLog()" disabled>💾 EXPORTAR</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">03. OSINT Node (Surveillance)</span>
-            <div id="netStatus" class="net-status">AGUARDANDO REDE...</div>
-            <div id="myIdDisplay" class="id-display" onclick="SCS.Net.copyId()">[ GERANDO ID... ]</div>
-            <div class="row">
-                <input type="text" id="targetId" placeholder="DIGITE O ID DO ALVO..." style="text-align:center; font-size:12px; font-weight:bold;">
-            </div>
-            <div class="row">
-                <button id="btnConnect" onclick="SCS.Net.connect()" disabled style="color:var(--data)">🔗 LINKAR ID</button>
-            </div>
-            <div class="row" style="margin-top:5px;">
-                <button id="btnSpy" onclick="SCS.Net.toggleSpy()" disabled style="color:var(--rec); border:1px solid var(--rec);">ESCUTA: OFF</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">04. Data-Link (Secure Chat)</span>
-            <input type="text" id="chatMsg" placeholder="MENSAGEM / DADOS..." onkeypress="if(event.key==='Enter') SCS.DataLink.send()">
-            <div class="row">
-                <button id="btnTx" onclick="SCS.DataLink.send()" disabled style="color:var(--green)">ENVIAR</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">05. Archive Simulation (Time Warp)</span>
-            <div class="row">
-                <button id="btnImport" onclick="document.getElementById('fLog').click()" disabled>📂 CARREGAR</button>
-                <input type="file" id="fLog" hidden accept=".json" onchange="SCS.importLog(this)">
-                <button id="btnSim" onclick="SCS.startSimulation()" disabled style="color:var(--green)">▶ SIMULAR</button>
-            </div>
-            <div class="row" style="margin-top:5px; border-top:1px solid #222; padding-top:5px;">
-                <button onclick="SCS.changeSpeed(-0.25)" class="sim-ctrl">⏪</button>
-                <button onclick="SCS.stepFrame(-1)" class="frame-btn">|&lt;</button>
-                <div style="flex:1; text-align:center; font-size:10px; color:#fff; cursor:pointer; padding-top:10px;" id="simSpeedDisplay" onclick="SCS.togglePause()" title="Clique para Pausar">SPD: 1.0x</div>
-                <button onclick="SCS.stepFrame(1)" class="frame-btn">&gt;|</button>
-                <button onclick="SCS.changeSpeed(0.25)" class="sim-ctrl">⏩</button>
-            </div>
-        </div>
-
-        <div class="module">
-            <span class="mod-label">06. Diagnostics & Layers</span>
-            <div class="spec-row">
-                <span class="spec-name">INFRA</span><div class="bar-container"><div id="barInfra" class="bar-fill bar-infra"></div></div>
-            </div>
-            <div class="spec-row">
-                <span class="spec-name">AUDIO</span><div class="bar-container"><div id="barAudio" class="bar-fill bar-audio"></div></div>
-            </div>
-            <div class="spec-row">
-                <span class="spec-name">ULTRA</span><div class="bar-container"><div id="barUltra" class="bar-fill bar-ultra"></div></div>
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:8px;">
-                <button id="btnLayOrb" class="active" onclick="SCS.toggleLayer('ORB')">ORB</button>
-                <button id="btnLayRays" class="active" onclick="SCS.toggleLayer('RAYS')">ROTAS</button>
-                <button id="btnLayDrone" class="active" onclick="SCS.toggleLayer('DRONES')">DRONES</button>
-                <button id="btnLayHarm" class="active" onclick="SCS.toggleLayer('HARMONICS')">FRACTAL</button>
-            </div>
-        </div>
+        <nav class="nav-list" id="nav-container"></nav>
     </aside>
 
-    <div style="display:flex; flex-direction:column; flex:1;">
-        <div id="viewport-container">
-            <div id="viewport">
-                <canvas id="scope"></canvas>
-                <div class="hud">
-                    <div style="font-size:11px; color:var(--cyan); letter-spacing:2px; font-weight:bold;">RESONANCE PEAK</div>
-                    <div class="val-big" id="hudFreq">0.0</div>
-                    <div id="hudTime" style="color:#444; font-size:10px; margin-top:2px;">T+ 00:00:00</div>
-                </div>
-                <div id="modemHud" class="modem-hud">LINK_ACTIVE</div>
+    <main class="dashboard">
+        <div class="master-header">
+            <div class="branding-bar">
+                <span class="branding-text">SYSTEM STATUS: <span style="color:var(--c-accent)">ONLINE</span> // SECURE CONNECTION</span>
             </div>
-            <div id="spectral-ruler">
-                <div class="ruler-grad"></div>
-                <div id="ruler-pointer"></div>
-                <div class="ruler-mark">20k</div><div class="ruler-mark">15k</div><div class="ruler-mark">10k</div>
-                <div class="ruler-mark">5k</div><div class="ruler-mark">1k</div><div class="ruler-mark">500</div>
-                <div class="ruler-mark">100</div><div class="ruler-mark">20</div><div class="ruler-mark">0</div>
+            <div class="controls-bar">
+                <div class="ctrl-group">
+                    <button class="btn-icon" onclick="toggleSidebar()" title="Índice">☰</button>
+                </div>
+                <div class="ctrl-group">
+                    <button class="btn-icon" onclick="adjustFont(-1)">A-</button>
+                    <button class="btn-icon" onclick="adjustFont(1)">A+</button>
+                    <div class="speed-control">
+                        <button class="speed-btn" onclick="adjustSpeed(-0.25)">«</button>
+                        <span id="speed-display">1.0</span>
+                        <button class="speed-btn" onclick="adjustSpeed(0.25)">»</button>
+                    </div>
+                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')">▶</button>
+                    <button class="btn-icon" id="btn-theme" onclick="cycleTheme()">◐</button>
+                    <button class="btn-icon" onclick="toggleFullScreen()">⛶</button>
+                </div>
             </div>
         </div>
 
-        <div id="dashboard">
-            <div class="dash-panel">
-                <div class="dash-label">
-                    <span>TELEMETRY & CHAT STREAM</span>
-                    <span id="conn-indicator" style="color:#444;">● P2P LINK</span>
-                </div>
-                <div id="log-stream">
-                    <div style="padding:15px; text-align:center; color:#222; font-size:10px;">SYSTEM INITIALIZED...</div>
-                </div>
-            </div>
-            <div class="dash-panel" style="border-right:none;">
-                <div class="dash-label">INFRASONIC MONITOR (Gain x15)</div>
-                <div id="infra-dash"><canvas id="infraCanvas"></canvas></div>
-            </div>
+        <div class="viewport">
+            <iframe id="content-frame" name="viewer" src="introducao.html"></iframe>
         </div>
-    </div>
-</main>
 
-<audio id="audioEl" hidden crossorigin="anonymous"></audio>
-<audio id="netAudio" autoplay playsinline style="position:absolute; opacity:0; pointer-events:none;"></audio>
+        <footer class="bottom-hud">
+            <button class="nav-btn" onclick="prevChapter()">← ANT</button>
+            <div class="progress-container">
+                <span id="chapter-indicator">00/00</span>
+                <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
+            </div>
+            <button class="nav-btn" onclick="nextChapter()">PROX →</button>
+        </footer>
+    </main>
 
-<script>
-// SECURITY: Strong ID Generation (UUID-like) to prevent guessing
-const ID_GEN = () => {
-    return 'xxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16).toUpperCase();
-    });
-};
-
-const SCS = {
-    ac: null, an: null, src: null,
-    cvs: document.getElementById('scope'), ctx: document.getElementById('scope').getContext('2d'),
-    infCvs: document.getElementById('infraCanvas'), infCtx: document.getElementById('infraCanvas').getContext('2d'),
-    elAudio: document.getElementById('audioEl'),
-    netAudio: document.getElementById('netAudio'),
-    config: { fft: 4096, orbRadius: 0, fov: 650, maxMainDrones: 8, harmonicsPerPoint: 4, subHarmonics: 3, baseFontSize: 14, droneSize: 7, lineWidth: 2.2 },
-    active: false, state: 'IDLE', layers: { ORB: true, RAYS: true, DRONES: true, HARMONICS: true },
-    angle: 0, peaks: [], isRecording: false, logBuffer: [], 
-    simData: null, simSpeed: 1.0, simCurrentTime: 0, lastFrameTime: 0,
-    sysStartTime: Date.now(), infraHistory: new Array(300).fill(0),
-
-    unlockAudio: function() {
-        document.getElementById('audioUnlocker').style.display = 'none';
-        this.init();
-    },
-
-    init: async function() {
-        try {
-            const AC = window.AudioContext || window.webkitAudioContext;
-            this.ac = new AC({ sampleRate: 48000 });
-            if(this.ac.state === 'suspended') await this.ac.resume();
+    <script>
+        const structure = [
+            { t: "BOOT SEQUENCE", f: "introducao.html", cat: "INICIALIZAÇÃO" },
             
-            this.an = this.ac.createAnalyser(); this.an.fftSize = this.config.fft;
-            this.resize(); window.onresize = () => this.resize();
-            this.active = true;
+            // PARTE I
+            { t: "01. O Hardware Biológico", f: "cap01.html", cat: "I. A MENTE" },
+            { t: "02. Sequestro da Atenção", f: "cap02.html", cat: "I. A MENTE" },
+            { t: "03. O Eu Inferido", f: "cap03.html", cat: "I. A MENTE" },
+
+            // PARTE II
+            { t: "04. Necropolítica", f: "cap04.html", cat: "II. O CERCO" },
+            { t: "05. Cidade Sensiente", f: "cap05.html", cat: "II. O CERCO" },
+            { t: "06. Tribunal Algorítmico", f: "cap06.html", cat: "II. O CERCO" },
+            { t: "06.1 Panóptico Financeiro", f: "cap06_1.html", cat: "II. O CERCO", sub: true },
+
+            // PARTE III
+            { t: "07. Taylorismo Digital", f: "cap07.html", cat: "III. INFRAESTRUTURA" },
+            { t: "08. Internet Morta", f: "cap08.html", cat: "III. INFRAESTRUTURA" },
+            { t: "09. Geologia da Mídia", f: "cap09.html", cat: "III. INFRAESTRUTURA" },
+            { t: "09.1 Deepweb & Tor", f: "cap09_1.html", cat: "III. INFRAESTRUTURA", sub: true },
+
+            // PARTE IV
+            { t: "10. Neuro-direitos", f: "cap10.html", cat: "IV. RESISTÊNCIA" },
+            { t: "10.1 Cibersegurança", f: "cap10_1.html", cat: "IV. RESISTÊNCIA", sub: true },
+            { t: "10.2 Cripto Economia", f: "cap10_2.html", cat: "IV. RESISTÊNCIA", sub: true },
             
-            this.enableControls();
-            document.getElementById('sysLed').classList.add('on');
-            document.getElementById('headerStatus').innerText = "SYSTEM_ACTIVE";
-            this.sysStartTime = Date.now();
-            this.loop();
-            this.Net.init(); 
-        } catch(e) { 
-            console.error(e); 
-            document.getElementById('audioUnlocker').style.display = 'flex';
-            alert("ERRO: Contexto de Áudio Bloqueado. Reinicie.");
-        }
-    },
+            { t: "11. Cidadania Onlife", f: "cap11.html", cat: "IV. RESISTÊNCIA" },
+            { t: "12. Tecnofeudalismo", f: "cap12.html", cat: "IV. RESISTÊNCIA" },
+            { t: "13. Solarpunk", f: "cap13.html", cat: "IV. RESISTÊNCIA" },
 
-    enableControls: function() {
-        ['btnMic','btnFile','btnStop','btnRec','btnImport','btnTx','btnConnect','btnSpy'].forEach(id => {
-            if(document.getElementById(id)) document.getElementById(id).disabled = false;
-        });
-    },
+            // FINAL
+            { t: "Epílogo", f: "cap14.html", cat: "SYSTEM END" },
+            { t: "Glossário", f: "cap15.html", cat: "DATABASE" },
+            { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" }
+        ];
 
-    resize: function() {
-        const dpr = window.devicePixelRatio || 1;
-        const rect = this.cvs.parentElement.getBoundingClientRect();
-        this.cvs.width = rect.width * dpr; this.cvs.height = rect.height * dpr;
-        this.ctx.scale(dpr, dpr); this.width = rect.width; this.height = rect.height;
-        const infRect = document.getElementById('infra-dash').getBoundingClientRect();
-        this.infCvs.width = infRect.width; this.infCvs.height = infRect.height;
-        this.config.orbRadius = Math.min(this.width, this.height) * 0.49;
-    },
+        let currentIdx = 0;
+        let ttsRate = 1.0;
+        let currentFont = 19; 
+        let themeState = 0; 
+        const themes = ['dark', 'light', 'sepia'];
 
-    // --- NETWORK MODULE ---
-    Net: {
-        peer: null, conn: null, call: null, myId: null, spyMode: false, remoteId: null, localStream: null,
-        
-        init: function() {
-            this.myId = ID_GEN();
-            document.getElementById('myIdDisplay').innerText = `ID: ${this.myId}`;
-            this.peer = new Peer(this.myId, { debug: 1 });
-
-            this.peer.on('open', (id) => {
-                document.getElementById('netStatus').innerText = "REDE: ONLINE (HTTPS)";
-                document.getElementById('netStatus').classList.add('connected');
-                SCS.log("SYS", "NODE ID: " + id);
-            });
-
-            this.peer.on('error', (err) => {
-                document.getElementById('netStatus').innerText = "ERRO DE REDE";
-                SCS.log("ERR", err.type);
-            });
-
-            this.peer.on('connection', (c) => this.handleConn(c));
-
-            this.peer.on('call', (call) => {
-                SCS.log("SURV", "SINAL DETECTADO...");
-                call.answer(); 
-                call.on('stream', (remoteStream) => {
-                    SCS.log("SURV", "AUDIO STREAM ACQUIRED");
-                    
-                    SCS.netAudio.srcObject = remoteStream;
-                    SCS.netAudio.volume = 1.0;
-                    
-                    const playPromise = SCS.netAudio.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            SCS.log("ERR", "AUTOPLAY BLOCKED.");
-                            document.getElementById('audioUnlocker').style.display = 'flex';
-                        });
-                    }
-
-                    const remoteSrc = SCS.ac.createMediaStreamSource(remoteStream);
-                    remoteSrc.connect(SCS.an);
-                    
-                    document.getElementById('sysLed').classList.add('net');
-                    document.getElementById('modemHud').style.display = 'block';
-                    document.getElementById('modemHud').innerText = "AUDIO FEED ON";
-                    setTimeout(() => document.getElementById('modemHud').style.display = 'none', 3000);
-                });
-            });
-        },
-
-        connect: function() {
-            const target = document.getElementById('targetId').value.toUpperCase();
-            if(target.length < 2) return alert("ID INVALIDO");
-            SCS.log("NET", "LINKANDO COM: " + target);
-            const conn = this.peer.connect(target);
-            this.handleConn(conn);
-        },
-
-        handleConn: function(c) {
-            this.conn = c;
-            this.remoteId = c.peer;
-            this.conn.on('open', () => {
-                SCS.log("NET", "DATA LINK ESTABELECIDO.");
-                document.getElementById('conn-indicator').style.color = "#00ff66";
-                document.getElementById('btnConnect').innerText = "LINK OK";
-                document.getElementById('btnConnect').disabled = true;
-                if(!document.getElementById('targetId').value) document.getElementById('targetId').value = this.remoteId;
-            });
-            this.conn.on('data', (data) => {
-                SCS.log("RX", data);
-                document.getElementById('modemHud').style.display = 'block';
-                document.getElementById('modemHud').innerText = "DATA RX";
-                setTimeout(() => document.getElementById('modemHud').style.display = 'none', 1000);
-            });
-            this.conn.on('close', () => {
-                SCS.log("NET", "CONEXAO PERDIDA");
-                document.getElementById('conn-indicator').style.color = "#444";
-                document.getElementById('btnConnect').disabled = false;
-                document.getElementById('btnConnect').innerText = "LINKAR ID";
-            });
-        },
-
-        toggleSpy: async function() {
-            this.spyMode = !this.spyMode;
-            const btn = document.getElementById('btnSpy');
+        function init() {
+            const nav = document.getElementById('nav-container');
+            let lastCat = "";
             
-            if(this.spyMode) {
-                btn.innerText = "ESCUTA: ON (TX)";
-                btn.classList.add('spy-active');
-                document.getElementById('sysLed').classList.add('spy');
+            structure.forEach((item, i) => {
+                if(item.cat !== lastCat) {
+                    const cat = document.createElement('div');
+                    cat.className = 'nav-cat';
+                    cat.innerText = item.cat;
+                    nav.appendChild(cat);
+                    lastCat = item.cat;
+                }
                 
-                try {
-                    if(SCS.ac.state === 'suspended') await SCS.ac.resume();
-                    
-                    this.localStream = await navigator.mediaDevices.getUserMedia({
-                        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-                    });
+                const btn = document.createElement('a');
+                btn.className = item.sub ? 'chapter-link chapter-sub' : 'chapter-link';
+                btn.innerText = item.t;
+                btn.href = "#";
+                btn.onclick = (e) => { 
+                    e.preventDefault(); 
+                    loadChapter(i); 
+                    if(window.innerWidth < 768) toggleSidebar(); 
+                };
+                nav.appendChild(btn);
+            });
+            // Carrega o primeiro capítulo (Introdução) por padrão
+            loadChapter(0);
+        }
 
-                    const src = SCS.ac.createMediaStreamSource(this.localStream);
-                    SCS.connect(src, "MIC");
-                    
-                    if(this.remoteId) {
-                        SCS.log("SPY", "TRANSMITINDO AUDIO -> " + this.remoteId);
-                        this.call = this.peer.call(this.remoteId, this.localStream);
-                    } else {
-                        SCS.log("SPY", "MIC ABERTO (SEM ALVO)");
-                    }
-                    SCS.askRecord();
-                } catch(e) { alert("ERRO MIC: " + e); this.toggleSpy(); }
+        function loadChapter(idx) {
+            currentIdx = idx;
+            const frame = document.getElementById('content-frame');
+            const btnTts = document.getElementById('btn-tts');
+            
+            btnTts.innerText = '▶';
+            btnTts.classList.remove('active');
+            frame.src = structure[idx].f;
+            
+            const progress = ((idx + 1) / structure.length * 100);
+            document.getElementById('p-bar').style.width = progress + "%";
+            document.getElementById('chapter-indicator').innerText = `${(idx + 1).toString().padStart(2, '0')}/${structure.length}`;
 
+            document.querySelectorAll('.chapter-link').forEach((el, i) => {
+                el.classList.toggle('active', i === idx);
+                if(i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+
+            frame.onload = () => { syncAll(); }
+        }
+
+        function sendMsg(type, val) {
+            const win = document.getElementById('content-frame').contentWindow;
+            if(win) win.postMessage({ type, value: val }, '*');
+        }
+
+        function syncAll() {
+            sendMsg('theme', themes[themeState]);
+            sendMsg('font', currentFont);
+            sendMsg('rate', ttsRate);
+        }
+
+        function cycleTheme() {
+            themeState = (themeState + 1) % 3;
+            const mode = themes[themeState];
+            document.body.className = mode + '-mode';
+            sendMsg('theme', mode);
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
             } else {
-                btn.innerText = "ESCUTA: OFF";
-                btn.classList.remove('spy-active');
-                document.getElementById('sysLed').classList.remove('spy');
-                
-                if(this.localStream) {
-                    this.localStream.getTracks().forEach(t => t.stop());
-                    this.localStream = null;
-                }
-                if(this.call) {
-                    this.call.close();
-                    this.call = null;
-                }
-                SCS.log("SPY", "TRANSMISSÃO ENCERRADA.");
+                if (document.exitFullscreen) document.exitFullscreen();
             }
-        },
-
-        copyId: function() {
-            navigator.clipboard.writeText(this.myId);
-            SCS.log("SYS", "ID COPIADO");
         }
-    },
 
-    // --- DATA LINK ---
-    DataLink: {
-        send: function() {
-            const input = document.getElementById('chatMsg');
-            const msg = input.value;
-            if(!msg) return;
+        function adjustSpeed(delta) {
+            ttsRate = Math.max(0.5, Math.min(3.0, ttsRate + delta));
+            ttsRate = Math.round(ttsRate * 100) / 100;
+            document.getElementById('speed-display').innerText = ttsRate;
+            sendMsg('rate', ttsRate);
+        }
 
-            if(SCS.Net.conn && SCS.Net.conn.open) {
-                SCS.Net.conn.send(msg);
-                SCS.log("TX", msg);
-                input.value = "";
+        function adjustFont(delta) {
+            currentFont = Math.max(14, Math.min(28, currentFont + delta));
+            sendMsg('font', currentFont);
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const bd = document.getElementById('backdrop');
+            
+            if(window.innerWidth < 768) {
+                sb.classList.toggle('open');
+                bd.classList.toggle('active');
             } else {
-                SCS.log("SYS", "SEM LINK DE DADOS. USANDO ACUSTICO.");
-                this.playAcoustic(msg);
-                input.value = "";
-            }
-        },
-        playAcoustic: function(str) {
-            const osc = SCS.ac.createOscillator();
-            const g = SCS.ac.createGain();
-            osc.connect(g); g.connect(SCS.ac.destination);
-            osc.frequency.setValueAtTime(1200, SCS.ac.currentTime);
-            let now = SCS.ac.currentTime;
-            for(let i=0; i<Math.min(str.length, 20); i++) {
-                const f = 1000 + (str.charCodeAt(i) % 10) * 200;
-                osc.frequency.setValueAtTime(f, now + (i*0.05));
-            }
-            g.gain.setValueAtTime(0.5, now);
-            g.gain.linearRampToValueAtTime(0, now + (str.length*0.05));
-            osc.start(now); osc.stop(now + (str.length*0.05) + 0.1);
-        }
-    },
-
-    // --- CORE & SIMULATION ---
-    askRecord: function() {
-        if(!this.isRecording) this.toggleRecording();
-    },
-    useMic: async function() {
-        if(SCS.ac.state === 'suspended') await SCS.ac.resume();
-        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-        this.connect(this.ac.createMediaStreamSource(s), "MIC");
-        this.askRecord();
-    },
-    useFile: function(el) {
-        if(!el.files[0]) return;
-        this.elAudio.src = URL.createObjectURL(el.files[0]);
-        this.connect(this.ac.createMediaElementSource(this.elAudio), "FILE");
-        ['btnPlay','btnPause'].forEach(id => document.getElementById(id).disabled = false);
-        this.askRecord();
-    },
-    connect: function(src, type) {
-        if(this.src) this.src.disconnect();
-        this.src = src; this.src.connect(this.an);
-        if(type === 'FILE') this.src.connect(this.ac.destination);
-        this.state = 'LIVE';
-    },
-    mediaControl: function(action) {
-        if(action === 'play') this.elAudio.play();
-        if(action === 'pause') this.elAudio.pause();
-        if(action === 'stop') { this.elAudio.pause(); this.elAudio.currentTime = 0; }
-    },
-    toggleRecording: function() {
-        this.isRecording = !this.isRecording;
-        const btn = document.getElementById('btnRec');
-        btn.classList.toggle('recording');
-        btn.innerText = this.isRecording ? "■ PARAR" : "● GRAVAR LOG";
-        if(!this.isRecording) { this.exportLog(); }
-    },
-    exportLog: function() {
-        if(this.logBuffer.length === 0) return SCS.log("SYS", "BUFFER VAZIO");
-        const blob = new Blob([JSON.stringify({ frames: this.logBuffer })], {type: 'application/json'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `SCS_LOG_${Date.now()}.json`; a.click();
-        SCS.log("SYS", "LOG EXPORTADO.");
-    },
-    importLog: function(input) {
-        const reader = new FileReader();
-        reader.onload = (e) => { this.simData = JSON.parse(e.target.result); document.getElementById('btnSim').disabled = false; SCS.log("SYS", "LOG CARREGADO."); };
-        reader.readAsText(input.files[0]);
-    },
-    
-    startSimulation: function() { 
-        if (this.simData) { this.state = 'SIM'; this.simCurrentTime = 0; this.lastFrameTime = Date.now(); } 
-    },
-    changeSpeed: function(delta) {
-        this.simSpeed += delta;
-        this.simSpeed = Math.round(this.simSpeed * 100) / 100;
-        document.getElementById('simSpeedDisplay').innerText = "SPD: " + this.simSpeed.toFixed(2) + "x";
-    },
-    togglePause: function() {
-        this.simSpeed = 0;
-        document.getElementById('simSpeedDisplay').innerText = "SPD: PAUSED";
-    },
-    stepFrame: function(dir) {
-        this.simSpeed = 0;
-        document.getElementById('simSpeedDisplay').innerText = "SPD: STEP";
-        this.simCurrentTime += (dir * 35);
-        this.handleSimulation(true);
-    },
-
-    // --- RENDER ---
-    loop: function() {
-        requestAnimationFrame(() => this.loop());
-        if(!this.active) return;
-        
-        this.ctx.globalCompositeOperation = 'source-over';
-        this.ctx.fillStyle = "#000000"; this.ctx.fillRect(0, 0, this.width, this.height);
-        this.angle += 0.007;
-        
-        const now = Date.now();
-        const diff = new Date(now - this.sysStartTime);
-        document.getElementById('hudTime').innerText = "T+ " + diff.toISOString().substr(11, 8);
-
-        if (this.state === 'LIVE') {
-            const data = new Uint8Array(this.an.frequencyBinCount);
-            this.an.getByteFrequencyData(data);
-            this.analyze(data); this.processInfra(data);
-            this.updateSpectralMonitor(data); 
-            if (this.isRecording) this.logBuffer.push({ time: now, peaks: JSON.parse(JSON.stringify(this.peaks)) });
-        } else if (this.state === 'SIM') { this.handleSimulation(); }
-        
-        this.drawGalaxy(); this.drawInfraDashboard();
-        this.updateRuler();
-    },
-    updateRuler: function() {
-        if(!this.peaks[0]) return;
-        const freq = this.peaks[0].f;
-        const pos = Math.min(100, Math.max(0, 100 - (Math.log10(freq) / 4.3) * 100));
-        document.getElementById('ruler-pointer').style.top = pos + "%";
-    },
-    analyze: function(data) {
-        let p = [];
-        for(let i=2; i<data.length-2; i++) {
-            if(data[i] > 110 && data[i] > data[i-1] && data[i] > data[i+1]) {
-                p.push({ f: i * (this.ac.sampleRate / this.config.fft), v: data[i] });
+                sb.classList.toggle('collapsed');
             }
         }
-        this.peaks = p.sort((a,b) => b.v - a.v).slice(0, this.config.maxMainDrones);
-        if(this.peaks[0]) document.getElementById('hudFreq').innerText = this.peaks[0].f.toFixed(1) + " Hz";
-    },
-    updateSpectralMonitor: function(data) {
-        let iSum=0, aSum=0, uSum=0; let iC=0, aC=0, uC=0;
-        for(let i=0; i<data.length; i++) {
-            const hz = i * (this.ac.sampleRate / this.config.fft);
-            if(hz < 20) { iSum+=data[i]; iC++; } else if(hz > 15000) { uSum+=data[i]; uC++; } else { aSum+=data[i]; aC++; }
-        }
-        document.getElementById('barInfra').style.width = Math.min(100, (iSum/iC||1)*2) + "%";
-        document.getElementById('barAudio').style.width = Math.min(100, (aSum/aC||1)*2) + "%";
-        document.getElementById('barUltra').style.width = Math.min(100, (uSum/uC||1)*2) + "%";
-    },
-    processInfra: function(data) {
-        let sum = (data[0] + data[1] + data[2]) / 3;
-        this.infraHistory.push(sum); this.infraHistory.shift();
-    },
-    drawInfraDashboard: function() {
-        const w = this.infCvs.width, h = this.infCvs.height;
-        this.infCtx.fillStyle = "#010102"; this.infCtx.fillRect(0,0,w,h);
-        this.infCtx.strokeStyle = "#111"; this.infCtx.lineWidth = 1;
-        for(let x=0; x<w; x+=w/10) { this.infCtx.beginPath(); this.infCtx.moveTo(x,0); this.infCtx.lineTo(x,h); this.infCtx.stroke(); }
-        this.infCtx.beginPath(); this.infCtx.strokeStyle = "#bc13fe"; this.infCtx.lineWidth = 2;
-        const gain = 15; 
-        for(let i=0; i<this.infraHistory.length; i++) {
-            let x = (i / this.infraHistory.length) * w;
-            let val = Math.min(255, this.infraHistory[i] * gain);
-            let y = h - (val / 255) * h * 0.8 - 10;
-            if(i === 0) this.infCtx.moveTo(x,y); else this.infCtx.lineTo(x,y);
-        }
-        this.infCtx.stroke();
-    },
-    drawGalaxy: function() {
-        const cx = this.width / 2, cy = this.height / 2;
-        if(this.layers.ORB) {
-            this.ctx.beginPath();
-            const g = this.ctx.createRadialGradient(cx, cy, 0, cx, cy, this.config.orbRadius);
-            g.addColorStop(0.85, "rgba(0,0,0,0)"); g.addColorStop(0.98, "rgba(0,243,255,0.2)"); g.addColorStop(1, "rgba(255,255,255,0.3)");
-            this.ctx.fillStyle = g; this.ctx.arc(cx, cy, this.config.orbRadius, 0, Math.PI*2); this.ctx.fill();
-        }
-        const scene = [];
-        this.peaks.forEach((peak, i) => {
-            const t = this.angle + (i * (Math.PI * 2 / (this.peaks.length || 1)));
-            const dist = (peak.v / 255) * this.config.orbRadius * 0.85;
-            const main = { x: Math.cos(t) * dist, y: Math.sin(t*0.4)*(dist*0.6), z: Math.sin(t) * dist, f: peak.f, v: peak.v, type: 'MAIN', id: i };
-            scene.push(main);
-            if(this.layers.HARMONICS) {
-                for(let h=1; h<=this.config.harmonicsPerPoint; h++) {
-                    const ht = t + (h * 1.2) + this.angle;
-                    const L2 = { x: main.x+Math.cos(ht)*65, y: main.y+Math.sin(ht)*65, z: main.z+Math.sin(ht)*65, f: peak.f*(h+1), v: peak.v*0.5, type:'L2', parent: main };
-                    scene.push(L2);
-                    for(let s=1; s<=this.config.subHarmonics; s++) {
-                        const st = ht+(s*0.8)-this.angle;
-                        scene.push({ x: L2.x+Math.cos(st)*28, y: L2.y+Math.sin(st)*28, z: L2.z+Math.sin(st)*28, f: L2.f*1.5, v: L2.v*0.4, type:'L3', parent: L2 });
-                    }
+
+        function nextChapter() { if(currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
+        function prevChapter() { if(currentIdx > 0) loadChapter(currentIdx - 1); }
+
+        window.addEventListener('message', (e) => {
+            if(e.data.type === 'tts-state') {
+                const btn = document.getElementById('btn-tts');
+                if(e.data.isPlaying) {
+                    btn.innerText = '■'; btn.classList.add('active');
+                } else {
+                    btn.innerText = '▶'; btn.classList.remove('active');
                 }
             }
         });
-        if(this.layers.RAYS && scene.filter(s=>s.type==='MAIN').length > 1) {
-            const mains = scene.filter(s=>s.type==='MAIN').sort((a,b) => a.id - b.id);
-            for(let i=0; i<mains.length-1; i++) {
-                const p1 = this.project(mains[i].x, mains[i].y, mains[i].z);
-                const p2 = this.project(mains[i+1].x, mains[i+1].y, mains[i+1].z);
-                this.ctx.beginPath(); this.ctx.strokeStyle = `hsla(${mains[i].f % 360}, 100%, 60%, 0.5)`;
-                this.ctx.lineWidth = this.config.lineWidth * p1.s; this.ctx.moveTo(p1.x, p1.y); this.ctx.lineTo(p2.x, p2.y); this.ctx.stroke();
-            }
-        }
-        scene.sort((a,b) => b.z - a.z).forEach(obj => {
-            const proj = this.project(obj.x, obj.y, obj.z);
-            this.ctx.globalCompositeOperation = 'lighter';
-            if(this.layers.RAYS && obj.parent) {
-                const pP = this.project(obj.parent.x, obj.parent.y, obj.parent.z);
-                this.ctx.beginPath(); this.ctx.strokeStyle = `hsla(${obj.f % 360}, 100%, 60%, 0.2)`;
-                this.ctx.lineWidth = 1 * proj.s; this.ctx.moveTo(pP.x, pP.y); this.ctx.lineTo(proj.x, proj.y); this.ctx.stroke();
-            }
-            if(this.layers.DRONES) {
-                const col = `hsla(${obj.f % 360}, 100%, 60%, ${proj.s})`;
-                const size = (obj.type==='MAIN'? this.config.droneSize : obj.type==='L2'? 3.5 : 2) * proj.s;
-                this.ctx.fillStyle = col; if(obj.type==='MAIN') { this.ctx.shadowBlur = 15*proj.s; this.ctx.shadowColor = col; }
-                this.ctx.beginPath(); this.ctx.arc(proj.x, proj.y, size, 0, Math.PI*2); this.ctx.fill();
-                this.ctx.shadowBlur = 0;
-                if(obj.z < 100) {
-                    const fs = (obj.type==='MAIN'? this.config.baseFontSize : obj.type==='L2'? 10 : 8) * proj.s;
-                    this.ctx.fillStyle = "#fff"; this.ctx.font = `${obj.type==='MAIN'?'bold ':''}${fs}px monospace`;
-                    this.ctx.fillText(Math.floor(obj.f), proj.x+size+3, proj.y);
-                }
-            }
-        });
-    },
-    project: function(x, y, z) {
-        const s = this.config.fov / (this.config.fov + z);
-        return { x: (x * s) + (this.width / 2), y: (y * s) + (this.height / 2), s: s };
-    },
-    handleSimulation: function(forceRender) {
-        if (!this.simData) return;
-        const now = Date.now();
-        const dt = now - this.lastFrameTime;
-        this.lastFrameTime = now;
-        
-        if(!forceRender) {
-            this.simCurrentTime += (dt * this.simSpeed);
-        }
-        
-        const frames = this.simData.frames;
-        const duration = frames[frames.length-1].time - frames[0].time;
 
-        if (this.simCurrentTime > duration) { this.simCurrentTime = 0; }
-        if (this.simCurrentTime < 0) { this.simCurrentTime = duration; }
-
-        const frame = frames.find(f => (f.time - frames[0].time) >= this.simCurrentTime);
-        if (frame) { 
-            this.peaks = frame.peaks; 
-            document.getElementById('hudFreq').innerText = this.peaks[0] ? this.peaks[0].f.toFixed(1) : "0.0"; 
-        }
-    },
-    toggleLayer: function(l, btn) { 
-        this.layers[l] = !this.layers[l]; 
-        btn.classList.toggle('active'); 
-    },
-    
-    // SECURITY: Sanitized Logging to prevent XSS
-    log: function(src, m) {
-        const stream = document.getElementById('log-stream');
-        const row = document.createElement('div');
-        row.className = 'log-entry';
-        row.style.display = 'grid';
-        row.style.gridTemplateColumns = '50px 1fr';
-        row.style.gap = '5px';
-        row.style.borderBottom = '1px solid #111';
-        row.style.padding = '2px 0';
-
-        const timeSpan = document.createElement('div');
-        timeSpan.style.color = '#666';
-        timeSpan.textContent = `[${new Date().toLocaleTimeString('pt-BR',{hour12:false})}]`;
-
-        const msgContainer = document.createElement('div');
-        msgContainer.className = 'log-msg';
-        msgContainer.style.color = '#ccc';
-        msgContainer.style.wordBreak = 'break-all';
-
-        const srcSpan = document.createElement('span');
-        srcSpan.style.color = 'var(--cyan)';
-        srcSpan.textContent = `${src} > `;
-
-        const textSpan = document.createElement('span');
-        textSpan.textContent = m; // Pure Text Insertion (Safe)
-
-        msgContainer.appendChild(srcSpan);
-        msgContainer.appendChild(textSpan);
-        row.appendChild(timeSpan);
-        row.appendChild(msgContainer);
-
-        stream.prepend(row);
-        if(stream.childElementCount > 40) stream.removeChild(stream.lastChild);
-    }
-};
-</script>
+        init();
+    </script>
 </body>
 </html>
