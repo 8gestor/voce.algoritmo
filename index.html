@@ -3,58 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. v6 - RESEARCH MODULE</title>
+    <title>J.A.R.V.I.S. v6.1 - STABLE GRAPHICS</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
 
     <style>
-        :root { --bg: #000000; --cyan: #00f3ff; --glass: rgba(0, 243, 255, 0.05); --font: 'Segoe UI', 'Consolas', sans-serif; }
+        :root { --bg: #050505; --cyan: #00f3ff; --glass: rgba(0, 243, 255, 0.05); --font: 'Segoe UI', 'Consolas', sans-serif; }
         * { box-sizing: border-box; }
         body { margin: 0; background: var(--bg); color: var(--cyan); font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; text-shadow: 0 0 5px var(--cyan); }
         
-        #main-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 1; }
+        #main-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 1; width: 100%; }
         
-        /* REACTOR */
-        #reactor-container { width: 250px; height: 250px; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transition: 0.5s; }
-        canvas { position: absolute; top:0; left:0; }
-        .circle-glow { position: absolute; width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.2); animation: pulse 4s infinite; }
+        /* REACTOR CORRIGIDO */
+        #reactor-container { 
+            width: 280px; 
+            height: 280px; 
+            position: relative; 
+            margin-bottom: 20px; 
+            border-radius: 50%; /* Garante que o container seja redondo */
+        }
+        
+        canvas { 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+        }
+        
+        .circle-glow { 
+            position: absolute; 
+            top: 0; left: 0;
+            width: 100%; height: 100%; 
+            border-radius: 50%; 
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.15), inset 0 0 20px rgba(0, 243, 255, 0.1); 
+            animation: pulse 4s infinite; 
+            pointer-events: none;
+        }
 
         /* CHAT */
-        #chat-panel { width: 90%; max-width: 700px; height: 250px; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,20,30,0.9) 100%); border: 1px solid #333; border-left: 2px solid var(--cyan); padding: 15px; overflow-y: auto; margin-bottom: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
+        #chat-panel { width: 90%; max-width: 700px; height: 30vh; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,20,30,0.9) 100%); border: 1px solid #333; border-left: 2px solid var(--cyan); padding: 15px; overflow-y: auto; margin-bottom: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
         .msg { padding: 8px 12px; border-radius: 4px; animation: fadeIn 0.3s; max-width: 90%; line-height: 1.4; }
         .msg.user { text-align: right; color: #fff; border-right: 2px solid #555; align-self: flex-end; }
         .msg.ai { text-align: left; color: var(--cyan); border-left: 2px solid var(--cyan); align-self: flex-start; background: var(--glass); }
         .msg.sys { font-size: 11px; color: #aaa; align-self: center; border: 1px dashed #333; }
         
         /* INPUTS */
-        #input-dock { width: 90%; max-width: 700px; display: flex; gap: 10px; background: #050505; padding: 10px; border: 1px solid #222; border-radius: 30px; box-shadow: 0 0 20px rgba(0,0,0,0.8); margin-bottom: 20px; position:relative; z-index: 10; }
+        #input-dock { width: 90%; max-width: 700px; display: flex; gap: 10px; background: #080808; padding: 12px; border: 1px solid #333; border-radius: 40px; box-shadow: 0 0 30px rgba(0,0,0,0.5); margin-bottom: 20px; position:relative; z-index: 10; }
         input[type="text"] { flex: 1; background: transparent; border: none; color: #fff; font-family: inherit; padding: 0 15px; outline: none; font-size: 16px; }
-        button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size:14px; }
+        button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); border-radius: 50%; width: 45px; height: 45px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size:16px; flex-shrink: 0; }
         button:hover { background: var(--glass); box-shadow: 0 0 15px var(--cyan); }
         button.active { background: var(--cyan); color: #000; box-shadow: 0 0 25px var(--cyan); }
         
-        /* PAINEL DE INGESTÃO DE DADOS (NOVO) */
-        #ingest-panel {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 80%; max-width: 500px; background: #0a0a0c; border: 1px solid var(--cyan);
-            padding: 20px; z-index: 100; display: none; box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-        #ingest-panel h3 { margin-top:0; color: var(--cyan); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        /* INGEST PANEL */
+        #ingest-panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 500px; background: #0f0f12; border: 1px solid var(--cyan); padding: 25px; z-index: 100; display: none; box-shadow: 0 0 100px rgba(0,0,0,0.9); border-radius: 8px; }
+        #ingest-panel h3 { margin-top:0; color: var(--cyan); border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 14px; letter-spacing: 2px; }
         .ingest-row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .ingest-input { flex: 1; background: #000; border: 1px solid #444; color: #fff; padding: 8px; font-family: monospace; }
-        .btn-rect { border-radius: 4px; width: auto; padding: 0 15px; font-size: 11px; font-weight: bold; }
-        .close-btn { position: absolute; top: 10px; right: 10px; border: none; font-size: 18px; color: #555; }
+        .ingest-input { flex: 1; background: #000; border: 1px solid #444; color: #fff; padding: 10px; font-family: monospace; border-radius: 4px; }
+        .btn-rect { border-radius: 4px; width: auto; padding: 0 20px; font-size: 11px; font-weight: bold; border: 1px solid #444; color: #888; text-transform: uppercase; }
+        .btn-rect:hover { border-color: var(--cyan); color: var(--cyan); }
+        .close-btn { position: absolute; top: 10px; right: 10px; border: none; font-size: 20px; color: #555; width: 30px; height: 30px; }
         
-        /* OVERLAY */
-        #overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 90; display:none; }
+        #overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index: 90; display:none; backdrop-filter: blur(2px); }
 
-        .hud-corner { position: absolute; padding: 20px; font-size: 10px; color: #555; pointer-events: none; }
+        .hud-corner { position: absolute; padding: 20px; font-size: 10px; color: #555; pointer-events: none; font-family: monospace; }
         .top-left { top: 0; left: 0; text-align: left; border-top: 1px solid #333; border-left: 1px solid #333; width: 120px; height: 100px; }
-        .top-right { top: 0; right: 0; text-align: right; border-top: 1px solid #333; border-right: 1px solid #333; width: 120px; height: 100px; }
         
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes pulse { 0% { opacity: 0.6; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); } 50% { opacity: 1; box-shadow: 0 0 50px rgba(0, 243, 255, 0.3); } 100% { opacity: 0.6; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); } }
         @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
 <body>
@@ -65,49 +81,48 @@
         <button class="close-btn" onclick="UI.toggleIngest()">×</button>
         <h3>MÓDULO DE APRENDIZADO</h3>
         
-        <p style="font-size:12px; color:#aaa;">1. APRENDER VIA URL (WEB)</p>
+        <p style="font-size:11px; color:#888; margin-bottom:5px;">FONTE WEB (URL)</p>
         <div class="ingest-row">
-            <input type="text" id="urlInput" class="ingest-input" placeholder="https://exemplo.com/artigo">
-            <button class="btn-rect" onclick="Jarvis.ingestURL()">LER URL</button>
+            <input type="text" id="urlInput" class="ingest-input" placeholder="https://...">
+            <button class="btn-rect" onclick="Jarvis.ingestURL()">LER</button>
         </div>
 
-        <p style="font-size:12px; color:#aaa;">2. APRENDER VIA PDF (UPLOAD)</p>
+        <p style="font-size:11px; color:#888; margin-bottom:5px;">ARQUIVO LOCAL (PDF)</p>
         <div class="ingest-row">
             <input type="file" id="pdfInput" class="ingest-input" accept="application/pdf">
-            <button class="btn-rect" onclick="Jarvis.ingestPDF()">LER PDF</button>
+            <button class="btn-rect" onclick="Jarvis.ingestPDF()">LER</button>
         </div>
         
-        <div style="text-align:center; margin-top:20px; border-top:1px solid #222; padding-top:10px;">
-            <button class="btn-rect" onclick="Jarvis.downloadMemory()" style="border-color:#00ff66; color:#00ff66;">BAIXAR MEMÓRIA (JSON)</button>
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #222; padding-top:15px;">
+            <button class="btn-rect" onclick="Jarvis.downloadMemory()" style="border-color:#00ff66; color:#00ff66; width:100%;">BAIXAR MEMÓRIA (JSON)</button>
         </div>
     </div>
 
     <div class="hud-corner top-left">
         SYSTEM: ONLINE<br>
-        Q&A NODES: <span id="qaCount">0</span><br>
-        DOCS LIDOS: <span id="docCount" style="color:var(--cyan)">0</span>
+        NODES: <span id="qaCount">0</span><br>
+        DOCS: <span id="docCount" style="color:var(--cyan)">0</span>
     </div>
     
     <div id="main-container">
         <div id="reactor-container">
             <div class="circle-glow"></div>
-            <canvas id="arcCanvas" width="300" height="300"></canvas>
+            <canvas id="arcCanvas"></canvas>
         </div>
+
         <div id="chat-panel">
-            <div class="msg ai"><span class="sender">J.A.R.V.I.S.</span>Módulo de pesquisa ativo. Posso ler URLs e arquivos PDF agora.</div>
+            <div class="msg ai"><span class="sender">J.A.R.V.I.S.</span>Sistemas gráficos calibrados. Aguardando comando.</div>
         </div>
+
         <div id="input-dock">
-            <button id="btnIngest" title="Adicionar Dados" style="font-size:18px;">+</button>
-            <input type="text" id="txtInput" placeholder="Faça uma pergunta sobre os dados..." autocomplete="off">
+            <button id="btnIngest" title="Dados">+</button>
+            <input type="text" id="txtInput" placeholder="Comando..." autocomplete="off">
             <button id="btnSend" title="Enviar">➤</button>
             <button id="btnMic" title="Voz">🎤</button>
         </div>
     </div>
 
 <script>
-// --- MEMÓRIA ---
-// QA_MEMORY: Perguntas e respostas curtas (do database.json)
-// DOC_MEMORY: Textos longos de PDFs e URLs
 let QA_MEMORY = [];
 let DOC_MEMORY = [];
 
@@ -116,16 +131,13 @@ const Jarvis = {
     synth: window.speechSynthesis,
     recognition: null,
 
-    // 1. INICIALIZAÇÃO
     init: async () => {
-        // Tenta carregar QA inicial
         try {
             const res = await fetch('database.json');
             if(res.ok) QA_MEMORY = await res.json();
             UI.updateHUD();
-        } catch(e) { console.log("Sem database.json, iniciando vazio."); }
+        } catch(e) { console.log("Database offline."); }
 
-        // Configura Voz
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if(Speech) {
             Jarvis.recognition = new Speech();
@@ -135,138 +147,88 @@ const Jarvis = {
             Jarvis.recognition.onend = () => Jarvis.toggleMic(false);
         }
 
-        // Listeners
         document.getElementById('btnMic').onclick = () => Jarvis.toggleMic();
         document.getElementById('btnSend').onclick = () => Jarvis.handleText();
         document.getElementById('btnIngest').onclick = () => UI.toggleIngest();
         document.getElementById('txtInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') Jarvis.handleText(); });
         
-        Graphics.start();
+        Graphics.init(); // Inicia o gráfico corrigido
     },
 
-    // 2. LÓGICA DE INGESTÃO (APRENDIZADO)
-    
-    // Ler URL (Usando Proxy para evitar bloqueio CORS)
     ingestURL: async () => {
         const url = document.getElementById('urlInput').value;
         if(!url) return;
-        
-        UI.addMsg('sys', `Acessando a rede: ${url}...`);
-        UI.toggleIngest(); // Fecha painel
-
+        UI.addMsg('sys', `Lendo: ${url}...`);
+        UI.toggleIngest();
         try {
-            // Usa o allorigins como proxy
             const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
             const response = await fetch(proxy);
             const data = await response.json();
-            
-            if(!data.contents) throw new Error("Sem conteúdo");
-
-            // Parser simples de HTML para Texto
+            if(!data.contents) throw new Error("Vazio");
             const parser = new DOMParser();
             const doc = parser.parseFromString(data.contents, 'text/html');
-            
-            // Pega apenas parágrafos para evitar menus/ads
             const paragraphs = Array.from(doc.querySelectorAll('p')).map(p => p.innerText).join('\n');
-            
-            if(paragraphs.length < 50) throw new Error("Conteúdo insuficiente ou bloqueado.");
-
+            if(paragraphs.length < 50) throw new Error("Pouco texto");
             DOC_MEMORY.push({ source: "WEB: " + doc.title, content: paragraphs });
-            
-            UI.addMsg('ai', `URL processada. Título: "${doc.title}". Li ${paragraphs.length} caracteres.`);
+            UI.addMsg('ai', `URL processada: "${doc.title}".`);
             UI.updateHUD();
-
-        } catch(err) {
-            UI.addMsg('sys', "Erro ao ler URL. O site pode ter proteção contra bots.");
-            console.error(err);
-        }
+        } catch(err) { UI.addMsg('sys', "Erro ao ler URL."); }
     },
 
-    // Ler PDF (Usando PDF.js)
     ingestPDF: async () => {
         const file = document.getElementById('pdfInput').files[0];
         if(!file) return;
-
-        UI.addMsg('sys', "Processando estrutura do PDF...");
+        UI.addMsg('sys', "Analisando PDF...");
         UI.toggleIngest();
-
         const fileReader = new FileReader();
         fileReader.onload = async function() {
             const typedarray = new Uint8Array(this.result);
-            
             try {
                 const pdf = await pdfjsLib.getDocument(typedarray).promise;
                 let fullText = "";
-
-                // Lê página por página
                 for (let i = 1; i <= pdf.numPages; i++) {
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(' ');
-                    fullText += pageText + "\n";
+                    fullText += textContent.items.map(item => item.str).join(' ') + "\n";
                 }
-
                 DOC_MEMORY.push({ source: "PDF: " + file.name, content: fullText });
-                UI.addMsg('ai', `PDF assimilado. Arquivo "${file.name}" contém ${pdf.numPages} páginas.`);
+                UI.addMsg('ai', `PDF lido: "${file.name}".`);
                 UI.updateHUD();
-
-            } catch(err) {
-                UI.addMsg('sys', "Erro crítico ao ler PDF. Verifique se o arquivo não está corrompido.");
-            }
+            } catch(err) { UI.addMsg('sys', "Erro ao ler PDF."); }
         };
         fileReader.readAsArrayBuffer(file);
     },
 
-    // 3. PROCESSAMENTO INTELIGENTE
     processInput: (text) => {
         UI.addMsg('user', text);
         let response = null;
         const lower = text.toLowerCase();
-        let sourceRef = "";
 
-        // A) Verifica Comandos Básicos
         if(lower.includes("obrigado")) response = "Às ordens.";
         
-        // B) Verifica QA_MEMORY (Perguntas Exatas/Triggers)
         if(!response) {
             const hit = QA_MEMORY.find(entry => entry.triggers.some(t => lower.includes(t.toLowerCase())));
             if(hit) response = hit.response;
         }
 
-        // C) Verifica DOC_MEMORY (Pesquisa de Palavras-Chave/RAG Simplificado)
         if(!response && DOC_MEMORY.length > 0) {
-            // Separa palavras-chave da pergunta (ignora "o", "que", "é"...)
             const keywords = lower.split(' ').filter(w => w.length > 3);
-            
             let bestMatch = { score: 0, text: "" };
-
             DOC_MEMORY.forEach(doc => {
-                // Pontuação simples: conta quantas palavras-chave aparecem no doc
                 let score = 0;
                 keywords.forEach(k => {
-                    const regex = new RegExp(k, "gi");
-                    const count = (doc.content.match(regex) || []).length;
-                    score += count;
+                    if(doc.content.toLowerCase().includes(k)) score++;
                 });
-
                 if(score > bestMatch.score) {
-                    // Tenta extrair um trecho relevante (contexto)
-                    const firstKeyIndex = doc.content.toLowerCase().indexOf(keywords[0]);
-                    const start = Math.max(0, firstKeyIndex - 50);
-                    const excerpt = doc.content.substring(start, start + 400); // Pega 400 caracteres
-                    
-                    bestMatch = { score, text: excerpt + "...", source: doc.source };
+                    const idx = doc.content.toLowerCase().indexOf(keywords[0]);
+                    const start = Math.max(0, idx - 50);
+                    bestMatch = { score, text: doc.content.substring(start, start + 300), source: doc.source };
                 }
             });
-
-            if(bestMatch.score > 0) {
-                response = `Encontrei nos dados (${bestMatch.source}): "...${bestMatch.text}"`;
-            }
+            if(bestMatch.score > 0) response = `Baseado em (${bestMatch.source}): "...${bestMatch.text}..."`;
         }
 
-        // D) Fallback
-        if(!response) response = "Não encontrei essa informação nos meus dados locais ou documentos carregados.";
-
+        if(!response) response = "Sem dados suficientes sobre isso.";
         setTimeout(() => Jarvis.respond(response), 500);
     },
 
@@ -287,8 +249,8 @@ const Jarvis = {
         if(!Jarvis.recognition) return;
         Jarvis.listening = force !== undefined ? force : !Jarvis.listening;
         const btn = document.getElementById('btnMic');
-        if(Jarvis.listening) { Jarvis.recognition.start(); btn.classList.add('active'); Graphics.speed = 0.2; }
-        else { try{Jarvis.recognition.stop();}catch(e){} btn.classList.remove('active'); Graphics.speed = 0.02; }
+        if(Jarvis.listening) { Jarvis.recognition.start(); btn.classList.add('active'); Graphics.targetSpeed = 0.2; }
+        else { try{Jarvis.recognition.stop();}catch(e){} btn.classList.remove('active'); Graphics.targetSpeed = 0.02; }
     },
     
     handleText: () => {
@@ -297,14 +259,10 @@ const Jarvis = {
     },
 
     downloadMemory: () => {
-        const fullData = [...QA_MEMORY]; // Começa com o que já tinha
-        // Adiciona documentos como itens de memória, mas de forma simplificada para salvar
-        // Nota: Salvar PDFs inteiros no JSON pode deixar o arquivo gigante. 
-        // Aqui estamos salvando para permitir recarregar depois.
-        const blob = new Blob([JSON.stringify({qa: QA_MEMORY, docs: DOC_MEMORY}, null, 2)], {type:'application/json'});
+        const blob = new Blob([JSON.stringify(QA_MEMORY, null, 2)], {type:'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `JARVIS_MEMORY_${Date.now()}.json`;
+        a.download = `database.json`;
         a.click();
     }
 };
@@ -314,7 +272,7 @@ const UI = {
         const p = document.getElementById('chat-panel');
         const d = document.createElement('div'); d.className = `msg ${type}`;
         if(type==='ai' || type==='user') d.innerHTML = `<span class="sender">${type.toUpperCase()}</span>${text}`;
-        else d.innerText = text; // Sys msg
+        else d.innerText = text;
         p.appendChild(d); p.scrollTop = p.scrollHeight;
     },
     toggleIngest: () => {
@@ -330,24 +288,81 @@ const UI = {
     }
 };
 
+// --- GRÁFICOS CORRIGIDOS ---
 const Graphics = {
-    cvs: document.getElementById('arcCanvas'), ctx: document.getElementById('arcCanvas').getContext('2d'),
-    angle: 0, speed: 0.02, isSpeaking: false,
-    start: () => Graphics.loop(),
+    cvs: document.getElementById('arcCanvas'),
+    ctx: document.getElementById('arcCanvas').getContext('2d'),
+    angle: 0,
+    currentSpeed: 0.02,
+    targetSpeed: 0.02,
+    isSpeaking: false,
+    
+    init: () => {
+        window.addEventListener('resize', Graphics.resize);
+        Graphics.resize();
+        Graphics.loop();
+    },
+
+    resize: () => {
+        const container = document.getElementById('reactor-container');
+        const dpr = window.devicePixelRatio || 1;
+        // Ajusta a resolução interna para a densidade de pixels da tela
+        Graphics.cvs.width = container.clientWidth * dpr;
+        Graphics.cvs.height = container.clientHeight * dpr;
+        // Normaliza o sistema de coordenadas
+        Graphics.ctx.scale(dpr, dpr);
+        Graphics.width = container.clientWidth;
+        Graphics.height = container.clientHeight;
+    },
+
     loop: () => {
-        const ctx = Graphics.ctx; const w=300, h=300, cx=w/2, cy=h/2;
-        ctx.clearRect(0,0,w,h); Graphics.angle+=Graphics.speed;
+        const ctx = Graphics.ctx;
+        const w = Graphics.width; // Usa a largura calculada
+        const h = Graphics.height;
+        const cx = w / 2;
+        const cy = h / 2;
         
-        ctx.strokeStyle = "#00f3ff"; ctx.lineWidth=5; ctx.beginPath();
-        ctx.arc(cx, cy, 80, Graphics.angle, Graphics.angle+2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(cx, cy, 80, Graphics.angle+Math.PI, Graphics.angle+Math.PI+2); ctx.stroke();
+        // Interpolação de velocidade (suavização)
+        Graphics.currentSpeed += (Graphics.targetSpeed - Graphics.currentSpeed) * 0.1;
+        Graphics.angle += Graphics.currentSpeed;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Raio dinâmico (baseado no tamanho do container)
+        const radius = Math.min(w, h) * 0.35; 
+
+        // Anel Externo
+        ctx.strokeStyle = "#00f3ff";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, Graphics.angle, Graphics.angle + 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, Graphics.angle + Math.PI, Graphics.angle + Math.PI + 2);
+        ctx.stroke();
+
+        // Anel Interno
+        ctx.strokeStyle = "rgba(0, 243, 255, 0.4)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 0.8, -Graphics.angle*1.5, -Graphics.angle*1.5 + 4);
+        ctx.stroke();
+
+        // Núcleo
+        const coreBase = radius * 0.15;
+        const coreVar = Graphics.isSpeaking ? Math.random() * 5 : 0;
         
-        ctx.strokeStyle = "rgba(0, 243, 255, 0.4)"; ctx.lineWidth=2; ctx.beginPath();
-        ctx.arc(cx, cy, 60, -Graphics.angle*1.5, -Graphics.angle*1.5+4); ctx.stroke();
-        
-        const core = Graphics.isSpeaking ? 30+Math.random()*10 : 30;
-        ctx.fillStyle = "#00f3ff"; ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle="#fff"; ctx.beginPath(); ctx.arc(cx,cy, core, 0, Math.PI*2); ctx.stroke();
+        ctx.fillStyle = "#00f3ff";
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI*2);
+        ctx.fill();
+
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, coreBase + coreVar, 0, Math.PI*2);
+        ctx.stroke();
+
         requestAnimationFrame(Graphics.loop);
     }
 };
