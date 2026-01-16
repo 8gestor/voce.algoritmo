@@ -1,317 +1,358 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DATA DOUBLE // OS v3.2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. v6 - RESEARCH MODULE</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
 
     <style>
-        /* --- FATOR X v4.4: SYSTEM CORE --- */
-        :root {
-            --c-bg: #050505; --c-panel: #0a0a0a; --c-text: #E0E0E0;
-            --c-accent: #00F0FF; --c-border: rgba(255, 255, 255, 0.1);
-            --font-tech: 'JetBrains Mono', monospace; --font-ui: 'Inter', sans-serif;
-            --scroll-track: #050505; --scroll-thumb: #333; --scroll-hover: #00F0FF;
-        }
-        body.light-mode {
-            --c-bg: #F2F2F7; --c-panel: #FFFFFF; --c-text: #1C1C1E;
-            --c-accent: #0066FF; --c-border: rgba(0, 0, 0, 0.1);
-            --scroll-track: #F2F2F7; --scroll-thumb: #C1C1C4; --scroll-hover: #A0A0A3;
-        }
-        body.sepia-mode {
-            --c-bg: #F4ECD8; --c-panel: #E8DEC0; --c-text: #433422;
-            --c-accent: #8C4B2F; --c-border: rgba(67, 52, 34, 0.15);
-            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #8C4B2F;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        html, body { height: 100%; width: 100%; overflow: hidden; background-color: var(--c-bg); color: var(--c-text); }
-        body { display: flex; font-family: var(--font-ui); transition: background 0.4s ease, color 0.4s ease; }
+        :root { --bg: #000000; --cyan: #00f3ff; --glass: rgba(0, 243, 255, 0.05); --font: 'Segoe UI', 'Consolas', sans-serif; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--cyan); font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; text-shadow: 0 0 5px var(--cyan); }
         
-        /* SCROLLBAR */
-        html { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
-
-        /* SIDEBAR */
-        aside.sidebar {
-            width: 300px; background: var(--c-panel); border-right: 1px solid var(--c-border);
-            display: flex; flex-direction: column; z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0;
-        }
-        aside.sidebar.collapsed { transform: translateX(-300px); position: absolute; height: 100%; }
+        #main-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 1; }
         
-        .sidebar-header { 
-            height: 60px; display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 20px; border-bottom: 1px solid var(--c-border); 
-            font-family: var(--font-tech); font-weight: 700; color: var(--c-accent); letter-spacing: 1px; font-size: 0.85rem;
-        }
-        nav.nav-list { flex: 1; overflow-y: auto; padding: 20px; }
+        /* REACTOR */
+        #reactor-container { width: 250px; height: 250px; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transition: 0.5s; }
+        canvas { position: absolute; top:0; left:0; }
+        .circle-glow { position: absolute; width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.2); animation: pulse 4s infinite; }
+
+        /* CHAT */
+        #chat-panel { width: 90%; max-width: 700px; height: 250px; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,20,30,0.9) 100%); border: 1px solid #333; border-left: 2px solid var(--cyan); padding: 15px; overflow-y: auto; margin-bottom: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 8px 12px; border-radius: 4px; animation: fadeIn 0.3s; max-width: 90%; line-height: 1.4; }
+        .msg.user { text-align: right; color: #fff; border-right: 2px solid #555; align-self: flex-end; }
+        .msg.ai { text-align: left; color: var(--cyan); border-left: 2px solid var(--cyan); align-self: flex-start; background: var(--glass); }
+        .msg.sys { font-size: 11px; color: #aaa; align-self: center; border: 1px dashed #333; }
         
-        .nav-cat { 
-            font-family: var(--font-tech); font-size: 0.65rem; color: var(--c-text); opacity: 0.5; 
-            margin: 20px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
-            border-bottom: 1px dashed var(--c-border); padding-bottom: 5px;
-        }
-        .chapter-link { 
-            display: block; padding: 10px 12px; margin-bottom: 2px; 
-            color: var(--c-text); text-decoration: none; font-size: 0.8rem; 
-            font-family: var(--font-ui); font-weight: 500; border-radius: 4px; 
-            transition: all 0.2s; border-left: 2px solid transparent; opacity: 0.8;
-        }
-        .chapter-link:hover { background: rgba(255,255,255,0.05); opacity: 1; transform: translateX(4px); }
-        .chapter-link.active { 
-            background: rgba(255,255,255,0.05); color: var(--c-accent); 
-            border-left-color: var(--c-accent); opacity: 1; font-weight: 700;
-        }
-        .chapter-sub { margin-left: 15px; font-size: 0.75rem; border-left: 1px solid var(--c-border); }
-
-        /* LAYOUT */
-        main.dashboard { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; width: 100%; overflow: hidden; }
-        .master-header { background: var(--c-panel); border-bottom: 1px solid var(--c-border); display: flex; flex-direction: column; width: 100%; z-index: 400; flex-shrink: 0; }
-        .branding-bar { height: 30px; background: var(--c-bg); border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: center; padding: 0 15px; }
-        .branding-text { font-family: var(--font-tech); font-size: 0.65rem; font-weight: 800; color: var(--c-dim); text-transform: uppercase; letter-spacing: 3px; }
+        /* INPUTS */
+        #input-dock { width: 90%; max-width: 700px; display: flex; gap: 10px; background: #050505; padding: 10px; border: 1px solid #222; border-radius: 30px; box-shadow: 0 0 20px rgba(0,0,0,0.8); margin-bottom: 20px; position:relative; z-index: 10; }
+        input[type="text"] { flex: 1; background: transparent; border: none; color: #fff; font-family: inherit; padding: 0 15px; outline: none; font-size: 16px; }
+        button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size:14px; }
+        button:hover { background: var(--glass); box-shadow: 0 0 15px var(--cyan); }
+        button.active { background: var(--cyan); color: #000; box-shadow: 0 0 25px var(--cyan); }
         
-        .controls-bar { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; overflow-x: auto; }
-        .controls-bar::-webkit-scrollbar { display: none; }
-        .ctrl-group { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-        
-        .btn-icon { width: 34px; height: 34px; background: transparent; border: 1px solid var(--c-border); color: var(--c-text); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: var(--font-tech); transition: all 0.2s; flex-shrink: 0; }
-        .btn-icon:hover { border-color: var(--c-accent); color: var(--c-accent); background: rgba(255,255,255,0.05); }
-        .btn-icon.active { background: var(--c-accent); color: var(--c-bg); border-color: var(--c-accent); }
-
-        .speed-control { display: flex; align-items: center; border: 1px solid var(--c-border); border-radius: 4px; height: 34px; overflow: hidden; flex-shrink: 0; }
-        .speed-btn { width: 28px; height: 100%; background: transparent; border: none; color: var(--c-text); cursor: pointer; font-weight: bold; font-family: var(--font-tech); }
-        .speed-btn:hover { background: rgba(255,255,255,0.1); }
-        #speed-display { font-family: var(--font-tech); font-size: 0.7rem; width: 35px; text-align: center; font-weight: 700; color: var(--c-accent); }
-
-        .viewport { flex: 1; background: var(--c-bg); position: relative; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; display: block; }
-
-        footer.bottom-hud { height: 45px; background: var(--c-panel); border-top: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; font-family: var(--font-tech); font-size: 0.7rem; flex-shrink: 0; }
-        .progress-container { flex: 1; margin: 0 20px; display: flex; align-items: center; gap: 10px; }
-        .progress-track { flex: 1; height: 2px; background: var(--c-border); position: relative; }
-        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--c-accent); width: 0%; transition: width 0.3s; box-shadow: 0 0 10px var(--c-accent); }
-        .nav-btn { background: none; border: none; color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
-        .nav-btn:hover { color: var(--c-accent); }
-
-        @media (max-width: 768px) {
-            aside.sidebar { position: absolute; height: 100%; width: 85%; max-width: 300px; transform: translateX(-100%); box-shadow: none; border-right: 1px solid var(--c-accent); }
-            aside.sidebar.open { transform: translateX(0); box-shadow: 10px 0 100px rgba(0,0,0,0.8); }
+        /* PAINEL DE INGESTÃO DE DADOS (NOVO) */
+        #ingest-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; max-width: 500px; background: #0a0a0c; border: 1px solid var(--cyan);
+            padding: 20px; z-index: 100; display: none; box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
-        #backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); z-index: 900; display: none; opacity: 0; transition: opacity 0.3s; }
-        #backdrop.active { display: block; opacity: 1; }
+        #ingest-panel h3 { margin-top:0; color: var(--cyan); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .ingest-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .ingest-input { flex: 1; background: #000; border: 1px solid #444; color: #fff; padding: 8px; font-family: monospace; }
+        .btn-rect { border-radius: 4px; width: auto; padding: 0 15px; font-size: 11px; font-weight: bold; }
+        .close-btn { position: absolute; top: 10px; right: 10px; border: none; font-size: 18px; color: #555; }
+        
+        /* OVERLAY */
+        #overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 90; display:none; }
+
+        .hud-corner { position: absolute; padding: 20px; font-size: 10px; color: #555; pointer-events: none; }
+        .top-left { top: 0; left: 0; text-align: left; border-top: 1px solid #333; border-left: 1px solid #333; width: 120px; height: 100px; }
+        .top-right { top: 0; right: 0; text-align: right; border-top: 1px solid #333; border-right: 1px solid #333; width: 120px; height: 100px; }
+        
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <div id="backdrop" onclick="toggleSidebar()"></div>
+    <div id="overlay"></div>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span>DATA DOUBLE <span style="color:var(--c-accent)">// OS v3.2</span></span>
-            <button class="btn-icon" style="border:none; width:auto;" onclick="toggleSidebar()">✕</button>
-        </div>
-        <nav class="nav-list" id="nav-container"></nav>
-    </aside>
-
-    <main class="dashboard">
-        <div class="master-header">
-            <div class="branding-bar">
-                <span class="branding-text">SYSTEM STATUS: <span style="color:var(--c-accent)">ONLINE</span> // SECURE CONNECTION</span>
-            </div>
-            <div class="controls-bar">
-                <div class="ctrl-group">
-                    <button class="btn-icon" onclick="toggleSidebar()" title="Índice">☰</button>
-                </div>
-                <div class="ctrl-group">
-                    <button class="btn-icon" onclick="adjustFont(-1)">A-</button>
-                    <button class="btn-icon" onclick="adjustFont(1)">A+</button>
-                    <div class="speed-control">
-                        <button class="speed-btn" onclick="adjustSpeed(-0.25)">«</button>
-                        <span id="speed-display">1.0</span>
-                        <button class="speed-btn" onclick="adjustSpeed(0.25)">»</button>
-                    </div>
-                    <button class="btn-icon" id="btn-tts" onclick="sendMsg('tts-toggle')">▶</button>
-                    <button class="btn-icon" id="btn-theme" onclick="cycleTheme()">◐</button>
-                    <button class="btn-icon" onclick="toggleFullScreen()">⛶</button>
-                </div>
-            </div>
+    <div id="ingest-panel">
+        <button class="close-btn" onclick="UI.toggleIngest()">×</button>
+        <h3>MÓDULO DE APRENDIZADO</h3>
+        
+        <p style="font-size:12px; color:#aaa;">1. APRENDER VIA URL (WEB)</p>
+        <div class="ingest-row">
+            <input type="text" id="urlInput" class="ingest-input" placeholder="https://exemplo.com/artigo">
+            <button class="btn-rect" onclick="Jarvis.ingestURL()">LER URL</button>
         </div>
 
-        <div class="viewport">
-            <iframe id="content-frame" name="viewer" src="introducao.html"></iframe>
+        <p style="font-size:12px; color:#aaa;">2. APRENDER VIA PDF (UPLOAD)</p>
+        <div class="ingest-row">
+            <input type="file" id="pdfInput" class="ingest-input" accept="application/pdf">
+            <button class="btn-rect" onclick="Jarvis.ingestPDF()">LER PDF</button>
         </div>
+        
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #222; padding-top:10px;">
+            <button class="btn-rect" onclick="Jarvis.downloadMemory()" style="border-color:#00ff66; color:#00ff66;">BAIXAR MEMÓRIA (JSON)</button>
+        </div>
+    </div>
 
-        <footer class="bottom-hud">
-            <button class="nav-btn" onclick="prevChapter()">← ANT</button>
-            <div class="progress-container">
-                <span id="chapter-indicator">00/00</span>
-                <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
-            </div>
-            <button class="nav-btn" onclick="nextChapter()">PROX →</button>
-        </footer>
-    </main>
+    <div class="hud-corner top-left">
+        SYSTEM: ONLINE<br>
+        Q&A NODES: <span id="qaCount">0</span><br>
+        DOCS LIDOS: <span id="docCount" style="color:var(--cyan)">0</span>
+    </div>
+    
+    <div id="main-container">
+        <div id="reactor-container">
+            <div class="circle-glow"></div>
+            <canvas id="arcCanvas" width="300" height="300"></canvas>
+        </div>
+        <div id="chat-panel">
+            <div class="msg ai"><span class="sender">J.A.R.V.I.S.</span>Módulo de pesquisa ativo. Posso ler URLs e arquivos PDF agora.</div>
+        </div>
+        <div id="input-dock">
+            <button id="btnIngest" title="Adicionar Dados" style="font-size:18px;">+</button>
+            <input type="text" id="txtInput" placeholder="Faça uma pergunta sobre os dados..." autocomplete="off">
+            <button id="btnSend" title="Enviar">➤</button>
+            <button id="btnMic" title="Voz">🎤</button>
+        </div>
+    </div>
 
-    <script>
-        const structure = [
-            { t: "BOOT SEQUENCE", f: "introducao.html", cat: "INICIALIZAÇÃO" },
+<script>
+// --- MEMÓRIA ---
+// QA_MEMORY: Perguntas e respostas curtas (do database.json)
+// DOC_MEMORY: Textos longos de PDFs e URLs
+let QA_MEMORY = [];
+let DOC_MEMORY = [];
+
+const Jarvis = {
+    listening: false,
+    synth: window.speechSynthesis,
+    recognition: null,
+
+    // 1. INICIALIZAÇÃO
+    init: async () => {
+        // Tenta carregar QA inicial
+        try {
+            const res = await fetch('database.json');
+            if(res.ok) QA_MEMORY = await res.json();
+            UI.updateHUD();
+        } catch(e) { console.log("Sem database.json, iniciando vazio."); }
+
+        // Configura Voz
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if(Speech) {
+            Jarvis.recognition = new Speech();
+            Jarvis.recognition.lang = 'pt-BR';
+            Jarvis.recognition.continuous = false;
+            Jarvis.recognition.onresult = (e) => Jarvis.processInput(e.results[0][0].transcript);
+            Jarvis.recognition.onend = () => Jarvis.toggleMic(false);
+        }
+
+        // Listeners
+        document.getElementById('btnMic').onclick = () => Jarvis.toggleMic();
+        document.getElementById('btnSend').onclick = () => Jarvis.handleText();
+        document.getElementById('btnIngest').onclick = () => UI.toggleIngest();
+        document.getElementById('txtInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') Jarvis.handleText(); });
+        
+        Graphics.start();
+    },
+
+    // 2. LÓGICA DE INGESTÃO (APRENDIZADO)
+    
+    // Ler URL (Usando Proxy para evitar bloqueio CORS)
+    ingestURL: async () => {
+        const url = document.getElementById('urlInput').value;
+        if(!url) return;
+        
+        UI.addMsg('sys', `Acessando a rede: ${url}...`);
+        UI.toggleIngest(); // Fecha painel
+
+        try {
+            // Usa o allorigins como proxy
+            const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+            const response = await fetch(proxy);
+            const data = await response.json();
             
-            // PARTE I
-            { t: "01. O Hardware Biológico", f: "cap01.html", cat: "I. A MENTE" },
-            { t: "02. Sequestro da Atenção", f: "cap02.html", cat: "I. A MENTE" },
-            { t: "03. O Eu Inferido", f: "cap03.html", cat: "I. A MENTE" },
+            if(!data.contents) throw new Error("Sem conteúdo");
 
-            // PARTE II
-            { t: "04. Necropolítica", f: "cap04.html", cat: "II. O CERCO" },
-            { t: "05. Cidade Sensiente", f: "cap05.html", cat: "II. O CERCO" },
-            { t: "06. Tribunal Algorítmico", f: "cap06.html", cat: "II. O CERCO" },
-            { t: "06.1 Panóptico Financeiro", f: "cap06_1.html", cat: "II. O CERCO", sub: true },
-
-            // PARTE III
-            { t: "07. Taylorismo Digital", f: "cap07.html", cat: "III. INFRAESTRUTURA" },
-            { t: "08. Internet Morta", f: "cap08.html", cat: "III. INFRAESTRUTURA" },
-            { t: "09. Geologia da Mídia", f: "cap09.html", cat: "III. INFRAESTRUTURA" },
-            { t: "09.1 Deepweb & Tor", f: "cap09_1.html", cat: "III. INFRAESTRUTURA", sub: true },
-
-            // PARTE IV
-            { t: "10. Neuro-direitos", f: "cap10.html", cat: "IV. RESISTÊNCIA" },
-            { t: "10.1 Cibersegurança", f: "cap10_1.html", cat: "IV. RESISTÊNCIA", sub: true },
-            { t: "10.2 Cripto Economia", f: "cap10_2.html", cat: "IV. RESISTÊNCIA", sub: true },
+            // Parser simples de HTML para Texto
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data.contents, 'text/html');
             
-            { t: "11. Cidadania Onlife", f: "cap11.html", cat: "IV. RESISTÊNCIA" },
-            { t: "12. Tecnofeudalismo", f: "cap12.html", cat: "IV. RESISTÊNCIA" },
-            { t: "13. Solarpunk", f: "cap13.html", cat: "IV. RESISTÊNCIA" },
-
-            // FINAL
-            { t: "Epílogo", f: "cap14.html", cat: "SYSTEM END" },
-            { t: "Glossário", f: "cap15.html", cat: "DATABASE" },
-            { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" }
-        ];
-
-        let currentIdx = 0;
-        let ttsRate = 1.0;
-        let currentFont = 19; 
-        let themeState = 0; 
-        const themes = ['dark', 'light', 'sepia'];
-
-        function init() {
-            const nav = document.getElementById('nav-container');
-            let lastCat = "";
+            // Pega apenas parágrafos para evitar menus/ads
+            const paragraphs = Array.from(doc.querySelectorAll('p')).map(p => p.innerText).join('\n');
             
-            structure.forEach((item, i) => {
-                if(item.cat !== lastCat) {
-                    const cat = document.createElement('div');
-                    cat.className = 'nav-cat';
-                    cat.innerText = item.cat;
-                    nav.appendChild(cat);
-                    lastCat = item.cat;
+            if(paragraphs.length < 50) throw new Error("Conteúdo insuficiente ou bloqueado.");
+
+            DOC_MEMORY.push({ source: "WEB: " + doc.title, content: paragraphs });
+            
+            UI.addMsg('ai', `URL processada. Título: "${doc.title}". Li ${paragraphs.length} caracteres.`);
+            UI.updateHUD();
+
+        } catch(err) {
+            UI.addMsg('sys', "Erro ao ler URL. O site pode ter proteção contra bots.");
+            console.error(err);
+        }
+    },
+
+    // Ler PDF (Usando PDF.js)
+    ingestPDF: async () => {
+        const file = document.getElementById('pdfInput').files[0];
+        if(!file) return;
+
+        UI.addMsg('sys', "Processando estrutura do PDF...");
+        UI.toggleIngest();
+
+        const fileReader = new FileReader();
+        fileReader.onload = async function() {
+            const typedarray = new Uint8Array(this.result);
+            
+            try {
+                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                let fullText = "";
+
+                // Lê página por página
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + "\n";
                 }
-                
-                const btn = document.createElement('a');
-                btn.className = item.sub ? 'chapter-link chapter-sub' : 'chapter-link';
-                btn.innerText = item.t;
-                btn.href = "#";
-                btn.onclick = (e) => { 
-                    e.preventDefault(); 
-                    loadChapter(i); 
-                    if(window.innerWidth < 768) toggleSidebar(); 
-                };
-                nav.appendChild(btn);
-            });
-            // Carrega o primeiro capítulo (Introdução) por padrão
-            loadChapter(0);
-        }
 
-        function loadChapter(idx) {
-            currentIdx = idx;
-            const frame = document.getElementById('content-frame');
-            const btnTts = document.getElementById('btn-tts');
-            
-            btnTts.innerText = '▶';
-            btnTts.classList.remove('active');
-            frame.src = structure[idx].f;
-            
-            const progress = ((idx + 1) / structure.length * 100);
-            document.getElementById('p-bar').style.width = progress + "%";
-            document.getElementById('chapter-indicator').innerText = `${(idx + 1).toString().padStart(2, '0')}/${structure.length}`;
+                DOC_MEMORY.push({ source: "PDF: " + file.name, content: fullText });
+                UI.addMsg('ai', `PDF assimilado. Arquivo "${file.name}" contém ${pdf.numPages} páginas.`);
+                UI.updateHUD();
 
-            document.querySelectorAll('.chapter-link').forEach((el, i) => {
-                el.classList.toggle('active', i === idx);
-                if(i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
-
-            frame.onload = () => { syncAll(); }
-        }
-
-        function sendMsg(type, val) {
-            const win = document.getElementById('content-frame').contentWindow;
-            if(win) win.postMessage({ type, value: val }, '*');
-        }
-
-        function syncAll() {
-            sendMsg('theme', themes[themeState]);
-            sendMsg('font', currentFont);
-            sendMsg('rate', ttsRate);
-        }
-
-        function cycleTheme() {
-            themeState = (themeState + 1) % 3;
-            const mode = themes[themeState];
-            document.body.className = mode + '-mode';
-            sendMsg('theme', mode);
-        }
-
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => console.log(err));
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
+            } catch(err) {
+                UI.addMsg('sys', "Erro crítico ao ler PDF. Verifique se o arquivo não está corrompido.");
             }
+        };
+        fileReader.readAsArrayBuffer(file);
+    },
+
+    // 3. PROCESSAMENTO INTELIGENTE
+    processInput: (text) => {
+        UI.addMsg('user', text);
+        let response = null;
+        const lower = text.toLowerCase();
+        let sourceRef = "";
+
+        // A) Verifica Comandos Básicos
+        if(lower.includes("obrigado")) response = "Às ordens.";
+        
+        // B) Verifica QA_MEMORY (Perguntas Exatas/Triggers)
+        if(!response) {
+            const hit = QA_MEMORY.find(entry => entry.triggers.some(t => lower.includes(t.toLowerCase())));
+            if(hit) response = hit.response;
         }
 
-        function adjustSpeed(delta) {
-            ttsRate = Math.max(0.5, Math.min(3.0, ttsRate + delta));
-            ttsRate = Math.round(ttsRate * 100) / 100;
-            document.getElementById('speed-display').innerText = ttsRate;
-            sendMsg('rate', ttsRate);
-        }
-
-        function adjustFont(delta) {
-            currentFont = Math.max(14, Math.min(28, currentFont + delta));
-            sendMsg('font', currentFont);
-        }
-
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            const bd = document.getElementById('backdrop');
+        // C) Verifica DOC_MEMORY (Pesquisa de Palavras-Chave/RAG Simplificado)
+        if(!response && DOC_MEMORY.length > 0) {
+            // Separa palavras-chave da pergunta (ignora "o", "que", "é"...)
+            const keywords = lower.split(' ').filter(w => w.length > 3);
             
-            if(window.innerWidth < 768) {
-                sb.classList.toggle('open');
-                bd.classList.toggle('active');
-            } else {
-                sb.classList.toggle('collapsed');
-            }
-        }
+            let bestMatch = { score: 0, text: "" };
 
-        function nextChapter() { if(currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
-        function prevChapter() { if(currentIdx > 0) loadChapter(currentIdx - 1); }
+            DOC_MEMORY.forEach(doc => {
+                // Pontuação simples: conta quantas palavras-chave aparecem no doc
+                let score = 0;
+                keywords.forEach(k => {
+                    const regex = new RegExp(k, "gi");
+                    const count = (doc.content.match(regex) || []).length;
+                    score += count;
+                });
 
-        window.addEventListener('message', (e) => {
-            if(e.data.type === 'tts-state') {
-                const btn = document.getElementById('btn-tts');
-                if(e.data.isPlaying) {
-                    btn.innerText = '■'; btn.classList.add('active');
-                } else {
-                    btn.innerText = '▶'; btn.classList.remove('active');
+                if(score > bestMatch.score) {
+                    // Tenta extrair um trecho relevante (contexto)
+                    const firstKeyIndex = doc.content.toLowerCase().indexOf(keywords[0]);
+                    const start = Math.max(0, firstKeyIndex - 50);
+                    const excerpt = doc.content.substring(start, start + 400); // Pega 400 caracteres
+                    
+                    bestMatch = { score, text: excerpt + "...", source: doc.source };
                 }
-            }
-        });
+            });
 
-        init();
-    </script>
+            if(bestMatch.score > 0) {
+                response = `Encontrei nos dados (${bestMatch.source}): "...${bestMatch.text}"`;
+            }
+        }
+
+        // D) Fallback
+        if(!response) response = "Não encontrei essa informação nos meus dados locais ou documentos carregados.";
+
+        setTimeout(() => Jarvis.respond(response), 500);
+    },
+
+    respond: (text) => {
+        UI.addMsg('ai', text);
+        if(Jarvis.synth.speaking) Jarvis.synth.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        const voices = Jarvis.synth.getVoices();
+        const pt = voices.find(v => v.lang.includes('pt-BR'));
+        if(pt) utter.voice = pt;
+        utter.rate = 1.2; 
+        utter.onstart = () => Graphics.isSpeaking = true;
+        utter.onend = () => Graphics.isSpeaking = false;
+        Jarvis.synth.speak(utter);
+    },
+
+    toggleMic: (force) => {
+        if(!Jarvis.recognition) return;
+        Jarvis.listening = force !== undefined ? force : !Jarvis.listening;
+        const btn = document.getElementById('btnMic');
+        if(Jarvis.listening) { Jarvis.recognition.start(); btn.classList.add('active'); Graphics.speed = 0.2; }
+        else { try{Jarvis.recognition.stop();}catch(e){} btn.classList.remove('active'); Graphics.speed = 0.02; }
+    },
+    
+    handleText: () => {
+        const i = document.getElementById('txtInput');
+        if(i.value.trim()) { Jarvis.processInput(i.value.trim()); i.value=""; }
+    },
+
+    downloadMemory: () => {
+        const fullData = [...QA_MEMORY]; // Começa com o que já tinha
+        // Adiciona documentos como itens de memória, mas de forma simplificada para salvar
+        // Nota: Salvar PDFs inteiros no JSON pode deixar o arquivo gigante. 
+        // Aqui estamos salvando para permitir recarregar depois.
+        const blob = new Blob([JSON.stringify({qa: QA_MEMORY, docs: DOC_MEMORY}, null, 2)], {type:'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `JARVIS_MEMORY_${Date.now()}.json`;
+        a.click();
+    }
+};
+
+const UI = {
+    addMsg: (type, text) => {
+        const p = document.getElementById('chat-panel');
+        const d = document.createElement('div'); d.className = `msg ${type}`;
+        if(type==='ai' || type==='user') d.innerHTML = `<span class="sender">${type.toUpperCase()}</span>${text}`;
+        else d.innerText = text; // Sys msg
+        p.appendChild(d); p.scrollTop = p.scrollHeight;
+    },
+    toggleIngest: () => {
+        const el = document.getElementById('ingest-panel');
+        const ov = document.getElementById('overlay');
+        const show = el.style.display === 'block';
+        el.style.display = show ? 'none' : 'block';
+        ov.style.display = show ? 'none' : 'block';
+    },
+    updateHUD: () => {
+        document.getElementById('qaCount').innerText = QA_MEMORY.length;
+        document.getElementById('docCount').innerText = DOC_MEMORY.length;
+    }
+};
+
+const Graphics = {
+    cvs: document.getElementById('arcCanvas'), ctx: document.getElementById('arcCanvas').getContext('2d'),
+    angle: 0, speed: 0.02, isSpeaking: false,
+    start: () => Graphics.loop(),
+    loop: () => {
+        const ctx = Graphics.ctx; const w=300, h=300, cx=w/2, cy=h/2;
+        ctx.clearRect(0,0,w,h); Graphics.angle+=Graphics.speed;
+        
+        ctx.strokeStyle = "#00f3ff"; ctx.lineWidth=5; ctx.beginPath();
+        ctx.arc(cx, cy, 80, Graphics.angle, Graphics.angle+2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, 80, Graphics.angle+Math.PI, Graphics.angle+Math.PI+2); ctx.stroke();
+        
+        ctx.strokeStyle = "rgba(0, 243, 255, 0.4)"; ctx.lineWidth=2; ctx.beginPath();
+        ctx.arc(cx, cy, 60, -Graphics.angle*1.5, -Graphics.angle*1.5+4); ctx.stroke();
+        
+        const core = Graphics.isSpeaking ? 30+Math.random()*10 : 30;
+        ctx.fillStyle = "#00f3ff"; ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle="#fff"; ctx.beginPath(); ctx.arc(cx,cy, core, 0, Math.PI*2); ctx.stroke();
+        requestAnimationFrame(Graphics.loop);
+    }
+};
+
+window.onload = Jarvis.init;
+</script>
 </body>
 </html>
