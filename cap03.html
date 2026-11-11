@@ -58,7 +58,7 @@
                         <span class="tech-tag">Pupilometria</span> <span class="tech-tag">Micro-expressões</span>
                     </td>
                     <td>
-                        A dilatação da pupila indica carga cognitiva (esforço mental) e excitação emocional involuntária. O algoritmo sabe quando você está confuso, excitado ou mentindo antes de você.
+                        A dilatação da pupila indica carga cognitiva (esforço mental) e excitação emocional involuntária. Em laboratório, a pupila é um indício de esforço mental e de ativação emocional; mas inferir estados internos como "mentira" a partir dela é cientificamente frágil. O risco real é o uso comercial dessa leitura imperfeita para decidir sobre você.
                     </td>
                     <td>Testes A/B de anúncios em tempo real. Ajuste de preços baseado na sua reação emocional ao ver o valor.</td>
                 </tr>
@@ -70,7 +70,7 @@
                     <td>
                         Detecta o tremor das mãos (ansiedade, abstinência, início de Parkinson). Identifica se você está andando, correndo ou deitado bêbado às 3 da manhã.
                     </td>
-                    <td>Uber/99 usam o nível de bateria e movimento para identificar desespero e ativar o "preço dinâmico" máximo.</td>
+                    <td>Aplicação alegada: calibrar o preço dinâmico pela vulnerabilidade percebida do usuário (veja o caso da bateria, mais adiante: a hipótese é plausível, mas não está comprovada).</td>
                 </tr>
                 <tr>
                     <td>
@@ -108,30 +108,40 @@
 
     <h2 class="speakable">O Panóptico do Open Finance</h2>
 
-    <p class="speakable">O sistema bancário vende o <strong>Open Finance</strong> como "liberdade" e "portabilidade". Na prática, é a construção do Panóptico Financeiro definitivo. Antes, o seu banco sabia o que você gastava no cartão dele. Agora, ao conectar todas as suas contas, investimentos e seguros, cria-se um perfil holístico da sua vida.</p>
+    <p class="speakable">O sistema bancário vende o <strong>Open Finance</strong> como "liberdade" e "portabilidade". Na prática, pode virar, no limite, a construção de um Panóptico Financeiro. Antes, o seu banco sabia o que você gastava no cartão dele. Agora, ao conectar todas as suas contas, investimentos e seguros, cria-se um perfil holístico da sua vida.</p>
     
-    <p class="speakable">O algoritmo não vê apenas "gastos"; ele vê moralidade. Se você gasta muito em bares, tabacarias ou apostas (Bets), seu "Score de Vida" cai. Isso pode aumentar o preço do seu plano de saúde (cruzamento de dados financeiros com risco biológico) ou negar uma vaga de emprego. O Open Finance transforma seu extrato bancário em um atestado de antecedentes comportamentais.</p>
+    <p class="speakable">Em tese, o algoritmo não vê apenas "gastos"; ele vê moralidade. Se você gasta muito em bares, tabacarias ou apostas (Bets), esses sinais podem alimentar modelos de risco, encarecer um seguro (cruzamento de dados financeiros com risco biológico) ou pesar numa seleção de emprego. É preciso separar o que já existe do que é risco: o Open Finance brasileiro é baseado em consentimento, que pode ser revogado, e a LGPD limita o uso secundário dos dados. O perigo está na <strong>assimetria</strong>: o "consentimento" dado numa tela de três cliques raramente é informado. O extrato bancário só vira um atestado de antecedentes comportamentais se ninguém fiscalizar para que ele serve.</p>
 
     <h2 class="speakable">Estudo de Caso: A Exploração Algorítmica</h2>
 
     <p class="speakable">As Big Techs usam esses dados para explorar vulnerabilidades biológicas:</p>
 
     <div class="deep-dive-box speakable">
-        <h3 style="margin-top:0;">1. Uber e 99: O Preço do Desespero</h3>
-        <p>Estudos revelaram que aplicativos de transporte monitoram o nível da sua bateria. Se sua bateria está em 5% e é tarde da noite, o algoritmo infere "desespero". A probabilidade de você aceitar um preço dinâmico abusivo (3x ou 4x o valor) é estatisticamente calculada. O preço não é baseado na demanda, é baseado na sua vulnerabilidade.</p>
+        <h3 style="margin-top:0;">1. Uber e 99: O Preço do Desespero (uma Suspeita Plausível)</h3>
+        <p>A suspeita mais famosa é a da bateria. Em 2016, Keith Chen, então chefe de pesquisa econômica da Uber, contou numa entrevista que a bateria baixa era um dos melhores preditores de quem aceita o preço dinâmico. A empresa nega, desde então, que use essa informação para definir tarifas, e testes jornalísticos posteriores não conseguiram reproduzir o efeito de forma conclusiva. <strong>Portanto, o caso não está provado.</strong> Mas o fato de ele ser tão crível diz muito: a empresa <em>sabe</em> medir a sua vulnerabilidade, e o que nos protege não é a impossibilidade técnica, e sim a <em>promessa</em> de que ela não usa. Quando o preço é calculado por um sistema opaco, você não tem como auditar essa promessa.</p>
 
         <h3>2. iFood: Engenharia da Fome</h3>
-        <p>O aplicativo não vende comida; vende dopamina. Ele aprende seus horários de "fraqueza" (domingo à noite, dias chuvosos) e envia notificações com fotos de alimentos ricos em gordura e açúcar. Ele cruza dados de localização e gastos anteriores para saber exatamente quanto você está disposto a pagar para aliviar sua ansiedade com carboidratos.</p>
+        <p>Aplicativos de entrega disputam a sua atenção nos momentos em que você é mais impulsivo, com notificações personalizadas, promoções por horário e cupons que expiram. Isso é design persuasivo conhecido, testado em larga escala por meio de testes A/B. O que <em>não</em> temos é uma auditoria pública mostrando que um app específico explora, por exemplo, o domingo à noite ou o dia de chuva para elevar o quanto você aceita pagar. É uma hipótese plausível, cuja confirmação depende de uma transparência que as plataformas não oferecem. Aqui, a ausência de prova também é informação.</p>
 
         <h3>3. Shopee e Shein: Gamificação do Impulso</h3>
-        <p>Essas plataformas usam "Dark Patterns" (Padrões Sombrios) de design. Contagens regressivas falsas, roletas de prêmios e moedas virtuais não são diversão; são táticas de cassino para manter seu cérebro no circuito de recompensa variável, impedindo o pensamento racional sobre a necessidade da compra.</p>
+        <p>Plataformas de compra usam <strong>"Dark Patterns"</strong> (Padrões Sombrios) de design. Contagens regressivas falsas, roletas de prêmios e moedas virtuais não são diversão; são táticas de cassino para manter seu cérebro no circuito de recompensa variável, atrapalhando o pensamento racional sobre a necessidade da compra. Há evidência sistemática do setor: uma pesquisa de Princeton (Mathur e colegas, 2019) varreu cerca de 11 mil sites de compras e encontrou padrões enganosos em mais de 1.200 deles, incluindo 393 contagens regressivas, das quais 157 (em 140 sites) eram enganosas. O estudo documenta a prática no setor; não aponta, nominalmente, cada plataforma.</p>
     </div>
+
+    <h2 class="speakable">Aprofundamento: De Onde Vem o "Duplo de Dados"</h2>
+
+    <p class="speakable">O termo não é uma metáfora solta. <strong>Data double</strong> (duplo de dados) vem da sociologia da vigilância: Kevin Haggerty e Richard Ericson o propuseram em 2000, no artigo "The Surveillant Assemblage", para descrever como corpos humanos são fragmentados em fluxos de informação e remontados em perfis que circulam independentemente de nós. Já o "excedente comportamental" usado acima é um conceito de Shoshana Zuboff: os dados que excedem o necessário para prestar o serviço e viram matéria-prima para prever comportamento.</p>
+
+    <p class="speakable">A capacidade preditiva não é folclore. Em 2013, Michal Kosinski, David Stillwell e Thore Graepel mostraram, com dezenas de milhares de voluntários, que as "curtidas" do Facebook permitiam inferir, com precisão variável, atributos como orientação sexual, filiação política e traços de personalidade (PNAS). Em 2015, Youyou Wu, Kosinski e Stillwell sugeriram que um modelo baseado em curtidas julgava a personalidade melhor do que amigos próximos. Mas a honestidade exige os limites: as previsões valem em média e para atributos específicos, e erram bastante no nível individual. E a eficácia persuasiva do <em>microtargeting</em> é muito debatida: o caso Cambridge Analytica é citado como prova de manipulação em massa, mas análises acadêmicas (como a de Kalla e Broockman, 2018) indicam efeitos de persuasão pequenos em eleições gerais. O risco existe; a onipotência da máquina é, em parte, marketing da própria indústria.</p>
+
+    <p class="speakable">O "consentimento" como ficção legal tem uma crítica acadêmica robusta: o jurista Daniel Solove argumenta (2013) que o modelo de "autogestão da privacidade" fracassa, porque ninguém consegue ler, entender e decidir sobre centenas de políticas. A resposta jurídica mais promissora não é "leia os termos", e sim <strong>proibir certos usos</strong>. O AI Act europeu, com proibições em vigor desde fevereiro de 2025, veda, por exemplo, sistemas de inferência de emoções no trabalho e na escola e a pontuação social. No Brasil, a LGPD (2018) traz os princípios de finalidade e necessidade e o direito de revisão de decisões automatizadas (art. 20). O que ainda falta é fiscalização forte.</p>
+
+    <p class="speakable">O contraponto: a mesma capacidade de inferência que explora também protege. Sistemas de detecção de fraude barram golpes no seu cartão; a análise de padrões em exames de imagem ajuda a priorizar casos de risco. A questão nunca é a inferência em si. É a <strong>finalidade, o controle e o direito de contestar</strong>.</p>
 
     <h2 class="speakable">Contra-Medidas: Vigiando o Vigilante</h2>
 
     <p class="speakable">A solução não pode ser apenas tática (esconder-se); ela precisa ser estrutural. Mas enquanto a revolução não vem, temos ferramentas de guerrilha.</p>
     
-    <p class="speakable">Ferramentas como o <strong>Warden App</strong> (e outros auditores de privacidade) permitem que você veja o invisível. Ao instalar um analisador de pacotes, você descobre que seu aplicativo de lanterna está enviando dados para servidores na China ou na Rússia. Ver o tráfego de dados saindo do seu celular é o primeiro passo para entender a magnitude do roubo.</p>
+    <p class="speakable">Ferramentas de auditoria permitem que você veja o invisível. O <strong>Exodus Privacy</strong> (ONG francesa) analisa aplicativos Android e lista os rastreadores embutidos neles; o <strong>TrackerControl</strong> registra e bloqueia, no próprio celular, o tráfego de rastreamento. O caso clássico é o do aplicativo de lanterna: em 2013, a agência de defesa do consumidor dos EUA (FTC) acusou o desenvolvedor de um aplicativo popular de lanterna para Android de coletar a localização dos usuários e repassá-la a anunciantes sem informá-los. Ver o tráfego de dados saindo do seu celular é o primeiro passo para entender a magnitude do que acontece.</p>
     
     <p class="speakable">Além disso, devemos apoiar iniciativas como o projeto <strong>SOLID</strong> de Tim Berners-Lee, que propõe que os dados fiquem em "Pods" pessoais do usuário, e não nos servidores das empresas. Você concede acesso temporário, e não a posse eterna.</p>
 
@@ -140,8 +150,8 @@
         <strong style="color:var(--c-bio); text-transform:uppercase; display:block; margin-bottom:10px; font-family:var(--font-tech);">DESAFIO DE RETOMADA #03</strong>
         <p style="font-weight:bold;">A Auditoria Radical (DSAR)</p>
         <p>Não tente apenas se esconder. Olhe o monstro nos olhos.</p>
-        <p><strong>Sua missão hoje:</strong> Entre nas configurações de privacidade do Google ("Google Takeout") ou do Instagram ("Baixar suas informações") e solicite o download completo dos seus dados. Quando o arquivo chegar, abra-o.</p>
-        <p>Veja o histórico de localização onde o Google sabe onde você dormiu nos últimos 5 anos. Veja os áudios que você pensou que não foram gravados. Essa experiência visceral de ver o seu "Eu Inferido" em uma planilha é o combustível necessário para mudar seu comportamento e exigir soberania.</p>
+        <p><strong>Sua missão hoje:</strong> Entre nas configurações de privacidade do Google ("Google Takeout") ou do Instagram ("Baixar suas informações") e solicite o download completo dos seus dados. No Brasil, isso é um direito: o art. 18 da LGPD garante ao titular o acesso aos seus dados e a portabilidade. Quando o arquivo chegar, abra-o.</p>
+        <p>Veja o histórico de pesquisas, de vídeos e de navegação associado à sua conta e as inferências que a plataforma guarda sobre os seus interesses (a página de personalização de anúncios mostra parte delas). Se você ativou a gravação de voz e áudio, veja também os comandos que ficaram armazenados. Atenção: desde 2024 o Google passou a guardar o histórico de localização (Linha do Tempo) no próprio dispositivo, e não mais na nuvem, então ele pode não aparecer no arquivo exportado. É um bom exemplo de como as regras mudam sob os nossos pés. Essa experiência visceral de ver o seu "Eu Inferido" em uma planilha é o combustível necessário para mudar seu comportamento e exigir soberania.</p>
     </div>
 
     <script src="assets/js/capitulo.js"></script>

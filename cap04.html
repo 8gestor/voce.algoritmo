@@ -30,13 +30,13 @@
 
     <div class="deep-dive-box speakable">
         <h3 style="margin-top:0;">1. Índia: O Pesadelo Aadhaar</h3>
-        <p>O <strong>Aadhaar</strong> é o maior sistema biométrico do mundo, contendo íris e digitais de 1,4 bilhão de pessoas. Vendido como inclusão, tornou-se uma ferramenta de exclusão letal. Estudos documentam casos de idosos que morreram de fome porque suas impressões digitais, gastas pelo trabalho manual, não foram reconhecidas pelo leitor biométrico na hora de retirar ração subsidiada. O algoritmo decretou que eles não eram quem diziam ser.</p>
+        <p>O <strong>Aadhaar</strong> é o maior sistema de identidade biométrica do mundo, com íris e digitais de mais de 1,3 bilhão de pessoas. Vendido como inclusão, mostrou também um lado de exclusão. Em 2017, Santoshi Kumari, de 11 anos, morreu em Jharkhand depois que a família teve o cartão de ração cancelado por não estar vinculado ao Aadhaar; a campanha Right to Food contabilizou, no ano seguinte, ao menos 15 mortes por fome em casos ligados a dificuldades de autenticação, e disse que o Aadhaar teve papel em 10 delas. As autoridades contestam a relação de causa e efeito, e os números vêm de ativistas e jornalistas; mas o governo central chegou a determinar, em 2017, que os estados não negassem ração por falta de vínculo. A falha biométrica atinge sobretudo quem trabalha com as mãos: digitais gastas pelo trabalho manual são mais difíceis de ler. O algoritmo decretou que eles não eram quem diziam ser. (Em 2018, a Suprema Corte indiana validou o Aadhaar para benefícios sociais, mas barrou seu uso obrigatório por empresas privadas.)</p>
 
         <h3>2. China: Crédito Social e Skynet</h3>
-        <p>O sistema de <strong>Crédito Social</strong> chinês funde dados financeiros (Alipay), sociais (WeChat) e criminais. Atravessar fora da faixa ou comprar muito álcool baixa seu score, impedindo a compra de passagens de trem de alta velocidade. Câmeras com reconhecimento facial (Projeto Skynet) identificam e multam cidadãos automaticamente, criando uma prisão a céu aberto de obediência performática.</p>
+        <p>O chamado sistema de <strong>Crédito Social</strong> chinês costuma ser descrito como uma nota única que todo cidadão carrega. Isso é um mito: não existe um score nacional. O que existe é um ecossistema de listas e cadastros: <em>listas negras</em> de devedores judiciais, que podem impedir a compra de passagens aéreas e de trem de alta velocidade; cadastros de empresas; programas-piloto locais, como o de Rongcheng, que pontuam comportamentos; e iniciativas privadas, como o Sesame Credit, da Alibaba. Especialistas como Jamie Horsley e Rogier Creemers descrevem uma colcha de retalhos de iniciativas estatais e privadas, e não um algoritmo central. Isso não a torna inofensiva: listas negras sem recurso efetivo e câmeras com reconhecimento facial (como as do Projeto Skynet e as telas que expõem pedestres em algumas cidades) produzem um controle real, sem precisar de nota nenhuma.</p>
 
         <h3>3. Brasil: CadÚnico e Data Brokers</h3>
-        <p>O <strong>Cadastro Único</strong>, essencial para programas sociais, tornou-se um pote de mel para data brokers. O cruzamento desses dados com bancos de dados de segurança pública e empresas de crédito cria um "perfil de pobreza" que persegue o cidadão, impedindo sua ascensão social através da negação sistemática de serviços financeiros baseada em seu CEP e histórico familiar.</p>
+        <p>O <strong>Cadastro Único</strong>, essencial para programas sociais, concentra dados sensíveis de milhões de famílias. O risco descrito neste capítulo, o de cruzar esses dados com bases de crédito e de segurança pública e produzir um "perfil de pobreza" que persegue o cidadão pelo CEP e pelo histórico familiar, é uma <strong>hipótese plausível</strong>, e não um fato documentado: ainda não há auditoria pública que o confirme. A razão para levá-la a sério é histórica: o <em>redlining</em> (a negação de crédito por bairro) existiu de forma explícita nos EUA do século XX e hoje pode ser reproduzido, sem intenção declarada, por modelos que usam o CEP como variável.</p>
     </div>
 
     <h2 class="speakable">A Engenharia da Exclusão (O Diagrama)</h2>
@@ -57,9 +57,9 @@
 
     <h2 class="speakable">A Fusão: Palantir e o Complexo Industrial de Vigilância</h2>
 
-    <p class="speakable">O perigo máximo reside na fusão entre dados comerciais e poder estatal. A empresa <strong>Palantir Technologies</strong> (fundada com dinheiro da CIA) desenvolveu o software <em>Gotham</em>, usado por polícias e agências de imigração.</p>
+    <p class="speakable">O perigo máximo reside na fusão entre dados comerciais e poder estatal. A empresa <strong>Palantir Technologies</strong> (com investimento inicial da In-Q-Tel, o braço de capital de risco da CIA) desenvolveu o software <em>Gotham</em>, usado por polícias e agências de imigração.</p>
     
-    <p class="speakable">O <em>Gotham</em> ingere dados de placas de carros (LPR), compras de cartão de crédito, registros de Uber, postagens de Facebook e câmeras de rua. Ele cria um grafo de conexões que prevê não apenas crimes, mas dissidência. Se você participou de um protesto (geo-localização) e depois comprou uma máscara de gás (Amazon), você entra em uma "lista de risco". A privacidade comercial morreu; suas compras são evidências criminais em potencial.</p>
+    <p class="speakable">O <em>Gotham</em> é descrito como uma plataforma que integra fontes diversas (registros, placas de veículos, bancos de dados policiais) em um grafo de conexões para investigações. O cenário que preocupa os críticos é a ampliação dessa integração para dados comerciais e para a previsão de dissidência. Imagine, como <strong>exercício hipotético</strong>: alguém participa de um protesto (geolocalização) e depois compra uma máscara de gás (varejo online); um sistema integrado poderia sinalizá-la como "de risco". Não é um caso documentado, e sim o tipo de inferência que a fusão de bases torna tecnicamente possível. O ponto central permanece: quando dados comerciais e estatais se fundem, as suas compras viram evidência em potencial.</p>
 
     <h2 class="speakable">Estudos de Caso: O Viés Codificado</h2>
 
@@ -69,16 +69,24 @@
         <div class="comp-card health">
             <span class="comp-title" style="color:var(--c-necro)">SAÚDE: O CASO OPTUM</span>
             <div class="comp-content speakable">
-                Um estudo na <em>Science</em> (Ziad Obermeyer, 2019) revelou que um algoritmo usado em 200 milhões de pacientes nos EUA negava atendimento a negros. O motivo: usava "custo passado" como proxy de "doença". Como negros historicamente recebiam menos recursos, a IA concluiu que eram "menos doentes".
+                Um estudo na <em>Science</em> (Ziad Obermeyer, 2019) analisou um algoritmo comercial de gestão de saúde, de um tipo aplicado a cerca de 200 milhões de pessoas por ano nos EUA, que decidia quem receberia atenção extra. A falha: ele usava o "custo passado" como proxy de "necessidade". Como pacientes negros historicamente geravam menos gastos para o mesmo nível de doença, o modelo os classificava como "menos doentes"; os autores estimaram que isso reduzia à metade o número de pacientes negros selecionados para o programa. Com o critério corrigido, a parcela de pacientes negros identificados subiu de cerca de 18% para 47%.
             </div>
         </div>
         <div class="comp-card police">
             <span class="comp-title" style="color:var(--c-cold)">POLÍCIA: PREDPOL & CLEARVIEW</span>
             <div class="comp-content speakable">
-                O software <em>PredPol</em> cria loops de feedback: manda polícia para bairros pobres -> polícia acha crimes menores -> dados alimentam o sistema -> manda mais polícia. Já a <em>Clearview AI</em> raspou 30 bilhões de fotos da web para criar um buscador facial global, matando o anonimato público.
+                O software <em>PredPol</em> (depois rebatizado Geolitica) ilustra, segundo pesquisas como a de Lum e Isaac (2016), o risco de loops de feedback: manda polícia para bairros pobres -> polícia acha crimes menores -> dados alimentam o sistema -> manda mais polícia. Reportagens de 2023 (The Markup e Wired) indicaram que, numa cidade analisada, menos de 1% das previsões se confirmou. Já a <em>Clearview AI</em> afirma ter coletado dezenas de bilhões de fotos da web (30 bilhões, segundo a própria empresa, em 2023) para criar um buscador facial global, matando o anonimato público.
             </div>
         </div>
     </div>
+
+    <h2 class="speakable">Aprofundamento: Quando o Estado Automatiza o Erro</h2>
+
+    <p class="speakable">Os casos mais bem documentados de "necropolítica digital" não estão em regimes distantes; estão em democracias consolidadas. Na Holanda, um sistema de detecção de fraude no auxílio-creche sinalizou milhares de famílias, desproporcionalmente de origem imigrante, como fraudadoras; elas foram obrigadas a devolver valores que não deviam, e o escândalo derrubou o governo em janeiro de 2021. Na Austrália, o programa <em>Robodebt</em> (2016–2019) enviou notificações automáticas de dívida a centenas de milhares de beneficiários, calculando renda por média, e foi considerado ilegal; a Comissão Real que investigou o caso (2023) o descreveu como um plano "cruel e crasso". Virginia Eubanks, em <em>Automating Inequality</em> (2018), mostrou o mesmo padrão nos EUA.</p>
+
+    <p class="speakable">Um contraponto honesto: a digitalização também ampliou o acesso. O Brasil usou o Cadastro Único e um aplicativo para chegar a dezenas de milhões de pessoas com o Auxílio Emergencial em 2020, algo impossível em papel. A lição não é "o digital exclui", e sim que <strong>o digital amplifica o desenho que lhe damos</strong>: sem canal humano de contestação, sem alternativa offline e sem avaliação de impacto prévia, o erro vira política pública em escala. Foi exatamente o que as filas e a exclusão de quem não tinha acesso à internet mostraram naquele mesmo programa.</p>
+
+    <p class="speakable">O direito começa a responder. O AI Act europeu proíbe a "pontuação social" (por entes públicos e privados) e classifica como de alto risco os sistemas usados no acesso a serviços essenciais, no emprego e na justiça. No Brasil, o direito de revisão de decisões automatizadas está na LGPD (art. 20), e o projeto de lei de IA (PL 2338/2023, aprovado no Senado em dezembro de 2024) segue em tramitação na Câmara; vale conferir o andamento atual, pois ele muda. A defesa mais prática continua sendo a do capítulo: <strong>compartimentalizar, documentar e contestar</strong>.</p>
 
     <h2 class="speakable">Síntese: Contenção de Danos Consciente</h2>
 
