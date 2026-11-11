@@ -1,102 +1,178 @@
-/* leitor.js — lógica do leitor: navegação, tema, fonte, narração e barra lateral. */
-let currentIdx = 0;
-let ttsRate = 1.0;
-let currentFont = 19; 
-let themeState = 0; 
-const themes = ['dark', 'light', 'sepia'];
+/*
+ * leitor.js — lógica do leitor: navegação, temas, painel Aa, Raio-X, narração e barra lateral.
+ *
+ * Preferências (tema, tamanho, fonte, margens, alinhamento, velocidade) ficam salvas no
+ * navegador (localStorage, chave "dd-settings") e são reenviadas a cada capítulo carregado.
+ * Depende de: assets/js/sumario.js (const structure) e assets/js/raiox.js (const RAIOX).
+ */
+const THEMES = [
+    { id: 'paper', label: 'Papel' },
+    { id: 'dark', label: 'Terminal' },
+    { id: 'light', label: 'Claro' },
+    { id: 'sepia', label: 'Sépia' }
+];
+const DEFAULTS = { theme: 'paper', font: 19, face: 'serif', margin: 'medium', align: 'left', rate: 1.0 };
+const SETTINGS_KEY = 'dd-settings';
+const OPT_TO_MSG = { theme: 'theme', face: 'typeface', margin: 'margins', align: 'align' };
 
+let settings = Object.assign({}, DEFAULTS);
+try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (e) { /* sem storage */ }
+function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { /* ignora */ } }
+
+let currentIdx = 0;
+
+const frameEl = () => document.getElementById('content-frame');
+
+function sendMsg(type, value) {
+    const win = frameEl().contentWindow;
+    if (win) win.postMessage({ type, value }, '*');
+}
+
+function syncAll() {
+    sendMsg('theme', settings.theme);
+    sendMsg('font', settings.font);
+    sendMsg('typeface', settings.face);
+    sendMsg('margins', settings.margin);
+    sendMsg('align', settings.align);
+    sendMsg('rate', settings.rate);
+}
+
+/* ---------- interface do leitor ---------- */
+function refreshControls() {
+    document.body.className = settings.theme + '-mode';
+    document.getElementById('speed-display').innerText = settings.rate;
+    document.getElementById('font-display').innerText = settings.font + ' px';
+    document.querySelectorAll('[data-opt]').forEach((b) => {
+        const on = String(settings[b.dataset.opt]) === b.dataset.val;
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        b.classList.toggle('on', on);
+    });
+}
+
+function setOption(key, val) {
+    settings[key] = val;
+    saveSettings();
+    refreshControls();
+    sendMsg(OPT_TO_MSG[key], val);
+}
+
+function adjustFont(delta) {
+    settings.font = Math.max(14, Math.min(28, settings.font + delta));
+    saveSettings(); refreshControls(); sendMsg('font', settings.font);
+}
+
+function adjustSpeed(delta) {
+    settings.rate = Math.round(Math.max(0.5, Math.min(3.0, settings.rate + delta)) * 100) / 100;
+    saveSettings(); refreshControls(); sendMsg('rate', settings.rate);
+}
+
+function cycleTheme() {
+    const i = THEMES.findIndex((t) => t.id === settings.theme);
+    setOption('theme', THEMES[(i + 1) % THEMES.length].id);
+}
+
+function togglePanel(id) {
+    ['aa-panel', 'raiox'].forEach((x) => {
+        const el = document.getElementById(x);
+        if (x === id) el.classList.toggle('open'); else el.classList.remove('open');
+    });
+    document.getElementById('btn-aa').setAttribute('aria-expanded', String(document.getElementById('aa-panel').classList.contains('open')));
+    document.getElementById('btn-raiox').setAttribute('aria-expanded', String(document.getElementById('raiox').classList.contains('open')));
+}
+function closePanels() { togglePanel(null); }
+
+/* ---------- Raio-X: conceitos do capítulo, tirados do glossário ---------- */
+function renderRaioX() {
+    const list = document.getElementById('raiox-list');
+    const items = (typeof RAIOX !== 'undefined' && RAIOX[structure[currentIdx].f]) || [];
+    list.textContent = '';
+    document.getElementById('raiox-count').innerText = items.length + (items.length === 1 ? ' conceito' : ' conceitos');
+    if (!items.length) {
+        const p = document.createElement('p');
+        p.className = 'raiox-empty';
+        p.textContent = 'Nenhum conceito do glossário está mapeado neste capítulo.';
+        list.appendChild(p);
+        return;
+    }
+    items.forEach((it) => {
+        const box = document.createElement('div');
+        box.className = 'raiox-item';
+        const t = document.createElement('strong'); t.textContent = it.t;
+        const d = document.createElement('span'); d.className = 'raiox-def'; d.textContent = it.d;
+        const r = document.createElement('span'); r.className = 'raiox-ref'; r.textContent = 'REF: ' + it.r;
+        box.append(t, d, r);
+        list.appendChild(box);
+    });
+}
+
+/* ---------- navegação ---------- */
 function init() {
     const nav = document.getElementById('nav-container');
-    let lastCat = "";
-    
+    let lastCat = '';
+
     structure.forEach((item, i) => {
-        if(item.cat !== lastCat) {
+        if (item.cat !== lastCat) {
             const cat = document.createElement('div');
             cat.className = 'nav-cat';
             cat.innerText = item.cat;
             nav.appendChild(cat);
             lastCat = item.cat;
         }
-        
         const btn = document.createElement('a');
         btn.className = item.sub ? 'chapter-link chapter-sub' : 'chapter-link';
         btn.innerText = item.t;
-        btn.href = "#";
-        btn.onclick = (e) => { 
-            e.preventDefault(); 
-            loadChapter(i); 
-            if(window.innerWidth < 768) toggleSidebar(); 
+        btn.href = '#' + item.f.replace('.html', '');
+        btn.onclick = (e) => {
+            e.preventDefault();
+            loadChapter(i);
+            if (window.innerWidth < 768) toggleSidebar();
         };
         nav.appendChild(btn);
     });
-    // Carrega o primeiro capítulo (Introdução) por padrão
-    loadChapter(0);
+
+    // abre direto no capítulo indicado na URL (#cap03), se houver
+    const wanted = location.hash.replace('#', '');
+    const start = structure.findIndex((s) => s.f.replace('.html', '') === wanted);
+    refreshControls();
+    loadChapter(start >= 0 ? start : 0);
 }
 
 function loadChapter(idx) {
     currentIdx = idx;
-    const frame = document.getElementById('content-frame');
+    const frame = frameEl();
     const btnTts = document.getElementById('btn-tts');
-    
+
     btnTts.innerText = '▶';
     btnTts.classList.remove('active');
+    closePanels();
     frame.src = structure[idx].f;
-    
+    try { history.replaceState(null, '', '#' + structure[idx].f.replace('.html', '')); } catch (e) { /* file:// */ }
+
     const progress = ((idx + 1) / structure.length * 100);
-    document.getElementById('p-bar').style.width = progress + "%";
+    document.getElementById('p-bar').style.width = progress + '%';
     document.getElementById('chapter-indicator').innerText = `${(idx + 1).toString().padStart(2, '0')}/${structure.length}`;
 
     document.querySelectorAll('.chapter-link').forEach((el, i) => {
         el.classList.toggle('active', i === idx);
-        if(i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    frame.onload = () => { syncAll(); }
-}
-
-function sendMsg(type, val) {
-    const win = document.getElementById('content-frame').contentWindow;
-    if(win) win.postMessage({ type, value: val }, '*');
-}
-
-function syncAll() {
-    sendMsg('theme', themes[themeState]);
-    sendMsg('font', currentFont);
-    sendMsg('rate', ttsRate);
-}
-
-function cycleTheme() {
-    themeState = (themeState + 1) % 3;
-    const mode = themes[themeState];
-    document.body.className = mode + '-mode';
-    sendMsg('theme', mode);
+    renderRaioX();
+    frame.onload = () => { syncAll(); };
 }
 
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => console.log(err));
-    } else {
-        if (document.exitFullscreen) document.exitFullscreen();
+        document.documentElement.requestFullscreen().catch((err) => console.log(err));
+    } else if (document.exitFullscreen) {
+        document.exitFullscreen();
     }
-}
-
-function adjustSpeed(delta) {
-    ttsRate = Math.max(0.5, Math.min(3.0, ttsRate + delta));
-    ttsRate = Math.round(ttsRate * 100) / 100;
-    document.getElementById('speed-display').innerText = ttsRate;
-    sendMsg('rate', ttsRate);
-}
-
-function adjustFont(delta) {
-    currentFont = Math.max(14, Math.min(28, currentFont + delta));
-    sendMsg('font', currentFont);
 }
 
 function toggleSidebar() {
     const sb = document.getElementById('sidebar');
     const bd = document.getElementById('backdrop');
-    
-    if(window.innerWidth < 768) {
+    if (window.innerWidth < 768) {
         sb.classList.toggle('open');
         bd.classList.toggle('active');
     } else {
@@ -104,18 +180,19 @@ function toggleSidebar() {
     }
 }
 
-function nextChapter() { if(currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
-function prevChapter() { if(currentIdx > 0) loadChapter(currentIdx - 1); }
+function nextChapter() { if (currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
+function prevChapter() { if (currentIdx > 0) loadChapter(currentIdx - 1); }
 
 window.addEventListener('message', (e) => {
-    if(e.data.type === 'tts-state') {
+    if (e.data && e.data.type === 'tts-state') {
         const btn = document.getElementById('btn-tts');
-        if(e.data.isPlaying) {
-            btn.innerText = '■'; btn.classList.add('active');
-        } else {
-            btn.innerText = '▶'; btn.classList.remove('active');
-        }
+        if (e.data.isPlaying) { btn.innerText = '■'; btn.classList.add('active'); }
+        else { btn.innerText = '▶'; btn.classList.remove('active'); }
     }
+});
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePanels();
 });
 
 init();

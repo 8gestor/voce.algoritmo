@@ -1,0 +1,219 @@
+/*
+ * papel.css — tema "Papel" (padrão): leitura estilo Kindle no navegador.
+ *
+ * Carregado depois do CSS de cada capítulo; só age quando o <body> tem a classe .paper-mode
+ * (o leitor define a classe via mensagem de tema). Ideia: a página é a protagonista; cores
+ * neon viram tinta e cinza, o brilho e as animações somem, o texto ganha serifa e medida.
+ *
+ * Ajustes do painel Aa chegam como atributos no <html>:
+ *   data-face   = serif | legible | mono
+ *   data-margin = narrow | medium | wide
+ *   data-align  = left | justify
+ */
+
+/* ---------- a mesa e a página ---------- */
+:root:has(body.paper-mode) { background: #E4E2DA; }
+
+body.paper-mode {
+    --c-abyss: #5A5A55;
+    --c-alert: #1A1A18;
+    --c-alert-dim: rgba(26, 26, 24, 0.06);
+    --c-alert-glow: none;
+    --c-amber: #1A1A18;
+    --c-amber-dim: rgba(26, 26, 24, 0.06);
+    --c-amber-glow: none;
+    --c-bg: #FBFAF6;
+    --c-bio: #1A1A18;
+    --c-bio-dim: rgba(26, 26, 24, 0.06);
+    --c-bio-glow: none;
+    --c-blue: #1A1A18;
+    --c-blue-dim: rgba(26, 26, 24, 0.06);
+    --c-blue-glow: none;
+    --c-btc: #1A1A18;
+    --c-card: #F3F1EA;
+    --c-code: #1A1A18;
+    --c-cold: #1A1A18;
+    --c-cold-dim: rgba(26, 26, 24, 0.06);
+    --c-cold-glow: none;
+    --c-control: #1A1A18;
+    --c-cyan: #1A1A18;
+    --c-cyan-dim: rgba(26, 26, 24, 0.06);
+    --c-cyan-glow: none;
+    --c-data: #1A1A18;
+    --c-data-dim: rgba(26, 26, 24, 0.06);
+    --c-data-glow: none;
+    --c-db: #1A1A18;
+    --c-db-dim: rgba(26, 26, 24, 0.06);
+    --c-db-glow: none;
+    --c-dim: #5A5A55;
+    --c-dopamine: #1A1A18;
+    --c-dopamine-dim: rgba(26, 26, 24, 0.06);
+    --c-dopamine-glow: none;
+    --c-fake: #1A1A18;
+    --c-flow: #1A1A18;
+    --c-flow-dim: rgba(26, 26, 24, 0.06);
+    --c-flow-glow: none;
+    --c-glitch: #5A5A55;
+    --c-glitch-dim: rgba(26, 26, 24, 0.06);
+    --c-glitch-glow: none;
+    --c-gold: #1A1A18;
+    --c-gold-dim: rgba(26, 26, 24, 0.06);
+    --c-gold-glow: none;
+    --c-highlight: #F3E4A0;
+    --c-iron: #5A5A55;
+    --c-ledger: #1A1A18;
+    --c-life: #1A1A18;
+    --c-lock: #1A1A18;
+    --c-machine: #5A5A55;
+    --c-machine-dim: rgba(26, 26, 24, 0.06);
+    --c-magma: #1A1A18;
+    --c-magma-dim: rgba(26, 26, 24, 0.06);
+    --c-magma-glow: none;
+    --c-money: #1A1A18;
+    --c-money-dim: rgba(26, 26, 24, 0.06);
+    --c-money-glow: none;
+    --c-necro: #1A1A18;
+    --c-necro-dim: rgba(26, 26, 24, 0.06);
+    --c-necro-glow: none;
+    --c-nerve: #1A1A18;
+    --c-nerve-dim: rgba(26, 26, 24, 0.06);
+    --c-nerve-glow: none;
+    --c-network: #1A1A18;
+    --c-neural: #1A1A18;
+    --c-neural-dim: rgba(26, 26, 24, 0.06);
+    --c-neural-glow: none;
+    --c-onion: #1A1A18;
+    --c-onion-dim: rgba(26, 26, 24, 0.06);
+    --c-onion-glow: none;
+    --c-panic: #1A1A18;
+    --c-panic-dim: rgba(26, 26, 24, 0.06);
+    --c-panic-glow: none;
+    --c-purple: #1A1A18;
+    --c-red: #1A1A18;
+    --c-red-dim: rgba(26, 26, 24, 0.06);
+    --c-red-glow: none;
+    --c-risk: #1A1A18;
+    --c-risk-dim: rgba(26, 26, 24, 0.06);
+    --c-risk-glow: none;
+    --c-safe: #1A1A18;
+    --c-shield: #1A1A18;
+    --c-solar: #1A1A18;
+    --c-solar-dim: rgba(26, 26, 24, 0.06);
+    --c-solar-glow: none;
+    --c-stone: #5A5A55;
+    --c-structure: #5A5A55;
+    --c-structure-dim: rgba(26, 26, 24, 0.06);
+    --c-teal: #1A1A18;
+    --c-tech: #1A1A18;
+    --c-text: #1A1A18;
+    --c-threat: #1A1A18;
+    --c-toxic: #1A1A18;
+    --c-truth: #1A1A18;
+    --c-void: #A8A8A3;
+    --c-void-dim: rgba(26, 26, 24, 0.06);
+    --c-void-glow: none;
+    --c-water: #1A1A18;
+    --c-xmr: #1A1A18;
+    --border-tech: 1.5px solid #1A1A18;
+    --scroll-track: #E4E2DA; --scroll-thumb: #A8A8A3; --scroll-hover: #1A1A18;
+    --paper-face: 'Literata', Georgia, 'Times New Roman', serif;
+    --paper-width: 720px; --paper-pad-x: 64px; --paper-pad-y: 56px;
+    --font-ui: var(--paper-face);
+
+    background: #FBFAF6; color: #1A1A18;
+    font-family: var(--paper-face); font-size: var(--base-size, 19px); line-height: 1.65;
+    max-width: var(--paper-width); margin: 28px auto;
+    padding: var(--paper-pad-y) var(--paper-pad-x) 72px;
+    box-shadow: 0 1px 2px rgba(26, 26, 24, 0.12), 0 16px 44px rgba(26, 26, 24, 0.14);
+}
+html[data-face="legible"] body.paper-mode { --paper-face: 'Atkinson Hyperlegible', 'Segoe UI', sans-serif; }
+html[data-face="mono"] body.paper-mode { --paper-face: 'JetBrains Mono', ui-monospace, monospace; line-height: 1.7; }
+html[data-margin="narrow"] body.paper-mode { --paper-width: 800px; --paper-pad-x: 36px; }
+html[data-margin="wide"] body.paper-mode { --paper-width: 740px; --paper-pad-x: 104px; }
+
+/* sem brilho e sem movimento: leitura calma */
+body.paper-mode *, body.paper-mode *::before, body.paper-mode *::after {
+    text-shadow: none !important; animation: none !important; transition: none !important;
+}
+body.paper-mode *:not(.pie-chart):not(.flow-zone):not(.deep-time-bar *) { box-shadow: none; }
+body.paper-mode { box-shadow: 0 1px 2px rgba(26, 26, 24, 0.12), 0 16px 44px rgba(26, 26, 24, 0.14) !important; }
+
+/* ---------- tipografia ---------- */
+body.paper-mode p { text-align: left; hyphens: manual; margin-bottom: 1.15em; }
+html[data-align="justify"] body.paper-mode p { text-align: justify; hyphens: auto; }
+body.paper-mode strong { color: #1A1A18; font-weight: 700; }
+body.paper-mode em { font-style: italic; }
+body.paper-mode h1, body.paper-mode h2, body.paper-mode h3 {
+    font-family: var(--paper-face); text-transform: none !important; color: #1A1A18;
+    letter-spacing: -0.01em; font-weight: 700;
+}
+body.paper-mode h1 { font-size: 2.1rem; line-height: 1.12; border-bottom: 1.5px solid #1A1A18; padding-bottom: 18px; margin-bottom: 32px; }
+body.paper-mode h2 { font-size: 1.4rem; line-height: 1.2; margin: 2.4em 0 0.8em; }
+body.paper-mode h2::before { color: #5A5A55; font-family: 'JetBrains Mono', monospace; font-weight: 400; }
+body.paper-mode h3 { font-size: 1.1rem; border-left: 3px solid #1A1A18; padding-left: 14px; }
+body.paper-mode a { color: #1A1A18; text-decoration: underline; }
+body.paper-mode code { font-family: 'JetBrains Mono', monospace; color: #1A1A18; background: #EEECE4; }
+
+/* ---------- rótulos hacker (ficam nas margens) ---------- */
+body.paper-mode .meta-tag, body.paper-mode .system-alert, body.paper-mode .chapter-meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #FBFAF6 !important; background: #1A1A18 !important; border: 1.5px solid #1A1A18 !important; border-radius: 0 !important;
+}
+body.paper-mode .comp-title, body.paper-mode .thesis-header, body.paper-mode .card-title, body.paper-mode .action-header,
+body.paper-mode .skinner-header, body.paper-mode .term-badge, body.paper-mode .tech-tag, body.paper-mode .detail-highlight {
+    font-family: 'JetBrains Mono', monospace; color: #1A1A18 !important; letter-spacing: 0.05em;
+}
+
+/* ---------- componentes: papel, filete e nenhuma cor ---------- */
+body.paper-mode .thesis-box, body.paper-mode .deep-dive-box, body.paper-mode .action-box, body.paper-mode .alert-box,
+body.paper-mode .quote-box, body.paper-mode .comp-card, body.paper-mode .law-card, body.paper-mode .card,
+body.paper-mode .geo-card, body.paper-mode .term-card, body.paper-mode .book-card, body.paper-mode .skinner-widget,
+body.paper-mode .code-block, body.paper-mode .terminal-box, body.paper-mode .terminal-widget, body.paper-mode .infinite-game-card,
+body.paper-mode .manifesto-box, body.paper-mode .task-manager-container, body.paper-mode .prism-container,
+body.paper-mode .visual-pie-container, body.paper-mode .visual-layers-container, body.paper-mode .funnel-container,
+body.paper-mode .neurorights-grid > *, body.paper-mode .box, body.paper-mode .matrix-table-container,
+body.paper-mode .dissection-table-container {
+    background: #F3F1EA !important; color: #1A1A18 !important;
+    border: 1.5px solid #1A1A18 !important; border-radius: 0 !important; box-shadow: none !important;
+}
+body.paper-mode .thesis-box { border-left-width: 5px !important; font-family: var(--paper-face); }
+body.paper-mode .action-box { border-style: double !important; border-width: 3px !important; }
+body.paper-mode .comp-card:hover, body.paper-mode .card:hover { transform: none !important; }
+
+/* tabelas */
+body.paper-mode table { border-collapse: collapse; color: #1A1A18; }
+body.paper-mode th { background: #1A1A18 !important; color: #FBFAF6 !important; font-family: 'JetBrains Mono', monospace; }
+body.paper-mode td, body.paper-mode th { border-color: #1A1A18 !important; }
+body.paper-mode td { background: transparent !important; color: #1A1A18 !important; }
+
+/* gráficos: padrões no lugar da cor */
+body.paper-mode .pie-chart { box-shadow: none !important; border: 1.5px solid #1A1A18; }
+
+/* botões e campos */
+body.paper-mode button, body.paper-mode .btn-exit {
+    font-family: 'JetBrains Mono', monospace; background: transparent; color: #1A1A18;
+    border: 1.5px solid #1A1A18; border-radius: 0; min-height: 44px;
+}
+body.paper-mode input[type="text"] { background: #FBFAF6; color: #1A1A18; border: 1.5px solid #1A1A18; border-radius: 0; }
+
+/* destaque da narração em voz alta: marca-texto, não neon */
+body.paper-mode .speaking { background: #F3E4A0 !important; color: #1A1A18 !important; box-shadow: none !important; outline: none !important; }
+
+/* ---------- selos de confiança (para marcar afirmações no texto) ---------- */
+body.paper-mode .selo {
+    display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 1px 8px; border: 1.5px solid #1A1A18; vertical-align: middle;
+}
+body.paper-mode .selo-fato { background: #1A1A18; color: #FBFAF6; }
+body.paper-mode .selo-estimativa { background: transparent; }
+body.paper-mode .selo-hipotese { border-style: dashed; }
+body.paper-mode .selo-provocacao { border-style: double; border-width: 3px; padding: 0 7px; }
+
+/* ---------- celular ---------- */
+@media (max-width: 700px) {
+    body.paper-mode { margin: 0; padding: 28px 22px 72px; box-shadow: none !important; }
+    body.paper-mode h1 { font-size: 1.75rem; }
+}
+/* ---------- opções de fonte nos outros temas (o padrão original de cada tema é mantido) ---------- */
+html[data-face="legible"] body:not(.paper-mode) { font-family: 'Atkinson Hyperlegible', 'Segoe UI', sans-serif; }
+html[data-face="mono"] body:not(.paper-mode) { font-family: 'JetBrains Mono', ui-monospace, monospace; }

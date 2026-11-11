@@ -95,3 +95,44 @@ footer.bottom-hud { height: 45px; background: var(--c-panel); border-top: 1px so
 }
 #backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); z-index: 900; display: none; opacity: 0; transition: opacity 0.3s; }
 #backdrop.active { display: block; opacity: 1; }
+/* ---------- tema Papel (padrão): a casca do leitor também vira papel ---------- */
+body.paper-mode {
+    --c-bg: #E4E2DA; --c-panel: #FBFAF6; --c-text: #1A1A18; --c-dim: #5A5A55;
+    --c-accent: #1A1A18; --c-border: rgba(26, 26, 24, 0.28);
+    --scroll-track: #E4E2DA; --scroll-thumb: #A8A8A3; --scroll-hover: #1A1A18;
+}
+body.paper-mode .btn-icon:hover, body.paper-mode .speed-btn:hover,
+body.paper-mode .chapter-link:hover, body.paper-mode .chapter-link.active { background: rgba(26, 26, 24, 0.07); }
+body.paper-mode .progress-fill { box-shadow: none; }
+body.paper-mode .btn-icon.active { color: #FBFAF6; }
+
+/* ---------- botões novos: Aa e Raio-X ---------- */
+.btn-aa { font-family: 'Literata', Georgia, serif; font-weight: 700; font-size: 1rem; }
+.btn-text { width: auto; padding: 0 12px; font-family: var(--font-tech); font-size: 0.7rem; letter-spacing: 0.04em; }
+
+/* ---------- painéis: Aa (aparência) e Raio-X (gaveta) ---------- */
+.panel {
+    display: none; position: absolute; z-index: 500; background: var(--c-panel); color: var(--c-text);
+    border: 1.5px solid var(--c-text); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    font-family: var(--font-tech); font-size: 0.75rem;
+}
+.panel.open { display: block; }
+.panel-title { font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+.panel-title span { font-weight: 400; opacity: 0.7; margin-left: 8px; }
+.panel-label { display: block; margin: 12px 0 6px; opacity: 0.65; letter-spacing: 0.08em; }
+#aa-panel { top: 10px; right: 12px; width: min(340px, calc(100% - 24px)); padding: 16px 18px 18px; }
+.seg, .size-row { display: flex; gap: 6px; align-items: center; }
+.opt {
+    flex: 1; min-height: 44px; background: transparent; color: var(--c-text); cursor: pointer;
+    border: 1.5px solid var(--c-text); border-radius: 0; font-family: inherit; font-size: 0.72rem;
+}
+.opt.on, .opt[aria-pressed="true"] { background: var(--c-text); color: var(--c-panel); }
+#font-display { flex: 1; text-align: center; font-weight: 700; }
+
+#raiox { left: 0; right: 0; bottom: 0; max-height: 55%; overflow-y: auto; padding: 14px 18px 18px; border-width: 1.5px 0 0 0; }
+#raiox-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; margin-top: 10px; }
+.raiox-item { border: 1.5px solid var(--c-text); padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
+.raiox-item strong { font-size: 0.85rem; }
+.raiox-def { font-family: var(--font-ui); font-size: 0.82rem; line-height: 1.5; letter-spacing: 0; }
+.raiox-ref { opacity: 0.65; }
+.raiox-empty { opacity: 0.7; padding: 8px 0; }
