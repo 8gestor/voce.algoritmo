@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="assets/css/leitor.css">
 </head>
-<body class="dark-mode">
+<body class="paper-mode">
 
     <div id="backdrop" onclick="toggleSidebar()"></div>
 
@@ -31,8 +31,8 @@
                     <button class="btn-icon" onclick="toggleSidebar()" title="Índice">☰</button>
                 </div>
                 <div class="ctrl-group">
-                    <button class="btn-icon" onclick="adjustFont(-1)">A-</button>
-                    <button class="btn-icon" onclick="adjustFont(1)">A+</button>
+                    <button class="btn-icon btn-aa" id="btn-aa" type="button" onclick="togglePanel('aa-panel')" title="Aparência da leitura" aria-label="Aparência da leitura" aria-expanded="false">Aa</button>
+                    <button class="btn-icon btn-text" id="btn-raiox" type="button" onclick="togglePanel('raiox')" title="Raio-X do capítulo" aria-expanded="false">Raio-X</button>
                     <div class="speed-control">
                         <button class="speed-btn" onclick="adjustSpeed(-0.25)">«</button>
                         <span id="speed-display">1.0</span>
@@ -47,6 +47,45 @@
 
         <div class="viewport">
             <iframe id="content-frame" name="viewer" src="introducao.html"></iframe>
+
+            <section id="aa-panel" class="panel" aria-label="Aparência da leitura">
+                <div class="panel-title">APARÊNCIA</div>
+                <span class="panel-label">TAMANHO</span>
+                <div class="size-row">
+                    <button type="button" class="opt" onclick="adjustFont(-1)" aria-label="Diminuir a fonte">A−</button>
+                    <span id="font-display">19 px</span>
+                    <button type="button" class="opt" onclick="adjustFont(1)" aria-label="Aumentar a fonte">A+</button>
+                </div>
+                <span class="panel-label">FONTE</span>
+                <div class="seg">
+                    <button type="button" class="opt" data-opt="face" data-val="serif" onclick="setOption('face','serif')">Literata</button>
+                    <button type="button" class="opt" data-opt="face" data-val="legible" onclick="setOption('face','legible')">Legível</button>
+                    <button type="button" class="opt" data-opt="face" data-val="mono" onclick="setOption('face','mono')">Mono</button>
+                </div>
+                <span class="panel-label">MARGENS</span>
+                <div class="seg">
+                    <button type="button" class="opt" data-opt="margin" data-val="narrow" onclick="setOption('margin','narrow')">Estreita</button>
+                    <button type="button" class="opt" data-opt="margin" data-val="medium" onclick="setOption('margin','medium')">Média</button>
+                    <button type="button" class="opt" data-opt="margin" data-val="wide" onclick="setOption('margin','wide')">Larga</button>
+                </div>
+                <span class="panel-label">ALINHAMENTO</span>
+                <div class="seg">
+                    <button type="button" class="opt" data-opt="align" data-val="left" onclick="setOption('align','left')">Esquerda</button>
+                    <button type="button" class="opt" data-opt="align" data-val="justify" onclick="setOption('align','justify')">Justificado</button>
+                </div>
+                <span class="panel-label">TEMA</span>
+                <div class="seg">
+                    <button type="button" class="opt" data-opt="theme" data-val="paper" onclick="setOption('theme','paper')">Papel</button>
+                    <button type="button" class="opt" data-opt="theme" data-val="dark" onclick="setOption('theme','dark')">Terminal</button>
+                    <button type="button" class="opt" data-opt="theme" data-val="light" onclick="setOption('theme','light')">Claro</button>
+                    <button type="button" class="opt" data-opt="theme" data-val="sepia" onclick="setOption('theme','sepia')">Sépia</button>
+                </div>
+            </section>
+
+            <section id="raiox" class="panel drawer" aria-label="Raio-X do capítulo">
+                <div class="panel-title">RAIO-X DO CAPÍTULO <span id="raiox-count"></span></div>
+                <div id="raiox-list"></div>
+            </section>
         </div>
 
         <footer class="bottom-hud">
@@ -60,6 +99,7 @@
     </main>
 
     <script src="assets/js/sumario.js"></script>
+    <script src="assets/js/raiox.js"></script>
     <script src="assets/js/leitor.js"></script>
 </body>
 </html>

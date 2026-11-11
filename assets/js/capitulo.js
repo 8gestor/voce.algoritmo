@@ -2,8 +2,11 @@
  * capitulo.js — comportamento comum a todas as páginas de capítulo.
  *
  * Conversa com o leitor (index.html) via postMessage:
- *   recebe  { type: 'theme',      value: 'dark' | 'light' | 'sepia' }
+ *   recebe  { type: 'theme',      value: 'paper' | 'dark' | 'light' | 'sepia' }
  *   recebe  { type: 'font',       value: <px> }
+ *   recebe  { type: 'typeface',   value: 'serif' | 'legible' | 'mono' }
+ *   recebe  { type: 'margins',    value: 'narrow' | 'medium' | 'wide' }
+ *   recebe  { type: 'align',      value: 'left' | 'justify' }
  *   recebe  { type: 'rate',       value: <velocidade da narração> }
  *   recebe  { type: 'tts-toggle' }
  *   envia   { type: 'tts-state',  isPlaying: <bool> }
@@ -19,10 +22,24 @@
     let rate = 1.0;
     let isPlaying = false;
 
+    // Preferências salvas pelo leitor (tema, fonte, margens...). Um capítulo aberto
+    // diretamente também nasce no tema Papel, sem esperar a mensagem do leitor.
+    const root = document.documentElement;
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('dd-settings') || '{}'); } catch (err) { saved = {}; }
+    document.body.className = (saved.theme || 'paper') + '-mode';
+    if (saved.font) root.style.setProperty('--base-size', saved.font + 'px');
+    root.dataset.face = saved.face || 'serif';
+    root.dataset.margin = saved.margin || 'medium';
+    root.dataset.align = saved.align || 'left';
+
     window.addEventListener('message', (e) => {
         const d = e.data || {};
         if (d.type === 'theme') document.body.className = d.value + '-mode';
-        if (d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
+        if (d.type === 'font') root.style.setProperty('--base-size', d.value + 'px');
+        if (d.type === 'typeface') root.dataset.face = d.value;
+        if (d.type === 'margins') root.dataset.margin = d.value;
+        if (d.type === 'align') root.dataset.align = d.value;
         if (d.type === 'rate') {
             rate = d.value;
             if (isPlaying) { synthesis.cancel(); speakStep(false); }

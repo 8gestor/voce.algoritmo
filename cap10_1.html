@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="assets/fonts/fonts.css">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/capitulos/cap10_1.css">
+    <link rel="stylesheet" href="assets/css/papel.css">
 </head>
 <body>
 
@@ -14,6 +15,8 @@
     <h1 class="speakable">Fortaleza Digital:<br>Zero Trust e Hardening Tático</h1>
 
     <p class="speakable">A maioria dos conselhos de segurança ("instale um antivírus") é baseada em um modelo obsoleto. Hoje, o ataque vem de algoritmos de coleta em massa e falhas de dia zero (Zero-Days). Para sobreviver, adotamos o modelo <strong>Zero Trust</strong> (Confiança Zero): assuma que sua rede já está comprometida, que seu provedor é hostil e que o ataque é inevitável. A meta não é impedir a entrada, é mitigar o dano através do <strong>Hardening</strong> (Endurecimento).</p>
+
+    <p class="speakable">O caso Colonial Pipeline mostra o princípio na prática. Em maio de 2021, um ataque de ransomware paralisou um oleoduto de combustíveis nos EUA. Segundo o CEO, os invasores entraram por uma VPN antiga, sem autenticação multifator e desconhecida da equipe de TI, usando uma senha comprometida.</p>
 
     <h2 class="speakable">A Matemática do Segredo (E2EE)</h2>
     <p class="speakable">Quando você usa Signal ou WhatsApp, ocorre um milagre da matemática: a <strong>Criptografia Assimétrica</strong>. Seu celular gera duas chaves: uma Pública (que tranca o cofre) e uma Privada (que destranca). Se eu quero te mandar uma mensagem, uso sua chave pública. Nem eu, nem o governo, nem a empresa conseguem abrir depois. A segurança reside em problemas matemáticos que se acredita serem inviáveis de resolver na prática (como o logaritmo discreto em curvas elípticas, usado por mensageiros modernos como o Signal, e, em sistemas mais antigos, a fatoração de números primos gigantes), e não na "bondade" da empresa.</p>
@@ -46,13 +49,15 @@
         <div class="os-card"><span style="font-weight:bold">Windows / macOS</span> <span class="os-rank" style="background:#ef4444; color:#fff;">D TIER (Vigiado)</span></div>
     </div>
 
-    <h2 class="speakable">Aprofundamento: Modelo de Ameaça, Metadados e a Guerra das Backdoors</h2>
+    <h2 class="speakable">Modelo de Ameaça, Metadados e a Guerra das Backdoors</h2>
 
     <p class="speakable">Segurança só faz sentido diante de um <strong>modelo de ameaça</strong>: de quem você quer se proteger, o que está em jogo e a que custo? Para uma pessoa comum, o essencial (atualizações automáticas, senhas únicas em um gerenciador, autenticação em dois fatores, criptografia ponta a ponta) já bloqueia a esmagadora maioria dos riscos; para uma jornalista ameaçada por um Estado, o cálculo é outro. A classificação em "tiers" acima é uma opinião sobre robustez, não uma recomendação universal: um sistema "S tier" mal usado é menos seguro que um sistema comum bem usado. Guias como o <em>Surveillance Self-Defense</em>, da EFF, ajudam a desenhar o seu modelo.</p>
 
     <p class="speakable">A criptografia protege o <em>conteúdo</em>, não os <em>metadados</em> (com quem, quando, de onde). O ex-diretor da NSA e da CIA Michael Hayden disse, em 2014: "Nós matamos pessoas com base em metadados." Os mensageiros diferem muito nisso: o Signal guarda quase nenhum metadado; o WhatsApp tem criptografia ponta a ponta nas mensagens, mas pertence a uma empresa cujo modelo de negócio depende de dados.</p>
 
     <p class="speakable">A criptografia é também um campo de batalha legislativo. Propostas como o "Chat Control", na União Europeia, buscam varredura de mensagens, e em 2025 o governo britânico exigiu acesso a dados criptografados da Apple, que retirou a proteção avançada de dados para usuários do Reino Unido. Os especialistas avisam: não existe "backdoor só para os mocinhos". E a criptografia precisa evoluir: o Signal adotou, em 2023, um protocolo (PQXDH) projetado para resistir a futuros computadores quânticos.</p>
+
+    <p class="speakable">Proteger conversas é um passo; proteger o dinheiro é outro. O próximo capítulo trata da economia de quem não quer pedir permissão.</p>
 
     <div class="action-box speakable">
         <strong style="color:var(--c-shield); display:block; margin-bottom:10px; font-family:var(--font-tech); text-transform:uppercase;">DESAFIO DE RETOMADA #13</strong>
