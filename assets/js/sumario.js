@@ -7,7 +7,7 @@ const structure = [
     { t: "BOOT SEQUENCE", f: "introducao.html", cat: "INICIALIZAÇÃO" },
     
     // PARTE I
-    { t: "01. O Hardware Biológico", f: "cap01.html", cat: "I. A MENTE" },
+    { t: "01. O Cérebro Não é um Computador", f: "cap01.html", cat: "I. A MENTE" },
     { t: "02. Sequestro da Atenção", f: "cap02.html", cat: "I. A MENTE" },
     { t: "03. O Eu Inferido", f: "cap03.html", cat: "I. A MENTE" },
 
