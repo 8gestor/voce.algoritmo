@@ -4,113 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glossário</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/fonts/fonts.css">
 
-    <style>
-        /* --- FATOR X v4.6: DATABASE GRID CORE --- */
-        :root {
-            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
-            --c-db: #3b82f6; /* Azul Database */
-            --c-db-dim: rgba(59, 130, 246, 0.1);
-            --c-db-glow: 0 0 15px rgba(59, 130, 246, 0.3);
-            --c-card: #111114;
-            --c-highlight: #f59e0b; /* Laranja Destaque */
-            
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --base-size: 19px; --border-tech: 1px solid rgba(255, 255, 255, 0.1);
-            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #3b82f6;
-        }
-
-        body.light-mode {
-            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
-            --c-db: #2563eb; --c-db-dim: rgba(37, 99, 235, 0.08); --c-db-glow: 0 0 10px rgba(37, 99, 235, 0.2);
-            --c-card: #ffffff; --c-highlight: #d97706;
-            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
-            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #2563eb;
-        }
-
-        body.sepia-mode {
-            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
-            --c-db: #1e3a8a; --c-db-dim: rgba(30, 58, 138, 0.08); --c-db-glow: none;
-            --c-card: #E8DEC0; --c-highlight: #92400e;
-            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
-            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #1e3a8a;
-        }
-
-        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
-
-        body {
-            background: var(--c-bg); color: var(--c-text);
-            font-family: var(--font-ui); font-size: var(--base-size);
-            line-height: 1.6; padding: 40px 20px 100px 20px;
-            transition: all 0.3s ease; max-width: 900px; margin: 0 auto;
-        }
-
-        h1 { font-family: var(--font-tech); font-size: 2rem; margin-bottom: 30px; border-bottom: 2px solid var(--c-db); padding-bottom: 20px; text-shadow: var(--c-db-glow); text-transform: uppercase; }
-
-        .chapter-meta { font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-db); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block; border-left: 2px solid var(--c-db); padding-left: 10px; }
-
-        /* SEARCH BAR */
-        .search-container { position: sticky; top: 10px; z-index: 100; margin-bottom: 40px; background: var(--c-bg); padding: 10px 0; }
-        #term-search {
-            width: 100%; background: var(--c-card); border: 2px solid var(--c-db);
-            padding: 15px 20px; border-radius: 8px; color: var(--c-text);
-            font-family: var(--font-tech); font-size: 1rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5); transition: 0.3s;
-        }
-        #term-search:focus { outline: none; border-color: var(--c-highlight); box-shadow: 0 0 15px var(--c-db-glow); }
-
-        /* GRID SYSTEM */
-        .glossary-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .term-card {
-            background: var(--c-card); border: var(--border-tech); padding: 20px;
-            border-radius: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; position: relative; overflow: hidden;
-        }
-        .term-card:hover { transform: translateY(-5px); border-color: var(--c-db); box-shadow: var(--c-db-glow); }
-        
-        /* Category Indicator Strip */
-        .term-card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--c-dim); }
-        .term-card.cat-tech::before { background: var(--c-db); } /* Técnico */
-        .term-card.cat-soc::before { background: #10b981; } /* Social/Humano */
-        .term-card.cat-fin::before { background: #f59e0b; } /* Financeiro/Cripto */
-        .term-card.cat-sec::before { background: #ef4444; } /* Segurança/Hacker */
-
-        .term-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px; }
-        .term-title { font-family: var(--font-tech); font-size: 1.1rem; font-weight: bold; color: var(--c-text); line-height: 1.2; text-transform: uppercase; }
-        
-        .term-badge { 
-            font-family: var(--font-tech); font-size: 0.6rem; padding: 2px 6px; 
-            border-radius: 4px; text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
-            background: rgba(255,255,255,0.05); color: var(--c-dim); border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .term-def { font-size: 0.85rem; color: var(--c-dim); line-height: 1.5; text-align: left; flex-grow: 1; }
-        
-        .term-ref { 
-            margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1);
-            font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-db); opacity: 0.8;
-        }
-
-        /* HIGHLIGHT FOR TTS */
-        .speaking {
-            background: var(--c-db-dim); border: 1px solid var(--c-db);
-            box-shadow: 0 0 20px var(--c-db-glow); transform: scale(1.02); z-index: 10;
-        }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            .glossary-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/capitulos/cap15.css">
 </head>
 <body>
 
@@ -135,7 +32,7 @@
                     <span class="term-badge">Segurança</span>
                 </div>
                 <p class="term-def">Uma medida de segurança física onde um computador ou dispositivo nunca é conectado à internet. A única forma de hackear um dispositivo "Air Gapped" é acessando-o fisicamente.</p>
-                <span class="term-ref">REF: Cap 13, Epílogo</span>
+                <span class="term-ref">REF: Epílogo</span>
             </div>
 
             <div class="term-card cat-tech speakable">
@@ -153,7 +50,7 @@
                     <span class="term-badge">Técnico</span>
                 </div>
                 <p class="term-def">"Interface de Programação de Aplicação". É como softwares conversam entre si. Quando você usa "Login com Facebook" em outro site, eles usam uma API para trocar seus dados.</p>
-                <span class="term-ref">REF: Cap 03</span>
+                <span class="term-ref">REF: Conceito de apoio</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -171,7 +68,7 @@
                     <span class="term-badge">Segurança</span>
                 </div>
                 <p class="term-def">Uma "porta dos fundos" escondida em um software, permitindo que o criador ou o governo acessem o sistema sem que o usuário saiba, ignorando a criptografia.</p>
-                <span class="term-ref">REF: Cap 13</span>
+                <span class="term-ref">REF: Cap 10</span>
             </div>
 
             <div class="term-card cat-tech speakable">
@@ -180,7 +77,7 @@
                     <span class="term-badge">Identidade</span>
                 </div>
                 <p class="term-def">Medição de características físicas únicas (rosto, digital, íris, jeito de andar). Diferente de uma senha, a biometria não pode ser trocada se for vazada.</p>
-                <span class="term-ref">REF: Cap 04, 05</span>
+                <span class="term-ref">REF: Cap 01, 03, 04</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -189,7 +86,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">A primeira moeda digital descentralizada. Funciona sem bancos ou governos, usando matemática para garantir que ninguém possa copiar o dinheiro ou censurar transferências.</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Cap 06.1, 10.2</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -198,7 +95,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">Um livro de registros público e imutável. Imagine um caderno onde todos podem escrever, mas ninguém pode usar borracha para apagar o que já foi escrito.</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Cap 13</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -207,7 +104,7 @@
                     <span class="term-badge">Trabalho</span>
                 </div>
                 <p class="term-def">Softwares instalados por empresas para vigiar funcionários em home office. Eles tiram prints da tela, contam cliques e até vigiam pela webcam.</p>
-                <span class="term-ref">REF: Cap 08</span>
+                <span class="term-ref">REF: Cap 07</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -216,7 +113,7 @@
                     <span class="term-badge">Estatal</span>
                 </div>
                 <p class="term-def">"Moeda Digital de Banco Central" (ex: Drex, Yuan Digital). Dinheiro 100% digital controlado pelo governo, que pode ser programado para expirar ou bloquear compras específicas.</p>
-                <span class="term-ref">REF: Cap 07</span>
+                <span class="term-ref">REF: Cap 06.1, 10.2</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -225,7 +122,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">Uma senha matemática ultra-complexa (geralmente 12 palavras) que dá acesso ao seu dinheiro ou mensagens criptografadas. Quem tem a chave, é o dono. Não há "recuperar senha".</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Cap 10.2</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -234,7 +131,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">"Carteira Fria". Um dispositivo (tipo um pen drive) que guarda suas criptomoedas desconectado da internet, protegendo contra hackers online.</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Conceito de apoio</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -243,7 +140,7 @@
                     <span class="term-badge">Segurança</span>
                 </div>
                 <p class="term-def">Sistema que usa duas chaves: uma PÚBLICA (para trancar a mensagem, que você dá a todos) e uma PRIVADA (para abrir, que só você tem). Base da segurança na web.</p>
-                <span class="term-ref">REF: Cap 13, 14</span>
+                <span class="term-ref">REF: Cap 10.1, 10.2</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -252,7 +149,7 @@
                     <span class="term-badge">Redes</span>
                 </div>
                 <p class="term-def">Redes sobrepostas à internet (como o Tor) que exigem software específico para acesso. Usam criptografia pesada para garantir anonimato total.</p>
-                <span class="term-ref">REF: Cap 11</span>
+                <span class="term-ref">REF: Cap 09.1</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -261,7 +158,7 @@
                     <span class="term-badge">Psicologia</span>
                 </div>
                 <p class="term-def">O "Duplo de Dados". O perfil estatístico que as empresas têm de você. Para o banco e para o algoritmo, esse perfil é mais real e importante do que sua pessoa física.</p>
-                <span class="term-ref">REF: Cap 03</span>
+                <span class="term-ref">REF: Introdução, Cap 03</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -270,7 +167,7 @@
                     <span class="term-badge">Redes</span>
                 </div>
                 <p class="term-def">A parte da internet que o Google não consegue ler (seus e-mails, bancos de dados médicos, páginas privadas). É 90% da web e não é necessariamente ilegal.</p>
-                <span class="term-ref">REF: Cap 11</span>
+                <span class="term-ref">REF: Cap 09.1</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -279,7 +176,7 @@
                     <span class="term-badge">Segurança</span>
                 </div>
                 <p class="term-def">"End-to-End Encryption" (Criptografia de Ponta-a-Ponta). Significa que a mensagem sai do seu celular embaralhada e só é desembaralhada no celular do destino. Nem o WhatsApp consegue ler no meio do caminho.</p>
-                <span class="term-ref">REF: Cap 13</span>
+                <span class="term-ref">REF: Cap 10.1</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -297,7 +194,7 @@
                     <span class="term-badge">Tático</span>
                 </div>
                 <p class="term-def">Endurecimento. O processo de configurar um sistema (celular ou PC) para ter o mínimo de funções possíveis, fechando portas para dificultar ataques.</p>
-                <span class="term-ref">REF: Cap 13</span>
+                <span class="term-ref">REF: Cap 10.1</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -306,7 +203,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">Uma impressão digital de um arquivo. Se você mudar uma vírgula num texto, o "Hash" dele muda completamente. Usado para garantir que dados não foram alterados.</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Conceito de apoio</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -315,7 +212,7 @@
                     <span class="term-badge">Vigilância</span>
                 </div>
                 <p class="term-def">Dados sobre dados. Não é o que você disse na ligação, mas para quem você ligou, que horas e de onde. Frequentemente revela mais que o conteúdo.</p>
-                <span class="term-ref">REF: Cap 13</span>
+                <span class="term-ref">REF: Introdução, Cap 05</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -324,7 +221,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">Uma criptomoeda focada em privacidade absoluta. Diferente do Bitcoin, ninguém consegue ver quem enviou ou quanto foi enviado. O verdadeiro "dinheiro digital anônimo".</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Cap 10.2</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -342,7 +239,7 @@
                     <span class="term-badge">Redes</span>
                 </div>
                 <p class="term-def">Roteamento Cebola. Técnica usada pelo Tor onde seus dados são embrulhados em camadas de criptografia e passados por vários computadores para esconder sua origem.</p>
-                <span class="term-ref">REF: Cap 11</span>
+                <span class="term-ref">REF: Cap 09.1</span>
             </div>
 
             <div class="term-card cat-tech speakable">
@@ -351,7 +248,7 @@
                     <span class="term-badge">Filosofia</span>
                 </div>
                 <p class="term-def">Código Aberto. Software onde a receita (código) é pública e pode ser auditada por qualquer um. Essencial para segurança, pois garante que não há truques escondidos.</p>
-                <span class="term-ref">REF: Geral</span>
+                <span class="term-ref">REF: Introdução</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -360,7 +257,7 @@
                     <span class="term-badge">Conceito</span>
                 </div>
                 <p class="term-def">Design de prisão onde um guarda pode ver todos os presos sem ser visto. No digital, é a sensação de que você está sempre sendo observado pelo algoritmo.</p>
-                <span class="term-ref">REF: Cap 07</span>
+                <span class="term-ref">REF: Cap 03, 04, 06.1, 07</span>
             </div>
 
             <div class="term-card cat-tech speakable">
@@ -378,7 +275,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">"Prova de Trabalho". O mecanismo do Bitcoin que exige que computadores gastem energia real para validar transações, tornando impossível falsificar dinheiro sem gastar bilhões.</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Cap 10.2</span>
             </div>
 
             <div class="term-card cat-fin speakable">
@@ -387,7 +284,7 @@
                     <span class="term-badge">Cripto</span>
                 </div>
                 <p class="term-def">Frase Semente. Uma lista de 12 a 24 palavras aleatórias que funcionam como a chave mestra de uma carteira de criptomoedas. Se perder, perde o dinheiro para sempre.</p>
-                <span class="term-ref">REF: Cap 14</span>
+                <span class="term-ref">REF: Cap 10.2</span>
             </div>
 
             <div class="term-card cat-soc speakable">
@@ -396,7 +293,7 @@
                     <span class="term-badge">Futurismo</span>
                 </div>
                 <p class="term-def">Movimento estético e político que imagina um futuro onde a alta tecnologia é integrada com a natureza e a comunidade, focando em sustentabilidade radical.</p>
-                <span class="term-ref">REF: Cap 16</span>
+                <span class="term-ref">REF: Introdução, Cap 13</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -405,7 +302,7 @@
                     <span class="term-badge">Segurança</span>
                 </div>
                 <p class="term-def">"Confiança Zero". Modelo de segurança que assume que nenhum usuário ou dispositivo é confiável por padrão, exigindo verificação constante mesmo dentro da rede.</p>
-                <span class="term-ref">REF: Cap 13</span>
+                <span class="term-ref">REF: Cap 10.1</span>
             </div>
 
             <div class="term-card cat-sec speakable">
@@ -414,7 +311,7 @@
                     <span class="term-badge">Hacker</span>
                 </div>
                 <p class="term-def">Uma falha de segurança que o fabricante do software ainda não conhece (tem "zero dias" para corrigir). Hackers e governos usam isso para invadir sistemas indetectavelmente.</p>
-                <span class="term-ref">REF: Cap 13</span>
+                <span class="term-ref">REF: Cap 10.1</span>
             </div>
 
         </div>
@@ -426,68 +323,7 @@
         </div>
     </div>
 
-    <script>
-        function filterGlossary() {
-            const input = document.getElementById('term-search').value.toUpperCase();
-            const cards = document.getElementsByClassName('term-card');
-            for (let i = 0; i < cards.length; i++) {
-                const title = cards[i].querySelector('.term-title').innerText;
-                const def = cards[i].querySelector('.term-def').innerText;
-                const match = title.toUpperCase().includes(input) || def.toUpperCase().includes(input);
-                cards[i].style.display = match ? "" : "none";
-            }
-        }
-
-        let ttsQueue = [], currentIndex = 0, isSpeaking = false, speechRate = 1.0, synthesis = window.speechSynthesis, utterance = null;
-
-        window.addEventListener('message', (e) => {
-            const d = e.data;
-            if(d.type === 'theme') document.body.className = d.value + '-mode';
-            if(d.type === 'font') document.documentElement.style.setProperty('--base-size', d.value + 'px');
-            if(d.type === 'rate') { speechRate = d.value; if(isSpeaking) { synthesis.cancel(); speakNext(); } }
-            if(d.type === 'tts-toggle') toggleSpeech();
-        });
-
-        function initTTS() { ttsQueue = Array.from(document.querySelectorAll('.speakable')); }
-
-        function toggleSpeech() {
-            if(speechQueue.length === 0) initTTS();
-            if(isSpeaking) { synthesis.cancel(); isSpeaking = false; updateHighlight(null); reportState(false); }
-            else { isSpeaking = true; reportState(true); speakNext(); }
-        }
-
-        function speakNext() {
-            // Pula itens ocultos pelo filtro de busca
-            while (currentIndex < speechQueue.length && speechQueue[currentIndex].closest('.term-card') && speechQueue[currentIndex].closest('.term-card').style.display === 'none') {
-                currentIndex++;
-            }
-
-            if(!isSpeaking || currentIndex >= speechQueue.length) { isSpeaking = false; reportState(false); updateHighlight(null); return; }
-            
-            const el = speechQueue[currentIndex];
-            updateHighlight(el);
-            el.scrollIntoView({behavior: "smooth", block: "center"});
-            utterance = new SpeechSynthesisUtterance(el.innerText);
-            utterance.lang = 'pt-BR'; utterance.rate = speechRate; 
-            utterance.onend = () => { if(isSpeaking) { currentIndex++; speakNext(); } };
-            synthesis.speak(utterance);
-        }
-
-        function updateHighlight(el) { document.querySelectorAll('.speaking').forEach(x => x.classList.remove('speaking')); if(el) el.classList.add('speaking'); }
-        function reportState(bool) { window.parent.postMessage({ type: 'tts-state', isPlaying: bool }, '*'); }
-
-        document.body.addEventListener('click', (e) => {
-            const target = e.target.closest('.speakable');
-            if(target) {
-                if(speechQueue.length === 0) initTTS();
-                synthesis.cancel();
-                currentIndex = speechQueue.indexOf(target);
-                isSpeaking = true;
-                reportState(true);
-                speakNext();
-            }
-        });
-        window.onbeforeunload = () => synthesis.cancel();
-    </script>
+    <script src="assets/js/capitulo.js"></script>
+    <script src="assets/js/glossario.js"></script>
 </body>
 </html>

@@ -1,0 +1,138 @@
+/*
+ * base.css — sistema visual compartilhado por todos os capítulos.
+ *
+ * Contém só o que é comum. O que é específico de cada capítulo (cor de destaque,
+ * widgets próprios, ajustes) fica em assets/css/capitulos/<capitulo>.css, que é
+ * carregado depois e sobrescreve este arquivo.
+ *
+ * Temas: o leitor alterna a classe do <body> (sem classe = escuro, .light-mode, .sepia-mode).
+ */
+/* --- FATOR X v4.1: RESPONSIVE & NEON CORE --- */
+:root {
+    --c-bg: #050505;
+    --c-text: #E0E0E0;
+    --c-dim: #9ca3af;
+    --font-ui: 'Inter', sans-serif;
+    --font-tech: 'JetBrains Mono', monospace;
+    --base-size: 19px;
+    --border-tech: 1px solid rgba(255, 255, 255, 0.1);
+    --scroll-track: #050505;
+    --scroll-thumb: #333333;
+}
+
+body.light-mode {
+    --c-bg: #F0F2F5;
+    --c-text: #111111;
+    --c-dim: #4b5563;
+    --border-tech: 1px solid rgba(0, 0, 0, 0.1);
+    --scroll-track: #F0F2F5;
+    --scroll-thumb: #C1C1C4;
+}
+
+body.sepia-mode {
+    --c-bg: #F4ECD8;
+    --c-text: #433422;
+    --c-dim: #5c4b37;
+    --border-tech: 1px solid rgba(67, 52, 34, 0.15);
+    --scroll-track: #F4ECD8;
+    --scroll-thumb: #D0C5A8;
+}
+
+body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--font-ui);
+    font-size: var(--base-size);
+    line-height: 1.7;
+    padding: 40px 20px 100px 20px;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+}
+
+h1 {
+    font-family: var(--font-tech);
+    color: var(--c-text);
+    font-size: 2rem;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+}
+
+/* WIDGETS DINÂMICOS */
+.meta-tag {
+    font-family: var(--font-tech);
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.thesis-box {
+    padding: 25px;
+    margin: 2em 0;
+    font-family: var(--font-tech);
+    font-size: 0.9em;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.thesis-header {
+    font-weight: bold;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* COMPARISON GRID */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 3em 0;
+}
+
+.comp-card {
+    background: rgba(255,255,255,0.01);
+    border: var(--border-tech);
+    padding: 25px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.comp-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.03);
+}
+
+.comp-title {
+    font-family: var(--font-tech);
+    font-weight: bold;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+}
+
+.action-box {
+    border-radius: 12px;
+    padding: 40px 30px;
+    text-align: center;
+    margin-top: 60px;
+    position: relative;
+}
+
+/* HIGHLIGHT TTS */
+.speaking {
+    color: var(--c-text);
+    padding-left: 15px;
+    margin-left: -19px;
+    border-radius: 0 4px 4px 0;
+    transition: all 0.3s;
+}
+
+.deep-dive-box {
+    border-top: 1px dashed var(--c-dim);
+    border-bottom: 1px dashed var(--c-dim);
+    padding: 30px 0;
+    margin: 3em 0;
+}

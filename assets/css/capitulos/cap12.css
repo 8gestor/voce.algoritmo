@@ -1,0 +1,231 @@
+/* cap12 — somente o que difere do base.css. */
+
+:root {
+    --c-gold: #d97706;
+    --c-gold-dim: rgba(217, 119, 6, 0.1);
+    --c-gold-glow: 0 0 15px rgba(217, 119, 6, 0.3);
+    --c-iron: #475569;
+    --c-teal: #14b8a6;
+    --scroll-hover: #d97706;
+}
+
+body.light-mode {
+    --c-gold: #b45309;
+    --c-gold-dim: rgba(180, 83, 9, 0.08);
+    --c-gold-glow: 0 0 10px rgba(180, 83, 9, 0.2);
+    --c-iron: #334155;
+    --c-teal: #0d9488;
+    --scroll-hover: #b45309;
+}
+
+body.sepia-mode {
+    --c-gold: #9a3412;
+    --c-gold-dim: rgba(154, 52, 18, 0.08);
+    --c-gold-glow: none;
+    --c-iron: #57534e;
+    --c-teal: #115e59;
+    --scroll-hover: #9a3412;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 740px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-gold);
+    text-shadow: var(--c-gold-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-gold);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-tech);
+    padding-bottom: 10px;
+}
+
+h2::before {
+    content: '//';
+    opacity: 0.5;
+    color: var(--c-iron);
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-teal);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-gold-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-gold);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(217, 119, 6, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-gold);
+    border: 1px solid var(--c-gold);
+    box-shadow: var(--c-gold-glow);
+}
+
+.thesis-box {
+    background: var(--c-gold-dim);
+    border-left: 4px solid var(--c-gold);
+}
+
+.thesis-header {
+    color: var(--c-gold);
+}
+
+.cycle-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 3em 0;
+    padding: 20px;
+    border: var(--border-tech);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.01);
+}
+
+.cycle-step {
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-left: 4px solid transparent;
+}
+
+.step-1 {
+    border-color: var(--c-teal);
+    background: rgba(20, 184, 166, 0.05);
+}
+
+.step-2 {
+    border-color: var(--c-gold);
+    background: rgba(217, 119, 6, 0.05);
+}
+
+.step-3 {
+    border-color: var(--c-iron);
+    background: rgba(71, 85, 105, 0.1);
+    color: var(--c-dim);
+}
+
+.step-title {
+    font-family: var(--font-tech);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.arrow-down {
+    text-align: center;
+    color: var(--c-dim);
+    opacity: 0.5;
+    font-size: 1.2rem;
+}
+
+.comp-card {
+    background: rgba(255,255,255,0.02);
+    transition: transform 0.2s;
+}
+
+.comp-card:hover {
+    background: unset;
+    transform: translateY(-5px);
+    border-color: var(--c-gold);
+}
+
+.comp-title {
+    margin-bottom: 15px;
+}
+
+.action-box {
+    border: 1px dashed var(--c-teal);
+    background: linear-gradient(180deg, rgba(20, 184, 166, 0.05), transparent);
+    margin-top: 80px;
+}
+
+.action-header {
+    font-family: var(--font-tech);
+    color: var(--c-teal);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.speaking {
+    background: var(--c-gold-dim);
+    border-left: 4px solid var(--c-gold);
+    box-shadow: var(--c-gold-glow);
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 30px 15px 120px 15px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+    p {
+        text-align: left;
+    }
+}

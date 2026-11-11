@@ -1,0 +1,225 @@
+/* cap15 — somente o que difere do base.css. */
+
+:root {
+    --c-db: #3b82f6;
+    --c-db-dim: rgba(59, 130, 246, 0.1);
+    --c-db-glow: 0 0 15px rgba(59, 130, 246, 0.3);
+    --c-card: #111114;
+    --c-highlight: #f59e0b;
+    --scroll-hover: #3b82f6;
+}
+
+body.light-mode {
+    --c-db: #2563eb;
+    --c-db-dim: rgba(37, 99, 235, 0.08);
+    --c-db-glow: 0 0 10px rgba(37, 99, 235, 0.2);
+    --c-card: #ffffff;
+    --c-highlight: #d97706;
+    --scroll-hover: #2563eb;
+}
+
+body.sepia-mode {
+    --c-db: #1e3a8a;
+    --c-db-dim: rgba(30, 58, 138, 0.08);
+    --c-db-glow: none;
+    --c-card: #E8DEC0;
+    --c-highlight: #92400e;
+    --scroll-hover: #1e3a8a;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    line-height: 1.6;
+    max-width: 900px;
+}
+
+h1 {
+    color: unset;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--c-db);
+    text-shadow: var(--c-db-glow);
+    text-transform: uppercase;
+}
+
+.chapter-meta {
+    font-family: var(--font-tech);
+    font-size: 0.75rem;
+    color: var(--c-db);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    display: block;
+    border-left: 2px solid var(--c-db);
+    padding-left: 10px;
+}
+
+.search-container {
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    margin-bottom: 40px;
+    background: var(--c-bg);
+    padding: 10px 0;
+}
+
+#term-search {
+    width: 100%;
+    background: var(--c-card);
+    border: 2px solid var(--c-db);
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: var(--c-text);
+    font-family: var(--font-tech);
+    font-size: 1rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+#term-search:focus {
+    outline: none;
+    border-color: var(--c-highlight);
+    box-shadow: 0 0 15px var(--c-db-glow);
+}
+
+.glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.term-card {
+    background: var(--c-card);
+    border: var(--border-tech);
+    padding: 20px;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.term-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--c-db);
+    box-shadow: var(--c-db-glow);
+}
+
+.term-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--c-dim);
+}
+
+.term-card.cat-tech::before {
+    background: var(--c-db);
+}
+
+.term-card.cat-soc::before {
+    background: #10b981;
+}
+
+.term-card.cat-fin::before {
+    background: #f59e0b;
+}
+
+.term-card.cat-sec::before {
+    background: #ef4444;
+}
+
+.term-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.term-title {
+    font-family: var(--font-tech);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--c-text);
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.term-badge {
+    font-family: var(--font-tech);
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+    color: var(--c-dim);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.term-def {
+    font-size: 0.85rem;
+    color: var(--c-dim);
+    line-height: 1.5;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.term-ref {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    font-family: var(--font-tech);
+    font-size: 0.7rem;
+    color: var(--c-db);
+    opacity: 0.8;
+}
+
+.speaking {
+    color: unset;
+    padding-left: unset;
+    margin-left: unset;
+    border-radius: unset;
+    transition: unset;
+    background: var(--c-db-dim);
+    border: 1px solid var(--c-db);
+    box-shadow: 0 0 20px var(--c-db-glow);
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    .glossary-grid {
+        grid-template-columns: 1fr;
+    }
+}

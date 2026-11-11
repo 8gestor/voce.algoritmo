@@ -1,0 +1,302 @@
+/* cap02 — somente o que difere do base.css. */
+
+:root {
+    --c-dopamine: #d946ef;
+    --c-dopamine-dim: rgba(217, 70, 239, 0.1);
+    --c-dopamine-glow: 0 0 15px rgba(217, 70, 239, 0.4);
+    --c-flow: #00F0FF;
+    --c-flow-dim: rgba(0, 240, 255, 0.1);
+    --c-flow-glow: 0 0 15px rgba(0, 240, 255, 0.3);
+    --scroll-hover: #d946ef;
+}
+
+body.light-mode {
+    --c-dopamine: #c026d3;
+    --c-dopamine-dim: rgba(192, 38, 211, 0.08);
+    --c-dopamine-glow: 0 0 10px rgba(192, 38, 211, 0.2);
+    --c-flow: #0891b2;
+    --c-flow-dim: rgba(8, 145, 178, 0.08);
+    --c-flow-glow: 0 0 10px rgba(8, 145, 178, 0.2);
+    --scroll-hover: #c026d3;
+}
+
+body.sepia-mode {
+    --c-dopamine: #A6341B;
+    --c-dopamine-dim: rgba(166, 52, 27, 0.08);
+    --c-dopamine-glow: none;
+    --c-flow: #2C5F2D;
+    --c-flow-dim: rgba(44, 95, 45, 0.08);
+    --c-flow-glow: none;
+    --scroll-hover: #A6341B;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 700px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-dopamine);
+    text-shadow: var(--c-dopamine-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-flow);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: var(--c-flow-glow);
+}
+
+h2::before {
+    content: '>';
+    color: var(--c-dim);
+    font-weight: 300;
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-dopamine);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-dopamine-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-dopamine);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(217, 70, 239, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-dopamine);
+    border: 1px solid var(--c-dopamine);
+    box-shadow: var(--c-dopamine-glow);
+}
+
+.thesis-box {
+    box-shadow: unset;
+    background: var(--c-dopamine-dim);
+    border-left: 4px solid var(--c-dopamine);
+    border-radius: 0 4px 4px 0;
+}
+
+.thesis-header {
+    color: var(--c-dopamine);
+    margin-bottom: 10px;
+}
+
+.skinner-widget {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(255,255,255,0.01);
+    border: var(--border-tech);
+    padding: 25px;
+    border-radius: 8px;
+    margin: 3em 0;
+}
+
+.skinner-header {
+    font-family: var(--font-tech);
+    font-size: 0.75rem;
+    color: var(--c-dim);
+    margin-bottom: 5px;
+    display: block;
+    text-transform: uppercase;
+}
+
+.loop-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.loop-step {
+    flex: 1;
+    text-align: center;
+    padding: 15px 10px;
+    border: 1px solid var(--c-dim);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background: var(--c-bg);
+    transition: all 0.3s;
+}
+
+.loop-step:hover {
+    border-color: var(--c-dopamine);
+    transform: translateY(-2px);
+}
+
+.step-reward {
+    border-color: var(--c-dopamine);
+    color: var(--c-dopamine);
+    box-shadow: var(--c-dopamine-glow);
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+.loop-arrow {
+    align-self: center;
+    color: var(--c-dim);
+    font-size: 1.2rem;
+}
+
+.flow-chart {
+    width: 100%;
+    height: 220px;
+    margin: 3em 0;
+    border-left: 2px solid var(--c-dim);
+    border-bottom: 2px solid var(--c-dim);
+    position: relative;
+    background: linear-gradient(to top right, transparent 0%, var(--c-flow-dim) 50%, transparent 100%);
+}
+
+.axis-label {
+    position: absolute;
+    font-family: var(--font-tech);
+    font-size: 0.7rem;
+    color: var(--c-dim);
+}
+
+.y-label {
+    top: -25px;
+    left: -10px;
+}
+
+.x-label {
+    bottom: -25px;
+    right: 0;
+}
+
+.flow-zone {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 40%, rgba(0, 240, 255, 0.2) 50%, transparent 60%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.flow-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    color: var(--c-flow);
+    font-family: var(--font-tech);
+    font-weight: bold;
+    background: var(--c-bg);
+    padding: 5px 10px;
+    border: 1px solid var(--c-flow);
+    border-radius: 4px;
+    box-shadow: var(--c-flow-glow);
+}
+
+.comp-card {
+    padding: 20px;
+}
+
+.comp-card.dopa {
+    border-bottom: 2px solid var(--c-dopamine);
+}
+
+.comp-card.dopa:hover {
+    box-shadow: var(--c-dopamine-glow);
+}
+
+.comp-card.flow {
+    border-bottom: 2px solid var(--c-flow);
+}
+
+.comp-card.flow:hover {
+    box-shadow: var(--c-flow-glow);
+}
+
+.action-box {
+    background: linear-gradient(180deg, var(--c-flow-dim), transparent);
+    border: 1px solid var(--c-flow);
+    box-shadow: var(--c-flow-glow);
+}
+
+.action-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px var(--c-flow);
+}
+
+.speaking {
+    background: var(--c-dopamine-dim);
+    box-shadow: -4px 0 15px var(--c-dopamine-glow);
+    border-left: 4px solid var(--c-dopamine);
+}
+
+@keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.02); } 100% { opacity: 0.8; } }
+
+@media (max-width: 700px) {
+    .skinner-widget {
+        gap: 5px;
+    }
+    .loop-row {
+        flex-direction: column;
+        align-items: center;
+    }
+    .loop-step {
+        width: 100%;
+    }
+    .loop-arrow {
+        transform: rotate(90deg);
+        margin: 5px 0;
+    }
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}

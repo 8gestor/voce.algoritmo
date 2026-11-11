@@ -1,0 +1,263 @@
+/* cap13 — somente o que difere do base.css. */
+
+:root {
+    --c-solar: #fbbf24;
+    --c-solar-dim: rgba(251, 191, 36, 0.1);
+    --c-solar-glow: 0 0 15px rgba(251, 191, 36, 0.3);
+    --c-life: #4ade80;
+    --c-tech: #2dd4bf;
+    --scroll-hover: #fbbf24;
+}
+
+body.light-mode {
+    --c-solar: #d97706;
+    --c-solar-dim: rgba(217, 119, 6, 0.08);
+    --c-solar-glow: 0 0 10px rgba(217, 119, 6, 0.2);
+    --c-life: #15803d;
+    --c-tech: #0f766e;
+    --scroll-hover: #d97706;
+}
+
+body.sepia-mode {
+    --c-solar: #9a3412;
+    --c-solar-dim: rgba(154, 52, 18, 0.08);
+    --c-solar-glow: none;
+    --c-life: #3f6212;
+    --c-tech: #115e59;
+    --scroll-hover: #9a3412;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 760px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-solar);
+    text-shadow: var(--c-solar-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-solar);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-tech);
+    padding-bottom: 10px;
+}
+
+h2::before {
+    content: '//';
+    opacity: 0.5;
+    color: var(--c-life);
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-life);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-solar-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-solar);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-solar);
+    border: 1px solid var(--c-solar);
+    box-shadow: var(--c-solar-glow);
+}
+
+.thesis-box {
+    background: var(--c-solar-dim);
+    border-left: 4px solid var(--c-solar);
+}
+
+.thesis-header {
+    color: var(--c-solar);
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 3em 0;
+}
+
+.tech-card {
+    background: rgba(255,255,255,0.03);
+    border: var(--border-tech);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.tech-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--c-life);
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+}
+
+.tech-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.tech-title {
+    font-family: var(--font-tech);
+    font-weight: bold;
+    color: var(--c-text);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.tech-desc {
+    font-size: 0.75rem;
+    color: var(--c-dim);
+    line-height: 1.4;
+}
+
+.futures-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 3em 0;
+    padding: 20px;
+    border: var(--border-tech);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.01);
+}
+
+.future-bar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-radius: 4px;
+    font-family: var(--font-tech);
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fb-collapse {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    width: 80%;
+}
+
+.fb-statusquo {
+    background: rgba(148, 163, 184, 0.1);
+    border: 1px solid #94a3b8;
+    color: #94a3b8;
+    width: 90%;
+}
+
+.fb-solarpunk {
+    background: rgba(74, 222, 128, 0.2);
+    border: 1px solid var(--c-life);
+    color: var(--c-life);
+    width: 100%;
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+}
+
+.future-label {
+    margin-left: auto;
+    font-weight: bold;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.action-box {
+    border: 1px dashed var(--c-life);
+    background: linear-gradient(180deg, rgba(74, 222, 128, 0.05), transparent);
+    margin-top: 80px;
+    overflow: hidden;
+}
+
+.action-header {
+    font-family: var(--font-tech);
+    color: var(--c-life);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.speaking {
+    background: var(--c-solar-dim);
+    border-left: 4px solid var(--c-solar);
+    box-shadow: var(--c-solar-glow);
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 30px 15px 120px 15px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    .tech-grid {
+        grid-template-columns: 1fr;
+    }
+    p {
+        text-align: left;
+    }
+}

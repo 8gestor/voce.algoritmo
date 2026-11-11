@@ -1,0 +1,196 @@
+/* cap09_1 — somente o que difere do base.css. */
+
+:root {
+    --c-bg: #020617;
+    --c-text: #e2e8f0;
+    --c-dim: #64748b;
+    --c-onion: #a855f7;
+    --c-onion-dim: rgba(168, 85, 247, 0.1);
+    --c-onion-glow: 0 0 15px rgba(168, 85, 247, 0.3);
+    --c-abyss: #0ea5e9;
+    --scroll-track: #020617;
+    --scroll-thumb: #333;
+    --scroll-hover: #a855f7;
+}
+
+body.light-mode {
+    --c-bg: #f8fafc;
+    --c-text: #0f172a;
+    --c-dim: #475569;
+    --c-onion: #7e22ce;
+    --c-onion-dim: rgba(126, 34, 206, 0.08);
+    --c-onion-glow: 0 0 10px rgba(126, 34, 206, 0.2);
+    --c-abyss: #0284c7;
+    --scroll-track: #f8fafc;
+    --scroll-thumb: #cbd5e1;
+    --scroll-hover: #7e22ce;
+}
+
+body.sepia-mode {
+    --c-onion: #6b21a8;
+    --c-onion-dim: rgba(107, 33, 168, 0.08);
+    --c-onion-glow: none;
+    --c-abyss: #0369a1;
+    --scroll-thumb: #d6d3d1;
+    --scroll-hover: #6b21a8;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 780px;
+}
+
+h1 {
+    color: unset;
+    border-bottom: 2px solid var(--c-onion);
+    text-shadow: var(--c-onion-glow);
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-abyss);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-tech);
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+h2::before {
+    content: '>';
+    opacity: 0.5;
+    color: var(--c-onion);
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-onion);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.2);
+}
+
+.meta-tag {
+    color: var(--c-onion);
+    border: 1px solid var(--c-onion);
+    box-shadow: var(--c-onion-glow);
+}
+
+.thesis-box {
+    background: var(--c-onion-dim);
+    border-left: 4px solid var(--c-onion);
+}
+
+.thesis-header {
+    color: var(--c-onion);
+}
+
+.iceberg-container {
+    display: flex;
+    flex-direction: column;
+    margin: 3em 0;
+    border: var(--border-tech);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.surface-level {
+    background: linear-gradient(180deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.3));
+    padding: 20px;
+    border-bottom: 2px solid var(--c-abyss);
+    text-align: center;
+}
+
+.deep-level {
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.8), rgba(2, 6, 23, 1));
+    padding: 30px;
+    text-align: center;
+}
+
+.routing-box {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--c-dim);
+    padding: 20px;
+    margin: 2em 0;
+    border-radius: 8px;
+    font-family: var(--font-tech);
+    font-size: 0.8rem;
+}
+
+.route-step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.node-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c-onion);
+    margin-right: 15px;
+    box-shadow: 0 0 5px var(--c-onion);
+}
+
+.case-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 3em 0;
+}
+
+.case-card {
+    background: rgba(255,255,255,0.02);
+    border-left: 3px solid var(--c-abyss);
+    padding: 20px;
+}
+
+.action-box {
+    position: unset;
+    border: 1px dashed var(--c-onion);
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.05), transparent);
+    margin-top: 80px;
+}
+
+.speaking {
+    background: var(--c-onion-dim);
+    border-left: 4px solid var(--c-onion);
+    box-shadow: var(--c-onion-glow);
+}
+
+@media (max-width: 700px) {
+    .case-grid {
+        grid-template-columns: 1fr;
+    }
+}

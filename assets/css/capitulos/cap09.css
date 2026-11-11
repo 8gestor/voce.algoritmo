@@ -1,0 +1,304 @@
+/* cap09 — somente o que difere do base.css. */
+
+:root {
+    --c-magma: #f97316;
+    --c-magma-dim: rgba(249, 115, 22, 0.1);
+    --c-magma-glow: 0 0 15px rgba(249, 115, 22, 0.3);
+    --c-stone: #78716c;
+    --c-toxic: #84cc16;
+    --c-water: #3b82f6;
+    --scroll-hover: #f97316;
+}
+
+body.light-mode {
+    --c-magma: #c2410c;
+    --c-magma-dim: rgba(194, 65, 12, 0.08);
+    --c-magma-glow: 0 0 10px rgba(194, 65, 12, 0.2);
+    --c-stone: #57534e;
+    --c-toxic: #4d7c0f;
+    --c-water: #2563eb;
+    --scroll-hover: #c2410c;
+}
+
+body.sepia-mode {
+    --c-magma: #9a3412;
+    --c-magma-dim: rgba(154, 52, 18, 0.08);
+    --c-magma-glow: none;
+    --c-stone: #78716c;
+    --c-toxic: #365314;
+    --c-water: #1e3a8a;
+    --scroll-hover: #9a3412;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 760px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-magma);
+    text-shadow: var(--c-magma-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-stone);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 0 10px rgba(120, 113, 108, 0.3);
+}
+
+h2::before {
+    content: '>';
+    color: var(--c-magma);
+    font-weight: 300;
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-magma);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-magma-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-magma);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(249, 115, 22, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-magma);
+    border: 1px solid var(--c-magma);
+    box-shadow: var(--c-magma-glow);
+}
+
+.thesis-box {
+    background: var(--c-magma-dim);
+    border-left: 4px solid var(--c-magma);
+}
+
+.thesis-header {
+    color: var(--c-magma);
+}
+
+.extraction-flow {
+    border: 1px solid var(--c-stone);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 3em 0;
+    background: rgba(255,255,255,0.01);
+}
+
+.flow-step {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed var(--c-dim);
+    padding-bottom: 15px;
+}
+
+.flow-step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.step-icon {
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.step-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.step-title {
+    font-family: var(--font-tech);
+    font-weight: bold;
+    color: var(--c-magma);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.step-desc {
+    font-size: 0.8rem;
+    color: var(--c-dim);
+}
+
+.deep-time-bar {
+    width: 100%;
+    height: 40px;
+    background: #333;
+    margin: 20px 0;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+}
+
+.dt-geo {
+    width: 95%;
+    background: var(--c-stone);
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 0.65rem;
+    color: #000;
+    font-weight: bold;
+    font-family: var(--font-tech);
+}
+
+.dt-use {
+    width: 5%;
+    background: var(--c-magma);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: bold;
+    font-family: var(--font-tech);
+    box-shadow: var(--c-magma-glow);
+}
+
+.dt-label {
+    font-size: 0.75rem;
+    color: var(--c-dim);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3em;
+}
+
+.water-widget {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+    border: 1px solid var(--c-water);
+    padding: 25px;
+    border-radius: 8px;
+    margin: 3em 0;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.water-icon {
+    font-size: 2.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.water-highlight {
+    color: var(--c-water);
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.comp-card {
+    background: rgba(255,255,255,0.02);
+    transition: transform 0.2s;
+}
+
+.comp-card:hover {
+    background: unset;
+}
+
+.comp-title {
+    margin-bottom: 15px;
+}
+
+.action-box {
+    background: linear-gradient(180deg, var(--c-magma-dim), transparent);
+    border: 1px solid var(--c-magma);
+    box-shadow: var(--c-magma-glow);
+    overflow: hidden;
+}
+
+.action-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px var(--c-magma);
+}
+
+.speaking {
+    background: var(--c-magma-dim);
+    border-left: 4px solid var(--c-magma);
+    box-shadow: var(--c-magma-glow);
+}
+
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+
+@media (max-width: 700px) {
+    body {
+        padding: 30px 15px 120px 15px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+    .water-widget {
+        flex-direction: column;
+        text-align: center;
+    }
+    p {
+        text-align: left;
+    }
+}

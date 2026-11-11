@@ -1,0 +1,313 @@
+/* cap07 — somente o que difere do base.css. */
+
+:root {
+    --c-nerve: #8b5cf6;
+    --c-nerve-dim: rgba(139, 92, 246, 0.1);
+    --c-nerve-glow: 0 0 15px rgba(139, 92, 246, 0.4);
+    --c-alert: #f59e0b;
+    --c-alert-dim: rgba(245, 158, 11, 0.1);
+    --c-alert-glow: 0 0 15px rgba(245, 158, 11, 0.3);
+    --scroll-hover: #8b5cf6;
+}
+
+body.light-mode {
+    --c-nerve: #7c3aed;
+    --c-nerve-dim: rgba(124, 58, 237, 0.08);
+    --c-nerve-glow: 0 0 10px rgba(124, 58, 237, 0.2);
+    --c-alert: #d97706;
+    --c-alert-dim: rgba(217, 119, 6, 0.08);
+    --c-alert-glow: 0 0 10px rgba(217, 119, 6, 0.2);
+    --scroll-hover: #7c3aed;
+}
+
+body.sepia-mode {
+    --c-nerve: #5b21b6;
+    --c-nerve-dim: rgba(91, 33, 182, 0.08);
+    --c-nerve-glow: none;
+    --c-alert: #92400e;
+    --c-alert-dim: rgba(146, 64, 14, 0.08);
+    --c-alert-glow: none;
+    --scroll-hover: #5b21b6;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 720px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-nerve);
+    text-shadow: var(--c-nerve-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-alert);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: var(--c-alert-glow);
+}
+
+h2::before {
+    content: '>';
+    color: var(--c-dim);
+    font-weight: 300;
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-nerve);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-nerve-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-nerve);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(139, 92, 246, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-nerve);
+    border: 1px solid var(--c-nerve);
+    box-shadow: var(--c-nerve-glow);
+}
+
+.thesis-box {
+    background: var(--c-nerve-dim);
+    border-left: 4px solid var(--c-nerve);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.thesis-header {
+    color: var(--c-nerve);
+    margin-bottom: 10px;
+}
+
+.deep-dive-box {
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.05), transparent);
+}
+
+.task-manager-container {
+    background: #111;
+    border: 1px solid var(--c-dim);
+    border-radius: 6px;
+    padding: 0;
+    margin: 3em 0;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.tm-header {
+    background: #222;
+    padding: 10px 15px;
+    color: #fff;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+}
+
+.tm-body {
+    padding: 20px;
+}
+
+.tm-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.tm-label {
+    width: 120px;
+    color: #ccc;
+    font-size: 0.85rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.tm-bar-track {
+    flex: 1;
+    height: 20px;
+    background: #333;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.tm-bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 5px;
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: bold;
+    transition: width 1s ease-in-out;
+}
+
+.fill-cpu {
+    width: 99%;
+    background: #ef4444;
+    animation: pulse-red 2s infinite;
+}
+
+.fill-ram {
+    width: 94%;
+    background: var(--c-alert);
+}
+
+.fill-net {
+    width: 100%;
+    background: var(--c-nerve);
+}
+
+.tm-footer {
+    padding: 10px 20px;
+    background: #1a1a1a;
+    color: #ef4444;
+    font-family: var(--font-tech);
+    font-size: 0.7rem;
+    text-align: right;
+    letter-spacing: 1px;
+}
+
+.law-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 2em 0;
+}
+
+.law-card {
+    background: rgba(255,255,255,0.01);
+    border: var(--border-tech);
+    padding: 20px;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.law-card:hover {
+    border-color: var(--c-nerve);
+    transform: translateY(-3px);
+    box-shadow: var(--c-nerve-glow);
+}
+
+.law-country {
+    font-family: var(--font-tech);
+    font-size: 0.7rem;
+    color: var(--c-alert);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+}
+
+.law-name {
+    font-weight: bold;
+    color: var(--c-text);
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.law-desc {
+    font-size: 0.85rem;
+    color: var(--c-dim);
+    line-height: 1.5;
+}
+
+.action-box {
+    background: linear-gradient(180deg, var(--c-alert-dim), transparent);
+    border: 1px solid var(--c-alert);
+    box-shadow: var(--c-alert-glow);
+    overflow: hidden;
+}
+
+.action-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px var(--c-alert);
+}
+
+.speaking {
+    background: var(--c-nerve-dim);
+    box-shadow: -4px 0 15px var(--c-nerve-glow);
+    border-left: 4px solid var(--c-nerve);
+}
+
+@keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+@media (max-width: 600px) {
+    body {
+        padding: 30px 15px 120px 15px;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    .law-grid {
+        grid-template-columns: 1fr;
+    }
+    .tm-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .tm-label {
+        width: 90px;
+        font-size: 0.75rem;
+    }
+    p {
+        text-align: left;
+    }
+}

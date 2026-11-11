@@ -1,0 +1,272 @@
+/* cap10 — somente o que difere do base.css. */
+
+:root {
+    --c-neural: #a855f7;
+    --c-neural-dim: rgba(168, 85, 247, 0.1);
+    --c-neural-glow: 0 0 15px rgba(168, 85, 247, 0.4);
+    --c-shield: #fbbf24;
+    --c-alert: #ef4444;
+    --scroll-hover: #a855f7;
+}
+
+body.light-mode {
+    --c-neural: #7e22ce;
+    --c-neural-dim: rgba(126, 34, 206, 0.08);
+    --c-neural-glow: 0 0 10px rgba(126, 34, 206, 0.2);
+    --c-shield: #d97706;
+    --scroll-hover: #7e22ce;
+}
+
+body.sepia-mode {
+    --c-neural: #5b21b6;
+    --c-neural-dim: rgba(91, 33, 182, 0.08);
+    --c-neural-glow: none;
+    --c-shield: #92400e;
+    --scroll-hover: #5b21b6;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 760px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-neural);
+    text-shadow: var(--c-neural-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-shield);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-tech);
+    padding-bottom: 10px;
+}
+
+h2::before {
+    content: '>';
+    opacity: 0.5;
+    color: var(--c-neural);
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-neural);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-neural-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-neural);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-neural);
+    border: 1px solid var(--c-neural);
+    box-shadow: var(--c-neural-glow);
+}
+
+.thesis-box {
+    background: var(--c-neural-dim);
+    border-left: 4px solid var(--c-neural);
+}
+
+.thesis-header {
+    color: var(--c-neural);
+}
+
+.deep-dive-box {
+    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.05), transparent);
+}
+
+.deep-dive-box h3 {
+    margin-top: 1.5em;
+    border-left: none;
+    padding-left: 0;
+    color: var(--c-shield);
+    font-size: 1rem;
+}
+
+.spectrum-bar {
+    display: flex;
+    height: 30px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 20px 0;
+    font-family: var(--font-tech);
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #000;
+    border: 1px solid var(--border-tech);
+}
+
+.sb-1 {
+    width: 33%;
+    background: #4ade80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sb-2 {
+    width: 33%;
+    background: #fbbf24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sb-3 {
+    width: 34%;
+    background: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.spectrum-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--c-dim);
+    margin-bottom: 3em;
+    font-family: var(--font-tech);
+}
+
+.neurorights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 3em 0;
+}
+
+.nr-card {
+    background: rgba(255,255,255,0.03);
+    border: var(--border-tech);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.nr-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--c-shield);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+.nr-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.nr-title {
+    font-family: var(--font-tech);
+    font-weight: bold;
+    color: var(--c-text);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.nr-desc {
+    font-size: 0.75rem;
+    color: var(--c-dim);
+    line-height: 1.4;
+}
+
+.action-box {
+    border: 1px dashed var(--c-shield);
+    background: linear-gradient(180deg, rgba(251, 191, 36, 0.05), transparent);
+    margin-top: 80px;
+}
+
+.action-header {
+    font-family: var(--font-tech);
+    color: var(--c-shield);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.speaking {
+    background: var(--c-neural-dim);
+    border-left: 4px solid var(--c-neural);
+    box-shadow: var(--c-neural-glow);
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 30px 15px 120px 15px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    .neurorights-grid {
+        grid-template-columns: 1fr;
+    }
+    .spectrum-legend {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+    p {
+        text-align: left;
+    }
+}
