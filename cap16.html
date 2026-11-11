@@ -6,105 +6,8 @@
     <title>Bibliografia Completa</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-    <style>
-        /* --- FATOR X v4.7: FULL ARCHIVE --- */
-        :root {
-            --c-bg: #0a0a0c; --c-text: #f8fafc; --c-dim: #9ca3af;
-            --c-amber: #fbbf24; --c-amber-dim: rgba(251, 191, 36, 0.1); --c-amber-glow: 0 0 15px rgba(251, 191, 36, 0.3);
-            --c-card: #111114; --c-blue: #38bdf8;
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --base-size: 19px; --border-tech: 1px solid rgba(251, 191, 36, 0.2);
-            --scroll-track: #0a0a0c; --scroll-thumb: #333333; --scroll-hover: #fbbf24;
-        }
-
-        body.light-mode {
-            --c-bg: #f8fafc; --c-text: #0f172a; --c-dim: #475569;
-            --c-amber: #d97706; --c-amber-dim: rgba(217, 119, 6, 0.08); --c-amber-glow: 0 0 10px rgba(217, 119, 6, 0.2);
-            --c-card: #ffffff; --c-blue: #0284c7;
-            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
-            --scroll-track: #f8fafc; --scroll-thumb: #C1C1C4; --scroll-hover: #d97706;
-        }
-
-        body.sepia-mode {
-            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
-            --c-amber: #92400e; --c-amber-dim: rgba(146, 64, 14, 0.08); --c-amber-glow: none;
-            --c-card: #E8DEC0; --c-blue: #075985;
-            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
-            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #92400e;
-        }
-
-        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
-
-        body {
-            background-color: var(--c-bg); color: var(--c-text);
-            font-family: var(--font-ui); font-size: var(--base-size);
-            line-height: 1.6; padding: 40px 20px 100px 20px;
-            transition: all 0.3s ease; max-width: 1000px; margin: 0 auto;
-        }
-
-        h1 {
-            font-family: var(--font-tech); font-size: 2rem; margin-bottom: 20px;
-            border-bottom: 2px solid var(--c-amber); padding-bottom: 20px;
-            text-shadow: var(--c-amber-glow); text-transform: uppercase;
-        }
-
-        .chapter-meta { font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-amber); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block; border-left: 2px solid var(--c-amber); padding-left: 10px; }
-
-        /* CATEGORIES */
-        .category-header {
-            margin: 60px 0 30px 0; display: flex; align-items: center; gap: 15px;
-            border-bottom: 1px dashed var(--c-dim); padding-bottom: 10px;
-        }
-        .cat-icon { font-size: 1.5rem; color: var(--c-amber); }
-        .cat-title { font-family: var(--font-tech); font-size: 1.1rem; color: var(--c-text); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-
-        /* GRID SYSTEM */
-        .biblio-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .book-card {
-            background: var(--c-card); border: var(--border-tech); padding: 20px;
-            border-radius: 6px; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .book-card:hover { transform: translateY(-5px); border-color: var(--c-amber); box-shadow: var(--c-amber-glow); }
-        
-        .book-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--c-dim); transition: 0.3s;
-        }
-        .book-card:hover::before { background: var(--c-amber); }
-
-        .book-meta {
-            font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-dim);
-            display: flex; justify-content: space-between; margin-bottom: 10px;
-            text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;
-        }
-        
-        .book-author { color: var(--c-blue); font-weight: bold; font-family: var(--font-tech); font-size: 0.8rem; display: block; margin-bottom: 5px; }
-        .book-title { font-size: 1rem; font-weight: 800; color: var(--c-text); line-height: 1.3; margin-bottom: 12px; }
-        .book-desc { font-size: 0.8rem; color: var(--c-dim); line-height: 1.5; margin-bottom: 15px; flex-grow: 1; text-align: justify; }
-
-        .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
-        .tag {
-            font-family: var(--font-tech); font-size: 0.6rem; padding: 3px 8px;
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px; color: var(--c-dim); text-transform: uppercase;
-        }
-
-        .speaking {
-            background: var(--c-amber-dim); border: 1px solid var(--c-amber);
-            box-shadow: 0 0 20px var(--c-amber-glow); transform: scale(1.02); z-index: 10;
-        }
-
-        @media (max-width: 600px) { h1 { font-size: 1.8rem; } .biblio-grid { grid-template-columns: 1fr; } }
-    </style>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/capitulos/cap16.css">
 </head>
 <body>
 
@@ -331,12 +234,6 @@
         </div>
     </div>
 
-    <script>
-        let ttsQueue=[],idx=0,rate=1;
-        window.addEventListener('message',e=>{ if(e.data.type==='theme')document.body.className=e.data.value+'-mode'; if(e.data.type==='rate')rate=e.data.value; if(e.data.type==='tts-toggle')toggleTTS(); });
-        function initTTS(){ ttsQueue=Array.from(document.querySelectorAll('.speakable')); }
-        function toggleTTS(){ if(ttsQueue.length===0)initTTS(); window.speechSynthesis.cancel(); if(idx<ttsQueue.length){ let u=new SpeechSynthesisUtterance(ttsQueue[idx].innerText); u.lang='pt-BR'; u.rate=rate; u.onend=()=>{idx++;toggleTTS()}; window.speechSynthesis.speak(u); updateHigh(ttsQueue[idx]); } else { updateHigh(null); idx=0; window.parent.postMessage({type:'tts-state',isPlaying:false},'*'); } window.parent.postMessage({type:'tts-state',isPlaying:true},'*'); }
-        function updateHigh(el){ document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); if(el)el.classList.add('speaking'); el?.scrollIntoView({behavior:"smooth",block:"center"}); }
-    </script>
+    <script src="assets/js/capitulo.js"></script>
 </body>
 </html>

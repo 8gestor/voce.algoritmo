@@ -1,0 +1,334 @@
+/* cap05 — somente o que difere do base.css. */
+
+:root {
+    --c-alert: #f59e0b;
+    --c-alert-dim: rgba(245, 158, 11, 0.1);
+    --c-alert-glow: 0 0 15px rgba(245, 158, 11, 0.3);
+    --c-structure: #64748b;
+    --c-structure-dim: rgba(100, 116, 139, 0.1);
+    --c-network: #0ea5e9;
+    --scroll-hover: #f59e0b;
+}
+
+body.light-mode {
+    --c-alert: #d97706;
+    --c-alert-dim: rgba(217, 119, 6, 0.08);
+    --c-alert-glow: 0 0 10px rgba(217, 119, 6, 0.2);
+    --c-structure: #475569;
+    --c-structure-dim: rgba(71, 85, 105, 0.08);
+    --c-network: #0284c7;
+    --scroll-hover: #d97706;
+}
+
+body.sepia-mode {
+    --c-alert: #B45309;
+    --c-alert-dim: rgba(180, 83, 9, 0.08);
+    --c-alert-glow: none;
+    --c-structure: #57534e;
+    --c-network: #0369a1;
+    --scroll-hover: #B45309;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 740px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-alert);
+    text-shadow: var(--c-alert-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-network);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+}
+
+h2::before {
+    content: '>';
+    color: var(--c-dim);
+    font-weight: 300;
+}
+
+h3 {
+    font-family: var(--font-ui);
+    font-size: 1.15em;
+    font-weight: 600;
+    color: var(--c-alert);
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-alert-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-alert);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(245, 158, 11, 0.2);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-alert);
+    border: 1px solid var(--c-alert);
+    box-shadow: var(--c-alert-glow);
+}
+
+.thesis-box {
+    background: var(--c-alert-dim);
+    border-left: 4px solid var(--c-alert);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.thesis-header {
+    color: var(--c-alert);
+    margin-bottom: 10px;
+}
+
+.dissection-table-container {
+    margin: 2em 0;
+    overflow-x: auto;
+    border: var(--border-tech);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.01);
+}
+
+.dissection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-tech);
+    font-size: 0.8rem;
+    min-width: 700px;
+}
+
+.dissection-table th {
+    padding: 15px;
+    text-align: left;
+    background: var(--c-structure-dim);
+    color: var(--c-alert);
+    border-bottom: 2px solid var(--c-structure);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dissection-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-tech);
+    color: var(--c-text);
+    vertical-align: top;
+    border-color: rgba(255,255,255,0.05);
+}
+
+.tech-tag {
+    font-size: 0.7rem;
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--c-network);
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 5px;
+    border: 1px solid var(--c-network);
+}
+
+.visual-layers-container {
+    background: var(--c-bg);
+    border: 1px solid var(--c-structure);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 3em 0;
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-tech);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+}
+
+.layers-title {
+    text-align: center;
+    color: var(--c-alert);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.layer-item {
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s;
+    border: 1px solid transparent;
+}
+
+.layer-item:hover {
+    transform: translateX(10px);
+    border-color: var(--c-alert);
+}
+
+.l-politics {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--c-alert);
+    border-left: 3px solid var(--c-alert);
+}
+
+.l-semantics {
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--c-network);
+    border-left: 3px solid var(--c-network);
+}
+
+.l-logic {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--c-text);
+    border-left: 3px solid var(--c-text);
+}
+
+.l-physical {
+    background: #111;
+    color: var(--c-dim);
+    border-left: 3px solid var(--c-dim);
+}
+
+.layer-desc {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-family: var(--font-ui);
+}
+
+.geo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 3em 0;
+}
+
+.geo-card {
+    background: rgba(255,255,255,0.01);
+    border: var(--border-tech);
+    padding: 25px;
+    border-radius: 8px;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.geo-card:hover {
+    border-color: var(--c-alert);
+    box-shadow: var(--c-alert-glow);
+    transform: translateY(-3px);
+}
+
+.geo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed var(--c-dim);
+    padding-bottom: 10px;
+}
+
+.geo-title {
+    font-family: var(--font-tech);
+    font-weight: bold;
+    color: var(--c-text);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.geo-region {
+    font-size: 0.7rem;
+    color: var(--c-alert);
+    font-weight: bold;
+    background: var(--c-alert-dim);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.comp-content {
+    font-size: 0.9rem;
+    text-align: justify;
+    color: var(--c-dim);
+    line-height: 1.6;
+}
+
+.action-box {
+    background: linear-gradient(180deg, rgba(14, 165, 233, 0.1), transparent);
+    border: 1px solid var(--c-network);
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+    overflow: hidden;
+}
+
+.action-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px var(--c-network);
+}
+
+.speaking {
+    background: var(--c-alert-dim);
+    box-shadow: -4px 0 15px var(--c-alert-glow);
+    border-left: 4px solid var(--c-alert);
+}
+
+@media (max-width: 700px) {
+    .geo-grid {
+        grid-template-columns: 1fr;
+    }
+}

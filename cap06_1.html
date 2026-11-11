@@ -6,68 +6,8 @@
     <title>Capítulo 06.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
-    <style>
-        /* --- FATOR X v4.4: FINANCE CORE --- */
-        :root {
-            --c-bg: #050505; --c-text: #E0E0E0; --c-dim: #9ca3af;
-            --c-money: #10b981;    /* Verde (Dinheiro/Fluxo) */
-            --c-money-dim: rgba(16, 185, 129, 0.1);
-            --c-money-glow: 0 0 15px rgba(16, 185, 129, 0.3);
-            --c-control: #ef4444;  /* Vermelho (Bloqueio/Estado) */
-            --c-ledger: #eab308;   /* Dourado (Registro) */
-            --font-ui: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
-            --base-size: 19px; --border-tech: 1px solid rgba(255, 255, 255, 0.1);
-            --scroll-track: #050505; --scroll-thumb: #333333; --scroll-hover: #10b981;
-        }
-
-        body.light-mode {
-            --c-bg: #F0F2F5; --c-text: #111111; --c-dim: #4b5563;
-            --c-money: #059669; --c-money-dim: rgba(5, 150, 105, 0.08); --c-money-glow: 0 0 10px rgba(5, 150, 105, 0.2);
-            --c-control: #dc2626; --c-ledger: #d97706;
-            --border-tech: 1px solid rgba(0, 0, 0, 0.1);
-            --scroll-track: #F0F2F5; --scroll-thumb: #C1C1C4; --scroll-hover: #059669;
-        }
-
-        body.sepia-mode {
-            --c-bg: #F4ECD8; --c-text: #433422; --c-dim: #5c4b37;
-            --c-money: #15803d; --c-money-dim: rgba(21, 128, 61, 0.08); --c-money-glow: none;
-            --c-control: #991b1b; --c-ledger: #92400e;
-            --border-tech: 1px solid rgba(67, 52, 34, 0.15);
-            --scroll-track: #F4ECD8; --scroll-thumb: #D0C5A8; --scroll-hover: #15803d;
-        }
-
-        html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--scroll-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
-
-        body {
-            background: var(--c-bg); color: var(--c-text);
-            font-family: var(--font-ui); font-size: var(--base-size);
-            line-height: 1.7; padding: 40px 20px 100px 20px;
-            transition: all 0.3s ease; max-width: 760px; margin: 0 auto;
-        }
-
-        h1 { font-family: var(--font-tech); font-size: 2rem; border-bottom: 2px solid var(--c-money); padding-bottom: 20px; margin-bottom: 40px; text-shadow: var(--c-money-glow); text-transform: uppercase; }
-        h2 { font-family: var(--font-tech); color: var(--c-control); font-size: 1.2rem; margin: 3em 0 1em 0; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-tech); padding-bottom: 10px; text-transform: uppercase; }
-        h2::before { content: '>'; opacity: 0.5; color: var(--c-money); }
-        
-        p { margin-bottom: 2em; text-align: justify; hyphens: auto; }
-        strong { color: var(--c-money); font-weight: 600; text-shadow: 0 0 8px rgba(16, 185, 129, 0.2); }
-
-        .meta-tag { font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-control); border: 1px solid var(--c-control); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 15px rgba(239, 68, 68, 0.2); }
-        
-        .thesis-box { background: var(--c-money-dim); border-left: 4px solid var(--c-money); padding: 25px; margin: 2em 0; font-family: var(--font-tech); font-size: 0.9em; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .thesis-header { color: var(--c-money); font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 15px; }
-
-        .code-block { background: #111; border: 1px solid var(--c-dim); padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #a5b4fc; margin: 2em 0; border-radius: 6px; overflow-x: auto; }
-        .deep-dive-box { border-top: 1px dashed var(--c-dim); border-bottom: 1px dashed var(--c-dim); padding: 30px 0; margin: 3em 0; background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.05), transparent); }
-        
-        .action-box { border: 1px dashed var(--c-money); background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), transparent); text-align: center; padding: 40px 30px; margin-top: 80px; border-radius: 12px; }
-        
-        .speaking { background: var(--c-money-dim); color: var(--c-text); border-left: 4px solid var(--c-money); padding-left: 15px; margin-left: -19px; border-radius: 0 4px 4px 0; box-shadow: var(--c-money-glow); transition: all 0.3s; }
-    </style>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/capitulos/cap06_1.css">
 </head>
 <body>
 
@@ -121,12 +61,6 @@
         <p><strong>Missão:</strong> Calcule o custo de 2 semanas de sobrevivência básica (comida, combustível, remédios). Saque esse valor em espécie. Guarde em local seguro e não bancário. Além disso, priorize o uso de dinheiro físico para pequenas compras diárias. Cada transação em dinheiro é um voto anônimo contra o panóptico digital.</p>
     </div>
 
-    <script>
-        let ttsQueue=[],idx=0,rate=1;
-        window.addEventListener('message',e=>{ if(e.data.type==='theme')document.body.className=e.data.value+'-mode'; if(e.data.type==='rate')rate=e.data.value; if(e.data.type==='tts-toggle')toggleTTS(); });
-        function initTTS(){ ttsQueue=Array.from(document.querySelectorAll('.speakable')); }
-        function toggleTTS(){ if(ttsQueue.length===0)initTTS(); window.speechSynthesis.cancel(); if(idx<ttsQueue.length){ let u=new SpeechSynthesisUtterance(ttsQueue[idx].innerText); u.lang='pt-BR'; u.rate=rate; u.onend=()=>{idx++;toggleTTS()}; window.speechSynthesis.speak(u); updateHigh(ttsQueue[idx]); } else { updateHigh(null); idx=0; window.parent.postMessage({type:'tts-state',isPlaying:false},'*'); } window.parent.postMessage({type:'tts-state',isPlaying:true},'*'); }
-        function updateHigh(el){ document.querySelectorAll('.speaking').forEach(x=>x.classList.remove('speaking')); if(el)el.classList.add('speaking'); el?.scrollIntoView({behavior:"smooth",block:"center"}); }
-    </script>
+    <script src="assets/js/capitulo.js"></script>
 </body>
 </html>

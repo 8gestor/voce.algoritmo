@@ -1,0 +1,169 @@
+/* cap01 — somente o que difere do base.css. */
+
+:root {
+    --c-bio: #00ff41;
+    --c-bio-dim: rgba(0, 255, 65, 0.08);
+    --c-bio-glow: 0 0 15px rgba(0, 255, 65, 0.3);
+    --c-machine: #a8a29e;
+    --c-machine-dim: rgba(168, 162, 158, 0.1);
+    --scroll-hover: #555555;
+}
+
+body.light-mode {
+    --c-bio: #059669;
+    --c-bio-dim: rgba(5, 150, 105, 0.08);
+    --c-bio-glow: 0 0 10px rgba(5, 150, 105, 0.2);
+    --c-machine: #57534e;
+    --scroll-hover: #A0A0A3;
+}
+
+body.sepia-mode {
+    --c-bio: #65a30d;
+    --c-bio-dim: rgba(101, 163, 13, 0.08);
+    --c-bio-glow: none;
+    --c-machine: #78716c;
+    --scroll-hover: #8C4B2F;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+body {
+    max-width: 700px;
+}
+
+h1, h2, h3 {
+    text-transform: uppercase !important;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    border-bottom: 2px solid var(--c-bio);
+    text-shadow: var(--c-bio-glow);
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-bio);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: var(--c-bio-glow);
+}
+
+h2::before {
+    content: '>';
+    color: var(--c-dim);
+    font-weight: 300;
+}
+
+h3 {
+    font-family: var(--font-ui);
+    color: var(--c-text);
+    font-size: 1.1em;
+    margin-top: 2em;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--c-bio-dim);
+    padding-left: 15px;
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-bio);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.15);
+}
+
+body.sepia-mode strong {
+    text-shadow: none;
+}
+
+.meta-tag {
+    color: var(--c-bio);
+    border: 1px solid var(--c-bio);
+    box-shadow: var(--c-bio-glow);
+}
+
+.thesis-box {
+    box-shadow: unset;
+    background: var(--c-machine-dim);
+    border: 1px solid var(--c-machine);
+    border-left: 4px solid var(--c-machine);
+    position: relative;
+}
+
+.comp-card.bio {
+    border-bottom: 2px solid var(--c-bio);
+}
+
+.comp-card.bio:hover {
+    box-shadow: var(--c-bio-glow);
+}
+
+.comp-card.algo {
+    border-bottom: 2px solid var(--c-machine);
+}
+
+.comp-card.algo:hover {
+    box-shadow: 0 0 15px rgba(168, 162, 158, 0.3);
+}
+
+.comp-title {
+    margin-bottom: 15px;
+}
+
+.action-box {
+    background: linear-gradient(180deg, var(--c-bio-dim), transparent);
+    border: 1px solid var(--c-bio);
+    box-shadow: var(--c-bio-glow);
+    overflow: hidden;
+}
+
+.action-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, var(--c-bio-dim) 3px);
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.speaking {
+    background: var(--c-bio-dim);
+    box-shadow: -4px 0 15px var(--c-bio-glow);
+    border-left: 4px solid var(--c-bio);
+}
+
+@media(max-width:600px) {
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}

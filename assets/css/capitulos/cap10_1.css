@@ -1,0 +1,172 @@
+/* cap10_1 — somente o que difere do base.css. */
+
+:root {
+    --c-dim: unset;
+    --c-shield: #3b82f6;
+    --c-threat: #f43f5e;
+    --c-lock: #a855f7;
+    --font-ui: 'Inter';
+    --font-tech: 'JetBrains Mono';
+    --scroll-thumb: #333;
+    --scroll-hover: #3b82f6;
+}
+
+body.light-mode {
+    --c-dim: unset;
+    --border-tech: unset;
+    --scroll-track: unset;
+    --scroll-thumb: unset;
+    --c-text: #111;
+    --c-shield: #2563eb;
+    --c-threat: #e11d48;
+}
+
+body.sepia-mode {
+    --c-dim: unset;
+    --border-tech: unset;
+    --scroll-track: unset;
+    --scroll-thumb: unset;
+    --c-shield: #1e3a8a;
+    --c-threat: #9f1239;
+}
+
+body {
+    transition: unset;
+    padding: 40px 20px;
+    max-width: 760px;
+}
+
+h1 {
+    color: unset;
+    border-bottom: 2px solid var(--c-shield);
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-lock);
+    font-size: 1.2rem;
+    margin: 3em 0 1em 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-tech);
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+h2::before {
+    content: '>';
+    opacity: 0.5;
+    color: var(--c-shield);
+}
+
+p {
+    margin-bottom: 2em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+strong {
+    color: var(--c-shield);
+    font-weight: 600;
+}
+
+.meta-tag {
+    color: var(--c-shield);
+    border: 1px solid var(--c-shield);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.thesis-box {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid var(--c-shield);
+}
+
+.thesis-header {
+    color: var(--c-shield);
+}
+
+.crypto-flow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 2em 0;
+    padding: 20px;
+    border: 1px solid var(--border-tech);
+    border-radius: 8px;
+    font-family: var(--font-tech);
+    font-size: 0.8rem;
+    background: rgba(255,255,255,0.01);
+    justify-content: space-between;
+}
+
+.sandbox-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 3em 0;
+}
+
+.sandbox-box {
+    border: 1px solid var(--c-shield);
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.sandbox-box.infected {
+    border-color: var(--c-threat);
+    background: rgba(244, 63, 94, 0.1);
+    animation: pulse 2s infinite;
+}
+
+.os-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 2em 0;
+}
+
+.os-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-tech);
+    background: rgba(255,255,255,0.02);
+}
+
+.os-rank {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: var(--font-tech);
+}
+
+.action-box {
+    position: unset;
+    border: 1px dashed var(--c-shield);
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.05), transparent);
+    margin-top: 80px;
+}
+
+.speaking {
+    color: unset;
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid var(--c-shield);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+    transition: 0.3s;
+}
+
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+@media (max-width: 600px) {
+    .sandbox-container, .os-grid {
+        grid-template-columns: 1fr;
+    }
+}
