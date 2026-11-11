@@ -152,7 +152,7 @@ body.sepia-mode strong {
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    background: conic-gradient( var(--c-fake) 0% 49.6%, var(--c-void) 49.6% 65%, var(--c-glitch) 65% 100% );
+    background: conic-gradient( var(--c-fake) 0% 32%, var(--c-void) 32% 49.6%, var(--c-glitch) 49.6% 100% );
     position: relative;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     margin-bottom: 10px;
