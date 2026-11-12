@@ -145,3 +145,5 @@ if (-not $m.Success) { 'Teste não produziu resultado. Erros do Chrome:'; Get-Co
 [System.Net.WebUtility]::HtmlDecode($m.Groups[1].Value)
 Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
 if ($m.Groups[1].Value -match 'FAIL') { exit 1 }
+
+exit 0

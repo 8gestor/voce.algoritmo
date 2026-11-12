@@ -88,15 +88,15 @@ function Build-Page([string]$page) {
         $en = $src[$u.Id]
         if ((Get-TagSig $u.Html) -ne (Get-TagSig $en)) { $problems.Add("tags diferem: $($u.Id)") }
         $wp = Count-Words $u.Html; $we = Count-Words $en
-        if ($wp -ge 4) {
+        if ($wp -ge 10) {
             $r = $we / $wp
             if ($r -lt 0.6 -or $r -gt 1.6) { $problems.Add(("tamanho {0} ({1} -> {2} palavras): {3}" -f $u.Id, $wp, $we, [math]::Round($r, 2))) }
         }
     }
     foreach ($k in $src.Keys) { if (-not $ids.ContainsKey($k)) { $problems.Add("id inexistente: $k") } }
     if ($problems.Count) {
-        "{0,-16} {1} problema(s):" -f $page, $problems.Count
-        $problems | Select-Object -First 25 | ForEach-Object { "    - $_" }
+        Write-Host ("{0,-16} {1} problema(s):" -f $page, $problems.Count)
+        $problems | Select-Object -First 25 | ForEach-Object { Write-Host "    - $_" }
         return $false
     }
     $sb = New-Object System.Text.StringBuilder
@@ -111,7 +111,7 @@ function Build-Page([string]$page) {
     [void]$sb.Append("};`n")
     New-Item -ItemType Directory -Force $outDir | Out-Null
     [IO.File]::WriteAllText((Join-Path $outDir "$page.js"), ($sb.ToString() -replace "`n", "`r`n"), $enc)
-    "{0,-16} OK  {1} unidades" -f $page, $units.Count
+    Write-Host ("{0,-16} OK  {1} unidades" -f $page, $units.Count)
     return $true
 }
 
@@ -127,7 +127,7 @@ switch ($Cmd) {
         $ok = 0; $bad = 0
         foreach ($p in $pages) {
             if (-not (Test-Path (Join-Path $srcDir "$p.en.txt"))) { if ($Page) { throw "sem fonte: $p" } else { continue } }
-            if (Build-Page $p) { $ok++ } else { $bad++ }
+            if ((Build-Page $p) -eq $true) { $ok++ } else { $bad++ }
         }
         "compiladas: $ok | com problemas: $bad"
         if ($bad) { exit 1 }

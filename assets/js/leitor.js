@@ -54,6 +54,7 @@ function refreshControls() {
     document.getElementById('speed-select').value = String(SPEEDS.reduce((a, b) => (Math.abs(b - settings.rate) < Math.abs(a - settings.rate) ? b : a)));
     document.documentElement.lang = settings.readLang === 'en' ? 'en' : 'pt-BR';
     document.getElementById('font-display').innerText = settings.font + ' px';
+    applyUiLang();
     document.querySelectorAll('[data-opt]').forEach((b) => {
         const on = String(settings[b.dataset.opt]) === b.dataset.val;
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -89,7 +90,9 @@ function setVoice(lang, name) {
 function populateVoices() {
     if (!('speechSynthesis' in window)) return;
     const all = speechSynthesis.getVoices();
-    [['pt', 'Automática (português)'], ['en', 'Automática (inglês)']].forEach(([lang, auto]) => {
+    const enUi = settings.readLang === 'en';
+    [['pt', enUi ? 'Automatic (Portuguese)' : 'Automática (português)'],
+     ['en', enUi ? 'Automatic (English)' : 'Automática (inglês)']].forEach(([lang, auto]) => {
         const sel = document.getElementById('voice-' + lang);
         if (!sel) return;
         sel.textContent = '';
@@ -121,26 +124,46 @@ function closePanels() { togglePanel(null); }
 
 /* ---------- Raio-X: conceitos do capítulo, tirados do glossário ---------- */
 function renderRaioX() {
+    const en = settings.readLang === 'en';
     const list = document.getElementById('raiox-list');
     const items = (typeof RAIOX !== 'undefined' && RAIOX[structure[currentIdx].f]) || [];
     list.textContent = '';
-    document.getElementById('raiox-count').innerText = items.length + (items.length === 1 ? ' conceito' : ' conceitos');
-    if (!items.length) {
+    const n = items.length;
+    document.getElementById('raiox-count').innerText = en
+        ? n + (n === 1 ? ' concept' : ' concepts')
+        : n + (n === 1 ? ' conceito' : ' conceitos');
+    if (!n) {
         const p = document.createElement('p');
         p.className = 'raiox-empty';
-        p.textContent = 'Nenhum conceito do glossário está mapeado neste capítulo.';
+        p.textContent = en
+            ? 'No glossary concepts are mapped to this chapter.'
+            : 'Nenhum conceito do glossário está mapeado neste capítulo.';
         list.appendChild(p);
         return;
     }
     items.forEach((it) => {
         const box = document.createElement('div');
         box.className = 'raiox-item';
-        const t = document.createElement('strong'); t.textContent = it.t;
-        const d = document.createElement('span'); d.className = 'raiox-def'; d.textContent = it.d;
-        const r = document.createElement('span'); r.className = 'raiox-ref'; r.textContent = 'REF: ' + it.r;
+        const t = document.createElement('strong'); t.textContent = en && it.te ? it.te : it.t;
+        const d = document.createElement('span'); d.className = 'raiox-def'; d.textContent = en && it.de ? it.de : it.d;
+        const r = document.createElement('span'); r.className = 'raiox-ref'; r.textContent = 'REF: ' + (en && it.re ? it.re : it.r);
         box.append(t, d, r);
         list.appendChild(box);
     });
+}
+
+/* ---------- idioma da interface (acompanha o idioma de leitura) ---------- */
+const navItems = [];   // { el, pt, en } — títulos do menu lateral
+
+function applyUiLang() {
+    const en = settings.readLang === 'en';
+    document.querySelectorAll('[data-en]').forEach((el) => {
+        if (el.dataset.pt === undefined) el.dataset.pt = el.textContent;
+        el.textContent = en ? el.dataset.en : el.dataset.pt;
+    });
+    navItems.forEach((n) => { n.el.innerText = en && n.en ? n.en : n.pt; });
+    renderRaioX();
+    populateVoices();
 }
 
 /* ---------- navegação ---------- */
@@ -153,12 +176,14 @@ function init() {
             const cat = document.createElement('div');
             cat.className = 'nav-cat';
             cat.innerText = item.cat;
+            navItems.push({ el: cat, pt: item.cat, en: CATEGORIES_EN[item.cat] });
             nav.appendChild(cat);
             lastCat = item.cat;
         }
         const btn = document.createElement('a');
         btn.className = item.sub ? 'chapter-link chapter-sub' : 'chapter-link';
         btn.innerText = item.t;
+        navItems.push({ el: btn, pt: item.t, en: TITLES_EN[item.f] });
         btn.href = '#' + item.f.replace('.html', '');
         btn.onclick = (e) => {
             e.preventDefault();

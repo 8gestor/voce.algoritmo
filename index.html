@@ -32,14 +32,14 @@
                 </div>
                 <div class="ctrl-group">
                     <button class="btn-icon btn-aa" id="btn-aa" type="button" onclick="togglePanel('aa-panel')" title="Aparência da leitura" aria-label="Aparência da leitura" aria-expanded="false">Aa</button>
-                    <button class="btn-icon btn-text" id="btn-raiox" type="button" onclick="togglePanel('raiox')" title="Raio-X do capítulo" aria-expanded="false">Raio-X</button>
+                    <button class="btn-icon btn-text" id="btn-raiox" type="button" onclick="togglePanel('raiox')" title="Raio-X do capítulo" aria-expanded="false" data-en="X-Ray">Raio-X</button>
                     <div class="lang-pair" role="group" aria-label="Idioma de leitura">
-                        <span class="lang-label">LER</span>
+                        <span class="lang-label" data-en="READ">LER</span>
                         <button type="button" class="lang-btn" data-opt="readLang" data-val="pt" onclick="setOption('readLang','pt')" title="Ler em português">PT</button>
                         <button type="button" class="lang-btn" data-opt="readLang" data-val="en" onclick="setOption('readLang','en')" title="Read in English">EN</button>
                     </div>
                     <div class="lang-pair" role="group" aria-label="Idioma do áudio">
-                        <span class="lang-label">OUVIR</span>
+                        <span class="lang-label" data-en="LISTEN">OUVIR</span>
                         <button type="button" class="lang-btn" data-opt="audioLang" data-val="pt" onclick="setOption('audioLang','pt')" title="Ouvir em português">PT</button>
                         <button type="button" class="lang-btn" data-opt="audioLang" data-val="en" onclick="setOption('audioLang','en')" title="Listen in English">EN</button>
                     </div>
@@ -58,57 +58,57 @@
             <iframe id="content-frame" name="viewer" src="introducao.html"></iframe>
 
             <section id="aa-panel" class="panel" aria-label="Aparência da leitura">
-                <div class="panel-title">APARÊNCIA</div>
-                <span class="panel-label">TAMANHO</span>
+                <div class="panel-title" data-en="APPEARANCE">APARÊNCIA</div>
+                <span class="panel-label" data-en="SIZE">TAMANHO</span>
                 <div class="size-row">
                     <button type="button" class="opt" onclick="adjustFont(-1)" aria-label="Diminuir a fonte">A−</button>
                     <span id="font-display">19 px</span>
                     <button type="button" class="opt" onclick="adjustFont(1)" aria-label="Aumentar a fonte">A+</button>
                 </div>
-                <span class="panel-label">FONTE</span>
+                <span class="panel-label" data-en="FONT">FONTE</span>
                 <div class="seg">
                     <button type="button" class="opt" data-opt="face" data-val="serif" onclick="setOption('face','serif')">Literata</button>
-                    <button type="button" class="opt" data-opt="face" data-val="legible" onclick="setOption('face','legible')">Legível</button>
+                    <button type="button" class="opt" data-opt="face" data-val="legible" onclick="setOption('face','legible')" data-en="Legible">Legível</button>
                     <button type="button" class="opt" data-opt="face" data-val="mono" onclick="setOption('face','mono')">Mono</button>
                 </div>
-                <span class="panel-label">MARGENS</span>
+                <span class="panel-label" data-en="MARGINS">MARGENS</span>
                 <div class="seg">
-                    <button type="button" class="opt" data-opt="margin" data-val="narrow" onclick="setOption('margin','narrow')">Estreita</button>
-                    <button type="button" class="opt" data-opt="margin" data-val="medium" onclick="setOption('margin','medium')">Média</button>
-                    <button type="button" class="opt" data-opt="margin" data-val="wide" onclick="setOption('margin','wide')">Larga</button>
+                    <button type="button" class="opt" data-opt="margin" data-val="narrow" onclick="setOption('margin','narrow')" data-en="Narrow">Estreita</button>
+                    <button type="button" class="opt" data-opt="margin" data-val="medium" onclick="setOption('margin','medium')" data-en="Medium">Média</button>
+                    <button type="button" class="opt" data-opt="margin" data-val="wide" onclick="setOption('margin','wide')" data-en="Wide">Larga</button>
                 </div>
-                <span class="panel-label">ALINHAMENTO</span>
+                <span class="panel-label" data-en="ALIGNMENT">ALINHAMENTO</span>
                 <div class="seg">
-                    <button type="button" class="opt" data-opt="align" data-val="left" onclick="setOption('align','left')">Esquerda</button>
-                    <button type="button" class="opt" data-opt="align" data-val="justify" onclick="setOption('align','justify')">Justificado</button>
+                    <button type="button" class="opt" data-opt="align" data-val="left" onclick="setOption('align','left')" data-en="Left">Esquerda</button>
+                    <button type="button" class="opt" data-opt="align" data-val="justify" onclick="setOption('align','justify')" data-en="Justified">Justificado</button>
                 </div>
-                <span class="panel-label">VOZ DA NARRAÇÃO</span>
+                <span class="panel-label" data-en="NARRATION VOICE">VOZ DA NARRAÇÃO</span>
                 <div class="voice-row">
                     <label for="voice-pt">PT</label><select id="voice-pt" onchange="setVoice('pt', this.value)"></select>
                     <label for="voice-en">EN</label><select id="voice-en" onchange="setVoice('en', this.value)"></select>
                 </div>
-                <span class="panel-label">TEMA</span>
+                <span class="panel-label" data-en="THEME">TEMA</span>
                 <div class="seg">
-                    <button type="button" class="opt" data-opt="theme" data-val="paper" onclick="setOption('theme','paper')">Papel</button>
+                    <button type="button" class="opt" data-opt="theme" data-val="paper" onclick="setOption('theme','paper')" data-en="Paper">Papel</button>
                     <button type="button" class="opt" data-opt="theme" data-val="dark" onclick="setOption('theme','dark')">Terminal</button>
-                    <button type="button" class="opt" data-opt="theme" data-val="light" onclick="setOption('theme','light')">Claro</button>
-                    <button type="button" class="opt" data-opt="theme" data-val="sepia" onclick="setOption('theme','sepia')">Sépia</button>
+                    <button type="button" class="opt" data-opt="theme" data-val="light" onclick="setOption('theme','light')" data-en="Light">Claro</button>
+                    <button type="button" class="opt" data-opt="theme" data-val="sepia" onclick="setOption('theme','sepia')" data-en="Sepia">Sépia</button>
                 </div>
             </section>
 
             <section id="raiox" class="panel drawer" aria-label="Raio-X do capítulo">
-                <div class="panel-title">RAIO-X DO CAPÍTULO <span id="raiox-count"></span></div>
+                <div class="panel-title"><b data-en="CHAPTER X-RAY">RAIO-X DO CAPÍTULO</b> <span id="raiox-count"></span></div>
                 <div id="raiox-list"></div>
             </section>
         </div>
 
         <footer class="bottom-hud">
-            <button class="nav-btn" onclick="prevChapter()">← ANT</button>
+            <button class="nav-btn" onclick="prevChapter()" data-en="← PREV">← ANT</button>
             <div class="progress-container">
                 <span id="chapter-indicator">00/00</span>
                 <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
             </div>
-            <button class="nav-btn" onclick="nextChapter()">PROX →</button>
+            <button class="nav-btn" onclick="nextChapter()" data-en="NEXT →">PROX →</button>
         </footer>
     </main>
 

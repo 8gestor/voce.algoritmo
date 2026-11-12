@@ -37,3 +37,37 @@ const structure = [
     { t: "Glossário", f: "cap15.html", cat: "DATABASE" },
     { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" }
 ];
+
+/* Títulos em inglês (usados quando o idioma de leitura é EN). Chave = arquivo. */
+const TITLES_EN = {
+    "introducao.html": "BOOT SEQUENCE",
+    "cap01.html": "01. The Brain Is Not a Computer",
+    "cap02.html": "02. Hijacking of Attention",
+    "cap03.html": "03. The Inferred Self",
+    "cap04.html": "04. Necropolitics",
+    "cap05.html": "05. The Sentient City",
+    "cap06.html": "06. Algorithmic Tribunal",
+    "cap06_1.html": "06.1 Financial Panopticon",
+    "cap07.html": "07. Digital Taylorism",
+    "cap08.html": "08. Dead Internet",
+    "cap09.html": "09. Geology of Media",
+    "cap09_1.html": "09.1 Deep Web & Tor",
+    "cap10.html": "10. Neurorights",
+    "cap10_1.html": "10.1 Cybersecurity",
+    "cap10_2.html": "10.2 Crypto Economy",
+    "cap11.html": "11. Onlife Citizenship",
+    "cap12.html": "12. Technofeudalism",
+    "cap13.html": "13. Solarpunk",
+    "cap14.html": "Epilogue",
+    "cap15.html": "Glossary",
+    "cap16.html": "Bibliography"
+};
+const CATEGORIES_EN = {
+    "INICIALIZAÇÃO": "INITIALIZATION",
+    "I. A MENTE": "I. THE MIND",
+    "II. O CERCO": "II. THE SIEGE",
+    "III. INFRAESTRUTURA": "III. INFRASTRUCTURE",
+    "IV. RESISTÊNCIA": "IV. RESISTANCE",
+    "SYSTEM END": "SYSTEM END",
+    "DATABASE": "DATABASE"
+};
