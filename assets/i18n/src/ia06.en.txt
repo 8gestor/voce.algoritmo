@@ -1,0 +1,62 @@
+## ia06-001
+PART II: THE MACHINE | CHAPTER 09
+
+## ia06-002
+The Race:<br>Chips, Energy and Sovereignty
+
+## ia06-003
+On January 27, 2025, Nvidia lost about 589 billion dollars in market value in a single day, the biggest daily drop ever recorded by a company, and its shares fell almost 17%. The reason was a Chinese startup. DeepSeek released a model that, according to the company itself, had been trained on weaker chips and for less than 6 million dollars. All of a sudden, investors began to doubt that the AI race would be won only by whoever spent the most.
+
+## ia06-004
+The doubt didn't last, and spending kept growing. By the <em>Financial Times</em>'s count, Microsoft, Alphabet, Amazon and Meta are expected to invest about 725 billion dollars together in 2026, against about 410 billion in 2025. <span class="selo selo-estimativa">estimate</span> Other tallies range between 630 and 740 billion, and those figures are company projections, not money already spent, and they include construction that isn't always about AI. In any version, it's the money of a country, in the hands of four companies.
+
+## ia06-005
+This chapter looks at that race from the angle of power. Who has the chips, who has the energy, who writes the rules and, in the middle of all that, what Brazil can do.
+
+## ia06-006
+<span class="thesis-header">// The Race Has Three Bottlenecks</span> Training and running a cutting-edge AI depends on three scarce things: advanced chips, abundant electricity and permission to operate. Whoever controls a bottleneck controls everyone else's speed. That's why the technology contest has turned into industrial policy, diplomacy and, more and more, national defense.
+
+## ia06-007
+Chips, Energy and Rules
+
+## ia06-008
+<span class="pos-title">Chips</span>In January 2026, the US began reviewing case by case the sale to China of Nvidia's H200 chips, which had been nearly banned, with conditions. In February, a government official said none had been sold.
+
+## ia06-009
+<span class="pos-title">Energy</span>The International Energy Agency estimated that data centers used about 415 TWh in 2024, something like 1.5% of the world's electricity, and that this consumption could more than double by 2030. That's the subject of Chapter 17.
+
+## ia06-010
+<span class="pos-title">Rules</span>The European Union has banned certain AI practices since February 2025 and has regulated general-purpose models since August 2025. A political agreement pushed the high-risk rules back to December 2027 and August 2028.
+
+## ia06-011
+The data in this table gets old fast, and the text warns you why: deals change, rules get postponed and company figures are targets, not results. The stable part is the logic. Whoever depends on a chip made by another country, on a cloud hosted by another company and on a rule written by another bloc has little power to say no.
+
+## ia06-012
+There's also a question the industry prefers to postpone. If the investments are so huge, will the return come? In October 2025, the Bank of England and the IMF warned that market valuations resembled the peak of the dot-com bubble, and the Bank of England cited what it called an "AI spending frenzy and circular funding," in which companies invest in each other and buy from each other. <span class="selo selo-hipotese">hypothesis</span> Whether there's a bubble or not, nobody knows. But if it bursts, the ones who pay aren't just shareholders: they're workers, countries that bet on it and people who came to depend on the tools.
+
+## ia06-013
+And Brazil?
+
+## ia06-014
+Brazil has a plan. The Brazilian Artificial Intelligence Plan calls for investments of 23 billion reais between 2024 and 2028, and in August 2026 the government announced an expansion of the plan with supercomputers and a national cloud. The amounts and the number of machines vary across reports: one speaks of a supercomputer of about 1 billion reais in Rio Grande do Norte, another of a 1.8-billion machine with about 5,000 GPUs, and a third of more than 2 billion for two supercomputers. According to the MCTI secretary, 30% to 35% of the plan's actions have already been carried out or are under way.
+
+## ia06-015
+In September 2026, the government signed into law Redata, a special regime that suspends federal taxes, such as the import tax, PIS/Cofins and IPI, on equipment purchases for data centers. Among the conditions, at least 10% of installed capacity must be available to the Brazilian market. According to reports, the goal is to reduce dependence on infrastructure abroad, since about 60% of the country's digital workloads run on services from outside. Redata attracts investment, but it also raises questions about water, energy and who benefits, the same ones as in Chapter 17. <span class="selo selo-hipotese">hypothesis</span>
+
+## ia06-016
+On regulation, Bill 2338 remains stalled in the Chamber of Deputies. In August 2026, it was still in a special committee, with no date for a vote, and the election year lowers the chance of progress. The practical consequence is that Brazil attracts data centers and buys supercomputers without yet having a general law saying how AI can be used, audited and contested.
+
+## ia06-017
+The Honest Counterpoint
+
+## ia06-018
+Sovereignty isn't self-sufficiency. No country makes all the chips, writes all the models and generates all the energy AI consumes, and trying to would be expensive and probably pointless. The useful question is a different one: in each layer, is there an alternative if the supplier changes its mind. A Brazilian model, like Sabiá, helps, but if it runs on chips and clouds from abroad, sovereignty is partial. The size of the margin matters more than the flag.
+
+## ia06-019
+<span class="thesis-header">// Sovereignty in Layers</span> Sovereignty in AI isn't having a model with the country's flag on it. It's having <strong>room to say no in each layer</strong>: chips, energy, cloud, data and rules. Faced with any announcement, the citizen's question is which layer it covers and which one we still depend on someone else for.
+
+## ia06-020
+While countries and companies run, some researchers say the race could end badly, and others say that fear distracts from the harms that already exist. The next chapter steps into that fight.
+
+## ia06-021
+<span class="action-header">🗺️ RECOVERY CHALLENGE #09</span> <p><strong>The Map of Layers</strong></p> <p>Behind every AI tool there's a chain, and it's almost never in your country.</p> <p><strong>Your mission:</strong> Pick an AI tool you use. Draw its chain: who made the model, which cloud it runs on, which country the chips are from and where the servers that process your data are. Circle every point where Brazil shows up. Then look in the tool's settings or terms for an option to choose the region where your data is processed. The map is your first sovereignty audit.</p>
