@@ -1,0 +1,71 @@
+## c11-001
+PART IV: RESISTANCE | CHAPTER 11
+
+## c11-002
+Onlife Citizenship:<br>A Personal Guerrilla Manual
+
+## c11-003
+We live in a state of "Onlife," a term coined by the philosopher <strong>Luciano Floridi</strong> to describe the collapse of the boundary between online and offline. We no longer "enter" the internet; we breathe inside it. The problem is that, by inhabiting this space, we were demoted. We stopped being citizens and became <strong>Users</strong>.
+
+## c11-004
+It's often quoted, attributed to Edward Tufte, that only two industries call their customers "users": illegal drugs and software. The line is a provocation, not an etymology, but it points to something real: in both cases, the word denotes passivity and dependence. The system supplies the dose (or the interface), and you consume. Taking back citizenship means <strong>uninstalling user mode</strong> and taking on administrator mode over your own life.
+
+## c11-005
+"Freedom isn't the absence of technology, but the presence of agency over it. A tool you can't fix, understand or switch off isn't a tool; it's a mechanism of control."
+
+## c11-006
+The Conviviality Test (Ivan Illich)
+
+## c11-007
+How do you know whether a technology serves you or you serve it? In 1973, the thinker <strong>Ivan Illich</strong> proposed the concept of <strong>Convivial Tools</strong>. These are tools that expand human autonomy instead of replacing it with opaque industrial processes. Let's apply the test:
+
+## c11-008
+<div class="matrix-card mc-good"> <span class="mc-title" style="color:var(--c-blue)">CONVIVIAL TOOL (Freedom)</span> <ul class="mc-list"> <li><strong>Example:</strong> Bicycle, Email, RSS, Linux.</li> <li><strong>Autonomy:</strong> You control the speed and the destination.</li> <li><strong>Transparency:</strong> You can fix it if it breaks.</li> <li><strong>Effect:</strong> Expands your natural capacity.</li> </ul> </div> <div class="matrix-card mc-bad"> <span class="mc-title" style="color:var(--c-amber)">INDUSTRIAL TOOL (Control)</span> <ul class="mc-list"> <li><strong>Example:</strong> Rental-App Scooter, Instagram, Windows.</li> <li><strong>Dependence:</strong> The app can block your access.</li> <li><strong>Opacity:</strong> Black box. If it breaks, throw it away.</li> <li><strong>Effect:</strong> Creates addiction and passivity.</li> </ul> </div>
+
+## c11-009
+The Friction of Freedom: The Price of Sovereignty
+
+## c11-010
+Here's the unpopular truth: being free takes work. The system sells "convenience" (one-click login, infinite feed, 15-minute delivery) in exchange for your soul. Convenience is the anesthesia of agency.
+
+## c11-011
+Practicing <strong>Digital Sovereignty</strong> requires embracing <strong>Friction</strong>. Keeping your own music files (MP3) takes more work than subscribing to Spotify. Paying with cash takes more work than tapping your watch on the terminal. But that "work" is the muscle exercise of your freedom. When you outsource all the difficulty to the cloud, you outsource your competence at living, too.
+
+## c11-012
+The Deprivation of Solitude: The Fear of Silence
+
+## c11-013
+<strong>Cal Newport</strong> identifies a new pathology: <strong>Solitude Deprivation</strong>. Solitude isn't loneliness; it's the state of being alone with your own thoughts, free from outside <em>inputs</em>.
+
+## c11-014
+Many of us have lost the biological capacity to process emotions because we're never "offline." The moment we feel boredom or anxiety, we pull out the phone. That keeps the brain from solving the problem. We're accumulating an unpayable emotional debt, running from ourselves through the scroll. Resistance is sitting in a room, without a phone, and staring at the ceiling until the anguish turns into an idea.
+
+## c11-015
+<div class="diagram-header">Dashboard: Personal Defense Design</div> <div class="defense-grid"> <div class="defense-node"><strong>NOTIFICATIONS: OFF</strong><br>The world can wait. Your sanity can't.</div> <div class="defense-node"><strong>GRAYSCALE SCREEN</strong><br>Turn the toy into a tool.</div> <div class="defense-node"><strong>DUMBPHONE MODE</strong><br>Remove infinite apps from your phone.</div> <div class="defense-node"><strong>SACRED WINDOW</strong><br>2 hours a day without connection.</div> </div>
+
+## c11-016
+<h3>🛡️ Legacy Protocol: Protecting the Future Firmware</h3> <p>If you have children or spend time with young people, your responsibility is double. The developing brain has no defenses against Silicon Valley's engineering of addiction.</p> <p><strong>The Golden Rule:</strong> Delay the first smartphone as long as possible (the psychologist Jonathan Haidt suggests not before high school; the causal evidence for this effect is disputed, but the precautionary principle is reasonable). Give them convivial tools (Lego, bicycles, musical instruments, <em>offline</em> cameras). Teach them to be creators in the physical world before they're consumers in the digital one. A child's boredom is the cradle of creativity; the tablet is its coffin.</p>
+
+## c11-017
+Obfuscation, mentioned in the Introduction, has a concrete history. In 2006, Daniel Howe and Helen Nissenbaum launched TrackMeNot, an extension that hid a person's real searches among automatically generated fake ones. It was downloaded hundreds of thousands of times and heavily criticized (search engines could filter out the noise); the idea became the book <em>Obfuscation</em>, by Finn Brunton and Helen Nissenbaum (2015).
+
+## c11-018
+What the Evidence Lets Us Say About Screens and Children
+
+## c11-019
+The public discussion about children and screens has turned into trench warfare, and this chapter has to be honest about it. Jonathan Haidt, in <em>The Anxious Generation</em> (2024), argues that the smartphone and social media caused an epidemic of mental suffering in adolescence. Researchers like Candice Odgers (who reviewed the book in <em>Nature</em>) and Amy Orben respond that the available evidence shows small or mixed associations, mostly correlational, and point to other possible causes. There is also the middle position: what matters is <em>how</em>, <em>how much</em> and <em>for what</em> it's used, and context (sleep, physical activity, relationships) weighs more than the device itself.
+
+## c11-020
+The precautionary principle has strong arguments even without causal consensus: sleep, attention and social life are too costly to wait for definitive proof. Official guidance converges: the WHO (2019) recommends no screens for children under 1 and, at most, 1 hour a day between ages 2 and 4, and the American Academy of Pediatrics suggests a family media plan instead of a single number.
+
+## c11-021
+The law has moved forward: Australia banned social media accounts for children under 16 (in force since December 2025), and Brazil passed the Digital ECA (Law 15,211/2025), in force since March 2026, which places on platforms duties of protection, age verification and limits on harmful design practices.
+
+## c11-022
+And a counterpoint to the golden rule: not every connected young person is a victim. Many teenagers, especially those who live in isolation, report finding on social networks a sense of belonging and support they don't have nearby. Protecting isn't disconnecting: it's offering choice, supervision and alternatives.
+
+## c11-023
+There's a limit to what the individual can solve alone: the platforms we choose set the rules of the game. The next chapter is about them.
+
+## c11-024
+<span class="action-icon">📵</span> <span class="action-header">RECOVERY CHALLENGE #15</span> <p><strong>The Disconnected Walk (The Naked Walk)</strong></p> <p>It sounds simple, but for many it's terrifying.</p> <p><strong>Your mission:</strong> Leave the house for a 30-minute walk. Leave your phone at home. No music, no podcast, no step tracker.</p> <p>Just you and the world. Notice how your hand searches for the phantom pocket in the first 10 minutes. Notice the anxiety. Then notice the silence. Feel the real world get its texture back. Recover the ability to <em>be</em> in a place without needing to record or broadcast it.</p>
