@@ -1,0 +1,110 @@
+## c03-001
+PART I: THE MIND | CHAPTER 03
+
+## c03-002
+The Inferred Self vs.<br>Data Sovereignty
+
+## c03-003
+Have you ever felt that the ads showing up for you know something you haven't told anyone yet? Maybe a baby product before you announced the pregnancy, or an antidepressant before you admitted you were sad. That isn't telepathy, and it isn't coincidence. It's statistical inference, often more accurate than we'd like, based on sensors you carry voluntarily.
+
+## c03-004
+You are interacting with your <strong>Inferred Self</strong> (or <em>Data Double</em>). It's a digital shadow, a mathematical construction made of billions of fragments of data. To the algorithm at Amazon, at your bank or at your insurer, that shadow is more real than you are. It's easier to process, cheaper to store and infinitely more profitable to sell. The "Biological Self" is just the inconvenient host that generates the data for the "Inferred Self."
+
+## c03-005
+The term isn't a loose metaphor. <strong>Data double</strong> comes from the sociology of surveillance: Kevin Haggerty and Richard Ericson proposed it in 2000, in the article "The Surveillant Assemblage," to describe how human bodies are broken into flows of information and reassembled into profiles that circulate independently of us. The "behavioral surplus" used later on is a concept from Shoshana Zuboff: the data that exceeds what's needed to deliver the service and becomes raw material for predicting behavior.
+
+## c03-006
+<div class="prism-stage"> <span>YOU (Chaotic)</span> <span style="opacity:0.5; font-size:0.7em;">>> EXTRACTING >></span> </div> <div class="prism-triangle"></div> <div class="prism-data"> <div class="data-bar"><span>ID</span> <span class="bar-val">MALE_35-40_A+</span></div> <div class="data-bar"><span>OCEAN</span> <span class="bar-val">NEUROTICISM_HIGH</span></div> <div class="data-bar"><span>VALUE</span> <span class="bar-risk">$120/YEAR (ADS)</span></div> </div>
+
+## c03-007
+(Illustration: the values above are fictional.)
+
+## c03-008
+A Case: The Quiz and the 87 Million
+
+## c03-009
+In 2013, the researcher Aleksandr Kogan launched a personality quiz on Facebook. About 270,000 people installed it, but because the app also accessed their friends' data, up to 87 million profiles ended up with the consulting firm Cambridge Analytica. In 2019, the FTC fined Facebook 5 billion dollars for deceiving users about privacy.
+
+## c03-010
+The predictive power isn't folklore. In 2013, Michal Kosinski, David Stillwell and Thore Graepel showed, with tens of thousands of volunteers, that Facebook "likes" made it possible to infer, with varying accuracy, attributes such as sexual orientation, political affiliation and personality traits (PNAS). In 2015, Youyou Wu, Kosinski and Stillwell suggested that a model based on likes judged personality better than close friends did. But honesty demands the limits: the predictions hold on average and for specific attributes, and they miss a lot at the individual level. And the persuasive power of <em>microtargeting</em> is hotly debated: the Cambridge Analytica case is cited as proof of mass manipulation, but academic analyses (such as Kalla and Broockman, 2018) point to small persuasion effects in general elections. The risk exists; the omnipotence of the machine is, in part, the industry's own marketing.
+
+## c03-011
+The Fine Print Trap
+
+## c03-012
+For years we were told that privacy is over because "we give away our data in exchange for free services." That's a dangerous half-truth. We don't "give" consent; it's extracted from us. The legal design of privacy policies (clickwrap agreements) is deliberately made to be unreadable. It's a legal fiction for shifting moral responsibility from the company to the user.
+
+## c03-013
+A 2018 experiment showed the size of the problem: Jonathan Obar and Anne Oeldorf-Hirsch created a fake social network, NameDrop, with a clause requiring users to hand over their firstborn child. About 98% of the 543 students didn't even notice.
+
+## c03-014
+"Consent" as a legal fiction has a robust academic critique: the legal scholar Daniel Solove argues (2013) that the "privacy self-management" model fails, because nobody can read, understand and decide on hundreds of policies.
+
+## c03-015
+The real problem isn't the data you know you gave (your name, your email), but the <strong>Behavioral Surplus</strong>: data that was captured without you even knowing it was possible to measure.
+
+## c03-016
+The philosopher Byung-Chul Han goes further: in <em>Psychopolitics</em> (2014), he argues that forced confession has been replaced by voluntary exposure, and that today's power works because we feel free when we surrender ourselves.
+
+## c03-017
+The Invisible Market
+
+## c03-018
+Who buys these inferences? In 2014, the US FTC studied nine data brokers and pointed to a "fundamental lack of transparency": most get data from other brokers, and one of them held more than 700 billion data elements. For Bruce Schneier (<em>Data and Goliath</em>, 2015), surveillance is the business model of the internet.
+
+## c03-019
+Dossier: Deep Extraction Matrix
+
+## c03-020
+Below, we present the technical anatomy of what your smartphone and apps are actually measuring while you read this text. The depth of the intrusion goes far beyond GPS:
+
+## c03-021
+<table class="matrix-table"> <thead> <tr> <th width="30%">SENSOR / SOURCE</th> <th width="40%">WHAT IS INFERRED (The Hidden Truth)</th> <th width="30%">APPLICATION (The Scam)</th> </tr> </thead> <tbody> <tr> <td> <span class="detail-highlight">Front Camera (Selfie)</span> <span class="tech-tag">Pupillometry</span> <span class="tech-tag">Micro-expressions</span> </td> <td> Pupil dilation indicates cognitive load (mental effort) and involuntary emotional arousal. In the lab, the pupil is a sign of mental effort and emotional activation; but inferring internal states like "lying" from it is scientifically fragile. The real risk is the commercial use of this imperfect reading to make decisions about you. </td> <td>Real-time A/B testing of ads. Price adjustments based on your emotional reaction to seeing the amount.</td> </tr> <tr> <td> <span class="detail-highlight">Gyroscope & Accelerometer</span> <span class="tech-tag">Behavioral Biometrics</span> </td> <td> Detects hand tremor (anxiety, withdrawal, early Parkinson's). Identifies whether you're walking, running or lying drunk at 3 a.m. </td> <td>Alleged application: calibrating dynamic pricing to the user's perceived vulnerability (see the battery case, further on: the hypothesis is plausible, but it hasn't been proven).</td> </tr> <tr> <td> <span class="detail-highlight">Typing Cadence</span> <span class="tech-tag">Keystroke Dynamics</span> </td> <td> The speed and rhythm of your typing are a unique fingerprint. They reveal fatigue, stress and even changes in brain chemistry (substance use). </td> <td>Banks use it for "fraud scores." Social networks use it to measure the emotional impact of a post.</td> </tr> <tr> <td> <span class="detail-highlight">Microphone (Passive)</span> <span class="tech-tag">Spectral Analysis</span> </td> <td> It doesn't record only words ("Alexa"), but tone of voice and background noise (traffic, TV, a domestic argument). It identifies the social context. </td> <td>Profiling of social class and family stability for insurers and credit.</td> </tr> <tr> <td> <span class="detail-highlight">Environmental Sensors</span> <span class="tech-tag">Barometer</span> <span class="tech-tag">Light Meter</span> </td> <td> It knows whether you're indoors (a mall) or outdoors. It knows which floor of a building you're on (atmospheric pressure). </td> <td>Vertical geolocation (Z-axis) to know exactly which store you visited inside a mall.</td> </tr> </tbody> </table>
+
+## c03-022
+The Panopticon of Open Finance
+
+## c03-023
+The banking system sells <strong>Open Finance</strong> as "freedom" and "portability." In practice, at the limit, it can become the construction of a Financial Panopticon. Before, your bank knew what you spent on its own card. Now, by connecting all your accounts, investments and insurance, a holistic profile of your life is created.
+
+## c03-024
+In theory, the algorithm doesn't just see "spending"; it sees morality. If you spend a lot on bars, tobacco shops or betting (the "Bets"), those signals can feed risk models, make insurance more expensive (cross-referencing financial data with biological risk) or weigh on a job selection. We have to separate what already exists from what is risk: Brazilian Open Finance is consent-based, and consent can be revoked, and the LGPD limits secondary use of the data. The danger lies in the <strong>asymmetry</strong>: the "consent" given on a three-click screen is rarely informed. A bank statement only becomes a certificate of behavioral history if nobody checks what it's used for.
+
+## c03-025
+Case Study: Algorithmic Exploitation
+
+## c03-026
+Big Tech uses this data to exploit biological vulnerabilities:
+
+## c03-027
+<h3 style="margin-top:0;">1. Uber and 99: The Price of Desperation (a Plausible Suspicion)</h3> <p>The most famous suspicion is the battery one. In 2016, Keith Chen, then head of economic research at Uber, said in an interview that low battery was one of the best predictors of who accepts surge pricing. The company has denied ever since that it uses this information to set fares, and later journalistic tests couldn't reproduce the effect conclusively. <strong>So the case isn't proven.</strong> But the fact that it's so believable says a lot: the company <em>knows</em> how to measure your vulnerability, and what protects us isn't technical impossibility, but the <em>promise</em> that it doesn't use it. When the price is calculated by an opaque system, you have no way to audit that promise.</p> <h3>2. iFood: Hunger Engineering</h3> <p>Delivery apps compete for your attention at the moments when you're most impulsive, with personalized notifications, time-of-day promotions and coupons that expire. This is well-known persuasive design, tested at scale through A/B testing. What we <em>don't</em> have is a public audit showing that a specific app exploits, say, Sunday night or a rainy day to raise how much you're willing to pay. It's a plausible hypothesis, and confirming it depends on a transparency that platforms don't offer. Here, the absence of proof is also information.</p> <h3>3. Shopee and Shein: Gamification of Impulse</h3> <p>Shopping platforms use design <strong>"Dark Patterns."</strong> Fake countdown timers, prize wheels and virtual coins aren't fun; they're casino tactics to keep your brain in the variable reward circuit, getting in the way of rational thinking about whether you need the purchase. There is systematic evidence from the sector: a Princeton study (Mathur and colleagues, 2019) crawled about 11,000 shopping sites and found deceptive patterns on more than 1,200 of them, including 393 countdown timers, of which 157 (on 140 sites) were deceptive. The study documents the practice across the sector; it doesn't name each individual platform.</p>
+
+## c03-028
+Sovereignty, in Practice
+
+## c03-029
+Nick Couldry and Ulises Mejias call this process <strong>data colonialism</strong> (<em>The Costs of Connection</em>, 2019): the appropriation of human life to extract data continuously. Sovereignty is the right not to be raw material.
+
+## c03-030
+The most promising legal response isn't "read the terms," but <strong>banning certain uses</strong>. The European AI Act, with prohibitions in force since February 2025, bans, for example, emotion-inference systems at work and in school, and social scoring. In Brazil, the LGPD (2018) sets out the principles of purpose and necessity and the right to have automated decisions reviewed (article 20). What's still missing is strong enforcement.
+
+## c03-031
+The counterpoint: the same inference capability that exploits also protects. Fraud-detection systems block scams on your card; pattern analysis in medical imaging helps prioritize high-risk cases. The question is never inference itself. It's the <strong>purpose, the control and the right to contest</strong>.
+
+## c03-032
+Countermeasures: Watching the Watcher
+
+## c03-033
+The solution can't be merely tactical (hiding); it has to be structural. But while the revolution doesn't arrive, we have guerrilla tools.
+
+## c03-034
+Audit tools let you see the invisible. <strong>Exodus Privacy</strong> (a French nonprofit) analyzes Android apps and lists the trackers embedded in them; <strong>TrackerControl</strong> logs and blocks tracking traffic on the phone itself. The classic case is the flashlight app: in 2013, the US consumer protection agency (the FTC) accused the developer of a popular Android flashlight app of collecting users' location and passing it to advertisers without telling them. Seeing the data traffic leaving your phone is the first step to understanding the magnitude of what's going on.
+
+## c03-035
+Beyond that, we should support initiatives like Tim Berners-Lee's <strong>SOLID</strong> project, which proposes that data live in the user's personal "Pods," not on companies' servers. You grant temporary access, not eternal ownership.
+
+## c03-036
+But this portrait doesn't stay only with companies: the state also consults it and uses it to decide who deserves benefits, credit or suspicion. That is the subject of the next chapter.
+
+## c03-037
+<span class="action-icon">🔍</span> <strong style="color:var(--c-bio); text-transform:uppercase; display:block; margin-bottom:10px; font-family:var(--font-tech);">RECOVERY CHALLENGE #03</strong> <p style="font-weight:bold;">The Radical Audit (DSAR)</p> <p>Don't just try to hide. Look the monster in the eye.</p> <p><strong>Your mission today:</strong> Go into Google's privacy settings ("Google Takeout") or Instagram's ("Download your information") and request a full download of your data. In Brazil, this is a right: article 18 of the LGPD guarantees data subjects access to their data and portability. When the file arrives, open it.</p> <p>Look at the history of searches, videos and browsing tied to your account and at the inferences the platform keeps about your interests (the ad personalization page shows some of them). If you turned on voice and audio recording, look at the commands that were stored, too. A heads-up: since 2024, Google has been keeping location history (Timeline) on the device itself, not in the cloud, so it may not show up in the exported file. It's a good example of how the rules change under our feet. That visceral experience of seeing your "Inferred Self" in a spreadsheet is the fuel you need to change your behavior and demand sovereignty.</p>

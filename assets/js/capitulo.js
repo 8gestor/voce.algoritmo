@@ -66,6 +66,7 @@
 
     const units = new Map();     // id -> { el, pt }
     document.querySelectorAll('[data-id]').forEach((el) => {
+        if (el.parentElement && el.parentElement.closest('[data-id]')) return;   // rótulo dentro de outra unidade
         units.set(el.dataset.id, { el: el, pt: el.innerHTML });
     });
     const queue = Array.from(document.querySelectorAll('.speakable[data-id]'));
