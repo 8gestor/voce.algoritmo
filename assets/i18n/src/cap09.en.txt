@@ -1,0 +1,95 @@
+## c09-001
+PART III: INFRASTRUCTURE | CHAPTER 09
+
+## c09-002
+The Stone Cloud:<br>The Bloody Geology of Media
+
+## c09-003
+The "Cloud" is the most successful and perverse euphemism in the history of corporate marketing. The word was handpicked to evoke lightness, immateriality, something white and fluffy floating above the laws of physics and moral responsibility. But the cloud isn't vapor. The cloud is a heavy, hot, noisy industrial megastructure, anchored in the Earth's crust through open wounds in the ground.
+
+## c09-004
+The theorist <strong>Jussi Parikka</strong>, in <em>A Geology of Media</em>, invites us to understand the digital age not as an information age, but as a new geological age. To create the smooth screen where you're reading this text, entire mountains were blown up. For the algorithm to "think," rivers were diverted to cool white-hot servers. Digital media isn't "wireless"; it's deeply rooted in the earth, and its root feeds on conflict minerals and drinking water.
+
+## c09-005
+<span class="thesis-header">// The Anthrobscene Thesis</span> "Parikka coined the term <strong>Anthrobscene</strong> to describe the obscenity of the Digital Anthropocene. The obscenity lies in the fact that our 'convenience' (calling an Uber, generating an AI image) depends directly on planetary toxicity. Our devices are, essentially, rocks arranged by laser beams and bathed in blood, destined to return to the earth as chemical poison in under three years."
+
+## c09-006
+Blood in the Battery: The Creuseurs of the Congo
+
+## c09-007
+We can't talk about technology without talking about <strong>Siddharth Kara</strong> and his seminal investigation <em>Cobalt Red</em>. Cobalt is the essential element for the stability of the lithium-ion batteries that power every smartphone and electric car in the world. And about 70% of that cobalt comes from the Democratic Republic of the Congo (a US Geological Survey estimate).
+
+## c09-008
+Most Congolese cobalt comes from industrial mining, but a significant share (estimates vary, from 10% to 30%, depending on the source) is extracted by "artisanal miners" (<em>creuseurs</em>). They are men, women and children who dig tunnels with their bare hands, with no safety equipment, breathing toxic dust that destroys the lungs. They descend into dark holes to fetch the bluish stone that lets you <em>scroll</em> through Instagram. Big Tech's supply chain runs through intermediaries and the companies say they audit their suppliers, but investigations by Kara and by organizations like Amnesty International document child labor and dangerous conditions. The physical reality is undeniable: the base of the digital pyramid rests, in part, on what Kara calls modern slavery.
+
+## c09-009
+<div class="flow-step"> <div class="step-icon">⛏️</div> <div class="step-content"> <span class="step-title">1. EXTRACTION (CONGO/CHILE)</span> <span class="step-desc">Dangerous manual labor, groundwater contamination, armed militias controlling mines.</span> </div> </div> <div class="flow-step"> <div class="step-icon">🚢</div> <div class="step-content"> <span class="step-title">2. REFINING AND TRANSPORT (CHINA)</span> <span class="step-desc">Heavy chemical processing. Massive CO2 emissions from cargo ships crossing the ocean.</span> </div> </div> <div class="flow-step"> <div class="step-icon">📱</div> <div class="step-content"> <span class="step-title">3. EPHEMERAL USE (YOU)</span> <span class="step-desc">A smartphone is usually replaced within a few years (on average, something like 3 to 4), often because of a degraded battery or a lack of updates.</span> </div> </div> <div class="flow-step"> <div class="step-icon">☠️</div> <div class="step-content"> <span class="step-title">4. DISPOSAL (GHANA, NIGERIA AND ELSEWHERE)</span> <span class="step-desc">Part of the electronic waste is burned in the open air to recover copper, releasing toxic substances. According to the UN, the world generated 62 million tonnes of e-waste in 2022, and only about 22% was documented as recycled.</span> </div> </div>
+
+## c09-010
+The Water War: Data Centers vs. the People
+
+## c09-011
+While hardware demands land, software demands water. A lot of water. Artificial "intelligence" is, thermodynamically, a process that generates intense heat. For the processors at Google, Microsoft and Amazon not to melt, they need constant cooling.
+
+## c09-012
+The conflict has already begun. In Uruguay, protests broke out in 2023 when it became known that a data center planned by Google would consume up to 7.6 million liters of drinking water a day, in the middle of a historic drought; the project was redesigned, with air cooling, and approved in 2024 (air cooling saves water, but tends to use more energy). In Arizona (USA), server farms compete for the desert's scarce water. <strong>Kate Crawford</strong> (<em>Atlas of AI</em>) reminds us that AI isn't ethereal; it drinks from the same glass we do.
+
+## c09-013
+<span class="water-icon">💧</span> <div class="water-text"> <strong>The Cost of Curiosity:</strong> An estimate by researchers at the University of California, Riverside (2023) calculated that training GPT-3 evaporated about 700,000 liters of fresh water in Microsoft's data centers and that, in operation, a conversation of 20 to 50 exchanges "drinks" about <span class="water-highlight">500 ml of water</span>. Be careful: it's an estimate, and the numbers vary widely with the model, the location and the time; in 2025, OpenAI's CEO stated that an average query uses a tiny fraction of that (about 0.3 ml), a figure from the company itself and not independently audited. The honest conclusion is that the cost per question is small and uncertain, but, multiplied by billions of users and added to training, it stops being negligible. </div>
+
+## c09-014
+Deep Time: The Temporal Mismatch
+
+## c09-015
+There is a temporal violence at the heart of technology. We are extracting resources that took the Earth millions of years to form (Geological Time) to create devices designed to last only a few months (Market Time).
+
+## c09-016
+<div class="dt-geo">GEOLOGICAL: 50,000,000 YEARS (FORMATION)</div> <div class="dt-use">2 YEARS</div>
+
+## c09-017
+The Jevons Paradox and Efficiency
+
+## c09-018
+Companies promise that technology will become more "efficient." But the nineteenth-century economist <strong>William Stanley Jevons</strong> already warned us: when the efficiency of a resource increases, total consumption <em>increases</em>, it doesn't fall. If we make processing cheaper and more efficient, we don't use less processing; we invent refrigerators with Wi-Fi and toothbrushes with Bluetooth. Efficiency feeds waste.
+
+## c09-019
+The trail shows up in the companies' own balance sheets: Google's 2024 environmental report recorded emissions 48% higher than in 2019, attributed mainly to data center energy consumption, and Microsoft reported a 29% increase since 2020. In 2025, Google reported a 12% drop in data center emissions in 2024, even with electricity consumption up 27%: efficiency helps, but it doesn't cancel out growth.
+
+## c09-020
+Energy, Water and the Other Side of Efficiency
+
+## c09-021
+The International Energy Agency estimated, in 2025, that data centers consumed about 415 TWh in 2024, something like 1.5% of the world's electricity, and projected that this consumption could more than double by 2030, driven by AI. The impact is concentrated: a few regions carry the pressure on the power grid and on water, which explains why the conflict shows up in specific places, like Canelones, in Uruguay.
+
+## c09-022
+There is a flip side that can't be ignored. Technology also helps reduce emissions in other sectors (optimizing power grids and logistics, climate models), though the net balance is uncertain and Jevons's rebound effect can cancel out part of the gains. As for cobalt, LFP (lithium iron phosphate) chemistry, which does without the metal, already accounts for a large share of electric vehicle batteries, which shows that dependence on the Congo isn't destiny.
+
+## c09-023
+Public policy is starting to react to obsolescence: the European Union passed, in 2024, a right-to-repair directive, which requires manufacturers to repair out-of-warranty products in certain cases, and US states such as California and New York passed similar laws for electronics. Permacomputing, next, is the individual version of the same logic.
+
+## c09-024
+Synthesis: Permacomputing as Resistance
+
+## c09-025
+In the face of material catastrophe, the answer isn't to buy the new "Green iPhone" (which doesn't exist). The answer is radical: <strong>Permacomputing</strong>.
+
+## c09-026
+This movement applies the principles of permaculture to computing. It means using old hardware to exhaustion, repairing what breaks, and writing lightweight software that doesn't demand supercomputers. It's the ethical refusal of planned obsolescence. Keeping a 2015 laptop running in 2025 isn't a sign of poverty; it's an act of sabotage against the extraction machine.
+
+## c09-027
+DIGITAL CONSUMERISM
+
+## c09-028
+"New is better." Replace every 2 years. Sealed/glued batteries. Bloated software that makes hardware slow. Maximum extraction.
+
+## c09-029
+PERMACOMPUTING
+
+## c09-030
+"Durable is better." A cycle of 10+ years. Right to Repair. Optimized software and lightweight Linux. Regeneration and respect for materials.
+
+## c09-031
+From stone and water we move to the territory where the trail vanishes on purpose: anonymity. The next chapter descends into the deep ocean of the network.
+
+## c09-032
+<span class="action-icon">🔧</span> <span class="action-header">RECOVERY CHALLENGE #10</span> <p><strong>The Sacred Maintenance</strong></p> <p>The revolution starts at the repair bench.</p> <p><strong>Your mission:</strong> Take an "old" or "slow" electronic device that you set aside. Don't buy a new one. Clean it. Format it. Install a lightweight operating system or clear the storage. Replace the battery if needed (watch a tutorial on <strong>iFixit</strong>). Extend that object's life by another year. Every year you avoid a purchase is a year you deny profit to blood mining.</p>
