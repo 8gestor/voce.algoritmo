@@ -233,3 +233,5 @@ body.paper-mode .probs-title, body.paper-mode .prob-row { font-family: 'JetBrain
 body.paper-mode .prob-track { background: transparent; border: 1.5px solid #1A1A18; border-radius: 0; height: 14px; }
 body.paper-mode .prob-fill { background: repeating-linear-gradient(45deg, #1A1A18 0 3px, #FBFAF6 3px 6px); }
 body.paper-mode .prob-val { color: #1A1A18; }
+body.paper-mode .pos-card { background: #F3F1EA !important; border: 1.5px solid #1A1A18 !important; border-top: 4px solid #1A1A18 !important; border-radius: 0 !important; color: #1A1A18 !important; }
+body.paper-mode .pos-title { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }
