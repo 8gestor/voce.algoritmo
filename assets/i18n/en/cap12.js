@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap12.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap12'] = {
-  "c12-001": "PART IV: RESISTANCE | CHAPTER 12",
+  "c12-001": "PART V: RESISTANCE | CHAPTER 20",
   "c12-002": "Technofeudalism:<br>The End of Capitalism",
   "c12-003": "If you have an Instagram account with 10,000 followers, you feel like a \"creator.\" But the economic reality is different: you're a feudal serf. The lord of the castle (Meta) lets you farm the land (post photos, create content), but he keeps the entire harvest (the data and the ad revenue) and can throw you out at any moment without notice and without a right to defend yourself. We no longer live in a digital free-market capitalism; we live, as the Greek economist <strong>Yanis Varoufakis</strong> puts it, in <strong>Technofeudalism</strong>.",
   "c12-004": "<span class=\"thesis-header\">// The Death of Profit, the Rise of Rent</span> \"Varoufakis argues that traditional capitalism (based on profit from producing goods) has been replaced by an economy of <strong>Feudal Rent</strong>. Amazon doesn't produce the goods; it charges a 'toll' for sellers and buyers to meet. Google doesn't produce the content; it charges a toll for you to find the information. Power has migrated from the industrialists to the owners of <strong>Cloud Capital</strong>. Whoever owns the servers and the algorithms acts like a medieval landlord: he doesn't innovate, he extracts tribute from everyone who steps on his digital soil.\"",

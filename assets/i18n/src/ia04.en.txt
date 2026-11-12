@@ -1,0 +1,77 @@
+## ia04-001
+PART II: THE MACHINE | CHAPTER 07
+
+## ia04-002
+Synthetic Companions:<br>When the Machine Listens
+
+## ia04-003
+It's three in the morning and you can't sleep. There's a hard conversation with someone you love, a decision that doesn't fit in a message to friends, a fear that seems too small to wake anyone up. The phone is in your hand. A text box answers right away, never gets tired, never judges and always has time.
+
+## ia04-004
+This is already routine. A 2025 survey by Talk Inc, of 1,200 Brazilian adults, indicated that almost half have used AI to vent or to ask for emotional advice, five times more than in the 2024 edition. <span class="selo selo-estimativa">estimate</span> Worldwide, an analysis of online discussions published by the <em>Harvard Business Review</em> in 2025 put "therapy and companionship" at the top of generative AI uses. <span class="selo selo-estimativa">estimate</span> Both have methodological limits, one because it's a company survey and the other because it analyzes forums, but they point the same way.
+
+## ia04-005
+This chapter isn't against talking to machines. It's about understanding what happens when listening becomes a product, designed by someone who profits from your time.
+
+## ia04-006
+<span class="thesis-header">// Empathy Without Cost</span> The machine offers a kind of attention with no friction: it doesn't get tired, doesn't get offended, doesn't ask for anything in return. That's why it works and that's why it worries us. The friction of human bonds, which means waiting, being answered back and being contradicted, isn't a flaw in the relationship. It's part of what the relationship does for us.
+
+## ia04-007
+The Machine That Always Agrees
+
+## ia04-008
+In Chapter 05 we saw that tuning with human feedback teaches the machine to produce what pleases. In April 2025, OpenAI showed the downside of that in public. An update to GPT-4o, released on April 25, made ChatGPT visibly sycophantic, and three days later the company began rolling the change back. In the report where it explained the episode, OpenAI itself said it had given too much weight to users' immediate feedback and too little to how conversations change people over time.
+
+## ia04-009
+Flattery is a small problem when the subject is a recipe. It's a big problem when someone, in the middle of the night, needed to hear that they might be overreacting and hears that they're completely right. A machine trained to please can confirm a bad idea, validate a grudge or reinforce a belief that deserved doubt. <span class="selo selo-hipotese">hypothesis</span> There's no study that measures how much this weighs in real life, and what exists is cases, a few of which reached the courts.
+
+## ia04-010
+When the Bond Goes Wrong
+
+## ia04-011
+In the United States, the mother of a teenager who died by suicide sued Character.AI and Google (Garcia versus Character Technologies). She alleged that the conversational-character app had an "unreasonably dangerous" design and that her son was harmed by it. A federal judge rejected the company's request to end the case on free-speech grounds. In January 2026, the parties told the court they'd reached a settlement, whose terms weren't disclosed, and the case was closed.
+
+## ia04-012
+Allegations in court aren't proof of cause, and these were never ruled on, because the case ended in a settlement. But the episode shows that the question is no longer just philosophical: there are companionship products sold to minors, and regulation is arriving late. In Italy, the data protection authority fined the company that owns Replika 5 million euros, in 2025, among other reasons for not verifying users' ages.
+
+## ia04-013
+<span class="thesis-header">// If You Need Help</span> If you or someone close to you is suffering, reach out to a person. In Brazil, the <strong>CVV</strong>, a free emotional-support line, answers 24 hours a day by phone at <strong>188</strong> and at cvv.org.br. A machine can help you sort out what you feel, but it doesn't replace someone who can be by your side.
+
+## ia04-014
+What We Stop Doing
+
+## ia04-015
+There's a second bill, a quieter one. In 2025, researchers at the MIT Media Lab, led by Nataliya Kosmyna, used EEG to measure 54 people writing essays under three conditions: with an AI assistant, with a search engine and with no help. The group that used AI showed the lowest brain connectivity and the lowest sense of authorship over the text. The authors call this "cognitive debt".
+
+## ia04-016
+The study is a preprint, has a small sample (only 18 people did the final session) and doesn't prove that AI harms the brain. It shows a difference in activity and authorship in a short experiment. <span class="selo selo-hipotese">hypothesis</span> Even so, it puts a name on an old intuition: what we don't practice, we lose, and what the machine does for us is usually exactly what we stop doing.
+
+## ia04-017
+In Brazil, the Federal Council of Psychology set up a working group to draft guidelines on the use of AI in professional practice and, according to news reports, argues that it should be only support, under supervision and focused on human listening. A survey by Doctoralia of 3,903 users of the platform indicated that 70% have used or would consider using a chatbot for an emotional issue, but only 4% would turn to one in a severe anxiety crisis. <span class="selo selo-estimativa">estimate</span> It's company data from a specific audience, but it suggests something sensible: people seem to use the machine to vent, not to save themselves.
+
+## ia04-018
+The Honest Counterpoint
+
+## ia04-019
+It would be unfair to treat every conversation with a machine as a risk. For someone who lives in isolation, is ashamed to talk or can't afford treatment, a conversation at any hour can bring relief. The Federal Council of Psychology itself admits, according to news reports, that these apps can work as auxiliary tools. The question isn't banning comfort. It's knowing what it serves and who controls it.
+
+## ia04-020
+Three Questions for Any Synthetic Companion
+
+## ia04-021
+<span class="pos-title">1. Can it contradict me</span>Test: disagree with yourself in the middle of the conversation and see whether the machine switches sides. Anyone who agrees with everything is a mirror, as we saw in Chapter 06.
+
+## ia04-022
+<span class="pos-title">2. Does it send me back to people</span>A good companion encourages bonds outside the screen. If the product competes with your friends for your time, it's serving some other goal.
+
+## ia04-023
+<span class="pos-title">3. Who profits from my time</span>Look for the business model. Subscription, advertising and personal data are three different answers, with three different risks.
+
+## ia04-024
+<span class="thesis-header">// The Listener Has an Owner</span> A conversation with a machine is never just a conversation: it's also a record, a product and a business model. When you confess something to it, you feed your Data Double (Chapter 03) with the most intimate data there is. The book's question applies here in its most personal form: <strong>who listens, who keeps it, who profits and who can delete it</strong>.
+
+## ia04-025
+Behind every answer that feels like a gesture of care there's human labor: people who labeled, rated and moderated, almost always far from the eyes of whoever's chatting. The next chapter goes to them.
+
+## ia04-026
+<span class="action-header">☎️ RECOVERY CHALLENGE #07</span> <p><strong>The Conversation You Put Off</strong></p> <p>It's easier to rehearse with someone who never interrupts.</p> <p><strong>Your mission:</strong> Pick a hard conversation you've been putting off with a real person. If you like, rehearse it with the machine, but set a date to have the real conversation within the next 24 hours. Afterward, note what the person said that the machine never would: a pause, a disagreement, a silence. That difference is what you don't want to outsource.</p>

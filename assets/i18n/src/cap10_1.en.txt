@@ -1,5 +1,5 @@
 ## c10-1-001
-PART IV: RESISTANCE | CHAPTER 10.1
+PART V: RESISTANCE | CHAPTER 18.1
 
 ## c10-1-002
 Digital Fortress:<br>Zero Trust and Tactical Hardening

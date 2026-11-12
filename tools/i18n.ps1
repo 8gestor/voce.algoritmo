@@ -56,6 +56,22 @@ function Get-Plain([string]$html) {
 }
 function Count-Words([string]$html) { $p = Get-Plain $html; if (-not $p) { 0 } else { ($p -split ' ').Count } }
 
+# Conta sentenças com a mesma regra da engine de narração (capitulo.js): palavra que termina em . ! ? …
+# (aceitando aspas/parênteses depois), exceto abreviações conhecidas; o fim do texto fecha a última sentença.
+function Count-Sentences([string]$html) {
+    $p = Get-Plain $html
+    if (-not $p) { return 0 }
+    $tokens = $p -split ' '
+    $endRe = '[.!?' + [char]0x2026 + ']["''' + [char]0x201D + [char]0x2019 + ')\]]*$'   # ASCII no codigo: o PowerShell trata aspas tipograficas como aspas
+    $n = 0
+    for ($i = 0; $i -lt $tokens.Count; $i++) {
+        $t = $tokens[$i]
+        if ($t -match $endRe -and $t -notmatch '^(Dr|Dra|Sr|Sra|Prof|etc|vs|St|Mr|Mrs|Ms|U\.S|e\.g|i\.e)\.$') { $n++ }
+    }
+    if ($tokens[$tokens.Count - 1] -notmatch $endRe) { $n++ }
+    $n
+}
+
 # Assinatura estrutural: tags e atributos, em ordem alfabética (a ordem pode mudar na tradução).
 function Get-TagSig([string]$html) {
     ([regex]::Matches($html, '<[^>]+>') | ForEach-Object { ($_.Value -replace '\s+', ' ').ToLower() } | Sort-Object) -join '|'
@@ -81,12 +97,15 @@ function Build-Page([string]$page) {
     $units = Get-Units $page
     $src = Read-Src $page
     $problems = New-Object System.Collections.Generic.List[string]
+    $warnings = New-Object System.Collections.Generic.List[string]
     $ids = @{}
     foreach ($u in $units) {
         $ids[$u.Id] = $true
         if (-not $src.Contains($u.Id) -or -not $src[$u.Id]) { $problems.Add("falta: $($u.Id)"); continue }
         $en = $src[$u.Id]
         if ((Get-TagSig $u.Html) -ne (Get-TagSig $en)) { $problems.Add("tags diferem: $($u.Id)") }
+        $sp = Count-Sentences $u.Html; $se = Count-Sentences $en
+        if ($sp -ne $se) { $warnings.Add(("frases {0}: PT {1} / EN {2}" -f $u.Id, $sp, $se)) }
         $wp = Count-Words $u.Html; $we = Count-Words $en
         if ($wp -ge 10) {
             $r = $we / $wp
@@ -98,6 +117,10 @@ function Build-Page([string]$page) {
         Write-Host ("{0,-16} {1} problema(s):" -f $page, $problems.Count)
         $problems | Select-Object -First 25 | ForEach-Object { Write-Host "    - $_" }
         return $false
+    }
+    if ($warnings.Count) {
+        Write-Host ("{0,-16} AVISO: {1} unidade(s) com número de frases diferente (a narração sincroniza por frase):" -f $page, $warnings.Count)
+        $warnings | Select-Object -First 25 | ForEach-Object { Write-Host "    ~ $_" }
     }
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append("/* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/$page.en.txt — não edite à mão. */`n")

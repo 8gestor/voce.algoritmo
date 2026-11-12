@@ -1,5 +1,5 @@
 ## c09-001
-PART III: INFRASTRUCTURE | CHAPTER 09
+PART IV: INFRASTRUCTURE | CHAPTER 17
 
 ## c09-002
 The Stone Cloud:<br>The Bloody Geology of Media
@@ -35,7 +35,7 @@ While hardware demands land, software demands water. A lot of water. Artificial 
 The conflict has already begun. In Uruguay, protests broke out in 2023 when it became known that a data center planned by Google would consume up to 7.6 million liters of drinking water a day, in the middle of a historic drought; the project was redesigned, with air cooling, and approved in 2024 (air cooling saves water, but tends to use more energy). In Arizona (USA), server farms compete for the desert's scarce water. <strong>Kate Crawford</strong> (<em>Atlas of AI</em>) reminds us that AI isn't ethereal; it drinks from the same glass we do.
 
 ## c09-013
-<span class="water-icon">💧</span> <div class="water-text"> <strong>The Cost of Curiosity:</strong> An estimate by researchers at the University of California, Riverside (2023) calculated that training GPT-3 evaporated about 700,000 liters of fresh water in Microsoft's data centers and that, in operation, a conversation of 20 to 50 exchanges "drinks" about <span class="water-highlight">500 ml of water</span>. Be careful: it's an estimate, and the numbers vary widely with the model, the location and the time; in 2025, OpenAI's CEO stated that an average query uses a tiny fraction of that (about 0.3 ml), a figure from the company itself and not independently audited. The honest conclusion is that the cost per question is small and uncertain, but, multiplied by billions of users and added to training, it stops being negligible. </div>
+<span class="water-icon">💧</span> <div class="water-text"> <strong>The Cost of Curiosity:</strong> An estimate by researchers at the University of California, Riverside (2023) calculated that training GPT-3 evaporated about 700,000 liters of fresh water in Microsoft's data centers and that, in operation, a conversation of every 10 to 50 medium-length responses "drink" about <span class="water-highlight">500 ml of water</span>. Be careful: it's an estimate, and the numbers vary widely with the model, the location and the time; in 2025, OpenAI's CEO stated that an average query uses a tiny fraction of that (about 0.3 ml), a figure from the company itself and not independently audited. The honest conclusion is that the cost per question is small and uncertain, but, multiplied by billions of users and added to training, it stops being negligible. </div>
 
 ## c09-014
 Deep Time: The Temporal Mismatch

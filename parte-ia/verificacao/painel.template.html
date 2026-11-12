@@ -1,0 +1,369 @@
+<title>Conferência de Fatos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: trilho de filtros à esquerda (recolhe no celular) e lista de afirmações à direita.
+   Tokens: chão de papel, tinta, um acento violeta (o da Parte II) e matizes só para prioridade e andamento. */
+:root {
+  --bg: #F5F4EF; --surface: #FFFFFF; --ink: #1B1B19; --muted: #63625B; --rule: #DAD7CC;
+  --accent: #4A3FB0; --accent-soft: #E9E6FA; --on-accent: #FFFFFF;
+  --hi: #9E2F1B; --mid: #84590A; --lo: #6B6A63;
+  --ok: #1F6B3B; --fix: #B4540A; --off: #6B6A63;
+  --f-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121214; --surface: #1A1A1E; --ink: #ECEAE3; --muted: #A4A29A; --rule: #34343A;
+    --accent: #A99BFF; --accent-soft: #26233F; --on-accent: #17142B;
+    --hi: #FF8A73; --mid: #E3B341; --lo: #A4A29A; --ok: #6FCF97; --fix: #F0A15B; --off: #A4A29A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121214; --surface: #1A1A1E; --ink: #ECEAE3; --muted: #A4A29A; --rule: #34343A;
+  --accent: #A99BFF; --accent-soft: #26233F; --on-accent: #17142B;
+  --hi: #FF8A73; --mid: #E3B341; --lo: #A4A29A; --ok: #6FCF97; --fix: #F0A15B; --off: #A4A29A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1 { font-size: 1.75rem; line-height: 1.15; margin: 0 0 4px; letter-spacing: -0.01em; text-wrap: balance; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+.mono { font-family: var(--f-mono); }
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; }
+.tile b { display: block; font-family: var(--f-mono); font-size: 1.6rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.tile span { color: var(--muted); font-size: 0.82rem; }
+.tile.t-ok b { color: var(--ok); } .tile.t-fix b { color: var(--fix); } .tile.t-off b { color: var(--off); }
+.bar { height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; display: flex; margin-bottom: 8px; }
+.bar i { display: block; height: 100%; }
+.bar .b-ok { background: var(--ok); } .bar .b-fix { background: var(--fix); } .bar .b-off { background: var(--off); }
+.sync { font-family: var(--f-mono); font-size: 0.75rem; color: var(--muted); margin-bottom: 16px; }
+details.how { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; }
+details.how summary { cursor: pointer; font-weight: 600; }
+details.how ul { margin: 10px 0 4px; padding-left: 18px; }
+details.how li { margin: 4px 0; }
+.app { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 24px; align-items: start; }
+.rail { position: sticky; top: 12px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; max-height: calc(100vh - 24px); overflow: auto; }
+.rail summary { cursor: pointer; font-weight: 600; margin-bottom: 8px; }
+.field { display: grid; gap: 4px; margin: 12px 0; }
+.field > label, .field > .lab { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+input[type=search], select, textarea { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 9px; }
+textarea { resize: vertical; min-height: 54px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 0.82rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 999px; padding: 4px 11px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 0.88rem; margin: 8px 0; }
+.check input { margin-top: 3px; }
+.btn { font: inherit; font-size: 0.85rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 7px 11px; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.count { color: var(--muted); font-size: 0.85rem; margin: 0 0 10px; }
+.list { display: grid; gap: 10px; }
+.item { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.item[data-s="conferido"] { border-left: 4px solid var(--ok); }
+.item[data-s="corrigir"] { border-left: 4px solid var(--fix); }
+.item[data-s="descartar"] { border-left: 4px solid var(--off); opacity: 0.75; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+.cap { font-weight: 600; color: var(--ink); }
+.pill { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; }
+.p-alta { color: var(--hi); } .p-média { color: var(--mid); } .p-baixa { color: var(--lo); }
+.loc { font-family: var(--f-mono); }
+.trecho { margin: 0 0 8px; overflow-wrap: anywhere; }
+.facts { display: grid; gap: 6px; margin: 0 0 10px; }
+.facts div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 10px; font-size: 0.86rem; }
+.facts dt { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.facts .warn dd { color: var(--fix); }
+a { color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.seg button { font: inherit; font-size: 0.82rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+.seg button[aria-pressed="true"][data-v="conferido"] { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+.seg button[aria-pressed="true"][data-v="corrigir"] { background: var(--fix); border-color: var(--fix); color: var(--bg); }
+.seg button[aria-pressed="true"][data-v="descartar"] { background: var(--off); border-color: var(--off); color: var(--bg); }
+.seg button[aria-pressed="true"][data-v="pendente"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.more { display: flex; justify-content: center; padding: 14px 0; }
+.empty { padding: 28px 12px; text-align: center; color: var(--muted); border: 1px dashed var(--rule); border-radius: 8px; }
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .rail { position: static; max-height: none; }
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <h1>Conferência de Fatos</h1>
+  <p class="sub">Livro <em>Data Double</em>, com a nova Parte II (A Máquina). Fontes e fatos para conferir antes de publicar. Data de corte da pesquisa: 12 de novembro de 2026.</p>
+
+  <div class="tiles" id="tiles"></div>
+  <div class="bar" id="bar" aria-hidden="true"><i class="b-ok"></i><i class="b-fix"></i><i class="b-off"></i></div>
+  <div class="sync" id="sync">Conectando ao banco de andamento…</div>
+
+  <details class="how" id="how">
+    <summary>Como ler este painel</summary>
+    <ul id="howlist"></ul>
+  </details>
+
+  <div class="app">
+    <aside class="rail">
+      <details id="filtros" open>
+        <summary>Filtros</summary>
+        <div class="field"><label for="q">Buscar no texto</label><input type="search" id="q" placeholder="nome, número, lei, autor"></div>
+        <div class="field"><label for="cap">Capítulo</label><select id="cap"></select></div>
+        <div class="field"><span class="lab">Prioridade</span>
+          <div class="chips" id="prios">
+            <button class="chip" type="button" data-p="alta" aria-pressed="true">alta</button>
+            <button class="chip" type="button" data-p="média" aria-pressed="true">média</button>
+            <button class="chip" type="button" data-p="baixa" aria-pressed="true">baixa</button>
+          </div></div>
+        <div class="field"><label for="sit">Situação na pesquisa</label><select id="sit"></select></div>
+        <div class="field"><label for="meu">Meu andamento</label>
+          <select id="meu"><option value="todos">Todos</option><option value="pendente">Pendentes</option><option value="conferido">Conferidos</option><option value="corrigir">Para corrigir</option><option value="descartar">Descartados</option></select></div>
+        <label class="check"><input type="checkbox" id="fConhecidas"><span>Só pendências conhecidas</span></label>
+        <label class="check"><input type="checkbox" id="fTempo"><span>Só itens sensíveis ao tempo (citam 2025 ou 2026)</span></label>
+        <label class="check"><input type="checkbox" id="fParte"><span>Só a Parte II (A Máquina)</span></label>
+        <div class="field"><label for="ord">Ordenar por</label>
+          <select id="ord"><option value="prioridade">O que mais precisa de olho, depois prioridade</option><option value="livro">Ordem do livro</option></select></div>
+        <div class="field"><button class="btn" type="button" id="reset">Limpar filtros</button><button class="btn primary" type="button" id="exportar" hidden>Baixar CSV com meu andamento</button></div>
+      </details>
+    </aside>
+    <main>
+      <p class="count" id="count"></p>
+      <div class="list" id="list"></div>
+      <div class="more"><button class="btn" type="button" id="more" hidden>Mostrar mais</button></div>
+    </main>
+  </div>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(function () {
+  'use strict';
+  var DATA = JSON.parse(document.getElementById('data').textContent);
+  var ORDER = ['Introdução', 'Cap. 01', 'Cap. 02', 'Cap. 03', 'Cap. 04 ·', 'Cap. 05 ·', 'Cap. 06 ·', 'Cap. 07 ·', 'Cap. 08 ·', 'Cap. 09 ·', 'Cap. 10 ·', 'Cap. 11 ·',
+    'Cap. 12 (', 'Cap. 13 (', 'Cap. 14 (', 'Cap. 14.1', 'Cap. 15 (', 'Cap. 16 (', 'Cap. 17 (', 'Cap. 17.1', 'Cap. 18 (', 'Cap. 18.1', 'Cap. 18.2', 'Cap. 19 (', 'Cap. 20 (', 'Cap. 21 (', 'Epílogo', 'Glossário', 'Bibliografia'];
+  var PRIO = { 'alta': 0, 'média': 1, 'baixa': 2 };
+  var STATUS = ['pendente', 'conferido', 'corrigir', 'descartar'];
+  var STATUS_LABEL = { pendente: 'Pendente', conferido: 'Conferido', corrigir: 'Corrigir', descartar: 'Descartar' };
+  var PAGE = 60;
+
+  var $ = function (id) { return document.getElementById(id); };
+  function chapIdx(label) { for (var i = 0; i < ORDER.length; i++) { if (label.indexOf(ORDER[i]) === 0) return i; } return 99; }
+  DATA.forEach(function (r, i) {
+    r._i = i; r._c = chapIdx(r.capitulo);
+    r._parte = r.capitulo.indexOf(' · ') > -1;
+    r._conhecida = /^Pend/.test(r.nota || '');
+    r._tempo = /Sensível ao tempo/.test(r.nota || '');
+    /* faixa 0 = o que mais precisa de olho humano: pendência conhecida, ou item da Parte II só em fonte secundária / não confirmado */
+    r._tier = (r._conhecida || (r._parte && /^(não confirmado|só em fonte secundária)/.test(r.status))) ? 0 : PRIO[r.prioridade] + 1;
+    r._hay = (r.capitulo + ' ' + r.trecho + ' ' + r.fonte_no_texto + ' ' + r.nota + ' ' + r.tipo).toLowerCase();
+  });
+
+  var checks = {};          // id -> {s, n}
+  var F = { q: '', cap: '', prios: { 'alta': true, 'média': true, 'baixa': true }, sit: '', meu: 'todos', conhecidas: false, tempo: false, parte: false, ord: 'prioridade' };
+  var shown = PAGE, filtered = [];
+  var db = null, col = null, queue = {}, timers = {};
+
+  function st(id) { return (checks[id] && checks[id].s) || 'pendente'; }
+  function note(id) { return (checks[id] && checks[id].n) || ''; }
+
+  /* ---------- texto com links [rótulo](https://…) */
+  function linkify(parent, text) {
+    var re = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, last = 0, m;
+    while ((m = re.exec(text))) {
+      if (m.index > last) parent.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var a = document.createElement('a'); a.href = m[2]; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = m[1];
+      parent.appendChild(a); last = re.lastIndex;
+    }
+    if (last < text.length) parent.appendChild(document.createTextNode(text.slice(last)));
+  }
+  function mk(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function fact(dl, label, value, warn, links) {
+    if (!value) return;
+    var d = mk('div', warn ? 'warn' : ''); d.appendChild(mk('dt', '', label));
+    var dd = mk('dd'); if (links) linkify(dd, value); else dd.textContent = value; d.appendChild(dd); dl.appendChild(d);
+  }
+
+  /* ---------- cartão */
+  function card(r) {
+    var art = mk('article', 'item'); art.dataset.id = r.id; art.dataset.s = st(r.id);
+    var meta = mk('div', 'meta');
+    meta.appendChild(mk('span', 'cap', r.capitulo));
+    meta.appendChild(mk('span', 'pill p-' + r.prioridade, r.prioridade));
+    meta.appendChild(mk('span', '', r.tipo));
+    if (r.unidade) meta.appendChild(mk('span', 'loc', r.pagina + ' · ' + r.unidade));
+    art.appendChild(meta);
+    art.appendChild(mk('p', 'trecho', r.trecho));
+    var dl = mk('dl', 'facts');
+    var isPart = r._parte;
+    fact(dl, isPart ? 'Fontes' : 'Fonte no texto', r.fonte_no_texto, false, true);
+    fact(dl, 'Situação', isPart ? r.status : (r.status === 'a conferir' ? '' : r.status), false);
+    fact(dl, 'Como conferir', r.como_conferir, false);
+    fact(dl, r._conhecida || r._tempo ? 'Atenção' : 'Registro', r.nota, r._conhecida || r._tempo);
+    fact(dl, 'Marcado no texto', r.marcado_no_texto, false);
+    if (dl.children.length) art.appendChild(dl);
+    var seg = mk('div', 'seg'); seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', 'Meu andamento');
+    STATUS.forEach(function (v) {
+      var b = mk('button', '', STATUS_LABEL[v]); b.type = 'button'; b.dataset.v = v; b.setAttribute('aria-pressed', String(st(r.id) === v));
+      b.addEventListener('click', function () { setStatus(r.id, v, art); });
+      seg.appendChild(b);
+    });
+    art.appendChild(seg);
+    var ta = mk('textarea'); ta.id = 'n-' + r.id; ta.placeholder = 'Minha nota: o que achei, onde conferi, o que mudar'; ta.value = note(r.id);
+    ta.addEventListener('input', function () { setNote(r.id, ta.value); });
+    art.appendChild(ta);
+    return art;
+  }
+
+  /* ---------- filtro e lista */
+  function apply() {
+    var q = F.q.trim().toLowerCase();
+    filtered = DATA.filter(function (r) {
+      if (!F.prios[r.prioridade]) return false;
+      if (F.cap && r.capitulo !== F.cap) return false;
+      if (F.sit && r.status !== F.sit) return false;
+      if (F.meu !== 'todos' && st(r.id) !== F.meu) return false;
+      if (F.conhecidas && !r._conhecida) return false;
+      if (F.tempo && !r._tempo) return false;
+      if (F.parte && !r._parte) return false;
+      if (q && r._hay.indexOf(q) < 0) return false;
+      return true;
+    });
+    filtered.sort(function (a, b) {
+      if (F.ord === 'prioridade' && a._tier !== b._tier) return a._tier - b._tier;
+      return (a._c - b._c) || (a._i - b._i);
+    });
+    shown = PAGE; render();
+  }
+  function render() {
+    var list = $('list'); list.textContent = '';
+    var slice = filtered.slice(0, shown);
+    slice.forEach(function (r) { list.appendChild(card(r)); });
+    if (!filtered.length) list.appendChild(mk('div', 'empty', 'Nenhum item com esses filtros.'));
+    $('count').textContent = filtered.length + (filtered.length === 1 ? ' item' : ' itens') + (filtered.length > slice.length ? ' (mostrando ' + slice.length + ')' : '');
+    $('more').hidden = filtered.length <= slice.length;
+  }
+  function counts() {
+    var c = { pendente: 0, conferido: 0, corrigir: 0, descartar: 0 };
+    DATA.forEach(function (r) { c[st(r.id)]++; });
+    var t = DATA.length, tiles = $('tiles'); tiles.textContent = '';
+    [['pendente', 'Pendentes', ''], ['conferido', 'Conferidos', 't-ok'], ['corrigir', 'Para corrigir', 't-fix'], ['descartar', 'Descartados', 't-off']].forEach(function (x) {
+      var d = mk('div', 'tile ' + x[2]); d.appendChild(mk('b', '', String(c[x[0]]))); d.appendChild(mk('span', '', x[1])); tiles.appendChild(d);
+    });
+    var bar = $('bar').children;
+    bar[0].style.width = (100 * c.conferido / t) + '%'; bar[1].style.width = (100 * c.corrigir / t) + '%'; bar[2].style.width = (100 * c.descartar / t) + '%';
+  }
+
+  /* ---------- persistência: banco da página, com cópia local como reserva */
+  function localSave() { try { localStorage.setItem('conferencia-fatos', JSON.stringify(checks)); } catch (e) {} }
+  function localLoad() { try { var s = localStorage.getItem('conferencia-fatos'); if (s) checks = JSON.parse(s) || {}; } catch (e) {} }
+  function persist(id) {
+    localSave();
+    if (!col) return;
+    var c = checks[id], ref = col.doc(id);
+    var job = function () {
+      if (!c || (c.s === 'pendente' && !c.n)) return ref.delete();
+      return ref.set({ s: c.s, n: c.n || '', t: new Date().toISOString() });
+    };
+    queue[id] = (queue[id] || Promise.resolve()).then(job).catch(function () { $('sync').textContent = 'Não consegui salvar agora. A cópia local foi mantida.'; });
+  }
+  function setStatus(id, v, art) {
+    var c = checks[id] || { s: 'pendente', n: '' }; c.s = v; checks[id] = c;
+    art.dataset.s = v;
+    art.querySelectorAll('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === v)); });
+    counts(); persist(id);
+  }
+  function setNote(id, text) {
+    var c = checks[id] || { s: 'pendente', n: '' }; c.n = text; checks[id] = c;
+    clearTimeout(timers[id]); timers[id] = setTimeout(function () { persist(id); }, 700);
+  }
+
+  /* ---------- filtros: montagem e eventos */
+  function buildSelects() {
+    var counts = {}, sits = {};
+    DATA.forEach(function (r) { counts[r.capitulo] = (counts[r.capitulo] || 0) + 1; sits[r.status] = (sits[r.status] || 0) + 1; });
+    var cap = $('cap'); cap.textContent = '';
+    var o = mk('option', '', 'Todos os capítulos'); o.value = ''; cap.appendChild(o);
+    Object.keys(counts).sort(function (a, b) { return chapIdx(a) - chapIdx(b); }).forEach(function (k) { var x = mk('option', '', k + ' (' + counts[k] + ')'); x.value = k; cap.appendChild(x); });
+    var sit = $('sit'); sit.textContent = '';
+    var s0 = mk('option', '', 'Todas'); s0.value = ''; sit.appendChild(s0);
+    Object.keys(sits).sort().forEach(function (k) { var x = mk('option', '', k + ' (' + sits[k] + ')'); x.value = k; sit.appendChild(x); });
+  }
+  function howList() {
+    var n = { parte: 0, antigo: 0, bib: 0, glos: 0 };
+    DATA.forEach(function (r) { if (r._parte) n.parte++; else if (r.capitulo === 'Bibliografia') n.bib++; else if (r.capitulo === 'Glossário') n.glos++; else n.antigo++; });
+    var items = [
+      'O painel reúne ' + DATA.length + ' itens: ' + n.parte + ' afirmações da Parte II (A Máquina), ' + n.antigo + ' frases do livro anterior, ' + n.bib + ' referências da bibliografia e ' + n.glos + ' verbetes do glossário.',
+      'Parte II: cada linha vem do registro de verificação que acompanhou a escrita, com a situação da pesquisa e os links das fontes consultadas. "Só em fonte secundária" e "não confirmado" pedem conferência no original.',
+      'Livro anterior: as frases foram extraídas do texto por critério mecânico (número, ano, lei, decisão, caso ou obra atribuída). Elas passaram por uma checagem numa sessão anterior e não foram reverificadas agora, por isso aparecem como "a conferir". Frases sem esses marcadores não entram.',
+      'Prioridade alta: números, leis, decisões, casos jurídicos, pendências conhecidas e tudo que cita 2025 ou 2026. Média: obras, estudos e datas. Baixa: julgamentos já marcados como hipótese, estimativa ou provocação no texto.',
+      'Seu andamento (Conferido, Corrigir, Descartar e a nota) fica salvo na página e eu consigo ler depois para aplicar as correções no livro.',
+      'Fora da lista: o caso do Twitter que foi omitido do texto numa revisão anterior não aparece, porque não está no texto.'
+    ];
+    var ul = $('howlist'); ul.textContent = ''; items.forEach(function (t) { ul.appendChild(mk('li', '', t)); });
+  }
+  function bind() {
+    $('q').addEventListener('input', function (e) { F.q = e.target.value; apply(); });
+    $('cap').addEventListener('change', function (e) { F.cap = e.target.value; apply(); });
+    $('sit').addEventListener('change', function (e) { F.sit = e.target.value; apply(); });
+    $('meu').addEventListener('change', function (e) { F.meu = e.target.value; apply(); });
+    $('ord').addEventListener('change', function (e) { F.ord = e.target.value; apply(); });
+    $('fConhecidas').addEventListener('change', function (e) { F.conhecidas = e.target.checked; apply(); });
+    $('fTempo').addEventListener('change', function (e) { F.tempo = e.target.checked; apply(); });
+    $('fParte').addEventListener('change', function (e) { F.parte = e.target.checked; apply(); });
+    document.querySelectorAll('#prios .chip').forEach(function (b) {
+      b.addEventListener('click', function () { var p = b.dataset.p; F.prios[p] = !F.prios[p]; b.setAttribute('aria-pressed', String(F.prios[p])); apply(); });
+    });
+    $('reset').addEventListener('click', function () {
+      F = { q: '', cap: '', prios: { 'alta': true, 'média': true, 'baixa': true }, sit: '', meu: 'todos', conhecidas: false, tempo: false, parte: false, ord: 'prioridade' };
+      $('q').value = ''; $('cap').value = ''; $('sit').value = ''; $('meu').value = 'todos'; $('ord').value = 'prioridade';
+      ['fConhecidas', 'fTempo', 'fParte'].forEach(function (id) { $(id).checked = false; });
+      document.querySelectorAll('#prios .chip').forEach(function (b) { b.setAttribute('aria-pressed', 'true'); });
+      apply();
+    });
+    $('more').addEventListener('click', function () { shown += PAGE; render(); });
+    if (window.matchMedia && window.matchMedia('(max-width: 860px)').matches) $('filtros').open = false;
+  }
+
+  /* ---------- exportação */
+  function csvCell(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
+  function setupExport(downloads) {
+    var btn = $('exportar'); btn.hidden = false;
+    btn.addEventListener('click', function () {
+      var head = ['id', 'capitulo', 'prioridade', 'situacao_pesquisa', 'meu_andamento', 'minha_nota', 'trecho', 'fonte_no_texto', 'como_conferir', 'atencao'];
+      var lines = [head.join(';')];
+      DATA.forEach(function (r) {
+        lines.push([r.id, r.capitulo, r.prioridade, r.status, st(r.id), note(r.id), r.trecho, r.fonte_no_texto, r.como_conferir, r.nota].map(csvCell).join(';'));
+      });
+      downloads.save({ filename: 'conferencia-de-fatos.csv', data: '﻿' + lines.join('\r\n') }).catch(function () {});
+    });
+  }
+
+  /* ---------- início */
+  localLoad(); buildSelects(); howList(); bind(); counts(); apply();
+  if (window.claude && window.claude.use) {
+    window.claude.use('downloads').then(function (d) { if (d) setupExport(d); }).catch(function () {});
+    var timer = setTimeout(function () { $('sync').textContent = 'Banco indisponível por enquanto: seu andamento fica só neste navegador.'; }, 10000);
+    window.claude.use('db').then(function (d) {
+      if (!d) { clearTimeout(timer); $('sync').textContent = 'Modo local: seu andamento fica só neste navegador.'; return; }
+      db = d; col = db.collection('checks');
+      col.onSnapshot(function (snap) {
+        clearTimeout(timer);
+        var next = {};
+        snap.docs.forEach(function (doc) { var v = doc.data() || {}; next[doc.id] = { s: v.s || 'pendente', n: v.n || '' }; });
+        var typing = document.activeElement && document.activeElement.tagName === 'TEXTAREA';
+        checks = next; localSave(); counts();
+        if (!typing) render();
+        $('sync').textContent = snap.metadata.fromCache ? 'Sincronizando…' : 'Andamento sincronizado.';
+      }, function () { clearTimeout(timer); $('sync').textContent = 'Não consegui ler o banco. Usando a cópia local.'; });
+    }).catch(function () { clearTimeout(timer); $('sync').textContent = 'Modo local: seu andamento fica só neste navegador.'; });
+  } else {
+    $('sync').textContent = 'Visualização local: seu andamento fica só neste navegador.';
+  }
+})();
+</script>

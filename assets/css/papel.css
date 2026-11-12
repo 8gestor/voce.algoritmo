@@ -217,3 +217,21 @@ body.paper-mode .selo-provocacao { border-style: double; border-width: 3px; padd
 /* ---------- opções de fonte nos outros temas (o padrão original de cada tema é mantido) ---------- */
 html[data-face="legible"] body:not(.paper-mode) { font-family: 'Atkinson Hyperlegible', 'Segoe UI', sans-serif; }
 html[data-face="mono"] body:not(.paper-mode) { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+/* ---------- Parte II (A MÁQUINA): variáveis e componentes novos no tema Papel ---------- */
+body.paper-mode { --c-ai: #1A1A18; --c-ai-dim: rgba(26, 26, 24, 0.06); --c-ai-glow: none; --c-warn: #5A5A55; }
+body.paper-mode .timeline { border-left: 2px solid #1A1A18; }
+body.paper-mode .tl-item::before { background: #FBFAF6; border-color: #1A1A18; }
+body.paper-mode .tl-item.tl-winter::before { background: #1A1A18; border-color: #1A1A18; }
+body.paper-mode .tl-year, body.paper-mode .tl-item.tl-winter .tl-year { color: #1A1A18; font-family: 'JetBrains Mono', monospace; }
+body.paper-mode .tl-text strong { color: #1A1A18; }
+body.paper-mode .cycle-box { background: #F3F1EA; border: 1.5px solid #1A1A18; border-radius: 0; }
+body.paper-mode .cycle-step, body.paper-mode .cycle-step.cs-warn { background: transparent; border-left: 4px solid #1A1A18; border-radius: 0; }
+body.paper-mode .cycle-step.cs-warn { border-left-style: dashed; }
+body.paper-mode .cycle-title, body.paper-mode .step-title { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }
+body.paper-mode .probs { background: #F3F1EA; border: 1.5px solid #1A1A18; border-radius: 0; }
+body.paper-mode .probs-title, body.paper-mode .prob-row { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }
+body.paper-mode .prob-track { background: transparent; border: 1.5px solid #1A1A18; border-radius: 0; height: 14px; }
+body.paper-mode .prob-fill { background: repeating-linear-gradient(45deg, #1A1A18 0 3px, #FBFAF6 3px 6px); }
+body.paper-mode .prob-val { color: #1A1A18; }
+body.paper-mode .pos-card { background: #F3F1EA !important; border: 1.5px solid #1A1A18 !important; border-top: 4px solid #1A1A18 !important; border-radius: 0 !important; color: #1A1A18 !important; }
+body.paper-mode .pos-title { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }

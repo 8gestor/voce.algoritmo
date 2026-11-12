@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap10.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap10'] = {
-  "c10-001": "PART IV: RESISTANCE | CHAPTER 10",
+  "c10-001": "PART V: RESISTANCE | CHAPTER 18",
   "c10-002": "Neurorights:<br>The Invasion of the Final Sanctuary",
   "c10-003": "Look at the person next to you. You can see their face, their clothes, their posture. But you have no idea what they're thinking. They might be smiling while planning a crime, or crying inside behind a poker face. That inviolable space — the black box of the mind — is the last refuge of human freedom. It's where dissent is born. It's where the real \"Self\" hides from the \"Inferred Self.\"",
   "c10-004": "Now imagine that this box has been opened. Imagine a headset that tells your boss your concentration has dropped. Imagine a wristband that tells the police you recognized a suspect's face before you even said a word. This isn't dystopian science fiction. The technology already exists, is already patented and is already being sold. Welcome to the era of <strong>Forced Neural Transparency</strong>.",

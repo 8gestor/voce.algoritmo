@@ -1,5 +1,5 @@
 ## c13-001
-PART IV: RESISTANCE | CHAPTER 13
+PART V: RESISTANCE | CHAPTER 21
 
 ## c13-002
 Radical Imagination:<br>The Solarpunk Future
@@ -56,7 +56,7 @@ There are real examples, on a modest scale. <strong>Guifi.net</strong>, in Catal
 Ancestral technology isn't a magic wand either: living root bridges take decades to be ready and depend on communities that maintain them. The risk is romanticizing indigenous knowledge without recognizing who holds it; the ethical principle is that of participation and benefit sharing, as provided by the Nagoya Protocol for access to genetic resources and associated traditional knowledge.
 
 ## c13-020
-And there is the criticism that "solarpunk" can become an aesthetic without politics, a green facade. That's why the chapter insists on Bookchin: without a redistribution of power, it's just green capitalism. Remember, too, that "clean" technology has trade-offs: panels and batteries require minerals, and we're back to Chapter 09.
+And there is the criticism that "solarpunk" can become an aesthetic without politics, a green facade. That's why the chapter insists on Bookchin: without a redistribution of power, it's just green capitalism. Remember, too, that "clean" technology has trade-offs: panels and batteries require minerals, and we're back to Chapter 17.
 
 ## c13-021
 Synthesis: Protopia and Manual Work

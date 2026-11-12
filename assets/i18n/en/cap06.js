@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap06.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap06'] = {
-  "c06-001": "PART II: THE SIEGE | CHAPTER 06",
+  "c06-001": "PART III: THE SIEGE | CHAPTER 14",
   "c06-002": "The Algorithmic Tribunal:<br>The Silent Sentence",
   "c06-003": "In the previous chapter, we saw how the city captures your data. Now we'll see what's done with it. You're not just being watched; you're being judged. And unlike human courts, where there is a right to defense, to contest the evidence and to the presumption of innocence, in the <strong>Algorithmic Tribunal</strong> the sentence is instant, silent and often irrevocable.",
   "c06-004": "We passively accept that our financial worth is measured by a \"Credit Score.\" But the boundary has been broken. In Western democracies there is no single \"Citizenship Score\"; there is a <strong>constellation of sector scores</strong> (credit, fraud, insurance, employment, platform reputation) that cross over through databases and data brokers. The practical effect can be similar: your reputation has stopped being a fluid social quality (what your neighbors think of you) and become a rigid, punitive digital currency.",

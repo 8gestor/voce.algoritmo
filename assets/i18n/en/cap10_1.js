@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap10_1.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap10_1'] = {
-  "c10-1-001": "PART IV: RESISTANCE | CHAPTER 10.1",
+  "c10-1-001": "PART V: RESISTANCE | CHAPTER 18.1",
   "c10-1-002": "Digital Fortress:<br>Zero Trust and Tactical Hardening",
   "c10-1-003": "Most security advice (\"install an antivirus\") is based on an obsolete model. Today, the attack comes from mass-collection algorithms and zero-day flaws. To survive, we adopt the <strong>Zero Trust</strong> model: assume your network is already compromised, that your provider is hostile and that the attack is inevitable. The goal isn't to keep them out, it's to limit the damage through <strong>Hardening</strong>.",
   "c10-1-004": "The Colonial Pipeline case shows the principle in practice. In May 2021, a ransomware attack shut down a fuel pipeline in the US. According to the CEO, the intruders got in through an old VPN, with no multi-factor authentication and unknown to the IT team, using a compromised password.",

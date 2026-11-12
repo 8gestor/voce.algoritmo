@@ -1,5 +1,5 @@
 ## c09-1-001
-PART III: INFRASTRUCTURE | CHAPTER 09.1
+PART IV: INFRASTRUCTURE | CHAPTER 17.1
 
 ## c09-1-002
 The Deep Ocean:<br>Tor, the Deep Web and the Architecture of Escape
@@ -47,7 +47,7 @@ Tor protects against a specific kind of surveillance (that of whoever watches th
 It's also a project with a history worth knowing: Tor came out of research at the US Naval Research Laboratory in the 1990s and is now maintained by a nonprofit organization that, for years, depended on funding from US government agencies, as well as donations. The origin doesn't invalidate the technology, which is open source and auditable, but it illustrates that resistance tools exist in complex ecosystems.
 
 ## c09-1-017
-For everyday life, there are intermediate steps: messengers with end-to-end encryption, an audited commercial VPN (which changes <em>who</em> sees your traffic, not <em>whether</em> someone does), a browser with tracker blocking and encrypted DNS. Chapter 10.1 organizes these layers by risk level.
+For everyday life, there are intermediate steps: messengers with end-to-end encryption, an audited commercial VPN (which changes <em>who</em> sees your traffic, not <em>whether</em> someone does), a browser with tracker blocking and encrypted DNS. Chapter 18.1 organizes these layers by risk level.
 
 ## c09-1-018
 From anonymity on the network we move to the last territory without access: the mind. The next chapter deals with neurorights.
