@@ -136,3 +136,13 @@ h1 {
     padding: 30px 0;
     margin: 3em 0;
 }
+
+/* --- CELULAR: proteções gerais contra estouro de largura (vale para todos os temas) --- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+input, select, textarea { box-sizing: border-box; max-width: 100%; }
+img, video, canvas { max-width: 100%; height: auto; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+@media (max-width: 600px) {
+    body { overflow-wrap: break-word; }
+    .comparison-grid { grid-template-columns: 1fr; }
+}

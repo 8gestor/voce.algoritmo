@@ -187,3 +187,47 @@ html[data-face="mono"] .chapter-sub { font-size: 0.64rem; }
     .hud-live { font-size: 0.6rem; }
 }
 @media (max-width: 520px) { .hud-live .hl-sep, .hud-live #hl-left { display: none; } }
+/* =====================================================================
+   CELULAR E TELAS BAIXAS (v2): altura dinâmica, margens seguras, painéis rolantes
+   "Celular" = largura até 900px OU celular deitado (altura até 500px com toque).
+   O mesmo critério está em leitor.js (MOBILE_MQ): mantenha os dois iguais.
+   ===================================================================== */
+html, body { height: 100vh; height: 100dvh; }
+body { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+.master-header { padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-top: env(safe-area-inset-top, 0px); }
+footer.bottom-hud { padding-bottom: env(safe-area-inset-bottom, 0px); height: calc(45px + env(safe-area-inset-bottom, 0px)); padding-left: max(15px, env(safe-area-inset-left, 0px)); padding-right: max(15px, env(safe-area-inset-right, 0px)); }
+/* painel Aa: nunca maior que a área de leitura; rola por dentro */
+#aa-panel { max-height: calc(100% - 20px); overflow-y: auto; overscroll-behavior: contain; }
+#raiox { overscroll-behavior: contain; }
+
+@media (max-width: 900px), (max-height: 500px) and (pointer: coarse) {
+    aside.sidebar, aside.sidebar.collapsed {
+        position: absolute; top: 0; left: 0; height: 100%; width: min(85%, 320px); max-width: 320px;
+        transform: translateX(-100%); border-right: 1px solid var(--c-accent); box-shadow: none;
+        padding-left: env(safe-area-inset-left, 0px);
+    }
+    aside.sidebar.open { transform: translateX(0); box-shadow: 10px 0 100px rgba(0, 0, 0, 0.8); }
+    nav.nav-list { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); -webkit-overflow-scrolling: touch; }
+    .chapter-link { padding: 12px 12px; }                 /* alvo de toque confortável */
+    .sidebar-header .btn-icon { width: 44px; height: 44px; }
+    .branding-text { display: none; }
+    .hud-top { margin: 0 auto; }
+}
+@media (max-width: 700px) {
+    .branding-bar { height: 26px; padding: 0 10px; }
+    .controls-bar { column-gap: 8px; }
+    .lang-label { padding: 0 6px; }
+    #aa-panel { left: 12px; right: 12px; width: auto; padding: 14px 14px 16px; }
+    #raiox { max-height: 70%; }
+    #raiox-list { grid-template-columns: 1fr; }
+}
+/* celular deitado / telas baixas: cabeçalho enxuto, mais área de texto */
+@media (max-height: 500px) {
+    .branding-bar { display: none; }
+    .controls-bar { height: auto; flex-wrap: nowrap; padding: 4px 10px; overflow-x: auto; row-gap: 0; }
+    .controls-bar > .ctrl-group:last-child { flex-wrap: nowrap; flex: 0 0 auto; }
+    .btn-icon, .lang-pair, .speed-select, .speed-control { height: 34px; }
+    .btn-icon { width: 34px; } .btn-text { width: auto; }
+    footer.bottom-hud { height: calc(34px + env(safe-area-inset-bottom, 0px)); }
+    #aa-panel { max-height: calc(100% - 12px); top: 6px; }
+}

@@ -329,7 +329,7 @@ function init() {
         btn.onclick = (e) => {
             e.preventDefault();
             loadChapter(i);
-            if (window.innerWidth < 768) toggleSidebar();
+            if (isMobile()) closeSidebarMobile();
         };
         nav.appendChild(btn);
     });
@@ -376,10 +376,20 @@ function toggleFullScreen() {
     }
 }
 
+// "celular" = mesmo critério do leitor.css (bloco CELULAR E TELAS BAIXAS): mantenha os dois iguais
+const MOBILE_MQ = window.matchMedia('(max-width: 900px), (max-height: 500px) and (pointer: coarse)');
+function isMobile() { return MOBILE_MQ.matches; }
+function closeSidebarMobile() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('backdrop').classList.remove('active');
+}
+// girar a tela ou redimensionar: nunca deixar a cortina escura ou o menu preso no modo errado
+MOBILE_MQ.addEventListener('change', () => { closeSidebarMobile(); closePanels(); });
+
 function toggleSidebar() {
     const sb = document.getElementById('sidebar');
     const bd = document.getElementById('backdrop');
-    if (window.innerWidth < 768) {
+    if (isMobile()) {
         sb.classList.toggle('open');
         bd.classList.toggle('active');
     } else {
@@ -411,7 +421,7 @@ window.addEventListener('message', (e) => {
 });
 
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePanels();
+    if (e.key === 'Escape') { closePanels(); if (isMobile()) closeSidebarMobile(); }
 });
 
 init();
