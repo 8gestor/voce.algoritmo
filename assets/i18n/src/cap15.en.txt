@@ -1,0 +1,167 @@
+## c15-001
+DATABASE // GLOSSARY v4.0
+
+## c15-002
+Field Dictionary
+
+## c15-003
+This database translates the language of the machine into human language. Use the search bar to filter the 52 essential concepts of resistance.
+
+## c15-004
+<div class="term-header"> <span class="term-title">Air Gap</span> <span class="term-badge">Security</span> </div> <p class="term-def">A physical security measure in which a computer or device is never connected to the internet. The only way to hack an "air-gapped" device is to access it physically.</p> <span class="term-ref">REF: Epilogue</span>
+
+## c15-005
+<div class="term-header"> <span class="term-title">Algorithm</span> <span class="term-badge">Technical</span> </div> <p class="term-def">A mathematical "recipe." Step-by-step instructions that computers follow. In a social context, it refers to the systems that decide what you see in your feed in order to maximize your screen time.</p> <span class="term-ref">REF: Ch 01, 02</span>
+
+## c15-006
+<div class="term-header"> <span class="term-title">API</span> <span class="term-badge">Technical</span> </div> <p class="term-def">"Application Programming Interface." It's how pieces of software talk to each other. When you use "Log in with Facebook" on another site, they use an API to exchange your data.</p> <span class="term-ref">REF: Supporting concept</span>
+
+## c15-007
+<div class="term-header"> <span class="term-title">Weapons of Math Destruction</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">Cathy O'Neil's term for mathematical models that are opaque, applied at scale and cause harm, like the one that evaluated the teacher Sarah Wysocki.</p> <span class="term-ref">REF: Ch 06</span>
+
+## c15-008
+<div class="term-header"> <span class="term-title">Autopoiesis</span> <span class="term-badge">Philosophy</span> </div> <p class="term-def">The ability of a system (like a human being or nature) to create and maintain itself. It's the opposite of machines, which are made by others for others' purposes.</p> <span class="term-ref">REF: Epilogue</span>
+
+## c15-009
+<div class="term-header"> <span class="term-title">Backdoor</span> <span class="term-badge">Security</span> </div> <p class="term-def">A "back door" hidden in a piece of software, letting its creator or the government access the system without the user knowing, bypassing encryption.</p> <span class="term-ref">REF: Ch 10</span>
+
+## c15-010
+<div class="term-header"> <span class="term-title">Biometrics</span> <span class="term-badge">Identity</span> </div> <p class="term-def">Measurement of unique physical characteristics (face, fingerprint, iris, way of walking). Unlike a password, biometrics can't be changed if it leaks.</p> <span class="term-ref">REF: Ch 01, 03, 04</span>
+
+## c15-011
+<div class="term-header"> <span class="term-title">Bitcoin (BTC)</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">The first decentralized digital currency. It works without banks or governments, using mathematics to ensure that nobody can copy the money or censor transfers.</p> <span class="term-ref">REF: Ch 06.1, 10.2</span>
+
+## c15-012
+<div class="term-header"> <span class="term-title">Blockchain</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A public, immutable ledger. Imagine a notebook where everyone can write, but nobody can use an eraser to remove what has already been written.</p> <span class="term-ref">REF: Ch 13</span>
+
+## c15-013
+<div class="term-header"> <span class="term-title">Bossware</span> <span class="term-badge">Work</span> </div> <p class="term-def">Software installed by companies to surveil employees working from home. It takes screenshots, counts clicks and even watches through the webcam.</p> <span class="term-ref">REF: Ch 07</span>
+
+## c15-014
+<div class="term-header"> <span class="term-title">CBDC</span> <span class="term-badge">State</span> </div> <p class="term-def">"Central Bank Digital Currency" (e.g., Drex, the digital yuan). 100% digital money controlled by the government, which can be programmed to expire or to block specific purchases.</p> <span class="term-ref">REF: Ch 06.1, 10.2</span>
+
+## c15-015
+<div class="term-header"> <span class="term-title">Private Key</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">An ultra-complex mathematical password (usually 12 words) that gives access to your money or encrypted messages. Whoever has the key is the owner. There is no "password recovery."</p> <span class="term-ref">REF: Ch 10.2</span>
+
+## c15-016
+<div class="term-header"> <span class="term-title">Cold Wallet</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A device (something like a flash drive) that stores your cryptocurrencies disconnected from the internet, protecting against online hackers.</p> <span class="term-ref">REF: Supporting concept</span>
+
+## c15-017
+<div class="term-header"> <span class="term-title">Data Colonialism</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">A concept from Nick Couldry and Ulises Mejias: the appropriation of human life to extract data continuously, as a new form of accumulation.</p> <span class="term-ref">REF: Ch 03</span>
+
+## c15-018
+<div class="term-header"> <span class="term-title">Conviviality</span> <span class="term-badge">Philosophy</span> </div> <p class="term-def">A concept from Ivan Illich (1973): the quality of tools that expand the autonomy of those who use them, that can be understood, repaired and switched off, as opposed to opaque industrial tools that create dependence.</p> <span class="term-ref">REF: Ch 11</span>
+
+## c15-019
+<div class="term-header"> <span class="term-title">Data Broker</span> <span class="term-badge">Economics</span> </div> <p class="term-def">A company that buys, combines and resells personal data, usually obtained from other companies. In 2014, the FTC pointed to a fundamental lack of transparency in the sector.</p> <span class="term-ref">REF: Ch 03</span>
+
+## c15-020
+<div class="term-header"> <span class="term-title">Public-Key (Asymmetric) Cryptography</span> <span class="term-badge">Security</span> </div> <p class="term-def">A system that uses two keys: a PUBLIC one (to lock the message, which you give to everyone) and a PRIVATE one (to open it, which only you have). The basis of security on the web.</p> <span class="term-ref">REF: Ch 10.1, 10.2</span>
+
+## c15-021
+<div class="term-header"> <span class="term-title">Dark Patterns</span> <span class="term-badge">Technical</span> </div> <p class="term-def">Interface design tricks that lead the user to act against their own interest: fake countdown timers, hidden cancellation, forced consent.</p> <span class="term-ref">REF: Ch 01, 03</span>
+
+## c15-022
+<div class="term-header"> <span class="term-title">Darknet</span> <span class="term-badge">Networks</span> </div> <p class="term-def">Networks layered on top of the internet (like Tor) that require specific software to access. They use heavy encryption to guarantee total anonymity.</p> <span class="term-ref">REF: Ch 09.1</span>
+
+## c15-023
+<div class="term-header"> <span class="term-title">Data Double</span> <span class="term-badge">Psychology</span> </div> <p class="term-def">The statistical profile that companies hold of you. To the bank and to the algorithm, this profile is more real and more important than your physical person.</p> <span class="term-ref">REF: Introduction, Ch 03</span>
+
+## c15-024
+<div class="term-header"> <span class="term-title">Dead Internet Theory</span> <span class="term-badge">Networks</span> </div> <p class="term-def">The idea that much of the network would already be artificial content and interaction. The full theory is not proven, but the growth of bots and AI-generated content is measured.</p> <span class="term-ref">REF: Ch 08</span>
+
+## c15-025
+<div class="term-header"> <span class="term-title">Deep Web</span> <span class="term-badge">Networks</span> </div> <p class="term-def">The part of the internet that Google can't read (your emails, medical databases, private pages). It's 90% of the web and isn't necessarily illegal.</p> <span class="term-ref">REF: Ch 09.1</span>
+
+## c15-026
+<div class="term-header"> <span class="term-title">Liar's Dividend</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">(Chesney and Citron). The advantage of those who can deny real evidence by claiming it is fake, in a world where deepfakes are possible.</p> <span class="term-ref">REF: Ch 08</span>
+
+## c15-027
+<div class="term-header"> <span class="term-title">E2EE</span> <span class="term-badge">Security</span> </div> <p class="term-def">"End-to-End Encryption." It means the message leaves your phone scrambled and is only unscrambled on the recipient's phone. Not even WhatsApp can read it along the way.</p> <span class="term-ref">REF: Ch 10.1</span>
+
+## c15-028
+<div class="term-header"> <span class="term-title">ELIZA Effect</span> <span class="term-badge">Psychology</span> </div> <p class="term-def">The tendency to attribute understanding to simple programs. It comes from ELIZA (Weizenbaum, 1966), which imitated a therapist just by recognizing patterns.</p> <span class="term-ref">REF: Ch 01</span>
+
+## c15-029
+<div class="term-header"> <span class="term-title">Enshittification</span> <span class="term-badge">Economics</span> </div> <p class="term-def">The cycle in which a platform (like Facebook or Uber) starts out good to attract users, then gets worse to sell ads, and finally dies trying to extract every last cent.</p> <span class="term-ref">REF: Ch 12</span>
+
+## c15-030
+<div class="term-header"> <span class="term-title">Behavioral Surplus</span> <span class="term-badge">Economics</span> </div> <p class="term-def">A concept from Shoshana Zuboff. Data about behavior that exceeds what's needed to deliver a service and is used as raw material to predict and influence people.</p> <span class="term-ref">REF: Ch 03</span>
+
+## c15-031
+<div class="term-header"> <span class="term-title">Hardening</span> <span class="term-badge">Tactical</span> </div> <p class="term-def">The process of configuring a system (phone or PC) to have as few functions as possible, closing doors to make attacks harder.</p> <span class="term-ref">REF: Ch 10.1</span>
+
+## c15-032
+<div class="term-header"> <span class="term-title">Hash</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A fingerprint of a file. If you change a single comma in a text, its "hash" changes completely. Used to make sure data hasn't been altered.</p> <span class="term-ref">REF: Supporting concept</span>
+
+## c15-033
+<div class="term-header"> <span class="term-title">Infinite Game</span> <span class="term-badge">Philosophy</span> </div> <p class="term-def">A distinction from James P. Carse: finite games are played to win; infinite games are played so that the game continues.</p> <span class="term-ref">REF: Epilogue</span>
+
+## c15-034
+<div class="term-header"> <span class="term-title">Cognitive Liberty</span> <span class="term-badge">Law</span> </div> <p class="term-def">The right to govern your own mental life and not to have your thoughts, emotions and neural data accessed or manipulated without consent. Defended by Nita Farahany.</p> <span class="term-ref">REF: Ch 10</span>
+
+## c15-035
+<div class="term-header"> <span class="term-title">Metadata</span> <span class="term-badge">Surveillance</span> </div> <p class="term-def">Data about data. Not what you said on the call, but whom you called, at what time and from where. It often reveals more than the content.</p> <span class="term-ref">REF: Introduction, Ch 05</span>
+
+## c15-036
+<div class="term-header"> <span class="term-title">Model Collapse</span> <span class="term-badge">Technical</span> </div> <p class="term-def">The degradation of AI models trained repeatedly on data generated by other models: rare cases are lost and outputs become repetitive. It depends on how the data is combined.</p> <span class="term-ref">REF: Ch 08</span>
+
+## c15-037
+<div class="term-header"> <span class="term-title">Threat Model</span> <span class="term-badge">Security</span> </div> <p class="term-def">The exercise of defining who you need to protect yourself from, from what, and at what cost. It's the basis of every security decision: without it, tools become superstition.</p> <span class="term-ref">REF: Ch 10.1</span>
+
+## c15-038
+<div class="term-header"> <span class="term-title">Monero (XMR)</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A cryptocurrency focused on absolute privacy. Unlike Bitcoin, nobody can see who sent it or how much was sent. The true "anonymous digital cash."</p> <span class="term-ref">REF: Ch 10.2</span>
+
+## c15-039
+<div class="term-header"> <span class="term-title">Necropolitics</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">A concept from Achille Mbembe. The power of the state to decide who must live and who must be left to die (or be digitally excluded).</p> <span class="term-ref">REF: Ch 04</span>
+
+## c15-040
+<div class="term-header"> <span class="term-title">Neurorights</span> <span class="term-badge">Law</span> </div> <p class="term-def">A proposal for new rights to protect brain activity: mental privacy, personal identity, free will, equitable access and protection against bias. Chile included them in its Constitution in 2021.</p> <span class="term-ref">REF: Ch 10</span>
+
+## c15-041
+<div class="term-header"> <span class="term-title">Obfuscation</span> <span class="term-badge">Tactical</span> </div> <p class="term-def">A strategy of protecting privacy by producing noise: false or excessive data that hides the true data (Brunton and Nissenbaum, 2015).</p> <span class="term-ref">REF: Introduction, Ch 11</span>
+
+## c15-042
+<div class="term-header"> <span class="term-title">Onion Routing</span> <span class="term-badge">Networks</span> </div> <p class="term-def">A technique used by Tor in which your data is wrapped in layers of encryption and passed through several computers to hide its origin.</p> <span class="term-ref">REF: Ch 09.1</span>
+
+## c15-043
+<div class="term-header"> <span class="term-title">Open Source</span> <span class="term-badge">Philosophy</span> </div> <p class="term-def">Software where the recipe (the code) is public and can be audited by anyone. Essential for security, because it guarantees there are no hidden tricks.</p> <span class="term-ref">REF: Introduction</span>
+
+## c15-044
+<div class="term-header"> <span class="term-title">Panopticon</span> <span class="term-badge">Concept</span> </div> <p class="term-def">A prison design in which one guard can see all the prisoners without being seen. In the digital world, it's the feeling that you are always being watched by the algorithm.</p> <span class="term-ref">REF: Ch 03, 04, 06.1, 07</span>
+
+## c15-045
+<div class="term-header"> <span class="term-title">Permacomputing</span> <span class="term-badge">Ecological</span> </div> <p class="term-def">Technology design focused on maximum durability, easy repair and low energy consumption. The opposite of the planned obsolescence of Apple/Samsung.</p> <span class="term-ref">REF: Ch 09</span>
+
+## c15-046
+<div class="term-header"> <span class="term-title">Proof of Work</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">Bitcoin's mechanism that requires computers to spend real energy to validate transactions, making it impossible to counterfeit money without spending billions.</p> <span class="term-ref">REF: Ch 10.2</span>
+
+## c15-047
+<div class="term-header"> <span class="term-title">Digital Redlining</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">Excluding people from services or credit based on neighborhood or statistical profile, reproducing historical discrimination even without declared intent.</p> <span class="term-ref">REF: Ch 04, 06</span>
+
+## c15-048
+<div class="term-header"> <span class="term-title">Seed Phrase</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A list of 12 to 24 random words that works as the master key of a cryptocurrency wallet. If you lose it, you lose the money forever.</p> <span class="term-ref">REF: Ch 10.2</span>
+
+## c15-049
+<div class="term-header"> <span class="term-title">Societies of Control</span> <span class="term-badge">Philosophy</span> </div> <p class="term-def">A concept from Gilles Deleuze (1990): in place of confinement, the continuous modulation of access and behavior.</p> <span class="term-ref">REF: Ch 04</span>
+
+## c15-050
+<div class="term-header"> <span class="term-title">Solarpunk</span> <span class="term-badge">Futurism</span> </div> <p class="term-def">An aesthetic and political movement that imagines a future where high technology is integrated with nature and community, focused on radical sustainability.</p> <span class="term-ref">REF: Introduction, Ch 13</span>
+
+## c15-051
+<div class="term-header"> <span class="term-title">Solutionism</span> <span class="term-badge">Philosophy</span> </div> <p class="term-def">Evgeny Morozov's term for the belief that complex social problems have technical solutions, as if they were data problems.</p> <span class="term-ref">REF: Ch 05</span>
+
+## c15-052
+<div class="term-header"> <span class="term-title">Sousveillance</span> <span class="term-badge">Surveillance</span> </div> <p class="term-def">Surveillance from below (Steve Mann): the use of technology by citizens to record and monitor those who hold power, as a counterpoint to top-down surveillance.</p> <span class="term-ref">REF: Ch 05</span>
+
+## c15-053
+<div class="term-header"> <span class="term-title">Technofeudalism</span> <span class="term-badge">Economics</span> </div> <p class="term-def">Yanis Varoufakis's term for a system in which platforms charge access rent for their digital "territories," instead of competing only for profit. A concept debated by economists.</p> <span class="term-ref">REF: Ch 12</span>
+
+## c15-054
+<div class="term-header"> <span class="term-title">Zero Trust</span> <span class="term-badge">Security</span> </div> <p class="term-def">"Zero Trust." A security model that assumes no user or device is trustworthy by default, requiring constant verification even inside the network.</p> <span class="term-ref">REF: Ch 10.1</span>
+
+## c15-055
+<div class="term-header"> <span class="term-title">Zero-Day</span> <span class="term-badge">Hacker</span> </div> <p class="term-def">A security flaw that the software's maker doesn't yet know about (it has "zero days" to fix it). Hackers and governments use this to break into systems undetected.</p> <span class="term-ref">REF: Ch 10.1</span>
+
+## c15-056
+[!] DATABASE END OF LINE<br>TOTAL ENTRIES: 52
