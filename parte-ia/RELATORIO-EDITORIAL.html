@@ -1,0 +1,267 @@
+<title>Relatório Editorial Final</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--fg:#1d1b17;--dim:#6b665b;--line:#ddd6c6;--accent:#b4410f;--ok:#2f7d4f;--warn:#b7791f;--bad:#b4341f;--band:#00000008;--cell0:#ece6d8;
+--t0:#e4572e;--t1:#f2a541;--t2:#e6c229;--t3:#7b61ff;--t4:#2e9e8f;--t5:#3a7bd5;--t6:#1f6f8b;--t7:#8a6d3b;--t8:#39b36a;--t9:#b565a7;--t10:#9acd32}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14130f;--card:#1c1a15;--fg:#ece7da;--dim:#9a9486;--line:#34302a;--accent:#f08a4b;--ok:#5fc084;--warn:#e0b04a;--bad:#ee7a66;--band:#ffffff0a;--cell0:#26231c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14130f;--card:#1c1a15;--fg:#ece7da;--dim:#9a9486;--line:#34302a;--accent:#f08a4b;--ok:#5fc084;--warn:#e0b04a;--bad:#ee7a66;--band:#ffffff0a;--cell0:#26231c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 Literata,Georgia,serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 80px}
+main{max-width:980px;margin:0 auto}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.1;margin:.2em 0 .3em;text-wrap:balance;font-weight:600}
+h2{font-size:clamp(21px,3vw,27px);margin:2.4em 0 .4em;text-wrap:balance;font-weight:600;border-top:1px solid var(--line);padding-top:1em}
+h3{font-size:18px;margin:1.6em 0 .3em}
+.kicker{font:600 12px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.lead{font-size:19px;color:var(--fg);max-width:68ch}
+p,li{max-width:70ch}
+.dim{color:var(--dim)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:18px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat b{display:block;font:600 28px/1.1 'JetBrains Mono',monospace}
+.stat span{font-size:13.5px;color:var(--dim)}
+.fig{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
+.fig figcaption{font-size:14px;color:var(--dim);margin-top:8px;max-width:75ch}
+.scroll{overflow-x:auto}
+svg{display:block;max-width:100%;height:auto}
+svg text{font-family:'JetBrains Mono',monospace;fill:var(--dim)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 2px;font:12px 'JetBrains Mono',monospace;color:var(--dim)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.tag{display:inline-block;font:600 11px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:99px;border:1px solid currentColor;margin-right:6px}
+.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--bad)}
+.item{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:12px 16px;margin:12px 0}
+.item.ok{border-left-color:var(--ok)}.item.warn{border-left-color:var(--warn)}.item.bad{border-left-color:var(--bad)}
+.item h4{margin:0 0 4px;font-size:16px}
+.item p{margin:.3em 0}
+blockquote{margin:10px 0;padding:8px 14px;border-left:3px solid var(--line);color:var(--fg);background:var(--band);font-size:15.5px;max-width:70ch}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+th{font:600 11px 'JetBrains Mono',monospace;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+td:first-child,th:first-child{text-align:left}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot.y{background:var(--ok)}.dot.n{background:var(--bad);opacity:.7}.dot.m{background:var(--warn)}
+.bar{display:inline-block;height:9px;background:var(--accent);border-radius:2px;vertical-align:middle;opacity:.8}
+@media (max-width:560px){body{font-size:16px}}
+</style>
+
+<main>
+<div class="kicker">Data Double · edição de lançamento</div>
+<h1>Relatório editorial final</h1>
+<p class="lead">Leitura do livro inteiro (28 unidades de leitura, 35 mil palavras de corpo, mais glossário e bibliografia) sob a linha estrutural: o que cada parte faz, como os temas evoluem, o que liga um capítulo ao outro e o que ainda precisa ser fechado antes do lançamento.</p>
+
+<div class="grid" id="stats"></div>
+
+<h2>1. Veredito</h2>
+<div class="item ok"><h4><span class="tag ok">PRONTO PARA LANÇAR</span> A linha de leitura se sustenta</h4>
+<p>O livro tem uma espinha dorsal visível: <b>o corpo e a atenção → o retrato estatístico → a máquina que o monta → o Estado e o dinheiro que o leem → o trabalho, a rede e a matéria que sustentam tudo → o que ainda podemos fazer</b>. Cada capítulo termina entregando o seguinte (a cadeia de pontes está completa, do capítulo 01 ao Epílogo), e a inserção da Parte II aconteceu no lugar certo: o capítulo 03 pergunta "quem monta esse retrato?" e o capítulo 11 devolve o leitor ao Estado e à cidade.</p></div>
+<div class="item warn"><h4><span class="tag warn">3 AJUSTES ANTES DE LANÇAR</span> Todos de costura, nenhum de conteúdo</h4>
+<p>A <b>Introdução</b> e o <b>Epílogo</b> ainda falam como se a Parte II não existisse, e o livro quase não tem <b>referências de volta</b> dos capítulos 12–21 para a Parte II. Há rascunhos prontos na seção 7. A numeração dos Desafios de Retomada, que duplicava (dois "#04"…"#11"), foi corrigida neste momento e já está no ar.</p></div>
+
+<h2>2. Arquitetura: quanto cada parte pesa</h2>
+<figure class="fig"><div class="scroll"><div id="f1"></div></div>
+<figcaption>Palavras de corpo por capítulo (sem glossário e bibliografia). Cada cor é uma parte. A Parte II é a maior (≈29%), mas seus capítulos são mais curtos (média de 1,2 mil palavras contra 1,4 mil nos demais), o que a mantém legível como bloco de um fôlego só.</figcaption></figure>
+
+<h2>3. Evolução dos temas ao longo da leitura</h2>
+<figure class="fig"><div class="scroll"><div id="f2"></div></div><div class="legend" id="leg2"></div>
+<figcaption>Composição temática de cada capítulo (100%). A leitura "respira" em ondas: <b>Mente/Atenção</b> domina a abertura, cede a <b>IA</b> na Parte II, passa a <b>Vigilância, Poder e Economia</b> no Cerco, a <b>Trabalho e Infraestrutura</b> na Parte IV e fecha em <b>Resistência, Economia alternativa e Esperança</b>. É a progressão do íntimo para o coletivo e do diagnóstico para a ação.</figcaption></figure>
+
+<figure class="fig"><div class="scroll"><div id="f3"></div></div>
+<figcaption>Onde cada tema "mora": intensidade (menções por mil palavras, normalizada dentro de cada tema). Os temas aparecem, atingem o pico no capítulo que lhes pertence e deixam rastro nos seguintes. O que falta é o rastro <i>para trás</i>: veja a seção 5.</figcaption></figure>
+
+<h2>4. Quanto cada tema ocupa em cada proposta de estrutura</h2>
+<p>Comparei quatro maneiras de organizar o mesmo material. Cada barra é uma parte; a largura mostra o peso em palavras e as cores mostram a ocupação temática dentro dela.</p>
+<div id="f4"></div>
+<div class="item"><h4>Leitura das quatro propostas (desequilíbrio = variação do peso entre partes; menor é mais igual)</h4><div id="f4txt"></div></div>
+
+<h2>5. O que liga o quê: a teia de referências</h2>
+<figure class="fig"><div class="scroll"><div id="f5"></div></div><div class="legend"><span><i style="background:var(--t4)"></i>aponta para frente</span><span><i style="background:var(--t1)"></i>aponta para trás</span></div>
+<figcaption>Cada arco é uma remissão explícita "Capítulo N" no texto. A <b>Parte II envia 20 remissões</b>, ligando a máquina a todo o livro; os capítulos 12–21 enviam apenas <b>4</b> no total. As pontes finais (frases de passagem) garantem a sequência, mas as ideias não se encontram de volta. É o principal ganho de costura que resta.</figcaption></figure>
+
+<h2>6. Como cada capítulo é construído</h2>
+<figure class="fig"><div class="scroll"><div id="f6"></div></div>
+<figcaption>Checklist de construção. Ponte = o capítulo termina entregando o próximo. Desafio = tem Desafio de Retomada. Selos = marcações de rigor (estimativa, hipótese, provocação), usadas na Parte II. Contraponto = tem seção que contesta a própria tese. Brasil = menções à realidade brasileira. Recebe/Envia = remissões cruzadas.</figcaption></figure>
+<div class="item"><h4>Dois registros que convivem</h4>
+<p>Os capítulos 01–03 e 12–21 abrem com tese ou imagem ("O seu corpo não lhe pertence mais") e se fecham em "Síntese". A Parte II abre sempre com um <b>caso datado</b> (Dartmouth 1955, o advogado de Nova York, o engenheiro do Google), tem um "Contraponto Honesto" e selos de rigor. Não é incoerência: é a evolução do Pacto de Rigor da Introdução. Mas o leitor sentirá a mudança de tom ao sair da Parte II, e vale deixá-la visível como escolha (seção 7, item 6).</p></div>
+
+<h2>7. Correções ainda necessárias (só estruturais)</h2>
+<div class="item ok"><h4><span class="tag ok">FEITO AGORA</span> 1. Numeração dos Desafios de Retomada</h4>
+<p>Os capítulos antigos mantinham "#04…#17" enquanto a Parte II usava "#04…#11": havia dois Desafios #04, #05… Renumerei os antigos (PT e EN) para #12–#25. A sequência agora é contínua de #01 a #25.</p></div>
+
+<div class="item bad"><h4><span class="tag bad">ANTES DE LANÇAR</span> 2. Introdução: o "Mapa de Fuga" não mostra o mapa</h4>
+<p>O trecho lista as armas da resistência, mas não apresenta as partes do livro, e a Parte II (que ocupa 29% do texto) não aparece em lugar nenhum. Proposta de parágrafo, para entrar antes de "E não estamos desarmados":</p>
+<blockquote>O caminho tem cinco partes. A Mente (Capítulos 01 a 03) vai do corpo e da atenção até o seu duplo estatístico. A Máquina (04 a 11) abre a caixa-preta que monta esse retrato: de onde veio a inteligência artificial, como aprende, o que entende, o que faz com quem a usa e quem paga a conta. O Cerco (12 a 14.1) mostra o Estado e o dinheiro lendo o retrato; a Infraestrutura (15 a 17.1), o trabalho, a rede e a matéria que sustentam tudo; e a Resistência (18 a 21), o que ainda está ao nosso alcance.</blockquote>
+<p>E, em "Como Ler Este Livro", uma frase: <i>"A Parte II, sobre inteligência artificial, foi escrita com a ajuda de uma e traz a sua própria nota de método."</i></p></div>
+
+<div class="item bad"><h4><span class="tag bad">ANTES DE LANÇAR</span> 3. Epílogo: promete o que já foi escrito</h4>
+<p>O Epílogo imagina "capítulos que nascem de perguntas novas (a relação com companheiros sintéticos, o luto mediado por IA, a atrofia das habilidades que terceirizamos, a história da própria inteligência artificial)". Três dessas quatro perguntas viraram capítulos (04, 07 e a "dívida cognitiva" do 07). Ele também pergunta "como declarar o papel das ferramentas de IA na construção de um livro que critica a IA", que a Nota de Método já responde. Proposta:</p>
+<blockquote>Parte dessas perguntas já virou capítulo: a história da inteligência artificial, os companheiros sintéticos e a atrofia das habilidades (a "dívida cognitiva") estão na Parte II. Ficam abertas outras: o luto mediado por IA, a IA na escola, o que ainda não sabemos perguntar. E a pergunta sobre autoria ganhou uma primeira resposta, a Nota de Método da Parte II, que declara como uma máquina participou da escrita; ela está aberta à crítica como todo o resto.</blockquote></div>
+
+<div class="item warn"><h4><span class="tag warn">RECOMENDADO</span> 4. Remissões de volta (a costura que falta)</h4>
+<p>Uma frase em cada capítulo ligaria o que a Parte II explica ao que os capítulos seguintes mostram, sem tocar no resto. Sugestões:</p>
+<table style="font-size:13px"><tr><th>Capítulo</th><th style="text-align:left;white-space:normal">Frase-ponte sugerida</th></tr>
+<tr><td>12 Necropolítica</td><td style="text-align:left;white-space:normal">…o algoritmo de saúde que errou com pacientes negros é o caso de viés que o Capítulo 08 explica por dentro.</td></tr>
+<tr><td>14 Tribunal Algorítmico</td><td style="text-align:left;white-space:normal">…um score é um modelo que aprendeu com dados do passado (Capítulos 05 e 06): por isso devolve o passado como sentença.</td></tr>
+<tr><td>15 Taylorismo Digital</td><td style="text-align:left;white-space:normal">…o "patrão invisível" tem um colega ainda mais invisível: o trabalhador que treina a máquina (Capítulo 08).</td></tr>
+<tr><td>16 Internet Morta</td><td style="text-align:left;white-space:normal">…o colapso de modelos e as alucinações vêm do mecanismo explicado no Capítulo 05.</td></tr>
+<tr><td>17 Nuvem de Pedra</td><td style="text-align:left;white-space:normal">…os chips, a energia e a água são o gargalo da corrida descrita no Capítulo 09.</td></tr>
+<tr><td>19 Cidadania Onlife</td><td style="text-align:left;white-space:normal">…as regras de uso da IA têm capítulo próprio (11); aqui ficam os hábitos que valem para qualquer tecnologia.</td></tr>
+<tr><td>01 Cérebro ≠ Computador</td><td style="text-align:left;white-space:normal">(ao fim do efeito ELIZA) …voltaremos a ele, em escala, no Capítulo 07.</td></tr></table></div>
+
+<div class="item warn"><h4><span class="tag warn">RECOMENDADO</span> 5. Duas "guerrilhas"</h4>
+<p>O Capítulo 11 ("Guerrilha com IA") e o Capítulo 19 ("Manual de Guerrilha Pessoal") não se confundem no conteúdo, mas se confundem no nome. Sugestão: manter os dois e fazer cada um citar o outro na primeira página (o 11 já cita o 19; falta o 19 citar o 11, item 4).</p></div>
+
+<div class="item warn"><h4><span class="tag warn">RECOMENDADO</span> 6. Brasil na segunda metade</h4>
+<p>A lente brasileira, exigida em todos os capítulos da Parte II (2,9 menções por mil palavras), cai para 1,0 na Infraestrutura e 0,6 na Resistência. Não é erro (o Capítulo 21 tem Lei 14.300, o 14.1 tem Pix e Drex), mas os capítulos 17.1, 18.1, 18.2 e 20 quase não têm Brasil. Se houver tempo antes do lançamento, um parágrafo em cada um fecha a simetria; se não, entra na primeira atualização.</p></div>
+
+<div class="item"><h4><span class="tag">DEPOIS DO LANÇAMENTO</span> 7. O que pode esperar</h4>
+<p>Revisão de tom entre as duas camadas (seção 6); os 18 itens que citam 2025/2026 e envelhecem rápido; os poucos fatos sem fonte primária (relatório de divergências); e a estreia do "capítulo vivo" prometido no Epílogo, que tem agora uma Nota de Método para servir de modelo.</p></div>
+
+<h2>8. Qual estrutura escolher</h2>
+<div class="item ok"><h4>Manter a proposta atual (5 partes, IA como Parte II)</h4>
+<p>Em peso puro, a mais equilibrada é a D (12% de desequilíbrio, contra 27% da B). A B ganha em <b>função</b>: a Parte I continua sendo sobre a pessoa; a IA aparece exatamente quando o leitor pergunta "quem monta esse retrato?"; e as partes seguintes (Cerco, Infraestrutura, Resistência) ficam com tamanhos próximos (15 a 19%). A alternativa de diluir a IA dentro das outras partes incha a Parte I para cerca de 32% e a torna um livro à parte. Dividir a IA em duas partes (D, seis no total) equilibra os pesos, mas quebra o arco "história → técnica → filosofia → psicologia → sociedade → poder → risco → prática", que é a melhor coisa da Parte II.</p></div>
+
+<h2>9. Verificação geral</h2>
+<div class="grid">
+<div class="stat"><b style="color:var(--ok)">31/31</b><span>páginas bilíngues compilam e passam nos testes de idioma</span></div>
+<div class="stat"><b style="color:var(--ok)">0</b><span>remissões quebradas: todo "Capítulo N" aponta para um capítulo existente</span></div>
+<div class="stat"><b style="color:var(--ok)">100%</b><span>dos capítulos terminam em ponte (ou, no Epílogo, em convite)</span></div>
+<div class="stat"><b style="color:var(--warn)">3</b><span>divergências de fato corrigidas + 3 rodadas de verificação; poucos itens sem fonte primária</span></div>
+</div>
+<p class="dim" style="font-size:14px">Método: texto de todas as páginas extraído por script; temas medidos por famílias de palavras (11 temas); remissões lidas pelo padrão "Capítulo N"; estrutura lida nos títulos, aberturas e fechamentos de cada capítulo. Menções a tema são uma aproximação (por vocabulário), não uma leitura de sentido: servem para ver tendências e proporções, não valores exatos.</p>
+</main>
+
+<script>
+const D=[{"label":"Intro","titulo":"Introdução: O Espelho Preditivo","parte":"Abertura","palavras":1071,"temas":{"Vigilância e dados":13,"Atenção e vício":4,"Mente e corpo":4,"Inteligência artificial":1,"Trabalho":0,"Poder, Estado e direito":5,"Economia e dinheiro":6,"Infraestrutura e meio ambiente":0,"Resistência e prática":7,"Filosofia e ética":0,"Esperança e comum":1},"brasil":0,"selos":0,"ponte":false,"refs":[],"desafio":"","h2":["Um Caso: Quando o Feed Virou Experimento","A Autópsia do Controle","O Mapa de Fuga","Como Ler Este Livro: Um Pacto de Rigor"],"fecho":"E é um organismo em construção : edição revisada em novembro de 2026, com dados que envelhecem e perguntas que ainda não sabemos fazer. No Epílogo, discutimos o"},{"label":"01","titulo":"O Cérebro Não é um Computador","parte":"I. A Mente","palavras":1630,"temas":{"Vigilância e dados":11,"Atenção e vício":4,"Mente e corpo":34,"Inteligência artificial":12,"Trabalho":0,"Poder, Estado e direito":4,"Economia e dinheiro":6,"Infraestrutura e meio ambiente":0,"Resistência e prática":4,"Filosofia e ética":11,"Esperança e comum":2},"brasil":0,"selos":0,"ponte":true,"refs":["03"],"desafio":"01","h2":["De Onde Vem a Metáfora (e Até Onde Ela Vai)","Dois Casos: A Máquina e o Corpo","O Perigo Real: Ser Previsível em Escala","O Espelho Negro: Psicanálise na Era dos Dados","A Fronteira Final: Biometria e Soberania","Síntese: A Supremacia da Falha"],"fecho":"Se a nossa contradição é a nossa liberdade, quem quer reduzi-la? O próximo capítulo começa pela atenção, o recurso mais disputado de hoje."},{"label":"02","titulo":"O Sequestro da Atenção: Neuroquímica e Hipnose","parte":"I. A Mente","palavras":2046,"temas":{"Vigilância e dados":0,"Atenção e vício":51,"Mente e corpo":24,"Inteligência artificial":3,"Trabalho":2,"Poder, Estado e direito":11,"Economia e dinheiro":2,"Infraestrutura e meio ambiente":0,"Resistência e prática":4,"Filosofia e ética":4,"Esperança e comum":1},"brasil":1,"selos":0,"ponte":true,"refs":["19"],"desafio":"02","h2":["Behaviorismo Armado: De Pavlov a Skinner","A Neurociência do \"Erro de Predição\"","Hipnose Digital e o Transe da Máquina","Eles Sabiam? O Caso das Pesquisas Internas","O Contrapeso: Clínica, Regulação e a Velha Caça à Atenção","Antítese: Brainets e Sincronia","Síntese: Escolhendo sua Química"],"fecho":"Mas a atenção capturada não evapora: vira dado. O próximo capítulo mostra como cada clique alimenta o seu duplo estatístico."},{"label":"03","titulo":"O Eu Inferido vs. Soberania de Dados","parte":"I. A Mente","palavras":2069,"temas":{"Vigilância e dados":40,"Atenção e vício":4,"Mente e corpo":6,"Inteligência artificial":3,"Trabalho":3,"Poder, Estado e direito":9,"Economia e dinheiro":10,"Infraestrutura e meio ambiente":1,"Resistência e prática":9,"Filosofia e ética":5,"Esperança e comum":0},"brasil":6,"selos":0,"ponte":true,"refs":[],"desafio":"03","h2":["Um Caso: O Quiz e os 87 Milhões","A Armadilha das Letras Miúdas","O Mercado Invisível","Dossiê: Matriz de Extração Profunda","O Panóptico do Open Finance","Estudo de Caso: A Exploração Algorítmica","Soberania, na Prática","Contra-Medidas: Vigiando o Vigilante"],"fecho":"Mas quem monta esse retrato? Não é uma pessoa lendo o seu histórico: são sistemas de inteligência artificial, que aprendem padrões em bilhões de rastros como o "},{"label":"Nota","titulo":"A Máquina: Nota de Método","parte":"II. A Máquina","palavras":375,"temas":{"Vigilância e dados":0,"Atenção e vício":0,"Mente e corpo":1,"Inteligência artificial":4,"Trabalho":0,"Poder, Estado e direito":3,"Economia e dinheiro":0,"Infraestrutura e meio ambiente":0,"Resistência e prática":0,"Filosofia e ética":2,"Esperança e comum":0},"brasil":0,"selos":3,"ponte":false,"refs":["08","04"],"desafio":"","h2":["Quatro Limites, Ditos em Voz Alta","O Caminho"],"fecho":"Os oito capítulos seguintes seguem uma ordem: a história (Capítulo 04), a técnica (05), a filosofia (06), a psicologia (07), a sociedade (08), o poder (09), o r"},{"label":"04","titulo":"A Máquina de Prometer: Setenta Anos de Promessas","parte":"II. A Máquina","palavras":1376,"temas":{"Vigilância e dados":5,"Atenção e vício":0,"Mente e corpo":2,"Inteligência artificial":13,"Trabalho":1,"Poder, Estado e direito":2,"Economia e dinheiro":6,"Infraestrutura e meio ambiente":2,"Resistência e prática":1,"Filosofia e ética":2,"Esperança e comum":0},"brasil":4,"selos":3,"ponte":true,"refs":["01","01"],"desafio":"04","h2":["Os Verões e os Invernos","As Duas Tribos","E no Brasil?","Dessa Vez É Diferente?"],"fecho":"Para saber se a promessa pode ser cumprida, falta uma coisa: abrir a máquina. O próximo capítulo explica, sem mistério e sem fórmula, como ela aprende, e por qu"},{"label":"05","titulo":"Como a Máquina Aprende: Autocompletar em Escala","parte":"II. A Máquina","palavras":1643,"temas":{"Vigilância e dados":4,"Atenção e vício":3,"Mente e corpo":2,"Inteligência artificial":22,"Trabalho":0,"Poder, Estado e direito":8,"Economia e dinheiro":4,"Infraestrutura e meio ambiente":1,"Resistência e prática":3,"Filosofia e ética":4,"Esperança e comum":0},"brasil":3,"selos":7,"ponte":true,"refs":["08","04","08","04","09"],"desafio":"05","h2":["Os Cinco Degraus","Por que Ela Inventa com Tanta Calma","Dois Erros Opostos","E em Português?"],"fecho":"Se tudo isso é prever o próximo pedaço, sobra uma pergunta que a engenharia não responde sozinha: existe alguém lá dentro? O próximo capítulo entra na filosofia"},{"label":"06","titulo":"Espelho e Papagaio: Existe Alguém Lá Dentro?","parte":"II. A Máquina","palavras":1223,"temas":{"Vigilância e dados":3,"Atenção e vício":0,"Mente e corpo":15,"Inteligência artificial":11,"Trabalho":1,"Poder, Estado e direito":0,"Economia e dinheiro":0,"Infraestrutura e meio ambiente":0,"Resistência e prática":3,"Filosofia e ética":6,"Esperança e comum":0},"brasil":1,"selos":2,"ponte":true,"refs":["01","04","02","01"],"desafio":"06","h2":["O Papagaio","O Espelho","O Teste que Já Foi Passado","O Que a Ciência da Consciência Diz","O Que Nós Sentimos"],"fecho":"Quando a crença vira apego, a filosofia vira vida cotidiana. O próximo capítulo entra nas conversas que as pessoas estão tendo, de madrugada, com máquinas que p"},{"label":"07","titulo":"Companheiros Sintéticos: Quando a Máquina Escuta","parte":"II. A Máquina","palavras":1196,"temas":{"Vigilância e dados":3,"Atenção e vício":1,"Mente e corpo":4,"Inteligência artificial":11,"Trabalho":2,"Poder, Estado e direito":4,"Economia e dinheiro":0,"Infraestrutura e meio ambiente":0,"Resistência e prática":3,"Filosofia e ética":4,"Esperança e comum":1},"brasil":3,"selos":5,"ponte":true,"refs":["05","06","03"],"desafio":"07","h2":["A Máquina que Concorda Sempre","Quando o Vínculo Dá Errado","O Que a Gente Deixa de Fazer","O Contraponto Honesto","Três Perguntas para Qualquer Companheiro Sintético"],"fecho":"Por trás de cada resposta que parece um gesto de cuidado há trabalho humano: pessoas que rotularam, avaliaram e moderaram, quase sempre longe dos olhos de quem "},{"label":"08","titulo":"Quem Treina a Máquina: Trabalho, Obra e Viés","parte":"II. A Máquina","palavras":1098,"temas":{"Vigilância e dados":6,"Atenção e vício":0,"Mente e corpo":0,"Inteligência artificial":15,"Trabalho":15,"Poder, Estado e direito":4,"Economia e dinheiro":2,"Infraestrutura e meio ambiente":4,"Resistência e prática":5,"Filosofia e ética":2,"Esperança e comum":1},"brasil":4,"selos":4,"ponte":true,"refs":["05","12","13"],"desafio":"08","h2":["O Trabalho Fantasma","A Obra","O Viés","O Contraponto Honesto"],"fecho":"Se o trabalho, a obra e os dados estão nas mãos de quem pode pagar por eles, a pergunta seguinte é sobre poder: quem tem os chips, a energia e as regras. O próx"},{"label":"09","titulo":"A Corrida: Chips, Energia e Soberania","parte":"II. A Máquina","palavras":1067,"temas":{"Vigilância e dados":4,"Atenção e vício":1,"Mente e corpo":0,"Inteligência artificial":10,"Trabalho":1,"Poder, Estado e direito":11,"Economia e dinheiro":8,"Infraestrutura e meio ambiente":26,"Resistência e prática":6,"Filosofia e ética":0,"Esperança e comum":0},"brasil":8,"selos":3,"ponte":true,"refs":["17","17"],"desafio":"09","h2":["Chips, Energia e Regras","E o Brasil?","O Contraponto Honesto"],"fecho":"Enquanto os países e as empresas correm, uma parte dos pesquisadores diz que a corrida pode acabar mal, e outra parte diz que esse medo desvia a atenção dos dan"},{"label":"10","titulo":"O Debate do Fim do Mundo: Quem Decide Qual Medo Importa","parte":"II. A Máquina","palavras":1061,"temas":{"Vigilância e dados":3,"Atenção e vício":2,"Mente e corpo":1,"Inteligência artificial":14,"Trabalho":6,"Poder, Estado e direito":2,"Economia e dinheiro":1,"Infraestrutura e meio ambiente":0,"Resistência e prática":3,"Filosofia e ética":2,"Esperança e comum":1},"brasil":3,"selos":2,"ponte":false,"refs":[],"desafio":"10","h2":["O Medo do Futuro","O Medo do Presente","O Que a Evidência Já Permite Dizer"],"fecho":"Para o cidadão comum, a melhor defesa contra os dois medos é a mesma: saber usar a ferramenta, saber o que ela faz com os seus dados e saber contestar quando el"},{"label":"11","titulo":"Guerrilha com IA: Usar sem Ser Usado","parte":"II. A Máquina","palavras":1082,"temas":{"Vigilância e dados":12,"Atenção e vício":0,"Mente e corpo":2,"Inteligência artificial":14,"Trabalho":2,"Poder, Estado e direito":8,"Economia e dinheiro":1,"Infraestrutura e meio ambiente":1,"Resistência e prática":15,"Filosofia e ética":0,"Esperança e comum":2},"brasil":3,"selos":1,"ponte":true,"refs":["03","14","19","15"],"desafio":"11","h2":["Cinco Regras de Guerrilha","Modelos Abertos e Locais","O Que a Lei Brasileira Já Garante","O Teste de Illich para a IA","O Contraponto Honesto"],"fecho":"Aqui termina a parte sobre a máquina. Até agora, vimos o que ela é por dentro. Na próxima parte, ela sai do laboratório e entra no Estado, na cidade e no tribun"},{"label":"12","titulo":"Biopolítica vs. Necropolítica Digital","parte":"III. O Cerco","palavras":1706,"temas":{"Vigilância e dados":25,"Atenção e vício":2,"Mente e corpo":1,"Inteligência artificial":7,"Trabalho":3,"Poder, Estado e direito":19,"Economia e dinheiro":7,"Infraestrutura e meio ambiente":0,"Resistência e prática":6,"Filosofia e ética":1,"Esperança e comum":0},"brasil":4,"selos":0,"ponte":true,"refs":[],"desafio":"04","h2":["Democracias que Erraram em Escala","O Panóptico Global: LatAm, Ásia e África","A Engenharia da Exclusão (O Diagrama)","A Fusão: Palantir e o Complexo Industrial de Vigilância","Estudos de Caso: O Viés Codificado","Síntese: Contenção de Danos Consciente"],"fecho":"E onde tudo isso se materializa? Na rua. O próximo capítulo sai dos dados abstratos e entra na cidade, com seus postes, câmeras e sensores."},{"label":"13","titulo":"A Cidade Sensiente: Urbanismo de Dados","parte":"III. O Cerco","palavras":1377,"temas":{"Vigilância e dados":32,"Atenção e vício":0,"Mente e corpo":2,"Inteligência artificial":5,"Trabalho":2,"Poder, Estado e direito":9,"Economia e dinheiro":1,"Infraestrutura e meio ambiente":5,"Resistência e prática":4,"Filosofia e ética":1,"Esperança e comum":0},"brasil":1,"selos":0,"ponte":true,"refs":["12"],"desafio":"05","h2":["Anatomia do Hardware: Os Olhos e Ouvidos da Cidade","O Mapa de Camadas: A Verticalidade do Poder","Geopolítica da Vigilância: Modelos Globais","Cidades que Escolheram Outro Caminho","Síntese: Navegação Tática e \"Sousveillance\""],"fecho":"Todas essas câmeras e sensores produzem dados, e dados produzem sentenças. O próximo capítulo entra no tribunal onde elas são lidas, sem juiz e sem defesa."},{"label":"14","titulo":"O Tribunal Algorítmico: A Sentença Silenciosa","parte":"III. O Cerco","palavras":1563,"temas":{"Vigilância e dados":15,"Atenção e vício":0,"Mente e corpo":1,"Inteligência artificial":8,"Trabalho":4,"Poder, Estado e direito":27,"Economia e dinheiro":13,"Infraestrutura e meio ambiente":0,"Resistência e prática":5,"Filosofia e ética":6,"Esperança e comum":0},"brasil":4,"selos":0,"ponte":true,"refs":[],"desafio":"06","h2":["Um Caso: A Professora que Perdeu o Emprego para uma Nota","Engenharia de Reputação: Como o Score é Fabricado","Marginalização Automática: O Crime de Ser Pobre","O Cerco de Segurança: A Fusão Público-Privada","A Morte da Jurisprudência Humana","Quando Dois Critérios de Justiça Não Cabem no Mesmo Modelo","Síntese: Litigância Algorítmica e Adaptação"],"fecho":"E se, além de julgar o seu passado, o sistema controlasse o próprio dinheiro que você pode gastar? O próximo capítulo entra nas moedas digitais e no que elas pe"},{"label":"14.1","titulo":"O Panóptico Financeiro: A Engenharia das CBDCs","parte":"III. O Cerco","palavras":1062,"temas":{"Vigilância e dados":8,"Atenção e vício":0,"Mente e corpo":0,"Inteligência artificial":2,"Trabalho":2,"Poder, Estado e direito":9,"Economia e dinheiro":48,"Infraestrutura e meio ambiente":4,"Resistência e prática":5,"Filosofia e ética":3,"Esperança e comum":0},"brasil":3,"selos":0,"ponte":true,"refs":[],"desafio":"07","h2":["Estudo de Caso: O Yuan Digital e a Expiração","A Arma Financeira: Canadá e Nigéria","Pix, Drex e o Que Realmente Está em Jogo"],"fecho":"O dinheiro é só uma dimensão do controle; a outra é o tempo de quem trabalha. O próximo capítulo vai da carteira à jornada de trabalho."},{"label":"15","titulo":"O Patrão Invisível: Taylorismo Digital","parte":"IV. Infraestrutura","palavras":1266,"temas":{"Vigilância e dados":6,"Atenção e vício":0,"Mente e corpo":5,"Inteligência artificial":6,"Trabalho":38,"Poder, Estado e direito":14,"Economia e dinheiro":7,"Infraestrutura e meio ambiente":3,"Resistência e prática":4,"Filosofia e ética":3,"Esperança e comum":0},"brasil":3,"selos":0,"ponte":true,"refs":[],"desafio":"08","h2":["O Olho do Banco: Bossware e a Vigilância no Teclado","A Substituição do Trabalho: Deslocamento de Tarefas","O Escudo Legislativo: O Mundo Reage","Produtividade, Automação e o Que os Dados Mostram","Síntese: Soberania Laboral e Governança"],"fecho":"Se o trabalho já é medido por máquinas, o que acontece quando elas passam a produzir também o conteúdo que lemos? O próximo capítulo trata da internet que deixo"},{"label":"16","titulo":"A Internet Morta: Colapso da Realidade e a Solidão Sintética","parte":"IV. Infraestrutura","palavras":1630,"temas":{"Vigilância e dados":14,"Atenção e vício":5,"Mente e corpo":2,"Inteligência artificial":22,"Trabalho":0,"Poder, Estado e direito":0,"Economia e dinheiro":0,"Infraestrutura e meio ambiente":4,"Resistência e prática":4,"Filosofia e ética":18,"Esperança e comum":0},"brasil":1,"selos":0,"ponte":true,"refs":[],"desafio":"09","h2":["O Ouroboros de Dados: Model Collapse","O Vale da Estranheza Social","O Dividendo do Mentiroso (Liar's Dividend)","A Teoria da Floresta Negra","O Que Já Sabemos sobre Colapso, Deepfakes e Autenticidade","Síntese: Jardins Digitais e a Web Humana"],"fecho":"E onde ficam as máquinas que produzem todo esse ruído? Não numa nuvem: em minas, usinas e reservatórios de água. É o assunto do próximo capítulo."},{"label":"17","titulo":"A Nuvem de Pedra: A Geologia Sangrenta da Mídia","parte":"IV. Infraestrutura","palavras":1382,"temas":{"Vigilância e dados":0,"Atenção e vício":2,"Mente e corpo":1,"Inteligência artificial":6,"Trabalho":2,"Poder, Estado e direito":4,"Economia e dinheiro":5,"Infraestrutura e meio ambiente":39,"Resistência e prática":3,"Filosofia e ética":3,"Esperança e comum":2},"brasil":0,"selos":0,"ponte":true,"refs":[],"desafio":"10","h2":["O Sangue na Bateria: Os Creuseurs do Congo","A Guerra da Água: Data Centers vs. População","Deep Time: O Descompasso Temporal","O Paradoxo de Jevons e a Eficiência","Energia, Água e o Outro Lado da Eficiência","Síntese: Permacomputação como Resistência"],"fecho":"Da pedra e da água passamos ao território onde o rastro desaparece de propósito: o anonimato. O próximo capítulo desce ao oceano profundo da rede."},{"label":"17.1","titulo":"O Oceano Profundo: Tor, Deepweb e a Arquitetura da Fuga","parte":"IV. Infraestrutura","palavras":941,"temas":{"Vigilância e dados":7,"Atenção e vício":0,"Mente e corpo":4,"Inteligência artificial":0,"Trabalho":0,"Poder, Estado e direito":7,"Economia e dinheiro":8,"Infraestrutura e meio ambiente":3,"Resistência e prática":32,"Filosofia e ética":1,"Esperança e comum":0},"brasil":1,"selos":0,"ponte":true,"refs":["18.1"],"desafio":"11","h2":["A Engenharia da Cebola (Onion Routing)","Geopolítica da Rede: A Ferramenta dos Oprimidos","Os Limites do Anonimato"],"fecho":"Do anonimato na rede passamos ao último território sem acesso: a mente. O próximo capítulo trata dos neurodireitos."},{"label":"18","titulo":"Neurodireitos: A Invasão do Santuário Final","parte":"V. Resistência","palavras":1603,"temas":{"Vigilância e dados":27,"Atenção e vício":1,"Mente e corpo":24,"Inteligência artificial":4,"Trabalho":4,"Poder, Estado e direito":19,"Economia e dinheiro":2,"Infraestrutura e meio ambiente":1,"Resistência e prática":11,"Filosofia e ética":8,"Esperança e comum":1},"brasil":2,"selos":0,"ponte":true,"refs":[],"desafio":"12","h2":["O Hardware da Invasão: A Leitura Já Começou","A Ciência da Traição: A Onda P300","A Defesa Legal: Os 5 Neurodireitos","O Lado B da Neurotecnologia e as Leis que Surgem","Síntese: O Santuário Analógico"],"fecho":"Proteger a mente começa por proteger o que a rodeia: o aparelho, a rede, a conta. O próximo capítulo organiza essa defesa em camadas."},{"label":"18.1","titulo":"Fortaleza Digital: Zero Trust e Hardening Tático","parte":"V. Resistência","palavras":729,"temas":{"Vigilância e dados":10,"Atenção e vício":0,"Mente e corpo":0,"Inteligência artificial":1,"Trabalho":0,"Poder, Estado e direito":3,"Economia e dinheiro":10,"Infraestrutura e meio ambiente":0,"Resistência e prática":23,"Filosofia e ética":0,"Esperança e comum":2},"brasil":0,"selos":0,"ponte":true,"refs":[],"desafio":"13","h2":["A Matemática do Segredo (E2EE)","A Teoria do Submarino: Compartimentalização","Sistemas Operacionais: A Base da Pirâmide","Modelo de Ameaça, Metadados e a Guerra das Backdoors"],"fecho":"Proteger conversas é um passo; proteger o dinheiro é outro. O próximo capítulo trata da economia de quem não quer pedir permissão."},{"label":"18.2","titulo":"Economia de Guerra: Engenharia do Bitcoin e Monero","parte":"V. Resistência","palavras":910,"temas":{"Vigilância e dados":4,"Atenção e vício":1,"Mente e corpo":1,"Inteligência artificial":0,"Trabalho":0,"Poder, Estado e direito":5,"Economia e dinheiro":36,"Infraestrutura e meio ambiente":4,"Resistência e prática":12,"Filosofia e ética":0,"Esperança e comum":0},"brasil":0,"selos":0,"ponte":true,"refs":["17","17"],"desafio":"14","h2":["Assimetria Criptográfica: Sua Única Propriedade Real","A Guerra da Privacidade: Bitcoin vs. Monero","Casos Reais","Privacidade Financeira, Risco Jurídico e Tensões"],"fecho":"Dinheiro, rede e mente estão cobertos. Falta o hábito: o que fazer na segunda-feira de manhã. O próximo capítulo é o manual de guerrilha pessoal."},{"label":"19","titulo":"A Cidadania Onlife: Manual de Guerrilha Pessoal","parte":"V. Resistência","palavras":1067,"temas":{"Vigilância e dados":1,"Atenção e vício":6,"Mente e corpo":3,"Inteligência artificial":0,"Trabalho":5,"Poder, Estado e direito":6,"Economia e dinheiro":1,"Infraestrutura e meio ambiente":0,"Resistência e prática":15,"Filosofia e ética":7,"Esperança e comum":2},"brasil":1,"selos":0,"ponte":true,"refs":[],"desafio":"15","h2":["O Teste de Convivialidade (Ivan Illich)","A Fricção da Liberdade: O Preço da Soberania","A Privação de Solitude: O Medo do Silêncio","O Que a Evidência Permite Afirmar sobre Telas e Crianças"],"fecho":"Há um limite para o que o indivíduo resolve sozinho: as plataformas que escolhemos definem as regras do jogo. O próximo capítulo é sobre elas."},{"label":"20","titulo":"Tecnofeudalismo: O Fim do Capitalismo","parte":"V. Resistência","palavras":1165,"temas":{"Vigilância e dados":4,"Atenção e vício":2,"Mente e corpo":0,"Inteligência artificial":5,"Trabalho":0,"Poder, Estado e direito":3,"Economia e dinheiro":27,"Infraestrutura e meio ambiente":2,"Resistência e prática":5,"Filosofia e ética":0,"Esperança e comum":4},"brasil":0,"selos":0,"ponte":true,"refs":[],"desafio":"16","h2":["A Anatomia da Merdificação (Enshittification)","Chokepoint Capitalism: O Pedágio da Inovação","Antítese: O Retorno aos Comuns (The Commons)","Quem Controla os Gargalos (e Como Eles se Abrem)","Síntese: O Protocolo POSSE"],"fecho":"Se as plataformas são feudos, que alternativas existem? O próximo capítulo é sobre imaginar, e construir, outras."},{"label":"21","titulo":"Imaginação Radical: O Futuro Solarpunk","parte":"V. Resistência","palavras":1003,"temas":{"Vigilância e dados":3,"Atenção e vício":0,"Mente e corpo":1,"Inteligência artificial":1,"Trabalho":3,"Poder, Estado e direito":3,"Economia e dinheiro":4,"Infraestrutura e meio ambiente":8,"Resistência e prática":7,"Filosofia e ética":6,"Esperança e comum":23},"brasil":1,"selos":0,"ponte":true,"refs":["17"],"desafio":"17","h2":["Lo-TEK: A Tecnologia Ancestral","Tecnologias de Libertação: O Hardware Solarpunk","Ecologia Social: Além da \"Tecnologia Verde\"","Utopias que Já Funcionam, e Seus Limites","Síntese: Protopia e o Trabalho Manual"],"fecho":"Chegamos ao fim da jornada que o livro propôs, que, como veremos, não precisa ser o fim do livro."},{"label":"Epílogo","titulo":"Epílogo: O Erro no Sistema","parte":"Epílogo","palavras":736,"temas":{"Vigilância e dados":1,"Atenção e vício":1,"Mente e corpo":4,"Inteligência artificial":7,"Trabalho":0,"Poder, Estado e direito":5,"Economia e dinheiro":6,"Infraestrutura e meio ambiente":1,"Resistência e prática":3,"Filosofia e ética":6,"Esperança e comum":1},"brasil":0,"selos":0,"ponte":false,"refs":["16","18","16"],"desafio":"","h2":["A Vergonha Prometeica e a Autopoiese","O Jogo Infinito (Fator 1)","Um Livro que Continua (Uma Pergunta Aberta)"],"fecho":"É o jogo infinito aplicado à própria escrita: não escrevemos para terminar o livro, escrevemos para que a conversa continue."}];
+const T=Object.keys(D[0].temas), NT=T.length;
+const fmt=n=>n.toLocaleString('pt-BR');
+const PARTS=['I. A Mente','II. A Máquina','III. O Cerco','IV. Infraestrutura','V. Resistência'];
+const PCOL=['#8a7f6a','#7b61ff','#c2410c','#8a6d3b','#2f7d4f'];
+const body=D.filter(c=>PARTS.includes(c.parte));
+const total=D.reduce((a,c)=>a+c.palavras,0);
+document.getElementById('stats').innerHTML=[
+ [fmt(total),'palavras de corpo (sem glossário e bibliografia)'],
+ ['28','unidades de leitura: introdução, 25 capítulos, nota de método e epílogo'],
+ ['5','partes: Mente, Máquina, Cerco, Infraestrutura, Resistência'],
+ ['87 · 142','verbetes do glossário · entradas da bibliografia']
+].map(a=>`<div class="stat"><b>${a[0]}</b><span>${a[1]}</span></div>`).join('');
+
+const svgOpen=(w,h)=>`<svg viewBox="0 0 ${w} ${h}" width="${w}" role="img">`;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* ---- Fig 1: palavras por capítulo ---- */
+(function(){
+ const W=940,H=300,L=40,B=44,Tp=16,n=D.length,bw=(W-L-10)/n;
+ const max=Math.max(...D.map(c=>c.palavras)),sy=v=>H-B-(H-B-Tp)*v/max;
+ let s=svgOpen(W,H);
+ [0,500,1000,1500,2000].forEach(v=>{s+=`<line x1="${L}" x2="${W-10}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--line)"/><text x="${L-6}" y="${sy(v)+4}" font-size="10" text-anchor="end">${v}</text>`});
+ D.forEach((c,i)=>{
+  const pi=PARTS.indexOf(c.parte),col=pi>=0?PCOL[pi]:'#6b665b',x=L+i*bw;
+  s+=`<rect x="${x+2}" y="${sy(c.palavras)}" width="${bw-4}" height="${H-B-sy(c.palavras)}" rx="2" fill="${col}"><title>${esc(c.label)} · ${esc(c.titulo)} · ${fmt(c.palavras)} palavras</title></rect>`;
+  s+=`<text x="${x+bw/2}" y="${H-B+14}" font-size="9" text-anchor="middle">${esc(c.label.length>5?c.label.slice(0,3):c.label)}</text>`;
+ });
+ let start=0;
+ PARTS.forEach((p,pi)=>{const idx=D.map((c,i)=>c.parte===p?i:-1).filter(i=>i>=0);const x0=L+idx[0]*bw,x1=L+(idx[idx.length-1]+1)*bw;
+  s+=`<line x1="${x0+2}" x2="${x1-2}" y1="${H-14}" y2="${H-14}" stroke="${PCOL[pi]}" stroke-width="3"/><text x="${(x0+x1)/2}" y="${H-2}" font-size="9.5" text-anchor="middle" style="fill:${PCOL[pi]}">${p.split('. ')[1]} · ${fmt(idx.reduce((a,i)=>a+D[i].palavras,0))}</text>`});
+ document.getElementById('f1').innerHTML=s+'</svg>';
+})();
+
+/* ---- Fig 2: composição temática por capítulo ---- */
+const dens=c=>T.map(t=>c.temas[t]);
+(function(){
+ const W=940,H=320,L=34,Tp=22,B=26,n=D.length,bw=(W-L-10)/n;
+ let s=svgOpen(W,H);
+ D.forEach((c,i)=>{const d=dens(c),sum=d.reduce((a,b)=>a+b,0)||1;let y=H-B;const x=L+i*bw;
+  d.forEach((v,k)=>{const h=(H-B-Tp)*v/sum;y-=h;s+=`<rect x="${x+1.5}" y="${y}" width="${bw-3}" height="${h}" style="fill:var(--t${k})"><title>${esc(c.label)} · ${esc(T[k])}: ${(100*v/sum).toFixed(0)}%</title></rect>`});
+  s+=`<text x="${x+bw/2}" y="${H-B+13}" font-size="9" text-anchor="middle">${esc(c.label.length>5?c.label.slice(0,3):c.label)}</text>`;
+ });
+ [0,50,100].forEach(v=>{const y=H-B-(H-B-Tp)*v/100;s+=`<text x="${L-5}" y="${y+4}" font-size="9" text-anchor="end">${v}%</text>`});
+ PARTS.forEach((p,pi)=>{const idx=D.map((c,i)=>c.parte===p?i:-1).filter(i=>i>=0);const x0=L+idx[0]*bw,x1=L+(idx[idx.length-1]+1)*bw;
+  s+=`<text x="${(x0+x1)/2}" y="14" font-size="9.5" text-anchor="middle" style="fill:${PCOL[pi]}">${p}</text>`;
+  if(pi>0)s+=`<line x1="${x0}" x2="${x0}" y1="${Tp-4}" y2="${H-B}" stroke="var(--bg)" stroke-width="3"/>`});
+ document.getElementById('f2').innerHTML=s+'</svg>';
+ document.getElementById('leg2').innerHTML=T.map((t,k)=>`<span><i style="background:var(--t${k})"></i>${t}</span>`).join('');
+})();
+
+/* ---- Fig 3: mapa de calor ---- */
+(function(){
+ const W=940,rowH=22,L=190,Tp=26,H=Tp+NT*rowH+8,n=D.length,bw=(W-L-10)/n;
+ const dd=D.map(c=>dens(c).map(v=>1000*v/c.palavras));
+ let s=svgOpen(W,H);
+ T.forEach((t,k)=>{const mx=Math.max(...dd.map(r=>r[k]))||1;
+  s+=`<text x="${L-8}" y="${Tp+k*rowH+15}" font-size="10.5" text-anchor="end">${esc(t)}</text>`;
+  D.forEach((c,i)=>{const v=dd[i][k]/mx;
+   s+=`<rect x="${L+i*bw+1}" y="${Tp+k*rowH+1}" width="${bw-2}" height="${rowH-2}" rx="2" style="fill:var(--t${k})" fill-opacity="${(0.07+0.93*v).toFixed(2)}"><title>${esc(c.label)} · ${esc(t)}: ${dd[i][k].toFixed(1)} por mil palavras</title></rect>`});
+ });
+ D.forEach((c,i)=>{s+=`<text x="${L+i*bw+bw/2}" y="${Tp-8}" font-size="9" text-anchor="middle">${esc(c.label.length>5?c.label.slice(0,3):c.label)}</text>`});
+ document.getElementById('f3').innerHTML=s+'</svg>';
+})();
+
+/* ---- Fig 4: propostas de estrutura ---- */
+const byLabel={};D.forEach(c=>byLabel[c.label]=c);
+const L2=a=>a.map(x=>byLabel[x]);
+const mente=['01','02','03'],ia1=['Nota','04','05','06','07'],ia2=['08','09','10','11'],cerco=['12','13','14','14.1'],infra=['15','16','17','17.1'],res=['18','18.1','18.2','19','20','21'];
+const PROPS=[
+ {n:'A · Original (4 partes, sem a Parte da IA)',note:'como o livro era antes',parts:[['I. A Mente',mente],['II. O Cerco',cerco],['III. Infraestrutura',infra],['IV. Resistência',res]]},
+ {n:'B · Atual (5 partes, IA como Parte II)',note:'publicada',parts:[['I. A Mente',mente],['II. A Máquina',[...ia1,...ia2]],['III. O Cerco',cerco],['IV. Infraestrutura',infra],['V. Resistência',res]]},
+ {n:'C · IA diluída dentro das partes (4 partes)',note:'IA espalhada: técnica na Mente, risco no Cerco, prática na Resistência',parts:[['I. A Mente',[...mente,'04','05','06','07']],['II. O Cerco',['08','09','10',...cerco]],['III. Infraestrutura',infra],['IV. Resistência',['11',...res]]]},
+ {n:'D · IA em duas partes (6 partes)',note:'"por dentro" e "no mundo"',parts:[['I. A Mente',mente],['II. A Máquina por dentro',ia1],['III. A Máquina no mundo',ia2],['IV. O Cerco',cerco],['V. Infraestrutura',infra],['VI. Resistência',res]]}
+];
+function partStats(ls){const cs=L2(ls),w=cs.reduce((a,c)=>a+c.palavras,0);const h=T.map((t,k)=>cs.reduce((a,c)=>a+c.temas[t],0));const sum=h.reduce((a,b)=>a+b,0)||1;return{w,share:h.map(v=>v/sum),h}}
+(function(){
+ let html='';const cv=[];
+ PROPS.forEach(p=>{
+  const tot=p.parts.reduce((a,[_,ls])=>a+partStats(ls).w,0);
+  const W=940,rowH=34,L=190,H=p.parts.length*(rowH+10)+8;
+  let s=svgOpen(W,H);const ws=[];
+  p.parts.forEach(([name,ls],r)=>{
+   const st=partStats(ls),y=r*(rowH+10)+4,full=W-L-120;ws.push(st.w/tot);
+   s+=`<text x="${L-8}" y="${y+rowH/2+4}" font-size="11" text-anchor="end" style="fill:var(--fg)">${esc(name)}</text>`;
+   const bwid=full*st.w/(tot/p.parts.length*1.9);const maxw=full;const bar=Math.min(maxw,full*(st.w/ Math.max(...p.parts.map(([_,l])=>partStats(l).w))));
+   let x=L;st.share.forEach((sh,k)=>{const w=bar*sh;s+=`<rect x="${x}" y="${y}" width="${w}" height="${rowH}" style="fill:var(--t${k})"><title>${esc(name)} · ${esc(T[k])}: ${(100*sh).toFixed(0)}%</title></rect>`;x+=w});
+   s+=`<text x="${L+bar+8}" y="${y+rowH/2+4}" font-size="10.5">${fmt(st.w)} · ${(100*st.w/tot).toFixed(0)}%</text>`;
+  });
+  const mean=1/ws.length,sd=Math.sqrt(ws.reduce((a,b)=>a+(b-mean)**2,0)/ws.length),cvv=sd/mean;cv.push(cvv);
+  html+=`<figure class="fig"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><b style="font-size:16px">${p.n}</b><span class="mono dim">desequilíbrio entre partes: ${(100*cvv).toFixed(0)}% · ${p.note}</span></div><div class="scroll">${s}</svg></div></figure>`;
+ });
+ html+=`<div class="legend">${T.map((t,k)=>`<span><i style="background:var(--t${k})"></i>${t}</span>`).join('')}</div>`;
+ document.getElementById('f4').innerHTML=html;
+ const g=i=>`${(100*cv[i]).toFixed(0)}%`;
+ const cs=ls=>partStats(ls).w;
+ document.getElementById('f4txt').innerHTML=`<p><b>A (original).</b> Quatro partes de tamanhos próximos, mas sem tratar de IA como assunto próprio: o tema ficava espalhado (a densidade de vocabulário de IA nunca passava de 4 por mil palavras fora de Infraestrutura). Desequilíbrio entre partes: ${g(0)}.</p>
+ <p><b>B (atual).</b> A Parte II concentra a IA (11,3 menções por mil palavras, contra no máximo 6,5 em qualquer outra parte) e tem o maior peso individual (${(100*cs([...ia1,...ia2])/total).toFixed(0)}% do texto). As outras quatro partes ficam entre 15% e 19%. Desequilíbrio: ${g(1)}: é a proposta mais assimétrica em peso depois da C, e esse é o preço de dar à IA um bloco só dela.</p>
+ <p><b>C (diluída).</b> A Parte I incha para ${(100*cs([...mente,'04','05','06','07'])/total).toFixed(0)}% e mistura psicologia do usuário com história e técnica de IA: perde a unidade de "o seu cérebro". O Cerco também cresce (${(100*cs(['08','09','10',...cerco])/total).toFixed(0)}%). Desequilíbrio: ${g(2)}.</p>
+ <p><b>D (duas partes de IA).</b> Os pesos ficam parecidos (cada metade da IA tem ${(100*cs(ia1)/total).toFixed(0)}% e ${(100*cs(ia2)/total).toFixed(0)}%), mas o livro passa a seis partes e o arco do tema é cortado no meio. Desequilíbrio: ${g(3)}, o menor, ao custo de fragmentar a narrativa.</p>`;
+})();
+
+/* ---- Fig 5: teia de referências ---- */
+(function(){
+ const W=940,H=350,L=24,n=D.length,bw=(W-2*L)/n,base=H-70;
+ const pos=lab=>{const i=D.findIndex(c=>c.label===lab);return i<0?null:L+i*bw+bw/2};
+ let s=svgOpen(W,H);
+ PARTS.forEach((p,pi)=>{const idx=D.map((c,i)=>c.parte===p?i:-1).filter(i=>i>=0);const x0=L+idx[0]*bw,x1=L+(idx[idx.length-1]+1)*bw;
+  s+=`<rect x="${x0}" y="${base+8}" width="${x1-x0}" height="6" fill="${PCOL[pi]}"/><text x="${(x0+x1)/2}" y="${base+40}" font-size="9.5" text-anchor="middle" style="fill:${PCOL[pi]}">${p}</text>`});
+ let cnt=0;
+ D.forEach((c,i)=>{const seen=new Set(c.refs);seen.forEach(r=>{const x2=pos(r),x1=pos(c.label);if(x2==null||r===c.label)return;cnt++;
+   const fwd=D.findIndex(d=>d.label===r)>i,rad=Math.abs(x2-x1)/2,h=Math.min(rad*0.9,base-20);
+   s+=`<path d="M${x1} ${base} A${rad} ${h} 0 0 1 ${x2} ${base}" fill="none" style="stroke:var(--${fwd?'t4':'t1'})" stroke-width="1.6" stroke-opacity=".75"><title>${esc(c.label)} → ${esc(r)}</title></path>`});
+  });
+ D.forEach((c,i)=>{const x=L+i*bw+bw/2;s+=`<circle cx="${x}" cy="${base}" r="${3+Math.min(6,c.refs.length*0.6)}" fill="var(--fg)" opacity=".85"><title>${esc(c.label)} · ${esc(c.titulo)}</title></circle><text x="${x}" y="${base+22}" font-size="9" text-anchor="middle">${esc(c.label.length>5?c.label.slice(0,3):c.label)}</text>`});
+ document.getElementById('f5').innerHTML=s+'</svg>';
+})();
+
+/* ---- Fig 6: matriz de construção ---- */
+(function(){
+ const inc={};D.forEach(c=>new Set(c.refs).forEach(r=>{if(r!==c.label)inc[r]=(inc[r]||0)+1}));
+ const dot=(v,m)=>`<span class="dot ${v?'y':(m?'m':'n')}" title="${v?'sim':'não'}"></span>`;
+ let h=`<table><tr><th>Capítulo</th><th>Parte</th><th>Palavras</th><th>Ponte</th><th>Desafio</th><th>Selos</th><th>Contraponto</th><th>Brasil</th><th>Recebe</th><th>Envia</th></tr>`;
+ D.forEach(c=>{
+  const bridge=/próxim|a seguir|adiante|veremos|passa a|agora|última|último|continua|conversa/i.test(c.fecho)||c.ponte;
+  const cont=(c.h2||[]).some(t=>/contraponto|evidência|ressalva|limites|síntese/i.test(t));
+  const isEp=c.label==='Epílogo',isIn=c.label==='Intro';
+  const env=new Set(c.refs).size,rec=inc[c.label]||0;
+  h+=`<tr><td><b>${esc(c.label)}</b> <span class="dim">${esc((c.titulo||'').split(':')[0].slice(0,34))}</span></td><td class="dim" style="font-size:12px">${esc(c.parte.split('. ').pop())}</td><td>${fmt(c.palavras)}</td><td>${dot(bridge||isEp)}</td><td>${isIn||isEp||c.label==='Nota'?'<span class="dim">—</span>':dot(c.desafio)}</td><td>${c.selos?`<span class="bar" style="width:${Math.min(60,c.selos*8)}px"></span> ${c.selos}`:'<span class="dim">—</span>'}</td><td>${isIn||isEp?'<span class="dim">—</span>':dot(cont)}</td><td>${c.brasil?`<span class="bar" style="width:${Math.min(60,c.brasil*7)}px"></span> ${c.brasil}`:`<span class="dot n"></span>`}</td><td>${rec||'<span class="dim">0</span>'}</td><td>${env||'<span class="dim">0</span>'}</td></tr>`;
+ });
+ document.getElementById('f6').innerHTML=h+'</table>';
+})();
+</script>
