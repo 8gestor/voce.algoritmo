@@ -136,3 +136,14 @@ body.paper-mode .btn-icon.active { color: #FBFAF6; }
 .raiox-def { font-family: var(--font-ui); font-size: 0.82rem; line-height: 1.5; letter-spacing: 0; }
 .raiox-ref { opacity: 0.65; }
 .raiox-empty { opacity: 0.7; padding: 8px 0; }
+/* ---------- seletores de idioma e velocidade ---------- */
+.lang-pair { display: flex; align-items: center; height: 34px; border: 1px solid var(--c-border); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+.lang-label { font-family: var(--font-tech); font-size: 0.58rem; letter-spacing: 0.08em; padding: 0 8px; color: var(--c-dim); }
+.lang-btn { height: 100%; min-width: 34px; background: transparent; border: none; border-left: 1px solid var(--c-border); color: var(--c-text); cursor: pointer; font-family: var(--font-tech); font-size: 0.7rem; font-weight: 700; }
+.lang-btn:hover { background: rgba(127, 127, 127, 0.15); }
+.lang-btn.on, .lang-btn[aria-pressed="true"] { background: var(--c-accent); color: var(--c-bg); }
+.speed-select { height: 34px; background: transparent; color: var(--c-text); border: 1px solid var(--c-border); border-radius: 4px; font-family: var(--font-tech); font-size: 0.72rem; font-weight: 700; padding: 0 6px; cursor: pointer; flex-shrink: 0; }
+.speed-select option { background: var(--c-panel); color: var(--c-text); }
+.voice-row { display: grid; grid-template-columns: auto 1fr; gap: 6px 8px; align-items: center; }
+.voice-row select { min-width: 0; height: 36px; background: transparent; color: var(--c-text); border: 1.5px solid var(--c-text); border-radius: 0; font-family: inherit; font-size: 0.7rem; }
+.voice-row select option { background: var(--c-panel); color: var(--c-text); }

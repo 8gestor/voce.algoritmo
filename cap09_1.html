@@ -12,19 +12,19 @@
 </head>
 <body>
 
-    <span class="meta-tag">PARTE III: INFRAESTRUTURA | CAPÍTULO 09.1</span>
-    <h1 class="speakable">O Oceano Profundo:<br>Tor, Deepweb e a Arquitetura da Fuga</h1>
+    <span class="meta-tag" data-id="c09-1-001">PARTE III: INFRAESTRUTURA | CAPÍTULO 09.1</span>
+    <h1 class="speakable" data-id="c09-1-002">O Oceano Profundo:<br>Tor, Deepweb e a Arquitetura da Fuga</h1>
 
-    <p class="speakable">A mídia popular, muitas vezes alimentada por press releases policiais, retrata a <strong>Deepweb</strong> como um submundo de assassinos de aluguel. Essa é uma distorção conveniente para criminalizar a criptografia. Tecnicamente, a "Deepweb" é apenas a parte da internet não indexada por motores de busca (como seus e-mails privados e dados bancários).</p>
+    <p class="speakable" data-id="c09-1-003">A mídia popular, muitas vezes alimentada por press releases policiais, retrata a <strong>Deepweb</strong> como um submundo de assassinos de aluguel. Essa é uma distorção conveniente para criminalizar a criptografia. Tecnicamente, a "Deepweb" é apenas a parte da internet não indexada por motores de busca (como seus e-mails privados e dados bancários).</p>
     
-    <p class="speakable">O que realmente importa para a resistência é a <strong>Darknet</strong> e as redes de sobreposição como o <strong>Tor (The Onion Router)</strong>. Este é um dos poucos territórios digitais cuja arquitetura dificulta, tecnicamente, a censura estatal e a vigilância corporativa. Não é um lugar essencialmente criminoso, mas também não é um paraíso: um estudo de Daniel Moore e Thomas Rid (2016) classificou o conteúdo de milhares de serviços ocultos e concluiu que mais da metade tinha finalidade ilícita. O Tor é, ao mesmo tempo, ferramenta de jornalistas, ativistas e dissidentes e de criminosos, como qualquer ferramenta de privacidade. É uma <strong>física alternativa</strong> onde a identidade não é a moeda de troca; o que se decide é quem pode usá-la, e não se ela deve existir.</p>
+    <p class="speakable" data-id="c09-1-004">O que realmente importa para a resistência é a <strong>Darknet</strong> e as redes de sobreposição como o <strong>Tor (The Onion Router)</strong>. Este é um dos poucos territórios digitais cuja arquitetura dificulta, tecnicamente, a censura estatal e a vigilância corporativa. Não é um lugar essencialmente criminoso, mas também não é um paraíso: um estudo de Daniel Moore e Thomas Rid (2016) classificou o conteúdo de milhares de serviços ocultos e concluiu que mais da metade tinha finalidade ilícita. O Tor é, ao mesmo tempo, ferramenta de jornalistas, ativistas e dissidentes e de criminosos, como qualquer ferramenta de privacidade. É uma <strong>física alternativa</strong> onde a identidade não é a moeda de troca; o que se decide é quem pode usá-la, e não se ela deve existir.</p>
 
-    <div class="thesis-box speakable">
+    <div class="thesis-box speakable" data-id="c09-1-005">
         <span class="thesis-header">// O DIREITO À OPACIDADE</span>
         "O filósofo Édouard Glissant reivindicava o 'direito à opacidade'. Em um mundo onde governos e corporações são caixas-pretas impenetráveis, mas exigem transparência total do cidadão (Glass House), tornar-se opaco é um ato político. Usar ferramentas de anonimato não é 'ter algo a esconder'; é afirmar que a intimidade é um pré-requisito para a dignidade humana."
     </div>
 
-    <div class="iceberg-container speakable">
+    <div class="iceberg-container speakable" data-id="c09-1-006">
         <div class="surface-level">
             <strong>SURFACE WEB (a parte indexada)</strong><br>
             <span style="font-size:0.8rem">Google, Meta, Amazon. IP visível. Vigilância por Design.</span>
@@ -36,20 +36,20 @@
         </div>
     </div>
 
-    <h2 class="speakable">A Engenharia da Cebola (Onion Routing)</h2>
-    <p class="speakable">A internet normal funciona como um cartão postal: qualquer um que manuseia a mensagem (seu provedor, o governo) vê quem enviou e para onde vai. O Tor muda essa topologia. Ele encapsula seus dados em três camadas de criptografia.</p>
+    <h2 class="speakable" data-id="c09-1-007">A Engenharia da Cebola (Onion Routing)</h2>
+    <p class="speakable" data-id="c09-1-008">A internet normal funciona como um cartão postal: qualquer um que manuseia a mensagem (seu provedor, o governo) vê quem enviou e para onde vai. O Tor muda essa topologia. Ele encapsula seus dados em três camadas de criptografia.</p>
 
-    <div class="routing-box speakable">
+    <div class="routing-box speakable" data-id="c09-1-009">
         <div class="route-step"><div class="node-circle"></div> <strong>VOCÊ (Brasil)</strong>: Encripta 3x. Ninguém vê o conteúdo.</div>
         <div class="route-step"><div class="node-circle"></div> <strong>ENTRY NODE (Alemanha)</strong>: Sabe quem é você, mas não sabe o que você acessa. Remove a camada 1.</div>
         <div class="route-step"><div class="node-circle"></div> <strong>MIDDLE NODE (Japão)</strong>: Não sabe quem é você, nem o que acessa. Apenas repassa. Remove a camada 2.</div>
         <div class="route-step"><div class="node-circle"></div> <strong>EXIT NODE (Canadá)</strong>: Sabe o que é acessado, mas não sabe quem solicitou. Remove a camada 3 e entrega.</div>
     </div>
 
-    <h2 class="speakable">Geopolítica da Rede: A Ferramenta dos Oprimidos</h2>
-    <p class="speakable">Enquanto no ocidente o Tor é debatido teoricamente, no Sul Global ele é infraestrutura crítica de sobrevivência:</p>
+    <h2 class="speakable" data-id="c09-1-010">Geopolítica da Rede: A Ferramenta dos Oprimidos</h2>
+    <p class="speakable" data-id="c09-1-011">Enquanto no ocidente o Tor é debatido teoricamente, no Sul Global ele é infraestrutura crítica de sobrevivência:</p>
 
-    <div class="case-grid speakable">
+    <div class="case-grid speakable" data-id="c09-1-012">
         <div class="case-card">
             <strong>IRÃ (Protestos Mahsa Amini)</strong><br>
             O regime cortou a internet. Ativistas usaram "Snowflake Bridges" (pontes Tor disfarçadas) para furar o Firewall e enviar vídeos da repressão para o mundo.
@@ -68,19 +68,19 @@
         </div>
     </div>
 
-    <h2 class="speakable">Os Limites do Anonimato</h2>
+    <h2 class="speakable" data-id="c09-1-013">Os Limites do Anonimato</h2>
 
-    <p class="speakable">O limite aparece no caso Silk Road. Ross Ulbricht administrou, de 2011 a 2013, um mercado ilegal num serviço oculto do Tor, com pagamento em bitcoin; foi preso pelo FBI em outubro de 2013, condenado em 2015 a prisão perpétua e perdoado em janeiro de 2025. O caso é lembrado como exemplo de que a ferramenta, sozinha, não protege contra investigação e descuidos.</p>
+    <p class="speakable" data-id="c09-1-014">O limite aparece no caso Silk Road. Ross Ulbricht administrou, de 2011 a 2013, um mercado ilegal num serviço oculto do Tor, com pagamento em bitcoin; foi preso pelo FBI em outubro de 2013, condenado em 2015 a prisão perpétua e perdoado em janeiro de 2025. O caso é lembrado como exemplo de que a ferramenta, sozinha, não protege contra investigação e descuidos.</p>
 
-    <p class="speakable">O Tor protege contra um tipo específico de vigilância (a de quem observa a rede entre você e o destino), mas não faz milagres. O seu navegador pode vazar informações (a "impressão digital" do navegador), um malware no aparelho enxerga tudo, e o nó de saída vê o tráfego que não usa HTTPS. Há também ataques de correlação de tráfego, feitos por quem observa as duas pontas da conexão. Por isso o Tor Browser é configurado para parecer igual para todos e desencoraja extensões e janelas maximizadas. <strong>Anonimato é uma prática, não um interruptor.</strong></p>
+    <p class="speakable" data-id="c09-1-015">O Tor protege contra um tipo específico de vigilância (a de quem observa a rede entre você e o destino), mas não faz milagres. O seu navegador pode vazar informações (a "impressão digital" do navegador), um malware no aparelho enxerga tudo, e o nó de saída vê o tráfego que não usa HTTPS. Há também ataques de correlação de tráfego, feitos por quem observa as duas pontas da conexão. Por isso o Tor Browser é configurado para parecer igual para todos e desencoraja extensões e janelas maximizadas. <strong>Anonimato é uma prática, não um interruptor.</strong></p>
 
-    <p class="speakable">É também um projeto com história que vale conhecer: o Tor nasceu de pesquisa do Laboratório de Pesquisa Naval dos EUA nos anos 1990 e hoje é mantido por uma organização sem fins lucrativos que, por anos, dependeu de financiamento de agências governamentais americanas, além de doações. A origem não invalida a tecnologia, que é de código aberto e auditável, mas ilustra que as ferramentas de resistência existem em ecossistemas complexos.</p>
+    <p class="speakable" data-id="c09-1-016">É também um projeto com história que vale conhecer: o Tor nasceu de pesquisa do Laboratório de Pesquisa Naval dos EUA nos anos 1990 e hoje é mantido por uma organização sem fins lucrativos que, por anos, dependeu de financiamento de agências governamentais americanas, além de doações. A origem não invalida a tecnologia, que é de código aberto e auditável, mas ilustra que as ferramentas de resistência existem em ecossistemas complexos.</p>
 
-    <p class="speakable">Para a vida cotidiana, há degraus intermediários: mensageiros com criptografia ponta a ponta, uma VPN de empresa auditada (que muda <em>quem</em> vê o seu tráfego, não <em>se</em> alguém vê), um navegador com bloqueio de rastreadores e DNS criptografado. O capítulo 10.1 organiza essas camadas por nível de risco.</p>
+    <p class="speakable" data-id="c09-1-017">Para a vida cotidiana, há degraus intermediários: mensageiros com criptografia ponta a ponta, uma VPN de empresa auditada (que muda <em>quem</em> vê o seu tráfego, não <em>se</em> alguém vê), um navegador com bloqueio de rastreadores e DNS criptografado. O capítulo 10.1 organiza essas camadas por nível de risco.</p>
 
-    <p class="speakable">Do anonimato na rede passamos ao último território sem acesso: a mente. O próximo capítulo trata dos neurodireitos.</p>
+    <p class="speakable" data-id="c09-1-018">Do anonimato na rede passamos ao último território sem acesso: a mente. O próximo capítulo trata dos neurodireitos.</p>
 
-    <div class="action-box speakable">
+    <div class="action-box speakable" data-id="c09-1-019">
         <strong style="color:var(--c-onion); display:block; margin-bottom:10px; font-family:var(--font-tech); text-transform:uppercase;">DESAFIO DE RETOMADA #11</strong>
         <p style="font-weight:bold;">Instalação de Infraestrutura Civil</p>
         <p>Rompa a barreira do medo técnico. Baixe o <strong>Tor Browser</strong> (apenas do site oficial: torproject.org).</p>

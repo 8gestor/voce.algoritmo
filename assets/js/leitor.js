@@ -11,9 +11,16 @@ const THEMES = [
     { id: 'light', label: 'Claro' },
     { id: 'sepia', label: 'Sépia' }
 ];
-const DEFAULTS = { theme: 'paper', font: 19, face: 'serif', margin: 'medium', align: 'left', rate: 1.0 };
+const DEFAULTS = {
+    theme: 'paper', font: 19, face: 'serif', margin: 'medium', align: 'left', rate: 1.0,
+    readLang: 'pt', audioLang: 'pt', voices: { pt: '', en: '' }
+};
 const SETTINGS_KEY = 'dd-settings';
-const OPT_TO_MSG = { theme: 'theme', face: 'typeface', margin: 'margins', align: 'align' };
+const OPT_TO_MSG = {
+    theme: 'theme', face: 'typeface', margin: 'margins', align: 'align',
+    readLang: 'readlang', audioLang: 'audiolang'
+};
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5];
 
 let settings = Object.assign({}, DEFAULTS);
 try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (e) { /* sem storage */ }
@@ -34,13 +41,18 @@ function syncAll() {
     sendMsg('typeface', settings.face);
     sendMsg('margins', settings.margin);
     sendMsg('align', settings.align);
+    sendMsg('readlang', settings.readLang);
+    sendMsg('audiolang', settings.audioLang);
+    sendMsg('voice', { lang: 'pt', name: settings.voices.pt });
+    sendMsg('voice', { lang: 'en', name: settings.voices.en });
     sendMsg('rate', settings.rate);
 }
 
 /* ---------- interface do leitor ---------- */
 function refreshControls() {
     document.body.className = settings.theme + '-mode';
-    document.getElementById('speed-display').innerText = settings.rate;
+    document.getElementById('speed-select').value = String(SPEEDS.reduce((a, b) => (Math.abs(b - settings.rate) < Math.abs(a - settings.rate) ? b : a)));
+    document.documentElement.lang = settings.readLang === 'en' ? 'en' : 'pt-BR';
     document.getElementById('font-display').innerText = settings.font + ' px';
     document.querySelectorAll('[data-opt]').forEach((b) => {
         const on = String(settings[b.dataset.opt]) === b.dataset.val;
@@ -61,10 +73,36 @@ function adjustFont(delta) {
     saveSettings(); refreshControls(); sendMsg('font', settings.font);
 }
 
-function adjustSpeed(delta) {
-    settings.rate = Math.round(Math.max(0.5, Math.min(3.0, settings.rate + delta)) * 100) / 100;
+// Só define a velocidade da voz: a narração continua na mesma palavra.
+function setSpeed(v) {
+    settings.rate = Number(v) || 1;
     saveSettings(); refreshControls(); sendMsg('rate', settings.rate);
 }
+
+function setVoice(lang, name) {
+    settings.voices[lang] = name;
+    saveSettings();
+    sendMsg('voice', { lang: lang, name: name });
+}
+
+// Preenche os seletores de voz com o que o navegador oferece (a lista chega de forma assíncrona).
+function populateVoices() {
+    if (!('speechSynthesis' in window)) return;
+    const all = speechSynthesis.getVoices();
+    [['pt', 'Automática (português)'], ['en', 'Automática (inglês)']].forEach(([lang, auto]) => {
+        const sel = document.getElementById('voice-' + lang);
+        if (!sel) return;
+        sel.textContent = '';
+        const o0 = document.createElement('option'); o0.value = ''; o0.textContent = auto; sel.appendChild(o0);
+        all.filter((v) => v.lang.toLowerCase().indexOf(lang) === 0).forEach((v) => {
+            const o = document.createElement('option');
+            o.value = v.name; o.textContent = v.name.replace(/^Microsoft /, '').replace(/ - .*$/, '') + ' (' + v.lang + ')';
+            sel.appendChild(o);
+        });
+        sel.value = settings.voices[lang] || '';
+    });
+}
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = populateVoices;
 
 function cycleTheme() {
     const i = THEMES.findIndex((t) => t.id === settings.theme);
@@ -134,6 +172,7 @@ function init() {
     const wanted = location.hash.replace('#', '');
     const start = structure.findIndex((s) => s.f.replace('.html', '') === wanted);
     refreshControls();
+    populateVoices();
     loadChapter(start >= 0 ? start : 0);
 }
 

@@ -1,0 +1,27 @@
+/*
+ * narracao.css — destaque da narração e estados do bilíngue.
+ * Carregado por capitulo.js. Duas camadas:
+ *   .speaking  = o parágrafo em narração (fundo discreto)
+ *   .w.now     = a palavra falada agora (cor forte, de outra família que o parágrafo)
+ */
+.speakable { cursor: pointer; }
+.w { border-radius: 3px; }
+.w.now { box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 0 2px; margin: 0 -2px; }
+
+/* Papel */
+body.paper-mode .speaking { background: #F7F3E3 !important; }
+body.paper-mode .w.now { background: #9ED8F0; color: #0B1F2A; }
+
+/* Terminal (neon) */
+body.dark-mode .speaking { background: rgba(0, 240, 255, 0.06) !important; box-shadow: none; }
+body.dark-mode .w.now { background: #FFD400; color: #000; }
+
+/* Claro */
+body.light-mode .speaking { background: rgba(0, 0, 0, 0.04) !important; }
+body.light-mode .w.now { background: #FFD54A; color: #111; }
+
+/* Sépia */
+body.sepia-mode .speaking { background: rgba(91, 70, 54, 0.08) !important; }
+body.sepia-mode .w.now { background: #B5651D; color: #FFF8EC; }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
