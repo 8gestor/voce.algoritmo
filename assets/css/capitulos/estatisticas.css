@@ -1,0 +1,50 @@
+/* estatisticas — somente o que difere do base.css. Usa as cores do tema ativo (nada fixo). */
+
+/* No body (não no :root): assim --c-text já vem com o valor do tema ativo. */
+body {
+    --st-ink: var(--c-text);
+    --st-soft: color-mix(in srgb, var(--c-text) 13%, transparent);
+    --st-line: color-mix(in srgb, var(--c-text) 38%, transparent);
+}
+
+.meta-tag { border: 1px solid var(--st-line); color: var(--c-dim); }
+.st-intro { color: var(--c-dim); font-size: 0.95em; max-width: 62ch; margin-bottom: 1.6em; }
+
+body h2 { font-family: var(--font-tech); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 2.2em 0 0.8em; }
+
+/* ---------- totais ---------- */
+.st-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.st-tile { border: var(--border-tech); padding: 14px 16px; min-width: 0; }
+.st-tile-label { font-family: var(--font-tech); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--c-dim); margin-bottom: 6px; }
+.st-tile-big { font-family: var(--font-tech); font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+.st-tile-small { font-family: var(--font-tech); font-size: 0.72rem; color: var(--c-dim); margin-top: 4px; line-height: 1.4; }
+
+/* ---------- capítulos ---------- */
+.st-row { padding: 14px 0 12px; border-bottom: 1px dashed var(--st-line); }
+.st-row.st-sub { margin-left: 18px; padding-left: 12px; border-left: 1px solid var(--st-line); }
+.st-row-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; margin-bottom: 6px; }
+.st-title-link { color: var(--c-text); font-weight: 700; text-decoration: none; font-size: 0.95em; }
+.st-title-link:hover { text-decoration: underline; }
+.st-row-time { font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-dim); white-space: nowrap; }
+
+.st-bar-line { display: grid; grid-template-columns: 2.2em 1fr 3.8em; align-items: center; gap: 8px; margin: 4px 0; }
+.st-bar-lang { font-family: var(--font-tech); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--c-dim); }
+.st-bar { position: relative; height: 12px; border: 1px solid var(--st-line); background: var(--st-soft); overflow: hidden; }
+.st-bar-en { background: repeating-linear-gradient(45deg, var(--st-soft) 0 4px, transparent 4px 8px); }   /* EN hachurado: distingue de PT sem depender de cor */
+.st-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--st-ink); opacity: 0.82; transition: width 0.5s ease; }
+.st-bar-num { font-family: var(--font-tech); font-size: 0.7rem; text-align: right; }
+.st-row-meta { font-family: var(--font-tech); font-size: 0.66rem; color: var(--c-dim); margin-top: 6px; line-height: 1.6; }
+
+/* ---------- rodapé da página ---------- */
+.st-note { font-size: 0.78em; color: var(--c-dim); max-width: 66ch; margin-top: 2.2em; line-height: 1.6; }
+.st-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1em; }
+.st-btn { font-family: var(--font-tech); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; background: transparent; color: var(--c-text); border: var(--border-tech); padding: 10px 16px; cursor: pointer; }
+.st-btn:hover { background: var(--st-soft); }
+.st-btn-warn { border-style: dashed; }
+
+@media (max-width: 560px) {
+    .st-tiles { grid-template-columns: 1fr 1fr; }
+    .st-tile-big { font-size: 1.1rem; }
+    .st-row-time { white-space: normal; }
+    .st-row-meta { word-spacing: 0.05em; }
+}

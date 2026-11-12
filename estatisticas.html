@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Estatísticas</title>
+    <link rel="stylesheet" href="assets/fonts/fonts.css">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/capitulos/estatisticas.css">
+    <link rel="stylesheet" href="assets/css/papel.css">
+</head>
+<body>
+
+    <main class="stats-page">
+        <span class="meta-tag" id="st-meta"></span>
+        <h1 id="st-title"></h1>
+        <p class="st-intro" id="st-intro"></p>
+
+        <section class="st-tiles" id="st-tiles" aria-live="polite"></section>
+
+        <h2 id="st-h-chapters"></h2>
+        <section class="st-list" id="st-list" aria-live="polite"></section>
+
+        <p class="st-note" id="st-note"></p>
+        <div class="st-actions">
+            <button type="button" class="st-btn" id="st-export"></button>
+            <button type="button" class="st-btn st-btn-warn" id="st-reset"></button>
+        </div>
+    </main>
+
+    <script src="assets/js/sumario.js"></script>
+    <script src="assets/js/estatisticas-dados.js"></script>
+    <script src="assets/js/estatisticas.js"></script>
+    <script src="assets/js/capitulo.js"></script>
+</body>
+</html>

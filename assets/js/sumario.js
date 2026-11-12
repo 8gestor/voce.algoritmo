@@ -35,7 +35,8 @@ const structure = [
     // FINAL
     { t: "Epílogo", f: "cap14.html", cat: "SYSTEM END" },
     { t: "Glossário", f: "cap15.html", cat: "DATABASE" },
-    { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" }
+    { t: "Bibliografia", f: "cap16.html", cat: "DATABASE" },
+    { t: "Estatísticas", f: "estatisticas.html", cat: "DATABASE" }
 ];
 
 /* Títulos em inglês (usados quando o idioma de leitura é EN). Chave = arquivo. */
@@ -60,7 +61,8 @@ const TITLES_EN = {
     "cap13.html": "13. Solarpunk",
     "cap14.html": "Epilogue",
     "cap15.html": "Glossary",
-    "cap16.html": "Bibliography"
+    "cap16.html": "Bibliography",
+    "estatisticas.html": "Statistics"
 };
 const CATEGORIES_EN = {
     "INICIALIZAÇÃO": "INITIALIZATION",

@@ -25,6 +25,7 @@
         <div class="master-header">
             <div class="branding-bar">
                 <span class="branding-text">SYSTEM STATUS: <span style="color:var(--c-accent)">ONLINE</span> // SECURE CONNECTION</span>
+                <span class="hud-top" id="hud-top" aria-live="polite"></span>
             </div>
             <div class="controls-bar">
                 <div class="ctrl-group">
@@ -103,16 +104,22 @@
         </div>
 
         <footer class="bottom-hud">
+            <div class="read-line" id="read-line"></div>
             <button class="nav-btn" onclick="prevChapter()" data-en="← PREV">← ANT</button>
             <div class="progress-container">
                 <span id="chapter-indicator">00/00</span>
                 <div class="progress-track"><div class="progress-fill" id="p-bar"></div></div>
+            </div>
+            <div class="hud-live" id="hud-live" aria-live="polite">
+                <span id="hl-read">0</span><span class="hl-slash">/</span><span id="hl-total">0</span> <span id="hl-lang">PT</span>
+                <span class="hl-sep">·</span> <span id="hl-left">—</span>
             </div>
             <button class="nav-btn" onclick="nextChapter()" data-en="NEXT →">PROX →</button>
         </footer>
     </main>
 
     <script src="assets/js/sumario.js"></script>
+    <script src="assets/js/estatisticas-dados.js"></script>
     <script src="assets/js/raiox.js"></script>
     <script src="assets/js/leitor.js"></script>
 </body>
