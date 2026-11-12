@@ -1,0 +1,65 @@
+## ia07-001
+PART II: THE MACHINE | CHAPTER 10
+
+## ia07-002
+The Doomsday Debate:<br>Who Decides Which Fear Matters
+
+## ia07-003
+On May 30, 2023, the Center for AI Safety published a one-sentence statement: reducing the risk of extinction from AI should be a global priority, alongside other societal-scale risks such as pandemics and nuclear war. Hundreds of people signed, among them Geoffrey Hinton and Yoshua Bengio, two of the pioneers of deep learning, and executives from OpenAI and Google DeepMind, such as Sam Altman and Demis Hassabis. Signature counts vary across reports.
+
+## ia07-004
+Two months earlier, the Future of Life Institute had published a letter calling for a pause of at least six months in training systems more powerful than GPT-4. Within three days, the authors of the "stochastic parrots" paper (Timnit Gebru, Emily Bender, Angelina McMillan-Major and Margaret Mitchell) responded. They accused the letter of fearmongering and AI hype, said it cited their work in a distorted way, and argued that it diverted attention from harms that already exist.
+
+## ia07-005
+It's the same technology, with the same facts, looked at by two groups of serious experts who disagree about what deserves fear. This chapter won't decide who's right. It will show what each side claims, what the evidence is, and why choosing a fear is a political decision.
+
+## ia07-006
+<span class="thesis-header">// Two Fears</span> One group fears a future scenario, in which very capable systems slip out of human control. The other fears the present, in which systems already in use discriminate, spread disinformation and concentrate power. Both call their fear urgent, and both ask for money, attention and laws for their side.
+
+## ia07-007
+The Fear of the Future
+
+## ia07-008
+The existential-risk argument has a simple logic: if systems ever exist that are more capable than we are at everything, and if they pursue goals that don't match ours, the consequences could be irreversible. The discussion gained its vocabulary from Nick Bostrom's book <em>Superintelligence</em> (2014), and today it mobilizes top researchers.
+
+## ia07-009
+How do you measure a fear like that? A 2023 survey of 2,778 researchers who had published at major AI venues asked about the chance of AI causing human extinction or a permanent and severe loss of power for the species. The median was 5%, with a mean of 16%, and about half gave 10% or more. <span class="selo selo-estimativa">estimate</span> The authors themselves warn that participants are experts in AI, not in forecasting, and critics point out that the sample may be skewed. The number shows concern, not probability.
+
+## ia07-010
+The Fear of the Present
+
+## ia07-011
+The argument about present harms is the inverse: before fearing a machine that doesn't exist, look at what today's machines already do. Racism and sexism in decision systems, mass surveillance, poorly paid labor, disinformation, power concentrated in a few companies. Those harms were the subject of Chapters 03, 08 and 12 of this book, and they have identifiable victims today. For Gebru, Bender and colleagues, discussing extinction is a way of talking about the future so as not to talk about who's paying the bill now. They also point out that the pause letter comes from a philosophical current, "longtermism," which prioritizes long-term outcomes.
+
+## ia07-012
+In Brazil, the neuroscientist Miguel Nicolelis pushes back on the idea that AI could wipe out humanity and sees economic interests behind the alarmism. According to him, the prediction isn't backed by concrete evidence. The Brazilian Academy of Sciences working group on AI, coordinated by Virgílio Almeida and published in November 2023, focused instead on social and ethical risks, such as algorithmic bias, and argued for regulation to reduce them.
+
+## ia07-013
+<span class="pos-title">Existential risk</span>Future systems that are very capable could slip out of control. It's the position of Hinton, Bengio and part of the labs, with Bostrom as the theoretical reference.
+
+## ia07-014
+<span class="pos-title">Present harms</span>The problem is what's already happening: bias, surveillance, labor, disinformation. It's the position of Gebru, Bender and colleagues, and the emphasis of the ABC group.
+
+## ia07-015
+<span class="pos-title">Skepticism</span>The alarm isn't backed by evidence and serves economic interests. It's Nicolelis's position.
+
+## ia07-016
+<span class="pos-title">Evidence first</span>Measure risks, capabilities and safeguards before choosing a fear. It's the method of the international scientific reports.
+
+## ia07-017
+What the Evidence Already Lets Us Say
+
+## ia07-018
+In February 2026, the second edition of the International AI Safety Report came out, chaired by Yoshua Bengio and written by more than a hundred independent experts. It makes no policy recommendations; it gathers evidence. Among the findings: general-purpose AI already helps with cyberattacks, mostly in the preparation stages, but doesn't yet carry them out on its own from start to finish, and there's so far no significant effect on overall employment, though there may be an impact on junior workers in exposed occupations.
+
+## ia07-019
+Also in February 2026, the AI Impact Summit in New Delhi ended with a declaration backed by about 88 countries and organizations, voluntary and without the force of law. A representative of the Future of Life Institute observed that safety concerns were raised more than ever, but didn't make it into the final document. Country counts vary across sources. The facts point to a middle ground: there are real, measured risks, there's great uncertainty about the future, and global governance is still weak.
+
+## ia07-020
+<span class="thesis-header">// The Fears Don't Exclude Each Other</span> You can fear a future scenario and demand auditing today. The mistake is using the choice of one fear as an excuse to ignore the other. The question that remains, and the one this book has asked since the first page, is <strong>who decides which fear makes it onto the agenda, and who profits from the choice</strong>. <span class="selo selo-provocacao">provocation</span>
+
+## ia07-021
+For ordinary citizens, the best defense against both fears is the same: knowing how to use the tool, knowing what it does with your data, and knowing how to contest it when it gets things wrong. That's what the last chapter of this part is about.
+
+## ia07-022
+<span class="action-header">⚖️ RECOVERY CHALLENGE #10</span> <p><strong>The Two Fears Test</strong></p> <p>People with only one fear are usually easy to convince.</p> <p><strong>Your mission:</strong> Write down an AI harm that's already happening and that worries you, and an AI risk from the future that worries you. Next to each one, write a concrete action for the next 30 days. For the present harm, it could be asking for a review of an automated decision, as the LGPD provides. For the future risk, it could be following the progress of Bill 2338. The goal is to move from a generic fear to a specific gesture.</p>
