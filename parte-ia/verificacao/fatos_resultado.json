@@ -1,0 +1,372 @@
+[
+  {
+    "id": "P01",
+    "livro_diz": "Kramer et al.: experimento do Facebook com 689.003 pessoas (PNAS, 2014)",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1073/pnas.1320040111",
+    "ano_fonte": "2014",
+    "achou_o_esperado": false,
+    "esperado": "689,003",
+    "trecho_da_fonte": "Experimental evidence of massive-scale emotional contagion through social networks. Emotional states can be transferred to others via emotional contagion, leading people to experience the same emotions without their awareness. Emotional contagion is well estab"
+  },
+  {
+    "id": "P02",
+    "livro_diz": "Kosinski et al. (2013): curtidas preveem atributos com dezenas de milhares de voluntários",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1073/pnas.1218772110",
+    "ano_fonte": "2013",
+    "achou_o_esperado": true,
+    "esperado": "58,000",
+    "trecho_da_fonte": "ligence, happiness, use of addictive substances, parental separation, age, and gender. The analysis presented is based on a dataset of over 58,000 volunteers who provided their Facebook Likes, detailed demographic profiles, and the results of several psychometric tests. The proposed model uses dimensionality reduction "
+  },
+  {
+    "id": "P03",
+    "livro_diz": "Wu, Kosinski e Stillwell (2015): modelo baseado em curtidas julga personalidade melhor que amigos",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1073/pnas.1418680112",
+    "ano_fonte": "2015",
+    "achou_o_esperado": true,
+    "esperado": "more accurate|accurate",
+    "trecho_da_fonte": "Computer-based personality judgments are more accurate than those made by humans. Judging others' personalities is an essential skill in successful social living, as personality is a key driver behind people's interactions, behaviors, and emotions. Although accurate personality judgments stem from social-cognitive skil"
+  },
+  {
+    "id": "P04",
+    "livro_diz": "Obermeyer et al. (2019): algoritmo aplicado a ~200 milhões de pessoas/ano; pacientes negros de 18% a 47%",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1126/science.aax2342",
+    "ano_fonte": "2019",
+    "achou_o_esperado": false,
+    "esperado": "200 million",
+    "trecho_da_fonte": "Dissecting racial bias in an algorithm used to manage the health of populations. Health systems rely on commercial prediction algorithms to identify and help patients with complex health needs. We show that a widely used algorithm, typical of this industry-wid"
+  },
+  {
+    "id": "P05",
+    "livro_diz": "Obermeyer et al.: parcela de pacientes negros de ~18% para 47%",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1126/science.aax2342",
+    "ano_fonte": "2019",
+    "achou_o_esperado": true,
+    "esperado": "17\\.7|46\\.5",
+    "trecho_da_fonte": "by signs of uncontrolled illnesses. Remedying this disparity would increase the percentage of Black patients receiving additional help from 17.7 to 46.5%. The bias arises because the algorithm predicts health care costs rather than illness, but unequal access to care means that we spend less money caring for Black pati"
+  },
+  {
+    "id": "P06",
+    "livro_diz": "Willett et al. (2023, Nature): neuroprótese de fala",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1038/s41586-023-06377-x",
+    "ano_fonte": "2023",
+    "achou_o_esperado": true,
+    "esperado": "speech",
+    "trecho_da_fonte": "A high-performance speech neuroprosthesis. Speech brain-computer interfaces (BCIs) have the potential to restore rapid communication to people with paralysis by decoding neural activity evoked by attempted speech into text<sup>1,2</sup> or sound<sup>3,4</sup>. Early demonstrations, although promising, have not yet achi"
+  },
+  {
+    "id": "P07",
+    "livro_diz": "Metzger et al. (2023, Nature): neuroprótese de fala e avatar",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1038/s41586-023-06443-4",
+    "ano_fonte": "2023",
+    "achou_o_esperado": true,
+    "esperado": "speech",
+    "trecho_da_fonte": "A high-performance neuroprosthesis for speech decoding and avatar control. Speech neuroprostheses have the potential to restore communication to people living with paralysis, but naturalistic speed and expressivity are elusive<sup>1</sup>. Here we use high-density surface recordings of the speech cortex in a clinical-t"
+  },
+  {
+    "id": "P08",
+    "livro_diz": "Shumailov et al. (2024, Nature): colapso do modelo com dados gerados recursivamente",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1038/s41586-024-07566-y",
+    "ano_fonte": "2024",
+    "achou_o_esperado": true,
+    "esperado": "collapse",
+    "trecho_da_fonte": "AI models collapse when trained on recursively generated data. Stable diffusion revolutionized image creation from descriptive text. GPT-2 (ref. <sup>1</sup>), GPT-3(.5) (ref. <sup>2</sup>) and GPT-4 (ref. <sup>3</sup>) demonstrated high performance across a variety of language tasks. ChatGPT introduced such language m"
+  },
+  {
+    "id": "P09",
+    "livro_diz": "Liang et al. (2023): detectores de texto de IA erram com quem escreve inglês como segunda língua",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1016/j.patter.2023.100779",
+    "ano_fonte": "2023",
+    "achou_o_esperado": true,
+    "esperado": "non-native",
+    "trecho_da_fonte": "GPT detectors are biased against non-native English writers. GPT detectors frequently misclassify non-native English writing as AI generated, raising concerns about fairness and robustness. Addressing the biases in these detectors is crucial to prevent the marginalization of non-native English speakers in evaluative an"
+  },
+  {
+    "id": "P10",
+    "livro_diz": "Pais-Vieira et al. (2015): Brainets, cérebros de ratos/macacos conectados",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1038/srep11869",
+    "ano_fonte": "2015",
+    "achou_o_esperado": true,
+    "esperado": "brain",
+    "trecho_da_fonte": "Building an organic computing device with multiple interconnected brains. Recently, we proposed that Brainets, i.e. networks formed by multiple animal brains, cooperating and exchanging information in real time through direct brain-to-brain interfaces, could provide the core of a new type of computing device: an organi"
+  },
+  {
+    "id": "P11",
+    "livro_diz": "Mathur et al. (2019): ~11 mil sites de compras, padrões enganosos em mais de 1.200",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/1907.07032",
+    "ano_fonte": "2019",
+    "achou_o_esperado": true,
+    "esperado": "11K|11,000",
+    "trecho_da_fonte": "Dark Patterns at Scale: Findings from a Crawl of 11K Shopping Websites Dark patterns are user interface design choices that benefit an online service by coercing, steering, or deceiving users into making unintended and potentially harmful decisions. We present automated techniques that enable experts to identify dark p"
+  },
+  {
+    "id": "P12",
+    "livro_diz": "Mathur et al.: 1.818 instâncias em 1.254 sites",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/1907.07032",
+    "ano_fonte": "2019",
+    "achou_o_esperado": true,
+    "esperado": "1,818|1,254",
+    "trecho_da_fonte": "e purchases or disclosing more information than they would otherwise. Analyzing ~53K product pages from ~11K shopping websites, we discover 1,818 dark pattern instances, together representing 15 types and 7 broader categories. We examine these dark patterns for deceptive practices, and find 183 websites that engage in "
+  },
+  {
+    "id": "P13",
+    "livro_diz": "Gerstgrasser et al. (2024): acumular dados sintéticos e reais evita o colapso",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2404.01413",
+    "ano_fonte": "2024",
+    "achou_o_esperado": true,
+    "esperado": "accumulat",
+    "trecho_da_fonte": "Is Model Collapse Inevitable? Breaking the Curse of Recursion by Accumulating Real and Synthetic Data The proliferation of generative models, combined with pretraining on web-scale data, raises a timely question: what happens when these models are trained on their own generated outputs? Recent investigations into model"
+  },
+  {
+    "id": "P14",
+    "livro_diz": "Kleinberg, Mullainathan e Raghavan: critérios de justiça incompatíveis",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/1609.05807",
+    "ano_fonte": "2016",
+    "achou_o_esperado": true,
+    "esperado": "simultaneous|impossib|incompatib",
+    "trecho_da_fonte": " of these debates, and we prove that except in highly constrained special cases, there is no method that can satisfy these three conditions simultaneously. Moreover, even satisfying all three conditions approximately requires that the data lie in an approximate version of one of the constrained special cases identified"
+  },
+  {
+    "id": "P15",
+    "livro_diz": "Colombatto e Fleming (2024): dois terços atribuíram algum grau de consciência",
+    "base": "Europe PMC",
+    "url": "https://doi.org/10.1093/nc/niae013",
+    "ano_fonte": "2024",
+    "achou_o_esperado": false,
+    "esperado": "two-thirds|67|two thirds",
+    "trecho_da_fonte": "Folk psychological attributions of consciousness to large language models. Technological advances raise new puzzles and challenges for cognitive science and the study of how humans think about and interact with artificial intelligence (AI). For example, the ad"
+  },
+  {
+    "id": "P16",
+    "livro_diz": "Jones e Bergen (2025): GPT-4.5 apontado como humano em 73%",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2503.23674",
+    "ano_fonte": "2025",
+    "achou_o_esperado": true,
+    "esperado": "73%",
+    "trecho_da_fonte": "judging which conversational partner they thought was human. When prompted to adopt a humanlike persona, GPT-4.5 was judged to be the human 73% of the time: significantly more often than interrogators selected the real human participant. LLaMa-3.1, with the same prompt, was judged to be the human 56% of the time -- not"
+  },
+  {
+    "id": "P17",
+    "livro_diz": "Butlin et al. (2023): nenhum sistema atual é candidato forte; sem barreiras técnicas óbvias",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2308.08708",
+    "ano_fonte": "2023",
+    "achou_o_esperado": true,
+    "esperado": "no current AI systems|no obvious technical barriers",
+    "trecho_da_fonte": "ndicator properties to assess several recent AI systems, and we discuss how future systems might implement them. Our analysis suggests that no current AI systems are conscious, but also suggests that there are no obvious technical barriers to building AI systems which satisfy these indicators."
+  },
+  {
+    "id": "P18",
+    "livro_diz": "Kosmyna et al. (2025): 54 participantes, EEG, dívida cognitiva",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2506.08872",
+    "ano_fonte": "2025",
+    "achou_o_esperado": true,
+    "esperado": "54",
+    "trecho_da_fonte": " users were reassigned to Brain-only group (LLM-to-Brain), and Brain-only users were reassigned to LLM condition (Brain-to-LLM). A total of 54 participants took part in Sessions 1-3, with 18 completing session 4. We used electroencephalography (EEG) to assess cognitive load during essay writing, and analyzed essays usi"
+  },
+  {
+    "id": "P19",
+    "livro_diz": "Petrov et al. (2023): diferença de até 15 vezes entre idiomas na tokenização",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2305.15425",
+    "ano_fonte": "2023",
+    "achou_o_esperado": true,
+    "esperado": "15 times",
+    "trecho_da_fonte": "even invoked. The same text translated into different languages can have drastically different tokenization lengths, with differences up to 15 times in some cases. These disparities persist even for tokenizers that are intentionally trained for multilingual support. Character-level and byte-level models also exhibit ov"
+  },
+  {
+    "id": "P20",
+    "livro_diz": "Brown et al. (2020): GPT-3 com 175 bilhões de parâmetros",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2005.14165",
+    "ano_fonte": "2020",
+    "achou_o_esperado": true,
+    "esperado": "175 billion",
+    "trecho_da_fonte": "ing competitiveness with prior state-of-the-art fine-tuning approaches. Specifically, we train GPT-3, an autoregressive language model with 175 billion parameters, 10x more than any previous non-sparse language model, and test its performance in the few-shot setting. For all tasks, GPT-3 is applied without any gradient"
+  },
+  {
+    "id": "P21",
+    "livro_diz": "Ouyang et al. (2022): InstructGPT 1,3 bi preferido ao GPT-3 de 175 bi",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2203.02155",
+    "ano_fonte": "2022",
+    "achou_o_esperado": true,
+    "esperado": "1\\.3B",
+    "trecho_da_fonte": "t learning from human feedback. We call the resulting models InstructGPT. In human evaluations on our prompt distribution, outputs from the 1.3B parameter InstructGPT model are preferred to outputs from the 175B GPT-3, despite having 100x fewer parameters. Moreover, InstructGPT models show improvements in truthfulness "
+  },
+  {
+    "id": "P22",
+    "livro_diz": "Li et al. (2023): 700.000 litros para treinar o GPT-3",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2304.03271",
+    "ano_fonte": "2023",
+    "achou_o_esperado": true,
+    "esperado": "700,000",
+    "trecho_da_fonte": "ed under the radar. For example, training the GPT-3 language model in Microsoft's state-of-the-art U.S. data centers can directly evaporate 700,000 liters of clean freshwater, but such information has been kept a secret. More critically, the global AI demand is projected to account for 4.2-6.6 billion cubic meters of w"
+  },
+  {
+    "id": "P23",
+    "livro_diz": "Li et al. (v1): 500 ml de água para N respostas (livro: 20 a 50 interações)",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2304.03271v1",
+    "ano_fonte": "2023",
+    "achou_o_esperado": false,
+    "esperado": "500",
+    "trecho_da_fonte": "Making AI Less \"Thirsty\": Uncovering and Addressing the Secret Water Footprint of AI Models The growing carbon footprint of artificial intelligence (AI) models, especially large ones such as GPT-3 and GPT-4, has been undergoing public scrutiny. Unfortunately, "
+  },
+  {
+    "id": "P24",
+    "livro_diz": "Kalai et al. (2025): treino e avaliação premiam o chute",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/2509.04664",
+    "ano_fonte": "2025",
+    "achou_o_esperado": true,
+    "esperado": "guess",
+    "trecho_da_fonte": "Why Language Models Hallucinate Like students facing hard exam questions, large language models sometimes guess when uncertain, producing plausible yet incorrect statements instead of admitting uncertainty. Such \"hallucinations\" persist even in state-of-the-art systems and undermine trust. We argue that language models"
+  },
+  {
+    "id": "P25",
+    "livro_diz": "Vaswani et al. (2017): Transformer, atenção sem recorrência",
+    "base": "arXiv",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "ano_fonte": "2017",
+    "achou_o_esperado": true,
+    "esperado": "attention",
+    "trecho_da_fonte": "Attention Is All You Need The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Trans"
+  },
+  {
+    "id": "P26",
+    "livro_diz": "Acemoglu e Restrepo: Automation and New Tasks (JEP, 2019)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1257/jep.33.2.3",
+    "ano_fonte": 2019,
+    "achou_o_esperado": true,
+    "esperado": "Automation and New Tasks",
+    "trecho_da_fonte": "Automation and New Tasks: How Technology Displaces and Reinstates Labor | revista: Journal of Economic Perspectives | ano(issued): 2019 | online:  | impresso: 2019 | vol: 33"
+  },
+  {
+    "id": "P27",
+    "livro_diz": "Lum e Isaac (2016): To Predict and Serve? (Significance)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1111/j.1740-9713.2016.00960.x",
+    "ano_fonte": 2016,
+    "achou_o_esperado": true,
+    "esperado": "Predict and Serve",
+    "trecho_da_fonte": "To Predict and Serve? | revista: Significance | ano(issued): 2016 | online: 2016 | impresso: 2016 | vol: 13"
+  },
+  {
+    "id": "P28",
+    "livro_diz": "Kleinberg et al. (QJE): Human Decisions and Machine Predictions — ano de publicação",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1093/qje/qjx032",
+    "ano_fonte": 2017,
+    "achou_o_esperado": true,
+    "esperado": "Human Decisions",
+    "trecho_da_fonte": "Human Decisions and Machine Predictions | revista: The Quarterly Journal of Economics | ano(issued): 2017 | online: 2017 | impresso: 2018 | vol: 133"
+  },
+  {
+    "id": "P29",
+    "livro_diz": "Moore e Rid (2016): Cryptopolitik and the Darknet (Survival)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1080/00396338.2016.1142085",
+    "ano_fonte": 2016,
+    "achou_o_esperado": true,
+    "esperado": "Cryptopolitik",
+    "trecho_da_fonte": "Cryptopolitik and the Darknet | revista: Survival | ano(issued): 2016 | online: 2016 | impresso: 2016 | vol: 58"
+  },
+  {
+    "id": "P30",
+    "livro_diz": "Berridge e Robinson (2016): Liking, wanting, and incentive-sensitization (Am. Psychologist)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1037/amp0000059",
+    "ano_fonte": 2016,
+    "achou_o_esperado": true,
+    "esperado": "Liking",
+    "trecho_da_fonte": "Liking, wanting, and the incentive-sensitization theory of addiction. | revista: American Psychologist | ano(issued): 2016 | online: 2016 | impresso:  | vol: 71"
+  },
+  {
+    "id": "P31",
+    "livro_diz": "Kalla e Broockman: efeitos persuasivos mínimos (APSR)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1017/S0003055417000363",
+    "ano_fonte": 2017,
+    "achou_o_esperado": true,
+    "esperado": "Minimal Persuasive",
+    "trecho_da_fonte": "The Minimal Persuasive Effects of Campaign Contact in General Elections: Evidence from 49 Field Experiments | revista: American Political Science Review | ano(issued): 2017 | online: 2017 | impresso: 2018 | vol: 112"
+  },
+  {
+    "id": "P32",
+    "livro_diz": "Sutton, The Bitter Lesson: \"70 anos de pesquisa em IA\"",
+    "base": "página",
+    "url": "http://www.incompleteideas.net/IncIdeas/BitterLesson.html",
+    "ano_fonte": "",
+    "achou_o_esperado": true,
+    "esperado": "70 years",
+    "trecho_da_fonte": " The Bitter Lesson The Bitter Lesson Rich Sutton March 13, 2019 The biggest lesson that can be read from 70 years of AI research is that general methods that leverage computation are ultimately the most effective, and by a large margin. The ultimate reason for this is Moore's law, or rather its generalization of contin"
+  },
+  {
+    "id": "P33",
+    "livro_diz": "Brynjolfsson, Li e Raymond: +14% em média, +34% entre iniciantes",
+    "base": "página",
+    "url": "https://www.nber.org/papers/w31161",
+    "ano_fonte": "",
+    "achou_o_esperado": true,
+    "esperado": "14 percent|34 percent|14%|34%",
+    "trecho_da_fonte": "stant using data from 5,179 customer support agents. Access to the tool increases productivity, as measured by issues resolved per hour, by 14% on average, including a 34% improvement for novice and low-skilled workers but with minimal impact on experienced and highly skilled workers. We provide suggestive evidence tha"
+  },
+  {
+    "id": "P34",
+    "livro_diz": "Wu et al. (2015) PNAS: DOI e ano",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1073/pnas.1418680112",
+    "ano_fonte": 2015,
+    "achou_o_esperado": true,
+    "esperado": "Computer-based personality",
+    "trecho_da_fonte": "Computer-based personality judgments are more accurate than those made by humans | revista: Proceedings of the National Academy of Sciences | ano(issued): 2015 | online: 2015 | impresso: 2015 | vol: 112"
+  },
+  {
+    "id": "P35",
+    "livro_diz": "McCulloch e Pitts (1943): A logical calculus of the ideas immanent in nervous activity",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1007/BF02478259",
+    "ano_fonte": 1943,
+    "achou_o_esperado": true,
+    "esperado": "logical calculus",
+    "trecho_da_fonte": "A logical calculus of the ideas immanent in nervous activity | revista: The Bulletin of Mathematical Biophysics | ano(issued): 1943 | online:  | impresso: 1943 | vol: 5"
+  },
+  {
+    "id": "P36",
+    "livro_diz": "Searle (1980): Minds, brains, and programs (Behavioral and Brain Sciences)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1017/S0140525X00005756",
+    "ano_fonte": 1980,
+    "achou_o_esperado": true,
+    "esperado": "Minds, brains",
+    "trecho_da_fonte": "Minds, brains, and programs | revista: Behavioral and Brain Sciences | ano(issued): 1980 | online: 2010 | impresso: 1980 | vol: 3"
+  },
+  {
+    "id": "P37",
+    "livro_diz": "Weizenbaum (1966): ELIZA (Communications of the ACM)",
+    "base": "Crossref",
+    "url": "https://doi.org/10.1145/365153.365168",
+    "ano_fonte": 1966,
+    "achou_o_esperado": true,
+    "esperado": "ELIZA",
+    "trecho_da_fonte": "ELIZA—A Computer Program For the Study of Natural Language Communication Between Man and Machine | revista: Communications of the ACM | ano(issued): 1966 | online: 1966 | impresso: 1966 | vol: 9"
+  }
+]
