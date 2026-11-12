@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap06_1.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap06_1'] = {
-  "c06-1-001": "PART II: THE SIEGE | CHAPTER 06.1",
+  "c06-1-001": "PART III: THE SIEGE | CHAPTER 14.1",
   "c06-1-002": "The Financial Panopticon:<br>The Engineering of CBDCs",
   "c06-1-003": "Physical money (paper currency) is a technology of freedom because it is a <strong>bearer asset</strong> and <strong>peer-to-peer</strong>. When I hand you a 50-real bill, the transaction settles instantly, with no intermediaries, no database record and no possibility of remote censorship. The transition to the \"Cashless Society\" isn't a natural evolution of convenience; it's a social engineering project to transfer sovereignty from the individual to the issuer of the currency.",
   "c06-1-004": "<span class=\"thesis-header\">// PROGRAMMABLE MONEY (SMART MONEY)</span> \"Unlike the balance you see today in your bank app (which is just a digital accounting entry), <strong>CBDCs (Central Bank Digital Currencies)</strong> are programmable tokens. That means the Central Bank can insert lines of code ('Smart Contracts') that define <em>how, when and where</em> that money can be spent. Money stops being a neutral unit of value and becomes a tool of active behavioral policy.\"",

@@ -1,5 +1,5 @@
 ## c08-001
-PART III: INFRASTRUCTURE | CHAPTER 08
+PART IV: INFRASTRUCTURE | CHAPTER 16
 
 ## c08-002
 The Dead Internet:<br>The Collapse of Reality and Synthetic Loneliness

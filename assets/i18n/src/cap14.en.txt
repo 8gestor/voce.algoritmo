@@ -35,7 +35,7 @@ James P. Carse distinguished between finite games (played to win/to end) and inf
 A Book That Continues (An Open Question)
 
 ## c14-013
-There is a contradiction this book prefers to confess rather than hide: it tries to describe, in fixed pages, a world that changes every week. The numbers in Chapter 08 will already be different by the time you read them; the laws in Chapter 10 advance country by country; topics will emerge that fit in none of the current chapters. A book about living systems shouldn't behave like a monument.
+There is a contradiction this book prefers to confess rather than hide: it tries to describe, in fixed pages, a world that changes every week. The numbers in Chapter 16 will already be different by the time you read them; the laws in Chapter 18 advance country by country; topics will emerge that fit in none of the current chapters. A book about living systems shouldn't behave like a monument.
 
 ## c14-014
 That's why this book imagines itself as an <strong>organism</strong>, not a finished object. Imagine chapters born from new questions (the relationship with synthetic companions, AI-mediated grief, the atrophy of the skills we outsource, the history of artificial intelligence itself as a mirror of what we want from ourselves), discussed in public, corrected when wrong, dated and archived when superseded, never erased. A book with <strong>a memory of its own mistakes</strong>, faithful to the Manifesto just below.
@@ -44,7 +44,7 @@ That's why this book imagines itself as an <strong>organism</strong>, not a fini
 This raises questions we don't yet know how to answer, and that we prefer to leave open rather than pretend we already have the answer. Who can propose a topic? How do we tell a good idea from a fad? What role do AI tools play in building a book that criticizes AI, and how do we declare it to the reader without naivety and without guilt? How do we validate what's written: by sources, by peers, by those who suffer the effects of what the book describes? What does authorship mean when many hands, some of them not human, take part?
 
 ## c14-016
-Two convictions, however, already seem firm. The first: <strong>rigor comes before speed</strong>. A text that updates too fast and without verification is just more noise, the "Dead Internet" of Chapter 08 in slow motion. The second: <strong>the final decision must be human and transparent</strong>. Any participation by machines in the writing must be declared, and whoever signs is accountable for what is published. If you have a criticism of a chapter, a new piece of data, an experience that contradicts the text, or a question it didn't ask, that is exactly the kind of error this book wants to find.
+Two convictions, however, already seem firm. The first: <strong>rigor comes before speed</strong>. A text that updates too fast and without verification is just more noise, the "Dead Internet" of Chapter 16 in slow motion. The second: <strong>the final decision must be human and transparent</strong>. Any participation by machines in the writing must be declared, and whoever signs is accountable for what is published. If you have a criticism of a chapter, a new piece of data, an experience that contradicts the text, or a question it didn't ask, that is exactly the kind of error this book wants to find.
 
 ## c14-017
 It's the infinite game applied to writing itself: we don't write to finish the book, we write so that the conversation continues.

@@ -1,5 +1,5 @@
 ## c07-001
-PART III: INFRASTRUCTURE | CHAPTER 07
+PART IV: INFRASTRUCTURE | CHAPTER 15
 
 ## c07-002
 The Invisible Boss:<br>Digital Taylorism

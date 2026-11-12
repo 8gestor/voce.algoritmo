@@ -313,5 +313,143 @@ A complete repository of all the references cited. This is the intellectual infr
 ## c16-105
 <span class="book-author">CALLENBACH, Ernest</span> <div class="book-title">Ecotopia (1975)</div> <div class="book-desc">The ecological utopian novel that inspires the solarpunk imaginary.</div>
 
+## c16-107
+06. Artificial Intelligence
+
+## c16-108
+<span class="book-author">TURING, Alan</span> <div class="book-title">Computing Machinery and Intelligence (1950)</div> <div class="book-desc">The paper that proposes the "imitation game" and the question "can machines think?", the starting point of the philosophical discussion of AI.</div>
+
+## c16-109
+<span class="book-author">McCARTHY, John et al.</span> <div class="book-title">A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence (1955)</div> <div class="book-desc">The workshop proposal that named the field and gathered the first generation of AI researchers.</div>
+
+## c16-110
+<span class="book-author">MINSKY, Marvin &amp; PAPERT, Seymour</span> <div class="book-title">Perceptrons (1969)</div> <div class="book-desc">The mathematical analysis of the limits of simple neural networks, whose influence on the first "winter" historians still debate.</div>
+
+## c16-111
+<span class="book-author">LIGHTHILL, James</span> <div class="book-title">Artificial Intelligence: A General Survey (1973)</div> <div class="book-desc">The British report that criticized AI's promises and underpinned funding cuts in the 1970s.</div>
+
+## c16-112
+<span class="book-author">KRIZHEVSKY, Alex; SUTSKEVER, Ilya &amp; HINTON, Geoffrey</span> <div class="book-title">ImageNet Classification with Deep Convolutional Neural Networks (2012)</div> <div class="book-desc">The AlexNet paper, which cut the error in image recognition and opened the era of deep learning.</div>
+
+## c16-113
+<span class="book-author">VASWANI, Ashish et al.</span> <div class="book-title">Attention Is All You Need (2017)</div> <div class="book-desc">The paper that introduced the Transformer, the architecture behind nearly every large language model.</div>
+
+## c16-114
+<span class="book-author">SUTTON, Richard</span> <div class="book-title">The Bitter Lesson (2019)</div> <div class="book-desc">A short essay arguing that general methods powered by computation win in the long run over human knowledge hand-built into systems.</div>
+
+## c16-115
+<span class="book-author">BROWN, Tom et al.</span> <div class="book-title">Language Models Are Few-Shot Learners (2020)</div> <div class="book-desc">The GPT-3 paper: 175 billion parameters and the demonstration that scale alone produces new capabilities.</div>
+
+## c16-116
+<span class="book-author">KAPLAN, Jared et al.</span> <div class="book-title">Scaling Laws for Neural Language Models (2020)</div> <div class="book-desc">The study showing that performance improves predictably with parameters, data and compute.</div>
+
+## c16-117
+<span class="book-author">HOFFMANN, Jordan et al.</span> <div class="book-title">Training Compute-Optimal Large Language Models (2022)</div> <div class="book-desc">The "Chinchilla" work, which revised the scaling laws and showed the weight of data quantity.</div>
+
+## c16-118
+<span class="book-author">OUYANG, Long et al.</span> <div class="book-title">Training Language Models to Follow Instructions with Human Feedback (2022)</div> <div class="book-desc">The InstructGPT paper: the human-feedback method that made language models useful as assistants.</div>
+
+## c16-119
+<span class="book-author">KALAI, Adam et al.</span> <div class="book-title">Why Language Models Hallucinate (2025)</div> <div class="book-desc">Argues that training and evaluation reward guessing over honesty about uncertainty, which is why models make things up.</div>
+
+## c16-120
+<span class="book-author">PETROV, Aleksandar et al.</span> <div class="book-title">Language Model Tokenizers Introduce Unfairness Between Languages (2023)</div> <div class="book-desc">Shows that the same text can cost up to 15 times more tokens in some languages, affecting price and performance.</div>
+
+## c16-121
+<span class="book-author">BOLUKBASI, Tolga et al.</span> <div class="book-title">Man Is to Computer Programmer as Woman Is to Homemaker? Debiasing Word Embeddings (2016)</div> <div class="book-desc">Demonstrates that word representations learned from text inherit gender stereotypes and proposes how to mitigate them.</div>
+
+## c16-122
+<span class="book-author">BENDER, Emily &amp; KOLLER, Alexander</span> <div class="book-title">Climbing towards NLU: On Meaning, Form, and Understanding in the Age of Data (2020)</div> <div class="book-desc">The argument that learning only the form of language gives no access to meaning, the basis of the stochastic-parrot metaphor.</div>
+
+## c16-123
+<span class="book-author">VALLOR, Shannon</span> <div class="book-title">The AI Mirror (2024)</div> <div class="book-desc">Proposes that AI is a mirror that reflects and distorts the human past, and discusses what this does to our autonomy and virtues.</div>
+
+## c16-124
+<span class="book-author">SANTAELLA, Lucia</span> <div class="book-title">Is Artificial Intelligence Intelligent? (2023)</div> <div class="book-desc">A Brazilian reflection on the meanings of "intelligence" applied to machines and the limits of comparison with the human mind.</div>
+
+## c16-125
+<span class="book-author">JONES, Cameron &amp; BERGEN, Benjamin</span> <div class="book-title">Large Language Models Pass the Turing Test (2025)</div> <div class="book-desc">An experiment in which a model was taken for human in 73% of conversations, more often than the real people.</div>
+
+## c16-126
+<span class="book-author">BUTLIN, Patrick et al.</span> <div class="book-title">Consciousness in Artificial Intelligence: Insights from the Science of Consciousness (2023)</div> <div class="book-desc">An expert review that assesses AI against scientific theories of consciousness: no current system is a strong candidate, with no obvious technical barriers.</div>
+
+## c16-127
+<span class="book-author">COLOMBATTO, Clara &amp; FLEMING, Stephen</span> <div class="book-title">Folk Psychological Attributions of Consciousness to Large Language Models (2024)</div> <div class="book-desc">Research in which about two-thirds of people attributed some degree of conscious experience to ChatGPT.</div>
+
+## c16-128
+<span class="book-author">KOSMYNA, Nataliya et al.</span> <div class="book-title">Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task (2025)</div> <div class="book-desc">A preliminary study, with 54 participants and EEG, on lower neural engagement when writing with AI. Not yet peer-reviewed.</div>
+
+## c16-129
+<span class="book-author">OPENAI</span> <div class="book-title">Expanding on What We Missed with Sycophancy (2025)</div> <div class="book-desc">The company's own report on the April 2025 GPT-4o update that became sycophantic and was rolled back.</div>
+
+## c16-130
+<span class="book-author">ZAO-SANDERS, Marc</span> <div class="book-title">How People Are Really Using Gen AI in 2025 (Harvard Business Review, 2025)</div> <div class="book-desc">An analysis of forum posts that puts therapy and companionship among the main uses; it is not representative research.</div>
+
+## c16-131
+<span class="book-author">GARANTE PER LA PROTEZIONE DEI DATI PERSONALI (Itália)</span> <div class="book-title">Decision on Luka Inc. (Replika) (2025)</div> <div class="book-desc">The Italian authority fined the maker of the Replika chatbot 5 million euros, among other reasons, for lack of age verification.</div>
+
+## c16-132
+<span class="book-author">TRIBUNAL FEDERAL (EUA)</span> <div class="book-title">Garcia v. Character Technologies (settlement reported in 2026)</div> <div class="book-desc">A suit by the mother of a teenager who died by suicide against Character.AI and Google, alleging an "unreasonably dangerous" design; the companies agreed to settle.</div>
+
+## c16-133
+<span class="book-author">PERRIGO, Billy</span> <div class="book-title">OpenAI Used Kenyan Workers on Less Than $2 Per Hour to Make ChatGPT Less Toxic (Time, 2023)</div> <div class="book-desc">The report that revealed violent-content labeling by Kenyan workers. OpenAI and Sama dispute numbers.</div>
+
+## c16-134
+<span class="book-author">TUBARO, Paola; BRAZ, Matheus &amp; CASILLI, Antonio</span> <div class="book-title">Microwork in Brazil</div> <div class="book-desc">Research on who does the data work that feeds AI in the country: over 50 platforms, low average income and little protection.</div>
+
+## c16-135
+<span class="book-author">SILVA, Tarcízio</span> <div class="book-title">Algorithmic Racism: Artificial Intelligence and Discrimination in Digital Networks (2022)</div> <div class="book-desc">A Brazilian study mapping racism in networks, search engines, facial recognition, moderation, policing and credit.</div>
+
+## c16-136
+<span class="book-author">TRIBUNAL FEDERAL (EUA)</span> <div class="book-title">Bartz v. Anthropic (2025-2026)</div> <div class="book-desc">A ruling in which Judge Alsup held that training on books could be fair use but downloading pirated copies was not; it ended in a $1.5 billion settlement.</div>
+
+## c16-137
+<span class="book-author">TRIBUNAL FEDERAL (EUA)</span> <div class="book-title">In re OpenAI Copyright Litigation, MDL 3143 (ongoing)</div> <div class="book-desc">Brings together the New York Times suit and others against OpenAI and Microsoft over the use of texts in training; no final ruling.</div>
+
+## c16-138
+<span class="book-author">SENADO FEDERAL (Brasil)</span> <div class="book-title">Bill 2338/2023: legal framework for artificial intelligence (approved December 2024)</div> <div class="book-desc">The text approved by the Senate, pending in the Chamber, with risk-based rules and copyright protections.</div>
+
+## c16-139
+<span class="book-author">CENTER FOR AI SAFETY</span> <div class="book-title">Statement on AI Risk (2023)</div> <div class="book-desc">The one-sentence statement placing the risk of extinction from AI as a global priority alongside pandemics and nuclear war.</div>
+
+## c16-140
+<span class="book-author">FUTURE OF LIFE INSTITUTE</span> <div class="book-title">Pause Giant AI Experiments: An Open Letter (2023)</div> <div class="book-desc">The letter that called for a minimum six-month pause in training systems more powerful than GPT-4.</div>
+
+## c16-141
+<span class="book-author">GEBRU, Timnit; BENDER, Emily; McMILLAN-MAJOR, Angelina &amp; MITCHELL, Margaret</span> <div class="book-title">Statement from the Listed Authors of Stochastic Parrots on the "AI Pause" Letter (DAIR, 2023)</div> <div class="book-desc">The authors' reply: the doomsday alarm diverts attention from the harms AI already causes.</div>
+
+## c16-142
+<span class="book-author">BOSTROM, Nick</span> <div class="book-title">Superintelligence: Paths, Dangers, Strategies (2014)</div> <div class="book-desc">The book that popularized the debate over existential risk and the alignment problem of a superior artificial intelligence.</div>
+
+## c16-143
+<span class="book-author">GRACE, Katja et al.</span> <div class="book-title">Thousands of AI Authors on the Future of AI (AI Impacts, 2023-2024)</div> <div class="book-desc">A survey of thousands of AI authors on timelines and risks, showing wide disagreement among experts.</div>
+
+## c16-144
+<span class="book-author">ACADEMIA BRASILEIRA DE CIÊNCIAS</span> <div class="book-title">Working Group on Artificial Intelligence (2023)</div> <div class="book-desc">A document coordinated by Virgílio Almeida that argues for regulation focused on social and ethical risks and algorithmic bias.</div>
+
+## c16-145
+<span class="book-author">OPEN SOURCE INITIATIVE</span> <div class="book-title">The Open Source AI Definition 1.0 (2024)</div> <div class="book-desc">The first formal definition of open-source AI, requiring enough information about data, code and parameters to recreate the system.</div>
+
+## c16-146
+<span class="book-author">CAULFIELD, Mike</span> <div class="book-title">SIFT (The Four Moves) and Web Literacy for Student Fact-Checkers</div> <div class="book-desc">The four-move method (stop, investigate the source, find better coverage, trace to the original) for checking online information and AI answers.</div>
+
+## c16-147
+<span class="book-author">AUTORIDADE NACIONAL DE PROTEÇÃO DE DADOS (Brasil)</span> <div class="book-title">Preventive Measure Against Meta on Training AI with Personal Data (July and August 2024)</div> <div class="book-desc">ANPD suspended Meta's use of user data to train AI, with a daily fine, and lifted the measure on August 30 after a compliance plan.</div>
+
+## c16-148
+<span class="book-author">BRASIL</span> <div class="book-title">General Personal Data Protection Law, Law 13,709 (2018)</div> <div class="book-desc">The Brazilian data protection law, the basis for ANPD's decisions and for the rights of people whose data is used in AI systems.</div>
+
+## c16-149
+<span class="book-author">UNIÃO EUROPEIA</span> <div class="book-title">Artificial Intelligence Act (AI Act, 2024)</div> <div class="book-desc">The world's first comprehensive AI law, with prohibited practices since 2025 and risk-tiered rules; high-risk deadlines were postponed.</div>
+
+## c16-150
+<span class="book-author">MINISTÉRIO DA CIÊNCIA, TECNOLOGIA E INOVAÇÃO (Brasil)</span> <div class="book-title">Brazilian Artificial Intelligence Plan (PBIA, 2024-2028)</div> <div class="book-desc">The federal AI investment strategy, with supercomputing and sovereign cloud, of around R$ 23 billion.</div>
+
+## c16-151
+<span class="book-author">BANCO DA INGLATERRA</span> <div class="book-title">Financial Stability Report (October 2025)</div> <div class="book-desc">A warning that AI company valuations resembled the dot-com bubble, with a "frenzy of spending and circular financing."</div>
+
+## c16-152
+<span class="book-author">BLOOMBERG</span> <div class="book-title">Samsung Bans Staff's AI Use After Spotting ChatGPT Data Leak (2023)</div> <div class="book-desc">The report on engineers who sent internal code to a chatbot and the temporary ban adopted by the company.</div>
+
 ## c16-106
-[!] END OF ARCHIVE<br>TOTAL ENTRIES: 97
+[!] END OF ARCHIVE<br>TOTAL ENTRIES: 142

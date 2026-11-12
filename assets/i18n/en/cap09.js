@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap09.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap09'] = {
-  "c09-001": "PART III: INFRASTRUCTURE | CHAPTER 09",
+  "c09-001": "PART IV: INFRASTRUCTURE | CHAPTER 17",
   "c09-002": "The Stone Cloud:<br>The Bloody Geology of Media",
   "c09-003": "The \"Cloud\" is the most successful and perverse euphemism in the history of corporate marketing. The word was handpicked to evoke lightness, immateriality, something white and fluffy floating above the laws of physics and moral responsibility. But the cloud isn't vapor. The cloud is a heavy, hot, noisy industrial megastructure, anchored in the Earth's crust through open wounds in the ground.",
   "c09-004": "The theorist <strong>Jussi Parikka</strong>, in <em>A Geology of Media</em>, invites us to understand the digital age not as an information age, but as a new geological age. To create the smooth screen where you're reading this text, entire mountains were blown up. For the algorithm to \"think,\" rivers were diverted to cool white-hot servers. Digital media isn't \"wireless\"; it's deeply rooted in the earth, and its root feeds on conflict minerals and drinking water.",

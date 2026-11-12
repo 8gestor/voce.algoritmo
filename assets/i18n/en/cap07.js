@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap07.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap07'] = {
-  "c07-001": "PART III: INFRASTRUCTURE | CHAPTER 07",
+  "c07-001": "PART IV: INFRASTRUCTURE | CHAPTER 15",
   "c07-002": "The Invisible Boss:<br>Digital Taylorism",
   "c07-003": "Quick, answer: when was the last time you did <em>nothing</em>? I'm not talking about \"watching a series\" (consuming content). I'm not talking about \"meditating\" (optimizing your mind so you can go back to producing). I'm talking about radical inactivity. The blank stare. The mental silence.",
   "c07-004": "If you felt a pang of guilt just imagining that scene, the algorithm is already running inside you. The <strong>Invisible Boss</strong> no longer needs a whip, or a physical time clock. It lives in your conscience, whispering that every unmonetized second is a system error.",

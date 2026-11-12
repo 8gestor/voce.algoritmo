@@ -27,7 +27,11 @@ for ($i = 0; $i -lt $pt.Count; $i++) {
         if ($tok -eq 'Introdução') { $file = 'introducao.html' }
         elseif ($tok -eq 'Epílogo') { $file = 'cap14.html' }
         elseif ($tok -match '^(?:Cap\s+)?(\d{1,2})(?:\.(\d))?$') {
-            $file = 'cap' + $Matches[1].PadLeft(2, '0') + $(if ($Matches[2]) { '_' + $Matches[2] } else { '' }) + '.html'
+            # numeração exibida -> arquivo: 01-03 = cap01-03 | 04-11 = ia01-ia08 (Parte II) | 12-21 = cap04-cap13 (nomes de arquivo antigos)
+            $n = [int]$Matches[1]; $sub = if ($Matches[2]) { '_' + $Matches[2] } else { '' }
+            if ($n -le 3) { $file = 'cap' + $n.ToString('00') + $sub + '.html' }
+            elseif ($n -le 11) { $file = 'ia' + ($n - 3).ToString('00') + '.html' }
+            else { $file = 'cap' + ($n - 8).ToString('00') + $sub + '.html' }
         }
         if (-not $file) { continue }
         if (-not $map.ContainsKey($file)) { $map[$file] = New-Object System.Collections.Generic.List[object] }

@@ -1,5 +1,5 @@
 ## c10-2-001
-PART IV: RESISTANCE | CHAPTER 10.2
+PART V: RESISTANCE | CHAPTER 18.2
 
 ## c10-2-002
 War Economy:<br>The Engineering of Bitcoin and Monero
@@ -8,7 +8,7 @@ War Economy:<br>The Engineering of Bitcoin and Monero
 Bitcoin is, above all, a computer science invention that attacked an old problem of exchange: <strong>Trustless Consensus</strong>. For the first time, it's possible to transfer value without asking permission from a central intermediary. Plenty of people do use it as a speculative investment, and the price is extremely volatile; here we're interested in another face: a censorship-resistant network, relevant in a world of CBDCs. "Resistant" doesn't mean "immune": miners, exchanges and the on-ramp and off-ramp services (the points where money turns into local currency) can exclude, filter or track transactions.
 
 ## c10-2-004
-<span class="thesis-header">// THE ENERGY WALL (PROOF OF WORK)</span> "Bitcoin spends energy on purpose. This is called <strong>Unforgeable Costliness</strong>. To rewrite the transaction history and censor a payment, an attacker would need to control more than half of the network's computing power (the so-called 51% attack), which would cost an enormous amount in hardware and electricity. The physical cost is the shield; but it comes at a price: the network consumes electricity on the scale of small countries (estimates on the order of 100 to 200 TWh a year), a real tension with Chapter 09."
+<span class="thesis-header">// THE ENERGY WALL (PROOF OF WORK)</span> "Bitcoin spends energy on purpose. This is called <strong>Unforgeable Costliness</strong>. To rewrite the transaction history and censor a payment, an attacker would need to control more than half of the network's computing power (the so-called 51% attack), which would cost an enormous amount in hardware and electricity. The physical cost is the shield; but it comes at a price: the network consumes electricity on the scale of small countries (estimates on the order of 100 to 200 TWh a year), a real tension with Chapter 17."
 
 ## c10-2-005
 Cryptographic Asymmetry: Your Only Real Property
@@ -47,7 +47,7 @@ An important update: the <strong>Samourai</strong> wallet, cited in earlier edit
 Bitcoin is censorship-resistant at the protocol level, but there are choke points: regulated services that comply with sanctions lists (such as the US OFAC list), exchanges with identity verification, and mining pools. On Ethereum, more than half of blocks were at one point produced by sanction-compliant intermediaries after the 2022 change. Real resistance depends on using the network non-custodially and on having on-ramps and off-ramps that you control.
 
 ## c10-2-017
-There is also a tension with Chapter 09: Bitcoin consumes a lot of energy. Some argue that this is the price of security, and others point out that alternatives, like proof of stake, use far less. And an alternative financial system isn't neutral: it concentrates wealth, attracts fraud and shifts risk onto the user (estimates point to millions of bitcoins lost forever through misplaced keys). For most people, practical financial sovereignty starts closer to home: cash for small purchases, accounts at different institutions, and knowing your own rights.
+There is also a tension with Chapter 17: Bitcoin consumes a lot of energy. Some argue that this is the price of security, and others point out that alternatives, like proof of stake, use far less. And an alternative financial system isn't neutral: it concentrates wealth, attracts fraud and shifts risk onto the user (estimates point to millions of bitcoins lost forever through misplaced keys). For most people, practical financial sovereignty starts closer to home: cash for small purchases, accounts at different institutions, and knowing your own rights.
 
 ## c10-2-018
 Money, network and mind are covered. What's left is the habit: what to do on Monday morning. The next chapter is the personal guerrilla manual.

@@ -1,6 +1,6 @@
 /* GERADO por tools/i18n.ps1 a partir de assets/i18n/src/cap04.en.txt — não edite à mão. */
 (window.DD_I18N = window.DD_I18N || {})['cap04'] = {
-  "c04-001": "PART II: THE SIEGE | CHAPTER 04",
+  "c04-001": "PART III: THE SIEGE | CHAPTER 12",
   "c04-002": "Biopolitics vs.<br>Digital Necropolitics",
   "c04-003": "Your body no longer belongs to you. It has been turned into a biometric barcode that validates or invalidates your civic existence. In the twentieth century, under the logic of <strong>Biopolitics</strong> (a term from Michel Foucault), the state managed populations in order to \"make live\" and optimize industrial production. Vaccines, schools and censuses were tools of life.",
   "c04-004": "In the twenty-first century, under the aegis of surveillance capitalism, we have entered the era of <strong>Digital Necropolitics</strong>. Adapting Achille Mbembe's brutal concept (2003), technology no longer serves only to manage life, but to automate the decision of who is \"disposable.\" The algorithm is the new sovereign. In milliseconds, and with no appeal, it decides who gets credit to survive and who is condemned to social, financial or physical death.",
