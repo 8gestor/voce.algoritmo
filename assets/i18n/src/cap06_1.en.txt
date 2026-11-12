@@ -1,0 +1,50 @@
+## c06-1-001
+PART II: THE SIEGE | CHAPTER 06.1
+
+## c06-1-002
+The Financial Panopticon:<br>The Engineering of CBDCs
+
+## c06-1-003
+Physical money (paper currency) is a technology of freedom because it is a <strong>bearer asset</strong> and <strong>peer-to-peer</strong>. When I hand you a 50-real bill, the transaction settles instantly, with no intermediaries, no database record and no possibility of remote censorship. The transition to the "Cashless Society" isn't a natural evolution of convenience; it's a social engineering project to transfer sovereignty from the individual to the issuer of the currency.
+
+## c06-1-004
+<span class="thesis-header">// PROGRAMMABLE MONEY (SMART MONEY)</span> "Unlike the balance you see today in your bank app (which is just a digital accounting entry), <strong>CBDCs (Central Bank Digital Currencies)</strong> are programmable tokens. That means the Central Bank can insert lines of code ('Smart Contracts') that define <em>how, when and where</em> that money can be spent. Money stops being a neutral unit of value and becomes a tool of active behavioral policy."
+
+## c06-1-005
+This isn't distant fiction. According to the BIS survey published in 2024 (with 2023 data), 94% of the 86 central banks surveyed are exploring a digital currency, and more than half of those designing retail versions are evaluating holding limits and offline options.
+
+## c06-1-006
+Case Study: The Digital Yuan and Expiration
+
+## c06-1-007
+China is at the forefront with the <strong>e-CNY</strong>. The documented cases of "money with a deadline" are <strong>consumer vouchers</strong>: in pilots like those in Shenzhen and Changzhou, local governments distributed amounts in e-CNY to stimulate spending, and some of those vouchers could only be used until a given date (in Changzhou, for example, until August 10). The e-CNY itself, the currency issued by the central bank, has no expiration date, according to the sources consulted. That's less terrifying than "money that erases itself," but the precedent that matters is technical: <strong>digital currency can carry rules</strong> (where, when and on what to spend), and that capability exists even when it's used, for now, in promotional campaigns.
+
+## c06-1-008
+The idea of money that "loses value if it sits idle" is neither new nor exclusively authoritarian. The economist Silvio Gesell proposed, in the early twentieth century, <em>stamped money</em> (which required periodic stamps to remain valid) to force circulation; in 1932, the Austrian town of Wörgl tested a local currency of this kind, with encouraging results, and the Austrian central bank banned it the following year. Keynes even praised Gesell. From the standpoint of economic engineering, this attacks the "paradox of thrift" by forcing the velocity of money. From the standpoint of freedom, what changes is <em>who decides</em> and <em>with what guarantees</em>: if you can't store value, you can't plan for the future, and if the deadline is imposed from above, you become dependent on the flow the issuer allows.
+
+## c06-1-009
+<span style="color:#6b7280">// HYPOTHETICAL CONTROL LOGIC (DREX/DIGITAL REAL)</span><br><br> function validateTransaction(user, product) {<br> &nbsp;&nbsp;<span style="color:#6b7280">// Geographic Block</span><br> &nbsp;&nbsp;if (user.location != "ALLOWED_AREA") {<br> &nbsp;&nbsp;&nbsp;&nbsp;return <span style="color:#ef4444">BLOCK("You are outside the consumption zone");</span><br> &nbsp;&nbsp;}<br> <br> &nbsp;&nbsp;<span style="color:#6b7280">// Algorithmic Rationing</span><br> &nbsp;&nbsp;if (product.type == "MEAT" && user.carbonQuota > 100) {<br> &nbsp;&nbsp;&nbsp;&nbsp;return <span style="color:#ef4444">BLOCK("Monthly carbon quota exceeded");</span><br> &nbsp;&nbsp;}<br> &nbsp;&nbsp;return APPROVE;<br> }
+
+## c06-1-010
+The Financial Weapon: Canada and Nigeria
+
+## c06-1-011
+<h3 style="margin-top:0; color:var(--c-control); font-family:var(--font-tech);">THE CANADIAN PRECEDENT (2022)</h3> <p>During the truckers' protests (the "Freedom Convoy") in February 2022, the Canadian government invoked the Emergencies Act and ordered financial institutions to freeze accounts tied to the protests and their supporters, <em>without a prior court order</em>. Ordinary people discovered that their cards had stopped working. In January 2024, the Federal Court found that the invocation of the law was unreasonable and violated constitutional rights (the decision was appealed). Regardless of the merits of the protest, the precedent is clear: the more digital and centralized the financial system, the easier it is to make dissent <em>disappear</em> from economic life.</p> <h3 style="margin-top:2em; color:var(--c-control); font-family:var(--font-tech);">THE NIGERIAN RESISTANCE (2021-2023)</h3> <p>Nigeria launched the <strong>eNaira</strong> in 2021, and adoption was very low. In 2022–2023, the central bank swapped the banknotes and imposed weekly limits on cash withdrawals, which created shortages and lines at bank branches; the population turned to transfers through fintechs, to dollars and to P2P crypto platforms, where Bitcoin was at one point traded at a steep premium. The Nigerian case suggests that, when official infrastructure becomes hostile or fails, parallel markets emerge as civil defense, though with costs and risks of their own (scams, volatility).</p>
+
+## c06-1-012
+Pix, Drex and What's Really at Stake
+
+## c06-1-013
+Brazil offers a valuable counterpoint to the fear of a "cashless society." <strong>Pix</strong> (launched by the Central Bank in November 2020) is public instant-payment infrastructure: open, low-cost and widely adopted, with real impact on financial inclusion. It also concentrates transaction metadata and has already been the subject of security rules after waves of scams, such as nighttime limits. The question, therefore, isn't "digital or physical," but <em>under what rules</em>: who can see, freeze or program what, with what court order and with what recourse.
+
+## c06-1-014
+<strong>Drex</strong>, the idea of a "digital real," has changed course: in 2025, the Central Bank announced that the next phase would set blockchain aside and focus, behind the scenes of the financial system, on reconciling liens (credit collateral), with tokenization and smart contracts postponed; one of the reasons cited was the difficulty of reconciling the distributed ledger with data privacy. There are conflicting reports on the project's current status, which is a good reminder: this subject evolves fast, and the text above describes possible risks, not the final design of any currency.
+
+## c06-1-015
+There are designs that try to protect privacy: the European Central Bank is discussing a digital euro with a holding limit and an offline mode with greater privacy, still dependent on legislation. "Programmability" itself is neither good nor bad: it can enable social benefits with clear rules (a voucher that only buys food) or abusive control. What should be demanded is <strong>explicit law, verifiable technical limits (privacy by design) and physical cash as an option</strong>.
+
+## c06-1-016
+Money is only one dimension of control; the other is the time of those who work. The next chapter goes from the wallet to the working day.
+
+## c06-1-017
+<strong style="color:var(--c-money); display:block; margin-bottom:10px; font-family:var(--font-tech); text-transform:uppercase;">RECOVERY CHALLENGE #07</strong> <p style="font-weight:bold;">The Sovereignty Reserve (Cash Is King)</p> <p>Keeping 100% of your wealth in "bank digits" is a systemic risk to your personal security.</p> <p><strong>Mission:</strong> Calculate the cost of 2 weeks of basic survival (food, fuel, medicine). Withdraw that amount in cash. Store it somewhere safe and non-bank. Beyond that, prioritize physical cash for small daily purchases. Every cash transaction is an anonymous vote against the digital panopticon.</p>

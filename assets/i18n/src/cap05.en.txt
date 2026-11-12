@@ -1,0 +1,74 @@
+## c05-001
+PART II: THE SIEGE | CHAPTER 05
+
+## c05-002
+The Sentient City:<br>Data Urbanism
+
+## c05-003
+The city is no longer made of brick and mortar; it's made of code and sensors. When you walk down a modern avenue, you're not just moving through a physical space, but navigating inside a giant open-air computer. Every streetlight, every trash can, every traffic camera is a network node in an IoT (Internet of Things) mesh that breathes, listens and processes.
+
+## c05-004
+This is the promise of the <strong>Smart City</strong>: absolute efficiency. Optimized flow. Predictive security. But as the critical urbanists <strong>Adam Greenfield</strong> (<em>Radical Technologies</em>) and <strong>Shannon Mattern</strong> (<em>A City Is Not a Computer</em>) warn, when we treat the city as a data engineering problem, we reduce the citizen to a mere passive component, a "data packet" to be routed. The sentient city doesn't just observe; it infers, judges and, crucially, acts on you.
+
+## c05-005
+Rob Kitchin, in <em>The Real-Time City?</em> (2014), adds that the technocratic promise tends to treat political problems as data problems, which Evgeny Morozov called "solutionism."
+
+## c05-006
+<span class="thesis-header">// The Thesis of Environmental Capture</span> "We're no longer talking about point-in-time surveillance. We're talking about <strong>Ubiquitous Computing</strong>. The environment has become intelligent and hostile. Urban infrastructure now has 'agency.' It can open or close turnstiles, turn lights on or off, alert the police or ignore a call for help, all based on opaque algorithms that put the protection of property and the flow of capital above human life."
+
+## c05-007
+Anatomy of the Hardware: The Eyes and Ears of the City
+
+## c05-008
+To navigate this territory, we need to identify the enemy. Surveillance isn't magic; it depends on physical hardware installed above our heads. Here is a dissection of the equipment that makes up the urban extraction matrix:
+
+## c05-009
+<table class="dissection-table"> <thead> <tr> <th style="width: 25%;">EQUIPMENT</th> <th style="width: 40%;">TECHNICAL CAPABILITY (What it does)</th> <th style="width: 35%;">INFERENCE (How it judges you)</th> </tr> </thead> <tbody> <tr> <td> <strong>IMSI Catchers (Stingrays)</strong><br> <span class="tech-tag">Signal Interception</span> </td> <td>Simulates a cell tower. Forces every nearby phone to connect to it, capturing the unique ID (IMSI) and call metadata.</td> <td>Maps who was at a protest. Identifies relationship networks (who was with whom) without needing GPS.</td> </tr> <tr> <td> <strong>Acoustic Sensors</strong><br> <span class="tech-tag">ShotSpotter</span> </td> <td>Triangulated microphones installed on poles and rooftops. They detect gunshots, but also screams and loud conversations.</td> <td>Tends to concentrate police presence in outlying areas. Generates automatic alerts based on ambiguous noises (fireworks vs. gunshots); an audit by Chicago's Office of Inspector General (2021) concluded that only about 9% of alerts led to evidence of a gun-related crime.</td> </tr> <tr> <td> <strong>ALPR Readers</strong><br> <span class="tech-tag">License Plate Recognition</span> </td> <td>High-speed cameras that digitize every vehicle's license plate, cross-referencing debt and crime databases.</td> <td>Tracks your complete movement routine. Knows whether you attend mosques, abortion clinics or union meetings.</td> </tr> <tr> <td> <strong>Smart Streetlights</strong><br> <span class="tech-tag">IoT Nodes</span> </td> <td>Equipped with cameras, motion sensors and Wi-Fi sniffers. They monitor pedestrian density and MAC addresses.</td> <td>Hyper-precise geolocation. Knows whether you stopped in front of a shop window (consumer interest) or are "hanging around" (loitering).</td> </tr> </tbody> </table>
+
+## c05-010
+The Layer Map: The Verticality of Power
+
+## c05-011
+The smart city operates in stratified layers. Benjamin Bratton, in <em>The Stack</em>, describes this megastructure. Power no longer resides on the ground (territory), but in the cloud (control).
+
+## c05-012
+<span class="layers-title">VISUAL RESOURCE 5: THE URBAN CONTROL STACK</span> <div class="layer-stack"> <div class="layer-item l-politics"> <strong>LAYER 4: POLITICS (The Sovereign)</strong> <span class="layer-desc">Who has permission to enter? (E.g., biometric turnstile, Exclusion Zones).</span> </div> <div class="layer-item l-semantics"> <strong>LAYER 3: SEMANTICS (The Meaning)</strong> <span class="layer-desc">Algorithms that interpret the data (E.g., "Running" = "Fleeing" or "Exercise"?).</span> </div> <div class="layer-item l-logic"> <strong>LAYER 2: LOGIC (The Network)</strong> <span class="layer-desc">Communication protocols, fiber optics, 5G, cloud servers.</span> </div> <div class="layer-item l-physical"> <strong>LAYER 1: PHYSICAL (The Territory)</strong> <span class="layer-desc">Streets, Buildings, Bodies, Surveillance Hardware.</span> </div> </div>
+
+## c05-013
+Geopolitics of Surveillance: Global Models
+
+## c05-014
+There is no single Smart City model. There are ideologies coded into infrastructure. The most powerful cities in the world invest trillions to shape their citizens' behavior:
+
+## c05-015
+<div class="geo-card"> <div class="geo-header"> <span class="geo-title">China: Xiongan & Shenzhen</span> <span class="geo-region">ASIA</span> </div> <div class="comp-content"> The "City-OS" (Operating System) model. In Shenzhen, the metro has already tested payment by facial recognition. In Xiongan, a city built from scratch, the infrastructure prioritizes autonomous vehicles, not humans. The goal is <strong>Algorithmic Harmony</strong>: broad social control, supported by cameras and payment platforms (and not by a single "social credit" score, which is a myth; see Chapter 04). </div> </div> <div class="geo-card"> <div class="geo-header"> <span class="geo-title">United Kingdom: London</span> <span class="geo-region">EUROPE</span> </div> <div class="comp-content"> The "Ring of Steel." London is among the cities with the most CCTV cameras in the Western world. The focus is <strong>Counter-Terrorism Security</strong> converted into everyday policing. The Metropolitan Police uses live facial recognition at selected locations to identify wanted people, a practice contested by civil rights groups. </div> </div> <div class="geo-card"> <div class="geo-header"> <span class="geo-title">Brazil: Rio de Janeiro</span> <span class="geo-region">LATIN AMERICA</span> </div> <div class="comp-content"> "Dashboard Urbanism." The Rio Operations Center (COR), built with IBM in 2010, treats the city as a crisis-management system (floods, shootings). It's <strong>Collapse Management</strong>, where technology serves to contain urban chaos without addressing the social causes. </div> </div> <div class="geo-card"> <div class="geo-header"> <span class="geo-title">Saudi Arabia: The Line (Neom)</span> <span class="geo-region">MIDDLE EAST</span> </div> <div class="comp-content"> The linear dystopia. A city designed as a 170 km corridor where every meter would be monitored by AI. <em>(Update: the project has been drastically scaled back. Reports from 2025 and 2026 speak of an initial phase of about 2.4 km by 2030 and construction partly suspended; the Saudi government says it hasn't been canceled, only "phased.")</em> The goal is <strong>Post-Human Efficiency</strong>: an environment where the resident is a service subscriber, with no property or privacy, living in a bubble of total convenience. </div> </div>
+
+## c05-016
+Cities That Chose Another Path
+
+## c05-017
+The "sentient city" isn't the only possible model, and examples of democratic restraint matter as much as examples of surveillance. In 2017, Sidewalk Labs (Alphabet) proposed a data-driven neighborhood in Toronto, Quayside; after years of dispute over privacy and data governance, the project was canceled in 2020. Amsterdam and Helsinki created, in 2020, public registers of the algorithms used by the city government. Barcelona adopted Decidim, an open-source citizen participation platform, and made "technological sovereignty" a principle of urban policy. San Francisco was the first major American city to ban the use of facial recognition by municipal agencies (2019).
+
+## c05-018
+The bias in these technologies is measured, not assumed. The <em>Gender Shades</em> study (Joy Buolamwini and Timnit Gebru, 2018) showed that commercial facial analysis systems erred far more often with dark-skinned women than with light-skinned men, with differences of dozens of percentage points. Regulation is already reacting: the European AI Act restricts the use of real-time remote biometric identification in public spaces by police forces to strict, authorized cases.
+
+## c05-019
+And a necessary counterpoint: urban sensors also save lives. Flood and landslide alerts, pollution monitoring and adaptive traffic lights have measurable benefits. The criterion, therefore, isn't "sensor or no sensor," but <strong>who owns the data, how long it's kept, who can audit it and whether there's an option to refuse</strong>.
+
+## c05-020
+Synthesis: Tactical Navigation and "Sousveillance"
+
+## c05-021
+We can no longer "flee" to the woods; the city is our habitat. The shift in paradigm we need is to stop being a frightened prey and become a tactical navigator.
+
+## c05-022
+Steve Mann proposed the concept of <strong>Sousveillance</strong> (Surveillance from Below): the use of technology to monitor those who hold power. We should map the cameras. We should understand where the sensors are. We should wear clothing with adversarial patterns (like the <em>HyperFace</em> project) to confuse facial recognition algorithms.
+
+## c05-023
+The sentient city watches us, but it is blind to what it can't categorize. Our defense is unpredictability, the use of non-optimized routes and a deep understanding that, if a light turns on when you pass, someone has recorded your passing.
+
+## c05-024
+All these cameras and sensors produce data, and data produces sentences. The next chapter walks into the courtroom where they're read, with no judge and no defense.
+
+## c05-025
+<span class="action-icon">🗺️</span> <strong style="color:var(--c-network); text-transform:uppercase; display:block; margin-bottom:10px; font-family:var(--font-tech);">RECOVERY CHALLENGE #05</strong> <p style="font-weight:bold;">The Urban Space Audit</p> <p>Stop walking with your eyes on the ground (or on your phone). Lift your head. The surveillance hardware is hidden in plain sight.</p> <p><strong>Your mission today:</strong> Walk around your block and count how many cameras you see (public and private). Look at the poles: are there strange boxes attached? Are there sensors pointed at the traffic?</p> <p>By identifying the physical infrastructure of surveillance, you stop being a passive object and become a conscious observer. The first step to not being controlled is knowing where the strings are.</p>
