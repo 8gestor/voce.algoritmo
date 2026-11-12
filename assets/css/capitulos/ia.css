@@ -129,3 +129,11 @@ strong { color: var(--c-ai); }
     p { text-align: left; }
     .tl-year { flex-basis: 58px; font-size: 0.8rem; }
 }
+/* --- escada de probabilidades (próxima palavra) --- */
+.probs { margin: 2em 0; padding: 20px; border: var(--border-tech); border-radius: 8px; }
+.probs-title { display: block; font-family: var(--font-tech); font-size: 0.75rem; color: var(--c-dim); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+.prob-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; font-family: var(--font-tech); font-size: 0.85rem; }
+.prob-label { flex: 0 0 82px; }
+.prob-track { flex: 1; height: 14px; background: var(--c-ai-dim); border-radius: 2px; overflow: hidden; display: block; }
+.prob-fill { display: block; height: 100%; background: var(--c-ai); }
+.prob-val { flex: 0 0 44px; text-align: right; color: var(--c-ai); font-weight: bold; }

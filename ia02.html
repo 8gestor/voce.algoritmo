@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capítulo 05</title>
+    <link rel="stylesheet" href="assets/fonts/fonts.css">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/capitulos/ia.css">
+    <link rel="stylesheet" href="assets/css/papel.css">
+</head>
+<body>
+
+    <div class="reader-container" id="content-area">
+        <span class="meta-tag" data-id="ia02-001">PARTE II: A MÁQUINA | CAPÍTULO 05</span>
+
+        <h1 class="speakable" data-id="ia02-002">Como a Máquina Aprende:<br>Autocompletar em Escala</h1>
+
+        <p class="speakable" data-id="ia02-003">Em 2023, um advogado de Nova York pediu ao ChatGPT casos que sustentassem a causa do seu cliente. A máquina entregou decisões completas, com número do processo, tribunal, data e até trechos dos votos. Havia um detalhe: nenhuma delas existia. O juiz Kevin Castel multou os advogados em 5 mil dólares e escreveu que eles tinham abandonado as suas responsabilidades. O advogado disse ao tribunal que jamais imaginou que a ferramenta pudesse inventar casos.</p>
+
+        <p class="speakable" data-id="ia02-004">O Brasil já tem a sua versão. Em fevereiro de 2025, a 6ª Câmara de Direito Civil do Tribunal de Justiça de Santa Catarina multou por litigância de má-fé um recorrente cujo recurso citava jurisprudência e doutrina inexistentes. O advogado admitiu ter usado o ChatGPT e falou em "uso inadvertido". O tribunal não aceitou a explicação, aplicou multa de 10% do valor atualizado da causa e mandou cópia do recurso à seccional catarinense da OAB.</p>
+
+        <p class="speakable" data-id="ia02-005">Nos dois casos, o erro mais caro não foi o da máquina. Foi acreditar que ela sabia. Para entender por que ela inventa com tanta segurança, vale abrir a caixa, sem fórmula e sem mistério, em cinco degraus.</p>
+
+        <div class="thesis-box speakable" data-id="ia02-006">
+            <span class="thesis-header">// Autocompletar em Escala</span>
+            No fundo, um modelo de linguagem faz uma única coisa: dado um texto, prevê o próximo pedaço. Tudo o que impressiona nele (o poema, o resumo, o código) nasce de repetir essa previsão, um pedaço de cada vez. Em sua forma básica, não há um banco de fatos sendo consultado em segundo plano; há uma máquina de plausibilidade. Os sistemas de hoje acrescentam ferramentas de busca por cima, mas o núcleo continua sendo esse.
+        </div>
+
+        <h2 class="speakable" data-id="ia02-007">Os Cinco Degraus</h2>
+
+        <div class="cycle-box speakable" data-id="ia02-008">
+            <span class="cycle-title">O Caminho de uma Frase</span>
+            <div class="cycle-step"><span class="step-title">1. Pedaços</span>O texto é cortado em pequenas peças chamadas tokens.</div>
+            <div class="arrow-down">↓</div>
+            <div class="cycle-step"><span class="step-title">2. Números</span>Cada peça vira uma lista de coordenadas num mapa gigante.</div>
+            <div class="arrow-down">↓</div>
+            <div class="cycle-step"><span class="step-title">3. Atenção</span>Cada peça olha para as outras e decide quais importam.</div>
+            <div class="arrow-down">↓</div>
+            <div class="cycle-step"><span class="step-title">4. Previsão</span>A máquina distribui chances entre as peças que podem vir a seguir.</div>
+            <div class="arrow-down">↓</div>
+            <div class="cycle-step cs-warn"><span class="step-title">5. Sorteio</span>Uma peça é escolhida, entra na fila e o ciclo recomeça.</div>
+        </div>
+
+        <p class="speakable" data-id="ia02-009"><strong>Degrau 1: pedaços.</strong> A máquina não lê palavras; lê pedaços de texto chamados tokens, que podem ser uma palavra curta, uma sílaba ou um sinal de pontuação. Uma palavra comprida costuma virar dois ou três pedaços, dependendo do tokenizador. O texto inteiro vira uma fila de peças numeradas.</p>
+
+        <p class="speakable" data-id="ia02-010">Aqui o português paga um pedágio. Medições independentes indicam que o mesmo texto costuma exigir cerca de 1,5 a 1,6 vez mais tokens em português do que em inglês no tokenizador do GPT-4, e menos nos mais novos. <span class="selo selo-estimativa">estimativa</span> Como o uso dos modelos é cobrado e limitado em tokens, escrever em português tende a sair mais caro e a caber menos no que a máquina consegue ter em mente de uma só vez. Um estudo de Petrov e colegas, de 2023, mostra que essa desigualdade nasce antes de qualquer cálculo e que, entre alguns idiomas, a diferença chega a 15 vezes.</p>
+
+        <p class="speakable" data-id="ia02-011"><strong>Degrau 2: números.</strong> Cada pedaço vira uma lista de números, que funciona como coordenadas num mapa gigante. Pedaços que aparecem em contextos parecidos ficam perto uns dos outros: "médico" fica perto de "hospital" e longe de "bicicleta". Para a máquina, o significado de uma palavra é a sua vizinhança. É uma ideia poderosa e também uma armadilha, porque a vizinhança herda os vieses do texto de onde saiu, assunto que o Capítulo 08 retoma.</p>
+
+        <p class="speakable" data-id="ia02-012"><strong>Degrau 3: atenção.</strong> A cada passo, cada pedaço olha para todos os outros da fila e calcula quais importam para o que vem a seguir. Em "o banco do rio estava seco", a atenção liga "banco" a "rio" e não a dinheiro. Essa foi a invenção do Transformer, que vimos no Capítulo 04: em vez de ler em fila, olhar tudo ao mesmo tempo.</p>
+
+        <p class="speakable" data-id="ia02-013"><strong>Degrau 4: aprender prevendo.</strong> Pegue um texto, esconda a próxima palavra, peça um palpite, compare com a resposta e ajuste os números internos para errar um pouco menos. Repita bilhões de vezes, sobre uma fatia enorme da internet, de livros e de código. Ninguém ensina gramática, fato ou lógica; tudo o que o modelo "sabe" é o que ajudou a prever melhor. O GPT-3, de 2020, tinha 175 bilhões desses números ajustáveis, os parâmetros, e foi treinado com cerca de 300 bilhões de tokens, o equivalente, pelas minhas contas, a mais de 1.700 anos de leitura sem pausa. <span class="selo selo-estimativa">estimativa</span></p>
+
+        <p class="speakable" data-id="ia02-014">Para ver o resultado, imagine a frase "O gato subiu no". A máquina não escolhe uma palavra; ela distribui chances entre todas as que poderiam vir a seguir.</p>
+
+        <div class="probs speakable" data-id="ia02-015">
+            <span class="probs-title">Ilustração (valores fictícios): "O gato subiu no ..."</span>
+            <div class="prob-row"><span class="prob-label">telhado</span><span class="prob-track"><span class="prob-fill" style="width:46%"></span></span><span class="prob-val">46%</span></div>
+            <div class="prob-row"><span class="prob-label">muro</span><span class="prob-track"><span class="prob-fill" style="width:21%"></span></span><span class="prob-val">21%</span></div>
+            <div class="prob-row"><span class="prob-label">sofá</span><span class="prob-track"><span class="prob-fill" style="width:12%"></span></span><span class="prob-val">12%</span></div>
+            <div class="prob-row"><span class="prob-label">armário</span><span class="prob-track"><span class="prob-fill" style="width:7%"></span></span><span class="prob-val">7%</span></div>
+            <div class="prob-row"><span class="prob-label">outras</span><span class="prob-track"><span class="prob-fill" style="width:14%"></span></span><span class="prob-val">14%</span></div>
+        </div>
+
+        <p class="speakable" data-id="ia02-016">Depois, a máquina sorteia uma peça dentro dessa distribuição, e é por isso que a mesma pergunta pode render respostas diferentes. Nada na conta pergunta se a frase é verdadeira; só se ela é provável.</p>
+
+        <p class="speakable" data-id="ia02-017"><strong>Degrau 5: a escola dos humanos.</strong> Um modelo apenas pré-treinado completa qualquer coisa, inclusive o pior do que leu. Para virar assistente, ele passa por uma segunda escola: pessoas escrevem respostas-modelo e depois comparam respostas da máquina, dizendo qual é melhor. A máquina se ajusta para produzir o que agrada a esses avaliadores. O método se chama aprendizado por reforço com feedback humano, ou RLHF.</p>
+
+        <p class="speakable" data-id="ia02-018">O efeito é enorme. No estudo que apresentou o InstructGPT, da OpenAI, em 2022, avaliadores preferiram as respostas de um modelo de 1,3 bilhão de parâmetros às do GPT-3, de 175 bilhões, cem vezes maior. Mas há um custo escondido: a máquina pode aprender a agradar mais do que a acertar. Quem são essas pessoas e quanto elas ganham é assunto do Capítulo 08.</p>
+
+        <h2 class="speakable" data-id="ia02-019">Por que Ela Inventa com Tanta Calma</h2>
+
+        <p class="speakable" data-id="ia02-020">Se tudo é prever o próximo pedaço plausível, a pergunta muda de lugar. Em vez de perguntar por que a máquina inventa, passa a fazer sentido perguntar por que ela às vezes não inventa. Quando o assunto está bem coberto nos dados, o pedaço mais provável costuma coincidir com o fato. Quando é raro (um número de processo, uma citação, uma data obscura), o pedaço mais plausível é só plausível: parece um número de processo. A máquina completa o formato com a mesma confiança com que completa o que está certo.</p>
+
+        <p class="speakable" data-id="ia02-021">Um artigo de 2025, de pesquisadores da OpenAI e do Georgia Tech (Kalai e colegas), acrescenta uma explicação sobre os incentivos. Os testes que medem os modelos contam acertos, então chutar rende pontos e dizer "não sei" rende zero, como numa prova de múltipla escolha sem desconto por erro. Segundo os autores, o treino e a avaliação acabam premiando o chute. <span class="selo selo-hipotese">hipótese</span> É um argumento teórico forte, mas ainda não a última palavra sobre o assunto.</p>
+
+        <p class="speakable" data-id="ia02-022">O nome "alucinação" engana. Alucinar sugere um defeito da percepção, um desvio do funcionamento normal. Aqui é o contrário: inventar o plausível é o funcionamento normal, e acertar é o que acontece quando o plausível coincide com o verdadeiro. <span class="selo selo-provocacao">provocação</span></p>
+
+        <h2 class="speakable" data-id="ia02-023">Dois Erros Opostos</h2>
+
+        <p class="speakable" data-id="ia02-024">Dizer que a IA "é só autocompletar" é tão enganoso quanto dizer que "ela entende". O primeiro desdenha o que a escala produz: um sistema treinado só para prever texto acaba traduzindo, resumindo e programando, coisas que ninguém escreveu como regra. O segundo atribui à máquina uma compreensão que ninguém sabe se existe, tema do próximo capítulo. E ainda não se sabe explicar por inteiro o que acontece dentro desses bilhões de números; há um campo de pesquisa inteiro, a interpretabilidade, tentando abrir a caixa.</p>
+
+        <p class="speakable" data-id="ia02-025">A lição amarga do Capítulo 04 reaparece aqui em versão matemática. Pesquisas de 2020 e de 2022 mostraram que o desempenho dos modelos melhora de forma previsível quando se aumentam, juntos, os parâmetros, os dados e a computação. <span class="selo selo-hipotese">hipótese</span> Se essa curva continua ou se achata é a aposta bilionária do momento, e a resposta ainda não existe.</p>
+
+        <h2 class="speakable" data-id="ia02-026">E em Português?</h2>
+
+        <p class="speakable" data-id="ia02-027">A lacuna de dados é concreta. O Carolina, corpus aberto da USP com português brasileiro e informação sobre a origem de cada texto, tem cerca de 823 milhões de palavras na versão 1.2. Para ter uma ideia de escala, isso é bem menos de 1% do volume de tokens do GPT-3. <span class="selo selo-estimativa">estimativa</span> É uma comparação de ordem de grandeza, porque o Carolina é um único corpus curado e não tudo o que existe em português. Outros esforços tentam fechar a distância: o BrWaC, restrito a pesquisa, deu origem ao BERTimbau; o GigaVerbo reúne cerca de 200 bilhões de tokens em português, e o modelo Tucano foi treinado com ele.</p>
+
+        <p class="speakable" data-id="ia02-028">Do lado comercial, a Maritaca AI, de Campinas, mantém a família Sabiá, criada para o português do Brasil. As versões mais recentes, porém, são proprietárias, o que nos leva a um tema do Capítulo 09: não basta ter um modelo em português; é preciso saber quem controla os dados, os chips e as regras. Por ora, fica uma hipótese razoável: um modelo que completa o português a partir de muito menos português tende a inventar mais exatamente onde o nosso idioma é raro, como nomes de leis, jurisprudência e cidades pequenas. <span class="selo selo-hipotese">hipótese</span></p>
+
+        <div class="thesis-box speakable" data-id="ia02-029">
+            <span class="thesis-header">// A Máquina Completa; Você Assina</span>
+            Ela não mente nem diz a verdade: <strong>completa</strong>. A verdade só entra no circuito quando alguém confere. Nos dois tribunais do começo do capítulo, as consequências recaíram sobre pessoas, nunca sobre o software. A pergunta prática que sobra é <strong>quem confere, com que método e a que custo</strong>.
+        </div>
+
+        <p class="speakable" data-id="ia02-030">Se tudo isso é prever o próximo pedaço, sobra uma pergunta que a engenharia não responde sozinha: existe alguém lá dentro? O próximo capítulo entra na filosofia, entre o espelho e o papagaio.</p>
+
+        <div class="action-box speakable" data-id="ia02-031">
+            <span class="action-header">🔎 DESAFIO DE RETOMADA #05</span>
+            <p><strong>O Teste da Citação</strong></p>
+            <p>A melhor forma de entender uma alucinação é provocar uma.</p>
+            <p><strong>Sua missão:</strong> Escolha um assunto que você domina. Peça a um chatbot três fontes sobre ele: um livro, um artigo e uma lei ou norma. Depois confira cada uma em um lugar que não seja o próprio chatbot: um catálogo de biblioteca, o Google Acadêmico, o site oficial. Anote quantas existem, quantas dizem o que a máquina afirmou e quantas ela inventou. Repita daqui a três meses. Essa taxa é o seu medidor pessoal de confiança.</p>
+        </div>
+    </div>
+
+    <script src="assets/js/capitulo.js"></script>
+</body>
+</html>

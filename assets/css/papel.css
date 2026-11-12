@@ -228,3 +228,8 @@ body.paper-mode .cycle-box { background: #F3F1EA; border: 1.5px solid #1A1A18; b
 body.paper-mode .cycle-step, body.paper-mode .cycle-step.cs-warn { background: transparent; border-left: 4px solid #1A1A18; border-radius: 0; }
 body.paper-mode .cycle-step.cs-warn { border-left-style: dashed; }
 body.paper-mode .cycle-title, body.paper-mode .step-title { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }
+body.paper-mode .probs { background: #F3F1EA; border: 1.5px solid #1A1A18; border-radius: 0; }
+body.paper-mode .probs-title, body.paper-mode .prob-row { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }
+body.paper-mode .prob-track { background: transparent; border: 1.5px solid #1A1A18; border-radius: 0; height: 14px; }
+body.paper-mode .prob-fill { background: repeating-linear-gradient(45deg, #1A1A18 0 3px, #FBFAF6 3px 6px); }
+body.paper-mode .prob-val { color: #1A1A18; }
