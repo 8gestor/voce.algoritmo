@@ -56,7 +56,7 @@ The ultimate danger lies in the fusion of commercial data and state power. The c
 Case Studies: Coded Bias
 
 ## c04-020
-Technology isn't neutral; it inherits the sins of its creators. Ruha Benjamin calls this <strong>"The New Jim Code"</strong>:
+Technology isn't neutral; it inherits the sins of its creators. Ruha Benjamin calls this <strong>"The New Jim Code"</strong>: The health case below is a bias that Chapter 08 explains from the inside.
 
 ## c04-021
 HEALTH: THE OPTUM CASE

@@ -20,7 +20,7 @@ A concrete case: in March 2024, researchers from the Stanford Internet Observato
 The Data Ouroboros: Model Collapse
 
 ## c08-008
-The most unsettling phenomenon of generative AI may not be "machine consciousness" (the Hollywood myth), but <strong>Digital Dementia</strong>. In a study published in the journal <em>Nature</em> (2024), researchers led by Ilia Shumailov demonstrated, with language models and other generative models, what they called <strong>Model Collapse</strong>: when models are trained recursively on what earlier models generated, the rare parts of the original distribution disappear and outputs become repetitive and distorted.
+The most unsettling phenomenon of generative AI may not be "machine consciousness" (the Hollywood myth), but <strong>Digital Dementia</strong>. In a study published in the journal <em>Nature</em> (2024), researchers led by Ilia Shumailov demonstrated, with language models and other generative models, what they called <strong>Model Collapse</strong>: when models are trained recursively on what earlier models generated, the rare parts of the original distribution disappear and outputs become repetitive and distorted. This mechanism stems from how the machine learns, explained in Chapter 05.
 
 ## c08-009
 Today's AIs (GPT-4, Claude) trained by scraping the human internet accumulated over 30 years. But as the web is flooded with "Slop" (AI-generated digital sludge), new generations of AI train on data made by other AIs. It's a cycle of digital inbreeding. Just as inbreeding among royalty caused physical deformities (like the Habsburg Jaw), data inbreeding causes cultural deformities. Variance shrinks, "hallucinations" become facts and reality dissolves into a beige, meaningless average.

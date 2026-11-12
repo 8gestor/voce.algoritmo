@@ -23,7 +23,7 @@ In Washington, the teacher Sarah Wysocki, well rated by parents and by her princ
 Reputation Engineering: How the Score Is Manufactured
 
 ## c06-009
-Your score isn't a single number; it's a pyramid of inferences. Data from disparate sources is bought and cross-referenced by "data brokers" (such as Serasa Experian or Acxiom) to create a holistic risk profile. See how the layers stack up:
+Your score isn't a single number; it's a pyramid of inferences. Data from disparate sources is bought and cross-referenced by "data brokers" (such as Serasa Experian or Acxiom) to create a holistic risk profile. See how the layers stack up: A score is a model that learned from past data (Chapters 05 and 06), and so it hands the past back as a sentence.
 
 ## c06-010
 <div class="score-layer sl-4"> <span class="layer-label">4. PREDICTIVE (The Future)</span> <span class="layer-detail">Probability of crime, future illness, pregnancy. (AI/Inference)</span> </div> <div class="score-layer sl-3"> <span class="layer-label">3. BIOLOGICAL/HEALTH</span> <span class="layer-detail">Medical history, Wearables, Pharmacy Purchases.</span> </div> <div class="score-layer sl-2"> <span class="layer-label">2. BEHAVIORAL</span> <span class="layer-detail">Uber rating, Browsing History, Social Networks.</span> </div> <div class="score-layer sl-1"> <span class="layer-label">1. FINANCIAL/CIVIC</span> <span class="layer-detail">Debts, Taxes, Fines, Lawsuits.</span> </div>

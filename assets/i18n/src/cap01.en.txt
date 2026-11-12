@@ -32,7 +32,7 @@ In 1966, Joseph Weizenbaum, at MIT, created <strong>ELIZA</strong>, a pattern-ma
 The other case comes from the opposite direction. <strong>Elliot</strong>, a patient described by Damasio in <em>Descartes' Error</em>, kept his intelligence after frontal lobe surgery but lost the ability to make decisions, and said he felt no emotions. Without the body, knowing isn't enough to choose (the "somatic markers" hypothesis is still debated).
 
 ## c01-012
-ELIZA shows that we project minds onto machines; Elliot shows that a mind cut off from the body decides badly. The line that matters runs between processing symbols and living in a body that feels.
+ELIZA shows that we project minds onto machines; Elliot shows that a mind cut off from the body decides badly. The line that matters runs between processing symbols and living in a body that feels. We will return to the ELIZA effect, at scale, in Chapter 07.
 
 ## c01-013
 The Real Danger: Being Predictable at Scale

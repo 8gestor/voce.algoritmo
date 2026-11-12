@@ -2,7 +2,7 @@
 (window.DD_I18N = window.DD_I18N || {})['cap11'] = {
   "c11-001": "PART V: RESISTANCE | CHAPTER 19",
   "c11-002": "Onlife Citizenship:<br>A Personal Guerrilla Manual",
-  "c11-003": "We live in a state of \"Onlife,\" a term coined by the philosopher <strong>Luciano Floridi</strong> to describe the collapse of the boundary between online and offline. We no longer \"enter\" the internet; we breathe inside it. The problem is that, by inhabiting this space, we were demoted. We stopped being citizens and became <strong>Users</strong>.",
+  "c11-003": "We live in a state of \"Onlife,\" a term coined by the philosopher <strong>Luciano Floridi</strong> to describe the collapse of the boundary between online and offline. We no longer \"enter\" the internet; we breathe inside it. The problem is that, by inhabiting this space, we were demoted. We stopped being citizens and became <strong>Users</strong>. The rules for using artificial intelligence have a chapter of their own (Chapter 11); here are the habits that hold for any technology.",
   "c11-004": "It's often quoted, attributed to Edward Tufte, that only two industries call their customers \"users\": illegal drugs and software. The line is a provocation, not an etymology, but it points to something real: in both cases, the word denotes passivity and dependence. The system supplies the dose (or the interface), and you consume. Taking back citizenship means <strong>uninstalling user mode</strong> and taking on administrator mode over your own life.",
   "c11-005": "\"Freedom isn't the absence of technology, but the presence of agency over it. A tool you can't fix, understand or switch off isn't a tool; it's a mechanism of control.\"",
   "c11-006": "The Conviviality Test (Ivan Illich)",
