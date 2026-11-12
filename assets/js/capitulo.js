@@ -29,7 +29,19 @@
     const synth = window.speechSynthesis;
     const root = document.documentElement;
     const LANG_TAG = { pt: 'pt-BR', en: 'en-US' };
-    const CHARS_PER_SEC = { pt: 14.5, en: 15 };   // só para estimar quando a voz não envia eventos
+
+    /* Sincronia da narração. Muitas vozes (sobretudo as de rede) NÃO enviam o evento "boundary"
+       de cada palavra; mesmo as que enviam podem falhar. Por isso o destaque segue uma LINHA DO
+       TEMPO PREVISTA da fala (caracteres por segundo + pausas de pontuação), corrigida de três
+       maneiras: (1) cada evento de palavra recebido reajusta a escala do tempo; (2) a velocidade
+       real de cada voz é aprendida ao fim de cada trecho e guardada; (3) sentenças longas são
+       cortadas em trechos menores, de modo que o erro nunca se acumula por muito tempo. */
+    const DEFAULT_CPS = { pt: 15.5, en: 16 };                       // caracteres falados por segundo, a velocidade 1, sem pausas
+    const PAUSE = { comma: 0.16, clause: 0.26, sentence: 0.40 };    // segundos, a velocidade 1
+    const SPLIT_OVER = 150;     // só sentenças com mais caracteres que isto são divididas
+    const SPLIT_MIN = 60;       // tamanho mínimo de um trecho
+    const SPLIT_TAIL = 30;      // sobra mínima depois do corte
+    const ABBR = /^(Dr|Dra|Sr|Sra|Prof|etc|vs|St|Mr|Mrs|Ms|U\.S|e\.g|i\.e)\.$/i;
 
     /* ------------------------------------------------------------ preferências */
     let saved = {};
@@ -77,6 +89,7 @@
     function langFor(id, lang) { return lang === 'en' && hasEn(id) ? 'en' : 'pt'; }
 
     function applyReadLanguage() {
+        ping('lang');                                    // estatísticas: mudar de idioma não conta como leitura
         root.lang = state.readLang === 'en' ? 'en' : 'pt-BR';
         units.forEach((u, id) => {
             if (u.wrapped) return;                       // unidade em narração é refeita por refresh()
@@ -109,10 +122,53 @@
     function sentenceEnds(tokens) {
         const ends = [];
         tokens.forEach((t, i) => {
-            if (/[.!?…]["'”’)\]]*$/.test(t.w) && !/^(Dr|Dra|Sr|Sra|Prof|etc|vs|St|Mr|Mrs|Ms|U\.S|e\.g|i\.e)\.$/i.test(t.w)) ends.push(i);
+            if (/[.!?…]["'”’)\]]*$/.test(t.w) && !ABBR.test(t.w)) ends.push(i);
         });
         if (!ends.length || ends[ends.length - 1] !== tokens.length - 1) ends.push(tokens.length - 1);
         return ends;
+    }
+
+    // Pausa que a voz costuma fazer depois da palavra (segundos, a velocidade 1).
+    function tokenPause(w) {
+        if (/[.!?…]["'”’)\]]*$/.test(w) && !ABBR.test(w)) return PAUSE.sentence;
+        if (/[;:]["'”’)\]]*$/.test(w) || /^[—–]$/.test(w)) return PAUSE.clause;
+        if (/,["'”’)\]]*$/.test(w)) return PAUSE.comma;
+        return 0;
+    }
+
+    // Divide uma sentença longa (palavras a..b) em trechos, cortando só em vírgula, ponto e vírgula,
+    // dois-pontos ou travessão, e sem deixar trecho minúsculo.
+    function splitLong(tokens, a, b) {
+        const out = [];
+        let start = a;
+        for (let i = a; i < b; i++) {
+            const w = tokens[i].w;
+            if (!(/[,;:]["'”’)\]]*$/.test(w) || /^[—–]$/.test(w))) continue;
+            if (tokens[i].e - tokens[start].s >= SPLIT_MIN && tokens[b].e - tokens[i + 1].s >= SPLIT_TAIL) {
+                out.push({ a: start, b: i });
+                start = i + 1;
+            }
+        }
+        out.push({ a: start, b: b });
+        return out;
+    }
+
+    /* velocidade real de cada voz, aprendida ao longo do uso */
+    let calib = {};
+    try { calib = JSON.parse(localStorage.getItem('dd-cps') || '{}') || {}; } catch (err) { calib = {}; }
+    function calibKey(lang, voice) { return lang + '|' + (voice ? voice.name : ''); }
+    function cpsFor(lang, voice) {
+        const c = calib[calibKey(lang, voice)];
+        return c > 5 && c < 40 ? c : DEFAULT_CPS[lang];
+    }
+    function learnCps(lang, voice, measured) {
+        const key = calibKey(lang, voice);
+        const known = calib[key] > 5 && calib[key] < 40;
+        const prev = known ? calib[key] : DEFAULT_CPS[lang];
+        if (!(measured > prev * 0.4 && measured < prev * 2.5)) return;       // descarta medida absurda
+        const w = known ? 0.4 : 0.75;                                        // a 1ª medida pesa mais
+        calib[key] = Math.round((prev * (1 - w) + measured * w) * 100) / 100;
+        try { localStorage.setItem('dd-cps', JSON.stringify(calib)); } catch (err) { /* sem armazenamento */ }
     }
 
     /* ------------------------------------------------------------ plano de uma unidade */
@@ -159,7 +215,12 @@
         const ends = sentenceEnds(tokens);
         const chunks = [];
         let from = 0;
-        ends.forEach((last) => { if (last >= from) { chunks.push({ a: from, b: last }); from = last + 1; } });
+        ends.forEach((last) => {
+            if (last < from) return;
+            const long = tokens[last].e - tokens[from].s > SPLIT_OVER;
+            (long ? splitLong(tokens, from, last) : [{ a: from, b: last }]).forEach((c) => chunks.push(c));
+            from = last + 1;
+        });
 
         // mapa: palavra falada -> palavra exibida
         const N = tokens.length, M = words.length;
@@ -182,7 +243,7 @@
                 map = (k) => Math.min(M - 1, Math.floor((k + 0.5) / N * M));
             }
         }
-        return { id: id, el: u.el, speechLang: speechLang, text: text, tokens: tokens, chunks: chunks, words: words, map: map };
+        return { id: id, el: u.el, speechLang: speechLang, text: text, tokens: tokens, chunks: chunks, words: words, map: map, cur: -1 };
     }
 
     function unwrapUnit(id) {
@@ -217,20 +278,32 @@
     let serial = 0;            // invalida utterances antigas (cancel/troca de velocidade/idioma)
     let tok = 0;               // palavra falada atual
     let timer = null;
-    let gotBoundary = false;
 
     function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
 
+    // Palavra falada agora (cor forte).
     function mark(k) {
         if (!plan) return;
         tok = k;
         const idx = plan.map(k);
-        plan.words.forEach((sp, i) => sp.classList.toggle('now', i === idx));
+        if (idx === plan.cur) return;
+        if (plan.words[plan.cur]) plan.words[plan.cur].classList.remove('now');
+        plan.cur = idx;
         const cur = plan.words[idx];
         if (cur) {
+            cur.classList.add('now');
             const r = cur.getBoundingClientRect();
             if (r.top < 70 || r.bottom > window.innerHeight - 70) cur.scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
+    }
+
+    // Trecho falado agora (cor suave): mesmo que a palavra atrase, o trecho certo continua marcado.
+    function markSeg(ci) {
+        if (!plan) return;
+        const c = plan.chunks[ci];
+        if (!c) return;
+        const a = plan.map(c.a), b = plan.map(c.b);
+        plan.words.forEach((sp, i) => sp.classList.toggle('seg', i >= a && i <= b));
     }
 
     function startUnit(index, fromFraction) {
@@ -276,30 +349,67 @@
             return lo;
         };
 
-        gotBoundary = false;
+        // Linha do tempo prevista deste trecho: cum[j] = instante (s) em que a palavra startTok+j
+        // começa, contando caracteres, velocidade da voz e pausas de pontuação.
+        const rate = state.rate;
+        const n = chunk.b - startTok + 1;
+        const cps1 = cpsFor(plan.speechLang, v);
+        const cum = new Array(n + 1);
+        cum[0] = 0;
+        let pauses = 0;
+        for (let j = 0; j < n; j++) {
+            const w = plan.tokens[startTok + j].w;
+            const p = j < n - 1 ? tokenPause(w) : 0;
+            pauses += p;
+            cum[j + 1] = cum[j] + (w.length + 1) / (cps1 * rate) + p / rate;
+        }
+        let scale = 1;           // ajuste do tempo previsto, corrigido a cada evento de palavra
+        let t0 = 0;              // instante em que a voz começou
+        let curJ = 0;            // palavra atual dentro do trecho (só avança)
+        let lastB = -1;          // última palavra confirmada por evento da voz
+        let gapAvg = 1;          // distância média, em palavras, entre eventos
+        let gotB = false;
+
         stopTimer();
         mark(startTok);
+        markSeg(ci);
+
+        const advance = (j) => { if (j > curJ) { curJ = j; mark(startTok + j); } };
 
         ut.onstart = () => {
             if (my !== serial) return;
-            const t0 = performance.now();
+            t0 = performance.now();
             stopTimer();
             timer = setInterval(() => {
-                if (my !== serial || gotBoundary) { stopTimer(); return; }
-                const pos = ((performance.now() - t0) / 1000) * state.rate * CHARS_PER_SEC[plan.speechLang];
-                mark(tokenAt(Math.min(endChar - 1, base + Math.floor(pos))));
-            }, 90);
+                if (my !== serial) { stopTimer(); return; }
+                const el = (performance.now() - t0) / 1000;
+                let j = curJ;
+                while (j + 1 < n && cum[j + 1] * scale <= el) j++;
+                // Se a voz envia eventos, a estimativa só interpola entre eles (não corre à frente).
+                if (gotB) j = Math.min(j, lastB + Math.max(1, Math.round(gapAvg * 1.2)));
+                advance(j);
+            }, 50);
         };
         ut.onboundary = (e) => {
             if (my !== serial) return;
             if (e.name && e.name !== 'word') return;
-            gotBoundary = true;
-            stopTimer();
-            mark(tokenAt(base + e.charIndex));
+            if (!t0) t0 = performance.now();
+            const j = Math.max(0, Math.min(n - 1, tokenAt(base + e.charIndex) - startTok));
+            const el = (performance.now() - t0) / 1000;
+            if (cum[j] > 0.4) scale = Math.min(2.2, Math.max(0.5, scale * 0.4 + (el / cum[j]) * 0.6));
+            if (gotB && j > lastB) gapAvg = gapAvg * 0.7 + (j - lastB) * 0.3;
+            gotB = true;
+            if (j > lastB) lastB = j;
+            advance(j);
         };
         ut.onend = () => {
             if (my !== serial) return;
             stopTimer();
+            if (t0 && n >= 4) {                                  // aprende a velocidade real desta voz
+                const speech = (performance.now() - t0) / 1000 - pauses / rate;
+                if (speech > 0.5) learnCps(plan.speechLang, v, piece.length / (speech * rate));
+            }
+            if (t0) postParent({ type: 'dd-listen', page: pageKey, lang: plan.speechLang, words: n });   // estatísticas: palavras ouvidas
             if (ci + 1 < plan.chunks.length) speakFrom(plan.chunks[ci + 1].a);
             else nextUnit();
         };
@@ -331,6 +441,7 @@
 
     function toggle() {
         if (playing) { halt(); return; }
+        if (!queue.length) return;                       // página sem texto narrável (ex.: estatísticas)
         playing = true;
         report(true);
         if (qi >= queue.length) qi = 0;
@@ -398,6 +509,40 @@
         }
         if (d.type === 'tts-toggle') toggle();
     });
+
+    /* ------------------------------------------------------------ progresso (alimenta as estatísticas do leitor) */
+    function postParent(msg) { if (window.parent && window.parent !== window) window.parent.postMessage(msg, '*'); }
+
+    // Fração das PALAVRAS que já passaram pela borda de baixo da janela (cada unidade pesa pelo seu tamanho).
+    function readFraction() {
+        let total = 0, seen = 0;
+        const vh = window.innerHeight;
+        units.forEach((u) => {
+            const w = (u.el.textContent.match(/\S+/g) || []).length;
+            if (!w) return;
+            total += w;
+            const r = u.el.getBoundingClientRect();
+            if (r.height <= 0) return;
+            seen += w * Math.max(0, Math.min(1, (vh - r.top) / r.height));
+        });
+        return total ? seen / total : 0;
+    }
+
+    let pingTimer = null, pingKind = 'scroll';
+    function ping(kind) {                               // kind: 'load' | 'scroll' | 'lang'
+        if (kind === 'lang' || kind === 'load' || !pingTimer) pingKind = kind;
+        if (pingTimer) return;
+        pingTimer = setTimeout(() => {
+            pingTimer = null;
+            postParent({ type: 'dd-progress', page: pageKey, frac: readFraction(), kind: pingKind });
+        }, 250);
+    }
+    window.addEventListener('scroll', () => ping('scroll'), { passive: true });
+    // Rede de segurança: confere a posição também por tempo (cobre rolagens sem evento, como a da narração).
+    let lastY = window.scrollY;
+    setInterval(() => { if (window.scrollY !== lastY) { lastY = window.scrollY; ping('scroll'); } }, 400);
+    window.addEventListener('resize', () => ping('scroll'));
+    window.addEventListener('load', () => setTimeout(() => ping('load'), 600));
 
     /* ------------------------------------------------------------ clique */
     // Clicar em um parágrafo começa a narração a partir dele.

@@ -119,6 +119,17 @@ $test = @'
       ok('6a a narração percorre várias unidades', Object.keys(ids).length >= 2, Object.keys(ids).join(','));
       post('tts-toggle'); await wait(200);
       ok('6b ao parar não sobra .w nem .speaking', document.querySelectorAll('.w').length === 0 && !document.querySelector('.speaking'));
+
+      // 7. trecho destacado e sentenças longas divididas
+      post('readlang', 'pt'); post('audiolang', 'pt'); await wait(100);
+      document.querySelector('[data-id="in-020"]').click(); await wait(600);
+      var p7 = window.__dd.plan, seg = document.querySelectorAll('.w.seg'), nowEl = document.querySelector('.w.now');
+      ok('7a o trecho falado fica marcado (.w.seg) e contém a palavra atual', seg.length > 0 && nowEl && nowEl.classList.contains('seg'), seg.length + ' palavras');
+      var sentEnds = 0; p7.tokens.forEach(function (tk) { if (/[.!?…]$/.test(tk.w)) sentEnds++; });
+      ok('7b sentença longa é dividida em trechos menores', p7.chunks.length > sentEnds, p7.chunks.length + ' trechos para ' + sentEnds + ' sentenças');
+      var minLen = Math.min.apply(null, p7.chunks.map(function (c) { return p7.tokens[c.b].e - p7.tokens[c.a].s; }));
+      ok('7c nenhum trecho fica minúsculo', p7.chunks.length === sentEnds || minLen >= 20, 'menor trecho: ' + minLen + ' caracteres');
+      post('tts-toggle'); await wait(200);
     } catch (e) { fails++; out.push('FAIL exceção: ' + e); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     var pre = document.createElement('pre'); pre.id = 'result'; pre.textContent = out.join('\n'); document.body.appendChild(pre);
