@@ -1,0 +1,131 @@
+/* ia — estilo compartilhado da Parte II (A MÁQUINA). Só o que difere do base.css. */
+
+:root {
+    --c-ai: #a78bfa;
+    --c-ai-dim: rgba(167, 139, 250, 0.1);
+    --c-ai-glow: 0 0 15px rgba(167, 139, 250, 0.3);
+    --c-warn: #f59e0b;
+    --scroll-hover: #a78bfa;
+}
+
+body.light-mode {
+    --c-ai: #6d28d9;
+    --c-ai-dim: rgba(109, 40, 217, 0.08);
+    --c-ai-glow: 0 0 10px rgba(109, 40, 217, 0.2);
+    --c-warn: #b45309;
+    --scroll-hover: #6d28d9;
+}
+
+body.sepia-mode {
+    --c-ai: #5b21b6;
+    --c-ai-dim: rgba(91, 33, 182, 0.08);
+    --c-ai-glow: none;
+    --c-warn: #9a3412;
+    --scroll-hover: #5b21b6;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scroll-track); }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover); }
+
+.reader-container { max-width: 750px; margin: 0 auto; }
+
+.meta-tag {
+    display: inline-block;
+    font-family: var(--font-tech);
+    font-size: 0.75rem;
+    color: var(--c-ai);
+    border: 1px solid var(--c-ai);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-shadow: var(--c-ai-glow);
+}
+
+h1 { border-bottom: 2px solid var(--c-ai); }
+
+h2 {
+    font-family: var(--font-tech);
+    color: var(--c-ai);
+    font-size: 1.4rem;
+    margin: 60px 0 25px 0;
+    text-transform: uppercase;
+}
+h2::before { content: "> "; color: var(--c-dim); }
+
+p { margin-bottom: 1.4em; text-align: justify; }
+strong { color: var(--c-ai); }
+
+.thesis-box {
+    border-left: 4px solid var(--c-ai);
+    background: var(--c-ai-dim);
+    padding: 25px 30px;
+    margin: 2.5em 0;
+    border-radius: 0 8px 8px 0;
+}
+.thesis-header {
+    display: block;
+    margin-bottom: 10px;
+    font-family: var(--font-tech);
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--c-ai);
+}
+
+/* --- linha do tempo: um marco por bloco narrável --- */
+.timeline { margin: 2em 0; border-left: 2px solid var(--c-ai); padding-left: 0; }
+.tl-item { display: flex; gap: 18px; padding: 12px 0 12px 22px; position: relative; }
+.tl-item::before {
+    content: ""; position: absolute; left: -7px; top: 22px; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--c-bg); border: 2px solid var(--c-ai);
+}
+.tl-item.tl-winter::before { border-color: var(--c-warn); background: var(--c-warn); }
+.tl-year { flex: 0 0 74px; font-family: var(--font-tech); font-weight: bold; color: var(--c-ai); font-size: 0.9rem; padding-top: 2px; }
+.tl-item.tl-winter .tl-year { color: var(--c-warn); }
+.tl-text { flex: 1; font-size: 0.95rem; line-height: 1.55; }
+.tl-text strong { color: var(--c-text); }
+
+/* --- ciclo da promessa --- */
+.cycle-box { display: flex; flex-direction: column; gap: 8px; margin: 2.5em 0; padding: 20px; border: var(--border-tech); border-radius: 8px; background: rgba(255,255,255,0.01); }
+.cycle-title { display: block; text-align: center; font-family: var(--font-tech); font-weight: bold; color: var(--c-ai); margin-bottom: 10px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+.cycle-step { padding: 14px 16px; border-radius: 6px; font-size: 0.88rem; display: flex; flex-direction: column; gap: 4px; border-left: 4px solid var(--c-ai); background: var(--c-ai-dim); }
+.cycle-step.cs-warn { border-color: var(--c-warn); background: rgba(245, 158, 11, 0.07); }
+.step-title { font-family: var(--font-tech); font-weight: bold; text-transform: uppercase; }
+.arrow-down { text-align: center; color: var(--c-dim); opacity: 0.6; font-size: 1.1rem; }
+
+/* --- selos de confiança (fato / estimativa / hipótese / provocação) --- */
+.selo {
+    display: inline-block; font-family: var(--font-tech); font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 1px 7px; border: 1px solid var(--c-dim); border-radius: 3px;
+    vertical-align: middle; color: var(--c-dim);
+}
+.selo-estimativa { border-color: var(--c-warn); color: var(--c-warn); }
+.selo-hipotese { border-style: dashed; border-color: var(--c-ai); color: var(--c-ai); }
+.selo-provocacao { border-style: double; border-width: 3px; padding: 0 6px; }
+
+.action-box {
+    border: 1px dashed var(--c-ai);
+    background: linear-gradient(180deg, var(--c-ai-dim), transparent);
+    border-radius: 12px; padding: 40px 30px; text-align: center; margin-top: 80px;
+}
+.action-header {
+    font-family: var(--font-tech); color: var(--c-ai); font-weight: bold; font-size: 1.1rem;
+    margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px;
+}
+
+.speaking { background: var(--c-ai-dim); border-left: 4px solid var(--c-ai); box-shadow: var(--c-ai-glow); }
+
+@media (max-width: 700px) {
+    body { padding: 30px 15px 120px 15px; }
+    h1 { font-size: 1.8rem; }
+    p { text-align: left; }
+    .tl-year { flex-basis: 58px; font-size: 0.8rem; }
+}

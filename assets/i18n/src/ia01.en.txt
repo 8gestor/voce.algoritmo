@@ -1,0 +1,89 @@
+## ia01-001
+PART II: THE MACHINE | CHAPTER 04
+
+## ia01-002
+The Machine of Promises:<br>Seventy Years of Promises
+
+## ia01-003
+On August 31, 1955, four researchers signed a funding request. John McCarthy (Dartmouth), Marvin Minsky (Harvard), Nathaniel Rochester (IBM) and Claude Shannon (Bell Labs) proposed gathering, the following summer, "a 2 month, 10 man study" (those are the proposal's own words) to find out how to make machines use language, form concepts, solve problems now reserved for humans, and improve themselves. It was a modest request, for one summer, about the most ambitious problem engineering had ever formulated.
+
+## ia01-004
+Out of it came the name of the field: <strong>artificial intelligence</strong>. It also gave us a habit that has never left us, the habit of promising with a deadline. Seventy years later, according to whoever is selling the next version, we're still about one summer away. This chapter tells how that promise was made, broken and made again, because understanding the rhythm of history is your first defense against anyone trying to sell you the future.
+
+## ia01-005
+<span class="thesis-header">// The Pendulum</span> The history of AI isn't a straight line; it's a pendulum. Each wave of enthusiasm brought a big promise, money, a disappointment and a "winter" of cut funding. And each revival came back under a different name, so it wouldn't carry the bad reputation of the last one. Anyone who doesn't know the pendulum mistakes the current wave for the end of history.
+
+## ia01-006
+<span class="cycle-title">The Cycle of the Promise</span> <div class="cycle-step"><span class="step-title">1. The Promise</span>An impressive milestone in the lab becomes a headline: "machines will think soon."</div> <div class="arrow-down">↓</div> <div class="cycle-step"><span class="step-title">2. The Money</span>Governments and companies fund it, convinced that the deadline is short.</div> <div class="arrow-down">↓</div> <div class="cycle-step cs-warn"><span class="step-title">3. The Disappointment</span>The system works on the showcase example and fails in the real world, which is messier.</div> <div class="arrow-down">↓</div> <div class="cycle-step cs-warn"><span class="step-title">4. The Winter</span>Funding vanishes, the word "AI" becomes an embarrassment, and the research survives under another label.</div> <div class="arrow-down">↺</div> <div class="cycle-step"><span class="step-title">5. The Return</span>More data, more computing power or a new idea reopens the door. Step 1 starts over.</div>
+
+## ia01-007
+The Summers and the Winters
+
+## ia01-008
+Every milestone below is a dated fact; the reading of what it means is mine. Notice the rhythm: the core ideas (networks that learn, language, search) are much older than the feeling of novelty.
+
+## ia01-009
+<span class="tl-year">1950</span><span class="tl-text"><strong>Turing</strong> publishes "Computing Machinery and Intelligence" in the journal <em>Mind</em>. He swaps the question of whether machines think for a practical test, the "imitation game."</span>
+
+## ia01-010
+<span class="tl-year">1956</span><span class="tl-text"><strong>Dartmouth.</strong> The summer proposed in 1955 takes place. McCarthy names the field.</span>
+
+## ia01-011
+<span class="tl-year">1958</span><span class="tl-text"><strong>Perceptron.</strong> Frank Rosenblatt presents a network that learns from examples. The <em>New York Times</em> reports that the US Navy expected a machine able to "walk, talk, see, write, reproduce itself and be conscious of its existence."</span>
+
+## ia01-012
+<span class="tl-year">1966</span><span class="tl-text"><strong>ELIZA.</strong> Weizenbaum, at MIT, builds a pattern trick that imitates a therapist, and people open up to it (Chapter 01).</span>
+
+## ia01-013
+<span class="tl-year">1973</span><span class="tl-text"><strong>The Lighthill Report.</strong> The British government reviews AI and concludes that it hadn't met its grand goals: in practice, it worked on simplified, "toy" problems. In 1974, the US and the UK cut funding for open-ended research. It's the first winter.</span>
+
+## ia01-014
+<span class="tl-year">1980s</span><span class="tl-text"><strong>Expert systems.</strong> Programs of hand-written rules become a business. When they prove expensive and brittle, the second winter arrives, between the late 80s and the early 90s (sources disagree on the exact dates).</span>
+
+## ia01-015
+<span class="tl-year">1997</span><span class="tl-text"><strong>Deep Blue.</strong> IBM's computer beats Garry Kasparov, 3½ to 2½. It's a triumph of search at scale, with dedicated hardware, and not of learning.</span>
+
+## ia01-016
+<span class="tl-year">2012</span><span class="tl-text"><strong>AlexNet.</strong> Krizhevsky, Sutskever and Hinton, in Toronto, use GPUs to train a deep network and cut the error in the ImageNet contest to 15.3%, against 26.2% for the runner-up.</span>
+
+## ia01-017
+<span class="tl-year">2016</span><span class="tl-text"><strong>AlphaGo.</strong> DeepMind's program beats the champion Lee Sedol 4 to 1 in Seoul, in a game many experts still considered out of the machines' reach.</span>
+
+## ia01-018
+<span class="tl-year">2017</span><span class="tl-text"><strong>Transformer.</strong> Eight Google researchers publish "Attention Is All You Need." The architecture they propose is the foundation of today's language models.</span>
+
+## ia01-019
+<span class="tl-year">2022</span><span class="tl-text"><strong>ChatGPT.</strong> Launched on November 30. An investment bank, UBS, estimated about 100 million monthly users in January 2023, the fastest adoption its analysts had ever seen in a consumer app. <span class="selo selo-estimativa">estimate</span> The number isn't official.</span>
+
+## ia01-020
+The Two Tribes
+
+## ia01-021
+Underneath that timeline runs a fight that helps explain everything. On one side, the <strong>symbolic</strong> tribe: intelligence is manipulating rules and concepts, so all you have to do is write the rules. From it came the expert systems of the 80s, and with them the second winter. On the other side, the <strong>connectionist</strong> tribe: intelligence is learning patterns from examples, like the brain (in the simplified version that Chapter 01 already took apart). Rosenblatt and the perceptron are the grandparents of that tribe; Minsky and Papert's 1969 critique of the limits of simple perceptrons is usually pointed to as one of the factors that pushed them into the shadows for years (historians debate how much influence it had).
+
+## ia01-022
+Who won? It wasn't whoever was most right, but whoever had the most fuel. Rich Sutton summed this up in a famous 2019 essay, the "bitter lesson": over seventy years, general methods that grow with computing power ended up beating those that depended on human knowledge built in by hand. AlexNet is the canonical example: the idea of deep networks was old, and what changed was the data and the GPUs. <span class="selo selo-hipotese">hypothesis</span> Whether the lesson will keep holding from here on is a bet, not a fact.
+
+## ia01-023
+And in Brazil?
+
+## ia01-024
+The Brazilian story runs in parallel and on a smaller scale. The Brazilian Computer Society was founded in 1978; the first Brazilian symposium on artificial intelligence, in 1984 at UFRGS, was dominated by work on expert systems, the symbolic tribe of the day. Nelson Mascarenhas, of UFSCar, is cited as one of the pioneers of neural networks in the country, and Maria das Graças Volpe Nunes, a UFSCar graduate with a master's from USP, led in the 1990s the group that built a grammar checker for Portuguese.
+
+## ia01-025
+The detail matters for a reason that will come back in the next chapters: Portuguese is a second-tier language for AI. In GPT-3, from 2020, about 93% of the training data was in English, according to the statistics OpenAI released. The makeup of today's models generally isn't disclosed, so there's no way to say the picture has changed. I still haven't found reliable sources on the country's first research groups and the dates they were created, so I'd rather leave that gap in plain sight than fill it with a guess.
+
+## ia01-026
+Is This Time Different?
+
+## ia01-027
+It's the question every skeptic asks, and it deserves an honest answer from both sides. For the "yes": today there's a product in the hands of hundreds of millions of people, not a lab demo; there's money, chips and data on an unprecedented scale; and the Transformer worked for text, images, audio and code, not just one task. For the "no": the historical pattern is real, current systems still get things wrong with confidence (the subject of the next chapter), and nobody knows whether simply scaling up will keep paying off. <span class="selo selo-hipotese">hypothesis</span> The most sensible answer is the least comfortable one: something really has changed, and even so, the promise of a deadline remains the least reliable part of any announcement.
+
+## ia01-028
+<span class="thesis-header">// Every Promise Has an Owner</span> The most useful question was never whether the machine will think, but <strong>who promised, who paid and who profited</strong>. The first summers were bankrolled by states and militaries; today's, by a few companies that control data, chips and cloud. The technology changed. The book's underlying question stays the same: who controls, who benefits, who can audit and who can say no.
+
+## ia01-029
+To know whether the promise can be kept, one thing is missing: opening up the machine. The next chapter explains, without mystery and without formulas, how it learns, and why a system that can write a poem can also invent a quote with perfect calm.
+
+## ia01-030
+<span class="action-header">🕰️ RECOVERY CHALLENGE #04</span> <p><strong>The Personal Timeline</strong></p> <p>AI didn't arrive in 2022. It came into your life quietly, in stages.</p> <p><strong>Your mission:</strong> On a piece of paper, draw the timeline of your relationship with AI. Mark the first time you used, without knowing it, a spell checker, a GPS, a video recommendation, a spam filter. Then mark the day you started talking to one. Now, next to each milestone, write one thing: when did that stop asking for your permission. That line is the map of how much you've already delegated.</p>
