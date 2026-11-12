@@ -62,7 +62,7 @@ In hypnosis, a trance is induced through fixed attention and repetition, which l
 Did They Know? The Case of the Internal Research
 
 ## c02-022
-In September 2021, the <em>Wall Street Journal</em> published the "Facebook Files," based on leaked internal documents. A 2019 presentation said Instagram made body image worse for one in three teenage girls. The company replied that the selection was selective and the overall effect "quite small." The proof isn't of a conspiracy: platforms measure these effects, and rarely disclose them.
+In September 2021, the <em>Wall Street Journal</em> published the "Facebook Files," based on leaked internal documents. A 2019 presentation said Instagram made body image worse for one in three teenage girls. The company replied that the data had been selectively presented and the overall effect was "quite small." The proof isn't of a conspiracy: platforms measure these effects, and rarely disclose them.
 
 ## c02-023
 The Hidden Cost: The Murder of Boredom
@@ -89,7 +89,7 @@ The Counterweight: Clinic, Regulation and the Old Hunt for Attention
 The hunt for attention is older than the smartphone: Tim Wu, in <em>The Attention Merchants</em> (2016), shows that, from cheap newspapers to TV, the business has always been "free" entertainment in exchange for resold attention. What's new is the scale and the personalization.
 
 ## c02-031
-Persuasive design has started to be treated as a public policy issue. The European Union's Digital Services Act (DSA) requires very large platforms to assess systemic risks, including effects on mental health, and the European Commission opened formal proceedings against TikTok and Meta in 2024, partly over "addictive design" and the protection of minors. In the United States, California and New York passed laws in 2024 on "addictive feeds" for minors. In Brazil, the Digital ECA (Law 15,211/2025), in force since March 2026, places duties on platforms to protect children and teenagers.
+Persuasive design has started to be treated as a public policy issue. The European Union's Digital Services Act (DSA) requires very large platforms to assess systemic risks, including effects on mental health, and the European Commission opened formal proceedings against TikTok and Meta in 2024, partly over "addictive design" and the protection of minors. In the United States, California and New York passed laws in 2024 on "addictive feeds" for minors. In Brazil, the ECA Digital (Brazil's Digital Statute for Children and Adolescents, Law 15,211/2025), in force since March 2026, places duties on platforms to protect children and teenagers.
 
 ## c02-032
 The honest counterweight: not all intense use is pathological. There's "engagement" that is learning, friendship and creation. The measure that matters isn't screen time, but <strong>autonomy</strong>: can you stop when you want to? What do you stop doing in order to be there? It's Ivan Illich's question (Chapter 11) applied to attention.

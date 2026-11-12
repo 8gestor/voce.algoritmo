@@ -23,7 +23,7 @@ A complete repository of all the references cited. This is the intellectual infr
 <span class="book-author">EUBANKS, Virginia</span> <div class="book-title">Automating Inequality</div> <div class="book-desc">Investigates how algorithms in social services automate prejudice and punish the poor in the US.</div>
 
 ## c16-009
-<div class="book-meta"><span>CASE STUDY</span></div> <span class="book-author">OBERMEYER, Ziad et al.</span> <div class="book-title">Dissecting Racial Bias in an Algorithm Used to Manage the Health of Populations</div> <div class="book-desc">A study published in <em>Science</em> that mathematically proved racism in medical algorithms.</div>
+<div class="book-meta"><span>CASE STUDY</span></div> <span class="book-author">OBERMEYER, Ziad et al.</span> <div class="book-title">Dissecting Racial Bias in an Algorithm Used to Manage the Health of Populations</div> <div class="book-desc">A study published in <em>Science</em> that demonstrated racial bias in a widely used medical algorithm.</div>
 
 ## c16-010
 <span class="book-author">BENJAMIN, Ruha</span> <div class="book-title">Race After Technology</div> <div class="book-desc">Analyzes the "New Jim Code": how technological design reflects and amplifies existing racial divisions.</div>
@@ -179,7 +179,7 @@ A complete repository of all the references cited. This is the intellectual infr
 <span class="book-author">CRAWFORD, Kate</span> <div class="book-title">Atlas of AI</div> <div class="book-desc">A mapping of the real costs of AI: energy, precarious labor, biased classification and mining.</div>
 
 ## c16-061
-<div class="book-meta"><span>SCIENTIFIC PAPER</span></div> <span class="book-author">SHUMAILOV, Ilia et al.</span> <div class="book-title">The Curse of Recursion</div> <div class="book-desc">Published in <em>Nature</em>. Demonstrates "Model Collapse" mathematically: AIs trained on AI data degrade reality.</div>
+<div class="book-meta"><span>SCIENTIFIC PAPER</span></div> <span class="book-author">SHUMAILOV, Ilia et al.</span> <div class="book-title">The Curse of Recursion</div> <div class="book-desc">Preprint (2023) of the study published in <em>Nature</em> in 2024 (see below). Demonstrates "Model Collapse" in experiments: AIs trained on AI data degrade reality.</div>
 
 ## c16-062
 <span class="book-author">CHESNEY, Robert & CITRON, Danielle</span> <div class="book-title">Deep Fakes and the Liar's Dividend</div> <div class="book-desc">How the existence of deepfakes lets real criminals deny reality (the "Liar's Dividend").</div>

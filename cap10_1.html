@@ -14,12 +14,12 @@
     <span class="meta-tag" data-id="c10-1-001">PARTE IV: RESISTÊNCIA | CAPÍTULO 10.1</span>
     <h1 class="speakable" data-id="c10-1-002">Fortaleza Digital:<br>Zero Trust e Hardening Tático</h1>
 
-    <p class="speakable" data-id="c10-1-003">A maioria dos conselhos de segurança ("instale um antivírus") é baseada em um modelo obsoleto. Hoje, o ataque vem de algoritmos de coleta em massa e falhas de dia zero (Zero-Days). Para sobreviver, adotamos o modelo <strong>Zero Trust</strong> (Confiança Zero): assuma que sua rede já está comprometida, que seu provedor é hostil e que o ataque é inevitável. A meta não é impedir a entrada, é mitigar o dano através do <strong>Hardening</strong> (Endurecimento).</p>
+    <p class="speakable" data-id="c10-1-003">A maioria dos conselhos de segurança ("instale um antivírus") é baseada em um modelo obsoleto. Hoje, o ataque vem de algoritmos de coleta em massa e falhas de dia zero (Zero-Days). Para sobreviver, adotamos o modelo <strong>Zero Trust</strong> (Confiança Zero): assuma que sua rede já está comprometida, que seu provedor é hostil e que o ataque é inevitável. A meta não é impedir a entrada, é mitigar o dano por meio do <strong>Hardening</strong> (Endurecimento).</p>
 
     <p class="speakable" data-id="c10-1-004">O caso Colonial Pipeline mostra o princípio na prática. Em maio de 2021, um ataque de ransomware paralisou um oleoduto de combustíveis nos EUA. Segundo o CEO, os invasores entraram por uma VPN antiga, sem autenticação multifator e desconhecida da equipe de TI, usando uma senha comprometida.</p>
 
     <h2 class="speakable" data-id="c10-1-005">A Matemática do Segredo (E2EE)</h2>
-    <p class="speakable" data-id="c10-1-006">Quando você usa Signal ou WhatsApp, ocorre um milagre da matemática: a <strong>Criptografia Assimétrica</strong>. Seu celular gera duas chaves: uma Pública (que tranca o cofre) e uma Privada (que destranca). Se eu quero te mandar uma mensagem, uso sua chave pública. Nem eu, nem o governo, nem a empresa conseguem abrir depois. A segurança reside em problemas matemáticos que se acredita serem inviáveis de resolver na prática (como o logaritmo discreto em curvas elípticas, usado por mensageiros modernos como o Signal, e, em sistemas mais antigos, a fatoração de números primos gigantes), e não na "bondade" da empresa.</p>
+    <p class="speakable" data-id="c10-1-006">Quando você usa Signal ou WhatsApp, ocorre um milagre da matemática: a <strong>Criptografia Assimétrica</strong>. Seu celular gera duas chaves: uma Pública (que tranca o cofre) e uma Privada (que destranca). Se eu quero te mandar uma mensagem, uso sua chave pública. Nem eu, nem o governo, nem a empresa conseguem abrir depois. A segurança reside em problemas matemáticos que se acredita serem inviáveis de resolver na prática (como o logaritmo discreto em curvas elípticas, usado por mensageiros modernos como o Signal, e, em sistemas mais antigos, a fatoração do produto de números primos gigantes), e não na "bondade" da empresa.</p>
 
     <div class="crypto-flow speakable" data-id="c10-1-007">
         <div>📱 VOCÊ<br>(Texto Claro)</div>
@@ -65,7 +65,7 @@
         <p>Você não precisa instalar o Qubes hoje, mas deve compartimentalizar seu comportamento.</p>
         <p><strong>Missão:</strong> Use navegadores diferentes para tarefas diferentes.
         <br>1. <strong>Navegador "Sujo":</strong> (Ex: Chrome/Edge) Apenas para o que exige login real (Banco, E-mail oficial, Netflix).
-        <br>2. <strong>Navegador "Limpo":</strong> (Ex: Brave/LibreWolf) Configurado para apagar tudo ao fechar. Use para pesquisas, notícias e navegação aleatória. Isso impede que o Google rastreie seu comportamento de leitura através de cookies cruzados.</p>
+        <br>2. <strong>Navegador "Limpo":</strong> (Ex: Brave/LibreWolf) Configurado para apagar tudo ao fechar. Use para pesquisas, notícias e navegação aleatória. Isso impede que o Google rastreie seu comportamento de leitura por meio de cookies entre sites.</p>
     </div>
 
     <script src="assets/js/capitulo.js"></script>

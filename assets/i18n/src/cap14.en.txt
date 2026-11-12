@@ -17,7 +17,7 @@ You stopped being a "user" (an object) and became an "anomaly" (a subject). To t
 Promethean Shame and Autopoiesis
 
 ## c14-007
-The philosopher <strong>Günther Anders</strong> described "Promethean Shame": the feeling of inferiority we feel in the face of the tireless perfection of machines. Technofeudalism profits from that shame, selling AI as the cure for the "flaw" of being human. <strong>Refuse that shame.</strong>
+The philosopher <strong>Günther Anders</strong> described "Promethean Shame": the sense of inferiority we feel in the face of the tireless perfection of machines. Technofeudalism profits from that shame, selling AI as the cure for the "flaw" of being human. <strong>Refuse that shame.</strong>
 
 ## c14-008
 We are <strong>Autopoietic</strong> systems (Maturana and Varela): we produce ourselves. Machines are allopoietic (produced by others). Your inefficiency, your boredom and your ability to change your mind are cryptographic proof that you aren't a simulation. Your biological body is the only anchor of reality (the "Air Gap") in a world of interfaces.

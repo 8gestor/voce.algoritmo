@@ -14,7 +14,7 @@ In the twenty-first century, under the aegis of surveillance capitalism, we have
 Gilles Deleuze was already announcing the "societies of control" in 1990: in place of confinement (school, factory, prison), continuous modulation, which grants or denies your access at every instant, like a password.
 
 ## c04-006
-<span class="thesis-header">// The Digital State of Malaise</span> "Philip Alston, the UN special rapporteur, coined the term 'Digital Welfare Dystopia.' Governments around the world are digitizing social assistance not to make it efficient, but to create invisible barriers. Faulty facial recognition systems, aggressive fraud-detection algorithms and connectivity requirements deliberately exclude the most vulnerable. Technology has become a screening tool for eliminating the 'dead weight' from the state budget."
+<span class="thesis-header">// The Digital Ill-Fare State</span> "Philip Alston, the UN special rapporteur, coined the term 'Digital Welfare Dystopia.' Governments around the world are digitizing social assistance not to make it efficient, but to create invisible barriers. Faulty facial recognition systems, aggressive fraud-detection algorithms and connectivity requirements deliberately exclude the most vulnerable. Technology has become a screening tool for eliminating the 'dead weight' from the state budget."
 
 ## c04-007
 Democracies That Erred at Scale
@@ -68,7 +68,7 @@ A study in <em>Science</em> (Ziad Obermeyer, 2019) analyzed a commercial health-
 POLICE: PREDPOL &amp; CLEARVIEW
 
 ## c04-024
-The <em>PredPol</em> software (later renamed Geolitica) illustrates, according to research such as that of Lum and Isaac (2016), the risk of feedback loops: it sends police to poor neighborhoods -> police find minor crimes -> the data feeds the system -> it sends more police. Reports from 2023 (The Markup and Wired) indicated that, in one city analyzed, fewer than 1% of the predictions came true. <em>Clearview AI</em>, for its part, says it has collected tens of billions of photos from the web (30 billion, according to the company itself, in 2023) to build a global facial search engine, killing public anonymity.
+The <em>PredPol</em> software (later renamed Geolitica) illustrates, according to research such as that of Lum and Isaac (2016), the risk of feedback loops: it sends police to poor neighborhoods → police find minor crimes → the data feeds the system → it sends more police. Reports from 2023 (The Markup and Wired) indicated that, in one city analyzed, fewer than 1% of the predictions came true. <em>Clearview AI</em>, for its part, says it has collected tens of billions of photos from the web (30 billion, according to the company itself, in 2023) to build a global facial search engine, killing public anonymity.
 
 ## c04-025
 The law is starting to respond. The European AI Act bans "social scoring" (by public and private entities) and classifies as high-risk the systems used in access to essential services, employment and justice. In Brazil, the right to review automated decisions is in the LGPD (article 20), and the AI bill (PL 2338/2023, passed by the Senate in December 2024) is still moving through the Chamber of Deputies; it's worth checking the current status, because it changes. The most practical defense remains the one in this chapter: <strong>compartmentalize, document and contest</strong>.

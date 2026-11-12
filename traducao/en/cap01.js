@@ -1,0 +1,88 @@
+/* cap01 — tradução EN (rascunho de revisão, aguardando aprovação do autor).
+   Mesmo número de sentenças que o PT em cada unidade, para a narração sincronizar.
+   Quando aprovado, copiar para assets/i18n/en/cap01.js. */
+window.DD_I18N = window.DD_I18N || {};
+window.DD_I18N['cap01'] = {
+
+'c01-001': `PART I: THE MIND | CHAPTER 01`,
+
+'c01-002': `The Brain Is Not<br>a Computer`,
+
+'c01-003': `Look at the device you're reading these words on. It processes information through silicon, runs on binary logic (zeros and ones), and if you switch it off, its "consciousness" stops instantly. Now look at your hand. Move a finger. Remember the taste of your favorite food.`,
+
+'c01-004': `The dominant story of the twenty-first century tries to convince you that these two things — the device and your body — run on the same basic principles. We've been told that the brain is "hardware" and the mind is "software." That is the <strong>Computational Metaphor</strong>. And it is just that, a metaphor — useful as a laboratory tool, dangerous when it hardens into dogma — and it is the ideological foundation that lets algorithms try to control who you are.`,
+
+'c01-005': `Where the Metaphor Comes From (and How Far It Goes)`,
+
+'c01-006': `It would be comforting to say "the brain is not a computer" and close the subject. The reality is more interesting, and more useful for anyone who wants to resist. Twentieth-century cognitive science was born from exactly this analogy: in 1943, Warren McCulloch and Walter Pitts showed that idealized neurons can carry out logic, and the <strong>Computational Theory of Mind</strong> (Hilary Putnam, Jerry Fodor) fueled decades of productive research. The neuroscientist Matthew Cobb, in <em>The Idea of the Brain</em> (2020), points out that every era has explained the brain with the technology of its time (hydraulics, the telegraph, electricity, the computer) and suggests that the computational metaphor may be reaching the end of its usefulness. Some disagree, and with good arguments: the heart really is a pump; maybe the brain really is a kind of computer, just one radically different from anything we've built.`,
+
+'c01-007': `In 2016, the psychologist Robert Epstein published an essay in <em>Aeon</em> called "The Empty Brain," the most radical critique of the metaphor: the brain, he argued, doesn't store representations the way a computer stores files. The essay was heavily contested, but it points to a legitimate discomfort.`,
+
+'c01-008': `What's in dispute is not whether the brain processes information, but <strong>how</strong>. Antonio Damasio, in <em>Descartes' Error</em> (1994), showed that reason depends on the body and on emotion: patients with damage to the regions that link emotion and decision-making think "logically" and still decide badly. Francisco Varela, Evan Thompson and Eleanor Rosch, in <em>The Embodied Mind</em> (1991), proposed that cognition emerges from the interaction between a living organism and its world, not from computations over internal representations. John Searle (the Chinese Room argument, 1980) and David Chalmers (the "hard problem of consciousness," 1995) point to the gulf between manipulating symbols and <em>experiencing</em> something. That gulf is what this chapter leans on when it talks about qualia.`,
+
+'c01-009': `Two Cases: The Machine and the Body`,
+
+'c01-010': `In 1966, Joseph Weizenbaum of MIT created <strong>ELIZA</strong>, a pattern-matching trick that imitated a therapist. What frightened him was the reaction: people opened up to the program and credited it with understanding (the anecdote about the secretary who asked for privacy comes from later accounts, and the versions vary).`,
+
+'c01-011': `The other case comes from the opposite direction. <strong>Elliot</strong>, a patient described by Damasio in <em>Descartes' Error</em>, kept his intelligence after frontal lobe surgery but lost the ability to make decisions, and said he felt no emotions. Without the body, knowing isn't enough to choose (the "somatic markers" hypothesis is still debated).`,
+
+'c01-012': `ELIZA shows that we project minds onto machines; Elliot, that a mind cut off from the body decides badly. The line that matters runs between processing symbols and living in a body that feels.`,
+
+'c01-013': `The Real Danger: Being Predictable at Scale`,
+
+'c01-014': `<strong style="display:block; margin-bottom:10px; color:var(--c-machine); text-transform:uppercase;">// THE HYPER-ACCUMULATION OF PATTERNS</strong>
+        "The algorithm doesn't 'think' the way we do, but it accumulates patterns at a speed the human brain can't keep up with. It does this 'instinctively,' which is to say statistically. At some point it will have gathered so many behavioral patterns that it will be able to reproduce our subtlest reflexes. The danger is not that the machine gains consciousness, but that it gains the ability to carry out complex objectives (military decisions, medical triage) based on a perfect imitation of our biases, without our moral compass."`,
+
+'c01-015': `"Human error" is often cited as the problem AI will solve. But when we talk about human error in the algorithmic age, we need to look at the <strong>people behind the machines</strong>. The real power will not lie in the code itself, but in the intent of whoever holds the data.`,
+
+'c01-016': `There is an honest counterpoint to this chapter's thesis, and it makes the topic more urgent, not less. The theory of <strong>predictive processing</strong> (Karl Friston, Andy Clark) suggests that the brain itself works by anticipating the world and correcting its prediction errors, a structural similarity to the very systems this chapter criticizes. Large language models, for their part, show that statistics over text goes much further than anyone assumed: Emily Bender and colleagues called them "stochastic parrots" (2021), while other researchers debate whether there is anything beyond imitation. You don't have to settle that dispute to see the practical danger it reveals: <strong>a machine doesn't need to be like us to predict us well. It only needs us to be predictable at scale.</strong>`,
+
+'c01-017': `The Black Mirror: Psychoanalysis in the Age of Data`,
+
+'c01-018': `If biology gives us the hardware, psychology gives us the map of the inner conflicts that algorithms exploit. Machines run on logic, but humans run on desire. And desire is where the capture happens.`,
+
+'c01-019': `1. The Digital Id, Ego and Superego`,
+
+'c01-020': `Freud divided the psyche into three parts. The algorithm has learned to manipulate each one with surgical precision:`,
+
+'c01-021': `<strong>The Id (The Impulse):</strong> It is the seat of primitive desires, of the drive for immediate pleasure, and of aggression. Social networks are designed to speak directly to the Id. The "infinite scroll," the vivid colors of notifications and instant validation (likes) are direct injections of dopamine that bypass any rational filter.`,
+
+'c01-022': `<strong>The Ego (The Mediator):</strong> It is the rational part that tries to balance impulses against reality. The goal of persuasive design (Dark Patterns) is to <strong>wear the Ego down</strong>. By creating "frictionless" interfaces (like Netflix's autoplay or Amazon's one-click purchase), technology removes the Ego's moment of deliberation, clearing the way for the Id to act.`,
+
+'c01-023': `<strong>The Superego (Morality):</strong> It is the inner judge, the social rules. The algorithm has replaced the internal Superego with an external one: the "Terms of Service" and "Cancel Culture." Morality has stopped being an inner reflection and become a performance of compliance with the platform's rules, to avoid social punishment.`,
+
+'c01-024': `2. The Privatization of the Collective Unconscious (Jung)`,
+
+'c01-025': `Carl Jung spoke of the <strong>Collective Unconscious</strong> — a reservoir of archetypes, myths and symbols shared by all of humanity. It was the foundation of our common culture.`,
+
+'c01-026': `Today, Big Tech has privatized the collective unconscious. What used to be deep myths are now "trends" and "hashtags." The Cloud has become the new repository of human memory, but it doesn't work toward individuation (becoming who you truly are, as Jung wanted). It works toward <strong>standardization</strong>. The algorithm captures the universal archetypes (the Hero, the Sage, the Rebel) and turns them into consumer products, emptying them of spiritual meaning.`,
+
+'c01-027': `<span class="comp-title" style="color:var(--c-bio)">CLASSIC JUNGIAN VIEW</span>
+            Archetypes are deep forces of transformation. The goal of life is to integrate these forces in order to reach wholeness (the Self).`,
+
+'c01-029': `<span class="comp-title" style="color:var(--c-machine)">CURRENT ALGORITHMIC VIEW</span>
+            Archetypes are market niches. The goal is to sort the user into a cluster (e.g., "Young Mystic") in order to sell targeted products.`,
+
+'c01-031': `The Final Frontier: Biometrics and Sovereignty`,
+
+'c01-032': `We are approaching a critical point with the mass use of facial biometrics and, soon, neural data. It's common to hear the advice: "Don't register your face with the bank." But that recommendation, however well-intentioned, ignores the reality of information security. In many cases, biometrics is the safest barrier against identity fraud that can ruin your financial life.`,
+
+'c01-033': `The problem isn't the technology itself, but <strong>who owns the data</strong>. The real danger is not using your face to unlock the banking app, but the bank selling that biometric pattern to a health insurer or to an authoritarian government.`,
+
+'c01-034': `We shouldn't fight biometrics (which protects us), but rather fight for <strong>Data Sovereignty</strong> laws. We need legal and technical mechanisms that guarantee your face is used only to authenticate you at that specific moment, and that this data can never be stored in shared databases or sold. The fight is political and legislative, not just individual.`,
+
+'c01-035': `And here is the limit this book acknowledges. <strong>Statistical predictability is not destiny.</strong> A model gets averages and probabilities right about populations; it doesn't decree what you'll do tomorrow. The freedom defended in these pages doesn't lie in being impossible to predict, but in the ability to <strong>notice the prediction and decide differently</strong>. How that prediction is built, with what data and at what cost, is the subject of Chapter 03.`,
+
+'c01-036': `Synthesis: The Supremacy of the Flaw`,
+
+'c01-037': `The "Version of You" that algorithms see is flattened, logical and predictable. The real version is contradictory. And it is in that contradiction that your freedom lies. While AI tries to predict your next move based on the accumulated logic of billions of interactions, you have the biological capacity to do the illogical, the unexpected, the new.`,
+
+'c01-038': `If our contradiction is our freedom, who wants to reduce it? The next chapter starts with attention, today's most contested resource.`,
+
+'c01-039': `<span style="font-size:2rem; display:block; margin-bottom:10px; text-shadow:0 0 10px var(--c-bio);">🧠</span>
+        <span style="display:block; font-weight:bold; color:var(--c-bio); text-transform:uppercase; margin-bottom:10px;">RECOVERY CHALLENGE #01</span>
+        <p style="font-weight:bold;">The Qualia Test (Mental Hygiene)</p>
+        <p>Right now, stop reading. Close your eyes and try to recreate in your mind the smell of rain on dry earth (petrichor) or the smell of your childhood kitchen.</p>
+        <p>An AI can describe the chemical makeup of that smell. It can write a poem about it based on millions of texts. But it cannot <em>feel</em>. That sensory "ghost" you just created is out of the algorithm's reach. Cultivate these moments. They are your refuge.</p>`
+
+};

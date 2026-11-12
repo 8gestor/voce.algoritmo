@@ -14,7 +14,7 @@ The Colonial Pipeline case shows the principle in practice. In May 2021, a ranso
 The Mathematics of Secrecy (E2EE)
 
 ## c10-1-006
-When you use Signal or WhatsApp, a miracle of mathematics takes place: <strong>public-key (asymmetric) cryptography</strong>. Your phone generates two keys: a Public one (which locks the safe) and a Private one (which unlocks it). If I want to send you a message, I use your public key. Neither I, nor the government, nor the company can open it afterward. The security lies in mathematical problems believed to be unfeasible to solve in practice (like the discrete logarithm on elliptic curves, used by modern messengers such as Signal, and, in older systems, the factoring of gigantic prime numbers), and not in the company's "goodness."
+When you use Signal or WhatsApp, a miracle of mathematics takes place: <strong>public-key (asymmetric) cryptography</strong>. Your phone generates two keys: a Public one (which locks the safe) and a Private one (which unlocks it). If I want to send you a message, I use your public key. Neither I, nor the government, nor the company can open it afterward. The security lies in mathematical problems believed to be unfeasible to solve in practice (like the discrete logarithm on elliptic curves, used by modern messengers such as Signal, and, in older systems, the factoring of products of gigantic prime numbers), and not in the company's "goodness."
 
 ## c10-1-007
 <div>📱 YOU<br>(Plain Text)</div> <div>➜ 🔒 NETWORK ➜</div> <div>📱 DESTINATION<br>(Decrypted)</div>

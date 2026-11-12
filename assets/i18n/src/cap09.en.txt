@@ -11,7 +11,7 @@ The "Cloud" is the most successful and perverse euphemism in the history of corp
 The theorist <strong>Jussi Parikka</strong>, in <em>A Geology of Media</em>, invites us to understand the digital age not as an information age, but as a new geological age. To create the smooth screen where you're reading this text, entire mountains were blown up. For the algorithm to "think," rivers were diverted to cool white-hot servers. Digital media isn't "wireless"; it's deeply rooted in the earth, and its root feeds on conflict minerals and drinking water.
 
 ## c09-005
-<span class="thesis-header">// The Anthrobscene Thesis</span> "Parikka coined the term <strong>Anthrobscene</strong> to describe the obscenity of the Digital Anthropocene. The obscenity lies in the fact that our 'convenience' (calling an Uber, generating an AI image) depends directly on planetary toxicity. Our devices are, essentially, rocks arranged by laser beams and bathed in blood, destined to return to the earth as chemical poison in under three years."
+<span class="thesis-header">// The Anthrobscene Thesis</span> "Parikka coined the term <strong>Anthrobscene</strong> to describe the obscenity of the Digital Anthropocene. The obscenity lies in the fact that our 'convenience' (calling an Uber, generating an AI image) depends directly on planetary toxicity. Our devices are, essentially, rocks arranged by laser beams and bathed in blood, destined to return to the earth as chemical poison within a few years."
 
 ## c09-006
 Blood in the Battery: The Creuseurs of the Congo
@@ -41,10 +41,16 @@ The conflict has already begun. In Uruguay, protests broke out in 2023 when it b
 Deep Time: The Temporal Mismatch
 
 ## c09-015
-There is a temporal violence at the heart of technology. We are extracting resources that took the Earth millions of years to form (Geological Time) to create devices designed to last only a few months (Market Time).
+There is a temporal violence at the heart of technology. We are extracting resources that took the Earth millions of years to form (Geological Time) to create devices designed to last only a few years (Market Time).
 
 ## c09-016
 <div class="dt-geo">GEOLOGICAL: 50,000,000 YEARS (FORMATION)</div> <div class="dt-use">2 YEARS</div>
+
+## c09-016b
+The Earth creates.
+
+## c09-016c
+The Market consumes.
 
 ## c09-017
 The Jevons Paradox and Efficiency

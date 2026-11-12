@@ -24,7 +24,7 @@ const structure = [
     { t: "09.1 Deepweb & Tor", f: "cap09_1.html", cat: "III. INFRAESTRUTURA", sub: true },
 
     // PARTE IV
-    { t: "10. Neuro-direitos", f: "cap10.html", cat: "IV. RESISTÊNCIA" },
+    { t: "10. Neurodireitos", f: "cap10.html", cat: "IV. RESISTÊNCIA" },
     { t: "10.1 Cibersegurança", f: "cap10_1.html", cat: "IV. RESISTÊNCIA", sub: true },
     { t: "10.2 Cripto Economia", f: "cap10_2.html", cat: "IV. RESISTÊNCIA", sub: true },
     

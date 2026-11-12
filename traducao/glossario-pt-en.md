@@ -39,6 +39,14 @@ Status: `fechado` = decidido · `proposto` = aguardando aprovação do autor · 
 | Enshittification | enshittification | manter | Doctorow. |
 | Model Collapse | model collapse | manter | |
 | Dead Internet Theory | Dead Internet Theory | manter | |
+| Desafio de Retomada | Recovery Challenge | fechado | Já publicado nos 17 desafios; mantido por consistência (a nuance de "retomar" seria "reclaim"). |
+| Soberania de Dados | Data Sovereignty | fechado | Cap. 01. |
+| Processamento Preditivo | predictive processing | fechado | Friston, Clark. |
+| Inconsciente Coletivo | Collective Unconscious | fechado | Jung. |
+| individuação | individuation | fechado | Jung. |
+| qualia | qualia | manter | Plural de *quale*. PT: "os qualia" (decidido). EN sem artigo especial. |
+| papagaios estocásticos | stochastic parrots | fechado | Bender et al., 2021. |
+| Supremacia da Falha | Supremacy of the Flaw | fechado | *Falha* = imperfeição, não "failure". |
 
 ## 2. Segurança e tecnologia (glossário do Cap. 15)
 

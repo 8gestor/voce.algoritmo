@@ -65,13 +65,13 @@ This database translates the language of the machine into human language. Use th
 <div class="term-header"> <span class="term-title">Darknet</span> <span class="term-badge">Networks</span> </div> <p class="term-def">Networks layered on top of the internet (like Tor) that require specific software to access. They use heavy encryption to guarantee total anonymity.</p> <span class="term-ref">REF: Ch 09.1</span>
 
 ## c15-023
-<div class="term-header"> <span class="term-title">Data Double</span> <span class="term-badge">Psychology</span> </div> <p class="term-def">The statistical profile that companies hold of you. To the bank and to the algorithm, this profile is more real and more important than your physical person.</p> <span class="term-ref">REF: Introduction, Ch 03</span>
+<div class="term-header"> <span class="term-title">Data Double</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">The statistical profile that companies hold of you. To the bank and to the algorithm, this profile is more real and more important than your physical person.</p> <span class="term-ref">REF: Introduction, Ch 03</span>
 
 ## c15-024
 <div class="term-header"> <span class="term-title">Dead Internet Theory</span> <span class="term-badge">Networks</span> </div> <p class="term-def">The idea that much of the network would already be artificial content and interaction. The full theory is not proven, but the growth of bots and AI-generated content is measured.</p> <span class="term-ref">REF: Ch 08</span>
 
 ## c15-025
-<div class="term-header"> <span class="term-title">Deep Web</span> <span class="term-badge">Networks</span> </div> <p class="term-def">The part of the internet that Google can't read (your emails, medical databases, private pages). It's 90% of the web and isn't necessarily illegal.</p> <span class="term-ref">REF: Ch 09.1</span>
+<div class="term-header"> <span class="term-title">Deep Web</span> <span class="term-badge">Networks</span> </div> <p class="term-def">The part of the internet that Google can't read (your emails, medical databases, private pages). It's most of the web and isn't necessarily illegal.</p> <span class="term-ref">REF: Ch 09.1</span>
 
 ## c15-026
 <div class="term-header"> <span class="term-title">Liar's Dividend</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">(Chesney and Citron). The advantage of those who can deny real evidence by claiming it is fake, in a world where deepfakes are possible.</p> <span class="term-ref">REF: Ch 08</span>
@@ -110,7 +110,7 @@ This database translates the language of the machine into human language. Use th
 <div class="term-header"> <span class="term-title">Threat Model</span> <span class="term-badge">Security</span> </div> <p class="term-def">The exercise of defining who you need to protect yourself from, from what, and at what cost. It's the basis of every security decision: without it, tools become superstition.</p> <span class="term-ref">REF: Ch 10.1</span>
 
 ## c15-038
-<div class="term-header"> <span class="term-title">Monero (XMR)</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A cryptocurrency focused on absolute privacy. Unlike Bitcoin, nobody can see who sent it or how much was sent. The true "anonymous digital cash."</p> <span class="term-ref">REF: Ch 10.2</span>
+<div class="term-header"> <span class="term-title">Monero (XMR)</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">A cryptocurrency focused on privacy. By default, it hides who sent it, who received it and how much. It's private digital cash, but not invisible.</p> <span class="term-ref">REF: Ch 10.2</span>
 
 ## c15-039
 <div class="term-header"> <span class="term-title">Necropolitics</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">A concept from Achille Mbembe. The power of the state to decide who must live and who must be left to die (or be digitally excluded).</p> <span class="term-ref">REF: Ch 04</span>
@@ -134,7 +134,7 @@ This database translates the language of the machine into human language. Use th
 <div class="term-header"> <span class="term-title">Permacomputing</span> <span class="term-badge">Ecological</span> </div> <p class="term-def">Technology design focused on maximum durability, easy repair and low energy consumption. The opposite of the planned obsolescence of Apple/Samsung.</p> <span class="term-ref">REF: Ch 09</span>
 
 ## c15-046
-<div class="term-header"> <span class="term-title">Proof of Work</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">Bitcoin's mechanism that requires computers to spend real energy to validate transactions, making it impossible to counterfeit money without spending billions.</p> <span class="term-ref">REF: Ch 10.2</span>
+<div class="term-header"> <span class="term-title">Proof of Work</span> <span class="term-badge">Crypto</span> </div> <p class="term-def">Bitcoin's mechanism that requires computers to spend real energy to validate transactions, making it prohibitively expensive to counterfeit money.</p> <span class="term-ref">REF: Ch 10.2</span>
 
 ## c15-047
 <div class="term-header"> <span class="term-title">Digital Redlining</span> <span class="term-badge">Sociology</span> </div> <p class="term-def">Excluding people from services or credit based on neighborhood or statistical profile, reproducing historical discrimination even without declared intent.</p> <span class="term-ref">REF: Ch 04, 06</span>

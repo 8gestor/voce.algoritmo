@@ -23,7 +23,7 @@ The term isn't a loose metaphor. <strong>Data double</strong> comes from the soc
 A Case: The Quiz and the 87 Million
 
 ## c03-009
-In 2013, the researcher Aleksandr Kogan launched a personality quiz on Facebook. About 270,000 people installed it, but because the app also accessed their friends' data, up to 87 million profiles ended up with the consulting firm Cambridge Analytica. In 2019, the FTC fined Facebook 5 billion dollars for deceiving users about privacy.
+In 2013, the researcher Aleksandr Kogan launched a personality quiz on Facebook. About 270,000 people installed it, but because the app also accessed their friends' data, up to 87 million profiles ended up with the consulting firm Cambridge Analytica. In 2019, the FTC fined Facebook $5 billion for deceiving users about privacy.
 
 ## c03-010
 The predictive power isn't folklore. In 2013, Michal Kosinski, David Stillwell and Thore Graepel showed, with tens of thousands of volunteers, that Facebook "likes" made it possible to infer, with varying accuracy, attributes such as sexual orientation, political affiliation and personality traits (PNAS). In 2015, Youyou Wu, Kosinski and Stillwell suggested that a model based on likes judged personality better than close friends did. But honesty demands the limits: the predictions hold on average and for specific attributes, and they miss a lot at the individual level. And the persuasive power of <em>microtargeting</em> is hotly debated: the Cambridge Analytica case is cited as proof of mass manipulation, but academic analyses (such as Kalla and Broockman, 2018) point to small persuasion effects in general elections. The risk exists; the omnipotence of the machine is, in part, the industry's own marketing.
@@ -68,7 +68,7 @@ The Panopticon of Open Finance
 The banking system sells <strong>Open Finance</strong> as "freedom" and "portability." In practice, at the limit, it can become the construction of a Financial Panopticon. Before, your bank knew what you spent on its own card. Now, by connecting all your accounts, investments and insurance, a holistic profile of your life is created.
 
 ## c03-024
-In theory, the algorithm doesn't just see "spending"; it sees morality. If you spend a lot on bars, tobacco shops or betting (the "Bets"), those signals can feed risk models, make insurance more expensive (cross-referencing financial data with biological risk) or weigh on a job selection. We have to separate what already exists from what is risk: Brazilian Open Finance is consent-based, and consent can be revoked, and the LGPD limits secondary use of the data. The danger lies in the <strong>asymmetry</strong>: the "consent" given on a three-click screen is rarely informed. A bank statement only becomes a certificate of behavioral history if nobody checks what it's used for.
+In theory, the algorithm doesn't just see "spending"; it sees morality. If you spend a lot on bars, tobacco shops or betting (the "Bets"), those signals can feed risk models, make insurance more expensive (cross-referencing financial data with biological risk) or weigh in a hiring decision. We have to separate what already exists from what is risk: Brazilian Open Finance is consent-based (and consent can be revoked), and the LGPD limits secondary use of the data. The danger lies in the <strong>asymmetry</strong>: the "consent" given on a three-click screen is rarely informed. A bank statement only becomes a certificate of behavioral history if nobody checks what it's used for.
 
 ## c03-025
 Case Study: Algorithmic Exploitation
