@@ -1,0 +1,65 @@
+## ia05-001
+PART II: THE MACHINE | CHAPTER 08
+
+## ia05-002
+Who Trains the Machine:<br>Labor, Work and Bias
+
+## ia05-003
+When you ask ChatGPT something and it answers politely, without dumping the worst of the internet on your screen, it feels like magic. It isn't. In January 2023, a report in <em>Time</em> magazine revealed part of the trick: to teach the machine what not to say, OpenAI hired workers in Kenya, through the company Sama, to read and label passages of text describing abuse, violence and self-harm.
+
+## ia05-004
+According to <em>Time</em>, those workers earned roughly 1.32 to 2 dollars an hour and read 150 to 250 passages per nine-hour shift. Sama disputed the numbers: it said the limit was 70 passages per shift and that pay ran between 1.46 and 3.74 dollars an hour, after taxes. OpenAI confirmed that Sama employees contributed to its toxic-content detection tool, said it didn't set productivity targets and stated that Sama was responsible for payments and for mental health care. Sama ended the contract in February 2022, eight months ahead of schedule.
+
+## ia05-005
+The versions differ on numbers and on responsibility, but they agree on the essentials: the safety of the machine you use was built by people, far away from you, reading what you don't have to read.
+
+## ia05-006
+<span class="thesis-header">// The Three Invisibilities</span> An AI answer seems automatic because it hides three kinds of work: that of the people who labeled and moderated, that of the people who wrote the texts the machine learned from, and that of the people who carry, in the data, the biases it hands back. Each of these has an owner, and none of them shows up on the screen.
+
+## ia05-007
+The Ghost Work
+
+## ia05-008
+The researcher Mary Gray and the computer scientist Siddharth Suri called this world <em>ghost work</em>: the invisible human labor that holds up supposedly automatic systems. In Brazil, the study <em>Microtrabalho no Brasil</em>, led by Tubaro, Braz and Casilli, mapped the phenomenon. According to a report on the study, there are more than 50 platforms of this kind in the country, workers earn an average of R$ 583.71 a month from this activity, and 66% of them barely cover basic expenses. <span class="selo selo-estimativa">estimate</span>
+
+## ia05-009
+The counterpoint: labeling work is also income, and the problem isn't its existence but the conditions in which it's done. According to Agência Pública, Bill 2338 protects copyright but not labor rights, and Intercept Brasil noted that the text doesn't mention data workers.
+
+## ia05-010
+The Work Itself
+
+## ia05-011
+The second invisibility is the culture that served as raw material. Language models learn from books, news, music and code written by people, almost always without asking permission. That turned into a war in the courts. The <em>New York Times</em> sued OpenAI and Microsoft in December 2023, and the case, now consolidated with others in the federal court in New York, is still going, with disputes over evidence and no final decision.
+
+## ia05-012
+The case that shook the market most was a different one. In 2025, Judge William Alsup ruled, in the authors' case against Anthropic (Bartz), that training the model on the books could be fair use, but that downloading millions of copies from pirate libraries was not. To avoid a trial, the company agreed to a 1.5-billion-dollar settlement, about 3,000 dollars per work, across roughly 480,000 books. The settlement got preliminary approval in September 2025 and, according to reports, final approval in 2026.
+
+## ia05-013
+In Brazil, the text of Bill 2338 passed by the Senate in December 2024 says rights holders may prohibit the use of their works and, when those works are used to develop commercial systems, are entitled to compensation. The bill is waiting on the Chamber of Deputies, where the topic divides experts: one consulting firm estimated that the compensation model could cost R$ 21.8 billion in GDP, while the publishing sector maintains that the proposal respects the Constitution. <span class="selo selo-estimativa">estimate</span> Each side defends its own interest, and the bill hasn't yet been tallied by anyone neutral.
+
+## ia05-014
+The Bias
+
+## ia05-015
+The third invisibility is in the data. As we saw in Chapter 05, the meaning of a word to the machine is its neighborhood, and the neighborhood inherits the prejudices of the text it came from. The researcher Tarcízio Silva, in <em>Racismo algorítmico</em> (Edições Sesc, 2022), shows how this runs through social networks, search engines, computer vision and facial recognition, as well as content moderation, chatbots, predictive policing and credit analysis. For him, the point isn't that algorithms have a will of their own, but that they work as a qualifier that intensifies the racism that already exists.
+
+## ia05-016
+It's the same logic as the health algorithm that underestimated the needs of Black patients (Chapter 12) and the facial recognition errors measured in the Gender Shades study (Chapter 13). The difference is one of scale: now the bias isn't just in one system, it's in the raw material that feeds all of them.
+
+## ia05-017
+It's worth asking the question this book has asked from the start, now in its labor, copyright and racial versions: who controls, who benefits, who can audit and who can say no. The people who label can't say no to the contract. The people who wrote can't say no to the training. The people read by the algorithm can't say no to the bias. <span class="selo selo-provocacao">provocation</span>
+
+## ia05-018
+The Honest Counterpoint
+
+## ia05-019
+Moderating toxic content is part of making the machine safer, and whoever uses it benefits from that. The dilemma is real: in the case <em>Time</em> described, the safety of millions of users was bought with the mental health of a few poorly paid people. There are better paths, such as decent contracts, psychological support, exposure limits and transparency about who does what, but they cost money and shrink margins. <span class="selo selo-hipotese">hypothesis</span>
+
+## ia05-020
+<span class="thesis-header">// Someone Gets the Bill</span> No technology is cheap: it just decides who pays. In AI, the bill goes to the poorly paid labeler, the author nobody consulted and the person the bias harms. <strong>Transparency about who trained it, on what and under what conditions</strong> is the first demand of a citizen who uses these tools.
+
+## ia05-021
+If labor, work and data are in the hands of whoever can pay for them, the next question is about power: who has the chips, the energy and the rules. The next chapter enters the race.
+
+## ia05-022
+<span class="action-header">🧾 RECOVERY CHALLENGE #08</span> <p><strong>The Invisible Bill</strong></p> <p>Every AI answer has a cost that doesn't show on the screen.</p> <p><strong>Your mission:</strong> Take an AI answer you used this week. Write down three categories of people who made it possible: who wrote what the machine read, who labeled and moderated, who supplies the energy and the chips. Then go into the settings of the tool you use and look for whether your conversations are used to train the model. If there's an option to turn it off, decide consciously.</p>
