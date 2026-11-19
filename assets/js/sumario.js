@@ -51,6 +51,14 @@ const structure = [
     { t: "Estatísticas", f: "estatisticas.html", cat: "DATABASE" }
 ];
 
+/*
+ * Ferramentas fora do livro: aparecem no fim do menu, mas NÃO fazem parte de `structure`
+ * (não entram em ANT/PRÓX, nas estatísticas nem na contagem de capítulos).
+ */
+const extras = [
+    { t: "Leitor de PDF", f: "ingles.html", cat: "ESTUDO DE INGLÊS" }
+];
+
 /* Títulos em inglês (usados quando o idioma de leitura é EN). Chave = arquivo. */
 const TITLES_EN = {
     "introducao.html": "BOOT SEQUENCE",
@@ -83,7 +91,8 @@ const TITLES_EN = {
     "cap14.html": "Epilogue",
     "cap15.html": "Glossary",
     "cap16.html": "Bibliography",
-    "estatisticas.html": "Statistics"
+    "estatisticas.html": "Statistics",
+    "ingles.html": "PDF Reader"
 };
 const CATEGORIES_EN = {
     "INICIALIZAÇÃO": "INITIALIZATION",
@@ -93,5 +102,6 @@ const CATEGORIES_EN = {
     "IV. INFRAESTRUTURA": "IV. INFRASTRUCTURE",
     "V. RESISTÊNCIA": "V. RESISTANCE",
     "SYSTEM END": "SYSTEM END",
-    "DATABASE": "DATABASE"
+    "DATABASE": "DATABASE",
+    "ESTUDO DE INGLÊS": "ENGLISH STUDY"
 };

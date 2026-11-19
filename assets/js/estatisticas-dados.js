@@ -1,7 +1,7 @@
 /* GERADO por tools/stats.ps1 — não edite à mão. Regerar: pwsh tools\stats.ps1 build */
 /* wpm = palavras por minuto (estimativas médias; ajuste aqui se quiser): leitura silenciosa e narração a 1x. */
 const STATS = {
-  generated: '2026-11-12',
+  generated: '2026-11-18',
   wpm: { read: { pt: 200, en: 238 }, listen: { pt: 150, en: 155 } },
   chapters: {
     'cap01.html': { units: 37, pt: 1654, en: 1643, ptListen: 1648, enListen: 1637 },

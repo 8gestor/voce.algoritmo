@@ -27,6 +27,8 @@ try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTING
 function saveSettings() { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) { /* ignora */ } }
 
 let currentIdx = 0;
+let labHud = null;           // dados do documento aberto no Estudo de Inglês (páginas, palavras, avanço)
+let inExtra = false;      // true quando a página aberta é uma ferramenta de `extras` (fora do livro)
 
 const frameEl = () => document.getElementById('content-frame');
 
@@ -98,9 +100,10 @@ function populateVoices() {
         if (!sel) return;
         sel.textContent = '';
         const o0 = document.createElement('option'); o0.value = ''; o0.textContent = auto; sel.appendChild(o0);
-        all.filter((v) => v.lang.toLowerCase().indexOf(lang) === 0).forEach((v) => {
+        const rank = (v) => (/natural|neural/i.test(v.name) ? 10 : 0) + (/online/i.test(v.name) ? 2 : 0) + (v.lang.replace('_', '-').toLowerCase() === (lang === 'pt' ? 'pt-br' : 'en-us') ? 4 : 0) + (/google/i.test(v.name) ? 1 : 0) + (v.localService ? 0.5 : 0);
+        all.filter((v) => v.lang.toLowerCase().indexOf(lang) === 0).sort((a, b) => rank(b) - rank(a)).forEach((v) => {
             const o = document.createElement('option');
-            o.value = v.name; o.textContent = v.name.replace(/^Microsoft /, '').replace(/ - .*$/, '') + ' (' + v.lang + ')';
+            o.value = v.name; o.textContent = (/natural|neural/i.test(v.name) ? '★ ' : '') + v.name.replace(/^Microsoft /, '').replace(/ - .*$/, '') + ' (' + v.lang + ')';
             sel.appendChild(o);
         });
         sel.value = settings.voices[lang] || '';
@@ -127,7 +130,7 @@ function closePanels() { togglePanel(null); }
 function renderRaioX() {
     const en = settings.readLang === 'en';
     const list = document.getElementById('raiox-list');
-    const items = (typeof RAIOX !== 'undefined' && RAIOX[structure[currentIdx].f]) || [];
+    const items = (!inExtra && typeof RAIOX !== 'undefined' && RAIOX[structure[currentIdx].f]) || [];
     list.textContent = '';
     const n = items.length;
     document.getElementById('raiox-count').innerText = en
@@ -243,8 +246,35 @@ function bookTotals() {
     return t;
 }
 
+// Barra inferior/superior quando o Estudo de Inglês tem um documento aberto: páginas, palavras e tempo restante.
+function renderLabHud() {
+    const en = settings.readLang === 'en', h = labHud, live = document.getElementById('hud-live');
+    const ind = document.getElementById('chapter-indicator'), bar = document.getElementById('p-bar'), line = document.getElementById('read-line');
+    if (!h) {
+        live.style.display = 'none';
+        document.getElementById('hud-top').textContent = en ? 'ENGLISH STUDY' : 'ESTUDO DE INGLÊS';
+        ind.innerText = '—'; bar.style.width = '0%'; line.style.width = '0%';
+        return;
+    }
+    const lang = h.lang === 'en' ? 'en' : 'pt', T = HUD_TXT[en ? 'en' : 'pt'], n = numFmt();
+    const pct = h.total ? Math.min(100, h.read / h.total * 100) : 0;
+    const rd = (typeof STATS !== 'undefined' && STATS.wpm && STATS.wpm.read && STATS.wpm.read[lang]) || 230;
+    const title = h.title.length > 34 ? h.title.slice(0, 33) + '…' : h.title;
+    document.getElementById('hud-top').textContent = title + ' · ' + (h.pages ? (en ? 'PAGE ' : 'PÁG ') + n.format(h.page) + '/' + n.format(h.pages) + ' · ' : '') + pct.toFixed(1).replace('.', en ? '.' : ',') + '%';
+    ind.innerText = h.pages ? (en ? 'p. ' : 'pág ') + h.page + '/' + h.pages : Math.round(pct) + '%';
+    bar.style.width = pct + '%'; line.style.width = pct + '%';
+    live.style.display = '';
+    tweenNum(document.getElementById('hl-read'), h.read);
+    document.getElementById('hl-total').textContent = n.format(h.total);
+    document.getElementById('hl-lang').textContent = lang.toUpperCase();
+    document.getElementById('hl-left').textContent = h.total - h.read < 1 ? '✓ ' + T.done : T.left + ' ≈ ' + fmtMin((h.total - h.read) / rd);
+    live.title = T.heard + ': ' + n.format(h.heard || 0) + ' ' + (en ? 'words' : 'palavras');
+}
+
 function updateHud() {
     if (typeof STATS === 'undefined') return;
+    if (inExtra) { renderLabHud(); return; }
+    document.getElementById('hud-live').style.display = '';
     const lang = settings.readLang === 'en' ? 'en' : 'pt', T = HUD_TXT[lang], n = numFmt(), rd = STATS.wpm.read;
     const f = structure[currentIdx].f, S = STATS.chapters[f];
     let tot, read;
@@ -271,7 +301,7 @@ function updateHud() {
 function onProgress(d) {
     if (typeof STATS === 'undefined') return;
     const f = d.page + '.html';
-    if (!STATS.chapters[f] || f !== structure[currentIdx].f) return;
+    if (inExtra || !STATS.chapters[f] || f !== structure[currentIdx].f) return;
     const lang = settings.readLang === 'en' ? 'en' : 'pt', st = chStat(f), key = f + '|' + lang;
     const frac = Math.max(0, Math.min(1, Number(d.frac) || 0));
     let changed = false;
@@ -288,7 +318,7 @@ function onProgress(d) {
 function onListen(d) {
     if (typeof STATS === 'undefined') return;
     const f = d.page + '.html';
-    if (!STATS.chapters[f] || f !== structure[currentIdx].f || !(d.words > 0)) return;
+    if (inExtra || !STATS.chapters[f] || f !== structure[currentIdx].f || !(d.words > 0)) return;
     const st = chStat(f), lang = d.lang === 'en' ? 'en' : 'pt';
     st.ls[lang] += Math.round(d.words);
     statsDirty = true; lastActivity = Date.now();
@@ -297,7 +327,7 @@ function onListen(d) {
 
 // Tempo realmente gasto no capítulo: só conta com a aba visível e com atividade recente (ou narração tocando).
 setInterval(() => {
-    if (typeof STATS === 'undefined' || document.visibilityState !== 'visible') return;
+    if (inExtra || typeof STATS === 'undefined' || document.visibilityState !== 'visible') return;
     const f = structure[currentIdx].f;
     if (!STATS.chapters[f]) return;
     if (ttsPlaying || Date.now() - lastActivity < 90000) { chStat(f).sec += 1; statsDirty = true; }
@@ -334,16 +364,42 @@ function init() {
         nav.appendChild(btn);
     });
 
+    // ferramentas fora do livro (ex.: Estudo de Inglês), logo abaixo do índice
+    lastCat = '';
+    extras.forEach((item, k) => {
+        if (item.cat !== lastCat) {
+            const cat = document.createElement('div');
+            cat.className = 'nav-cat';
+            cat.innerText = item.cat;
+            navItems.push({ el: cat, pt: item.cat, en: CATEGORIES_EN[item.cat] });
+            nav.appendChild(cat);
+            lastCat = item.cat;
+        }
+        const btn = document.createElement('a');
+        btn.className = 'chapter-link';
+        btn.innerText = item.t;
+        navItems.push({ el: btn, pt: item.t, en: TITLES_EN[item.f] });
+        btn.href = '#' + item.f.replace('.html', '');
+        btn.onclick = (e) => {
+            e.preventDefault();
+            loadExtra(k);
+            if (isMobile()) closeSidebarMobile();
+        };
+        nav.appendChild(btn);
+    });
+
     // abre direto no capítulo indicado na URL (#cap03), se houver
     const wanted = location.hash.replace('#', '');
     const start = structure.findIndex((s) => s.f.replace('.html', '') === wanted);
+    const startExtra = extras.findIndex((s) => s.f.replace('.html', '') === wanted);
     refreshControls();
     populateVoices();
-    loadChapter(start >= 0 ? start : 0);
+    if (start < 0 && startExtra >= 0) loadExtra(startExtra); else loadChapter(start >= 0 ? start : 0);
 }
 
 function loadChapter(idx) {
     saveStats();                 // grava o avanço do capítulo que está saindo (a página de estatísticas lê daqui)
+    inExtra = false;
     currentIdx = idx;
     const frame = frameEl();
     const btnTts = document.getElementById('btn-tts');
@@ -363,6 +419,30 @@ function loadChapter(idx) {
         if (i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
 
+    renderRaioX();
+    updateHud();
+    frame.onload = () => { syncAll(); };
+}
+
+// Abre uma ferramenta de `extras` no mesmo quadro do leitor (sem barra de progresso nem estatísticas de capítulo).
+function loadExtra(k) {
+    saveStats();
+    inExtra = true;
+    labHud = null;
+    const frame = frameEl();
+    const btnTts = document.getElementById('btn-tts');
+    btnTts.innerText = '▶';
+    btnTts.classList.remove('active');
+    ttsPlaying = false;
+    closePanels();
+    frame.src = extras[k].f;
+    try { history.replaceState(null, '', '#' + extras[k].f.replace('.html', '')); } catch (e) { /* file:// */ }
+    document.getElementById('p-bar').style.width = '0%';
+    document.getElementById('chapter-indicator').innerText = '—';
+    document.querySelectorAll('.chapter-link').forEach((el, i) => {
+        el.classList.toggle('active', i === structure.length + k);
+        if (i === structure.length + k) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
     renderRaioX();
     updateHud();
     frame.onload = () => { syncAll(); };
@@ -397,8 +477,8 @@ function toggleSidebar() {
     }
 }
 
-function nextChapter() { if (currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
-function prevChapter() { if (currentIdx > 0) loadChapter(currentIdx - 1); }
+function nextChapter() { if (!inExtra && currentIdx < structure.length - 1) loadChapter(currentIdx + 1); }
+function prevChapter() { if (inExtra) loadChapter(structure.length - 1); else if (currentIdx > 0) loadChapter(currentIdx - 1); }
 
 window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'dd-goto') {
@@ -410,6 +490,7 @@ window.addEventListener('message', (e) => {
         Object.keys(seenAt).forEach((k) => delete seenAt[k]);
         statsDirty = true; saveStats(); updateHud();
     }
+    if (e.data && e.data.type === 'dd-lab-hud') { labHud = e.data.hud || null; if (inExtra) renderLabHud(); }
     if (e.data && e.data.type === 'dd-progress') onProgress(e.data);
     if (e.data && e.data.type === 'dd-listen') onListen(e.data);
     if (e.data && e.data.type === 'tts-state') {

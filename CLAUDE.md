@@ -44,6 +44,7 @@ Desafios de Retomada: #01–#25, contíguos (conferir antes de inserir um novo).
 - **Glossário** `cap15` (PT) + `assets/i18n/src/cap15.en.txt` (EN): mesma ordem de verbetes; campo `REF:` diz onde o termo aparece.
   **Bibliografia** `cap16` idem. **Raio-X** (`assets/js/raiox.js`) é gerado por `tools/raiox.ps1` a partir das `REF:` do glossário.
 - **Estatísticas:** `assets/js/estatisticas-dados.js` gerado por `tools/stats.ps1 build` (lê todos os `*.html` da raiz).
+- **Estudo de Inglês** (fora do livro): `ingles.html` + `assets/js/ingles.js` + `assets/css/capitulos/ingles.css`. Aparece no fim do menu por estar em `extras` (`sumario.js`), NÃO em `structure` (não entra em ANT/PRÓX, estatísticas nem no Raio-X; `leitor.js` usa `loadExtra` e a flag `inExtra`). Sobe PDF/.txt, extrai o texto com pdf.js local (`assets/vendor/pdfjs`, sem CDN), limpa cabeçalhos/hifenização, divide em frases e traduz FRASE A FRASE (paridade garantida) com o Tradutor embutido do Chrome (`window.Translator`, local; nada sai do aparelho). Biblioteca no IndexedDB (`dd-ingles`: `meta`, `docs`, `tr`). Fala o mesmo protocolo de mensagens de `capitulo.js` (LER/OUVIR PT/EN, voz, velocidade). Teste: `tools/test_ingles.ps1` (tradutor e voz simulados).
 - Fontes e CSS em `assets/fonts`, `assets/css`. Sem framework, sem build, sem dependências: HTML + JS puro.
 
 ## 4. Ferramentas (`tools/`, todas PowerShell 7 — rodar com `pwsh`)
@@ -56,11 +57,12 @@ Desafios de Retomada: #01–#25, contíguos (conferir antes de inserir um novo).
 | `stats.ps1 build\|show` | regera contagem de palavras |
 | `test_idiomas.ps1` | troca PT↔EN em todas as páginas (Chrome headless) |
 | `test_narracao.ps1`, `test_sync.ps1`, `test_estatisticas.ps1` | narração, sincronia do destaque, menu e barras |
+| `test_ingles.ps1` | aba Estudo de Inglês: PDF, limpeza, tradução com paridade, narração, biblioteca |
 | `fatos.ps1`, `painel.ps1` | extrai afirmações verificáveis e gera o painel (saída não versionada: `painel.html`) |
 | `verificar_biblio.ps1`, `verificar_fatos.ps1` | conferem referências (Crossref, Open Library) e números (Europe PMC, arXiv) |
 
 Bateria padrão antes de publicar: `i18n.ps1 build` → `raiox.ps1` → `stats.ps1 build` → os quatro testes. Meta: todos passando
-(31/31 em `test_idiomas`). Avisos conhecidos de paridade de frases (cap03 c03-030/037, cap04 c04-025, cap06 c06-032, cap07 c07-009,
+(32/32 em `test_idiomas`). Avisos conhecidos de paridade de frases (cap03 c03-030/037, cap04 c04-025, cap06 c06-032, cap07 c07-009,
 cap15 11 unidades, cap16 c16-007) pertencem à frente de tradução.
 
 ## 5. Git e GitHub
@@ -99,6 +101,31 @@ cap15 11 unidades, cap16 c16-007) pertencem à frente de tradução.
 5. Paridade de frases PT/EN nos pontos listados em §4.
 6. Lançamento: revisar `RELATORIO-EDITORIAL.html` (ponte, mapa da Introdução, Epílogo) e revalidar bateria.
 
+### Estudo de Inglês — módulos (cada um é um arquivo pequeno que se encaixa em `window.DDLab`, exposta por `ingles.js`)
+
+| Arquivo | O que faz |
+|---|---|
+| `ingles.js` | núcleo: PDF/txt, frases, tradução frase a frase, narração, marcação (parágrafo/linha/frase/palavra), biblioteca, barra inferior |
+| `ingles-palavras.js` | toque na palavra (significado, pronúncia, salvar) + vocabulário com repetição espaçada (SM-2 enxuto) + exportar TSV/Anki |
+| `ingles-nivel.js` | dificuldade do texto (lista local de ~1.300 palavras comuns + tamanho médio das frases) |
+| `ingles-treino.js` | modos Repetir / Shadowing / Ditado (usa `DDLab.afterSentence` e `DDLab.rateScale`) |
+| `ingles-compreensao.js` | perguntas sobre o trecho com o modelo LOCAL do Chrome (`LanguageModel`); botão só aparece se o navegador tiver |
+| `ingles-progresso.js` | sequência de dias, minutos, palavras ouvidas/salvas, revisões, gráfico de 7 dias (localStorage `dd-ingles-log`) |
+| `ingles-importar.js` | EPUB (ZIP lido com `DecompressionStream`) e texto colado |
+| `ingles-voz.js` | voz neural LOCAL opcional (Piper, `assets/vendor/piper`): ~60 MB por idioma, baixa uma vez, cai para a voz do navegador se falhar |
+
+Pontos de extensão do núcleo: eventos `open`, `close`, `lang`, `sentence`, `heard`, `tap`, `stop`, `imported`, `vocab-saved`, `reviewed`, `dictation`;
+`DDLab.importers`, `DDLab.badge(meta)`, `DDLab.wordInfo(word, lang)`. Banco IndexedDB `dd-ingles` v2 (`meta`, `docs`, `tr`, `vocab`); `meta.x` guarda extras dos módulos.
+Testes: `tools/test_ingles.ps1` (PDF real, núcleo) e `tools/test_ingles_modulos.ps1` (seções A–G, um por módulo; a voz neural é testada com biblioteca simulada).
+Voz neural: o JS da biblioteca é local (`assets/vendor/piper`, ver README lá, com 2 linhas alteradas); só WASM e modelos vêm de fora (huggingface.co, cdn.jsdelivr.net, cdnjs). Não usar `TtsSession`/`download()` originais para vários idiomas: o singleton reaproveita a 1ª voz e `download()` não espera a gravação. Teste real (rede) feito em 2026-11-18: EN e PT narram frase a frase e marcam palavras.
+No `index.html`, `ingles.html` NÃO entra em `structure` (ver `extras` em `sumario.js`).
+
+### Backlog do Estudo de Inglês (pendente)
+
+1. Voz neural: avaliar vozes melhores do Piper (só há 2 em PT-BR, ambas ~60 MB) ou outro motor; hoje a melhor voz continua sendo a "Natural" do Edge.
+2. Importar páginas web por URL: o navegador bloqueia (CORS); só com um serviço intermediário (fora da regra de privacidade).
+3. Reforçar o nível: destacar palavras incomuns no texto (hoje só aparece na dica da palavra tocada).
+4. Perguntas de compreensão: avaliar com o modelo local quando a API de prompt estiver estável no Chrome.
 ## 9. Skills do projeto (`.claude/skills/`)
 
 | Skill | Quando usar |
