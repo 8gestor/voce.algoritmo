@@ -236,8 +236,33 @@
     function unlockedAt(list, i) { return i === 0 || passed(list[i - 1].m.id); }
     const worldList = (w) => w.missions.map((m) => ({ m, w })).concat(w.boss ? [{ m: w.boss, w, boss: true }] : []);
 
+    /* ------------------------------------------------------------ novidades: quadro no topo + selo NOVO nos painéis (some com "Entendi") */
+    const NEWS_KEY = 'dd-curso-novidades', NEWS_VER = '2026-11-21';
+    const newsSeen = () => { try { return localStorage.getItem(NEWS_KEY) === NEWS_VER; } catch (e) { return false; } };
+    const newH = () => (newsSeen() ? null : 'tj-new-h');
+    function newsCard() {
+        if (newsSeen()) return null;
+        const c = mk('section', 'tj-card tj-news'); c.id = 'tj-news';
+        c.appendChild(mk('h2', null, 'O que mudou no Curso'));
+        const ul = mk('ul', 'tj-news-list');
+        [
+            ['No menu, agora há Biblioteca (ler e ouvir os seus textos) e Curso (aprender).', null],
+            ['Palavras em inglês que você salvar na Biblioteca entram sozinhas na Revisão do dia.', null],
+            ['NOVO: os capítulos do livro viram missões de leitura, com conversa e escrita.', 'tj-book'],
+            ['NOVO: o painel Nossa evolução mostra números, os últimos 14 dias e as palavras aprendidas.', 'tj-evo']
+        ].forEach((n) => {
+            const li = mk('li'); li.appendChild(mk('span', null, n[0] + ' '));
+            if (n[1]) { const b = btn('Ver', () => { const e = document.getElementById(n[1]); if (e) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); b.classList.add('tj-news-go'); li.appendChild(b); }
+            ul.appendChild(li);
+        });
+        c.appendChild(ul);
+        const ok = btn('Entendi', () => { try { localStorage.setItem(NEWS_KEY, NEWS_VER); } catch (e) { /* sem storage */ } showMap(); }, 'lb-primary'); ok.id = 'tj-news-ok';
+        c.appendChild(ok);
+        return c;
+    }
     function showMap() {
         clear(); renderHud();
+        const nc = newsCard(); if (nc) body.appendChild(nc);
         const due = dueItems();
         if (due.length >= 3) {
             const card = mk('div', 'tj-card tj-review');
@@ -742,7 +767,7 @@
     }
     function bookPanel() {
         const box = mk('section', 'tj-world tj-book'); box.id = 'tj-book';
-        box.appendChild(mk('h2', null, 'O livro em inglês'));
+        box.appendChild(mk('h2', newH(), 'O livro em inglês'));
         box.appendChild(mk('p', 'lb-note', 'Os capítulos do Data Double viram missões de leitura: o texto em inglês com a tradução do próprio livro, palavras do trecho, shadowing, conversa e escrita.'));
         const mine = mk('div', 'tj-list'); box.appendChild(mine);
         S.texts.filter((tx) => tx.book).forEach((tx) => {
@@ -913,7 +938,7 @@
     }
     function evolutionPanel() {
         const E = evolution(), box = mk('section', 'tj-world tj-evo'); box.id = 'tj-evo';
-        box.appendChild(mk('h2', null, 'Nossa evolução'));
+        box.appendChild(mk('h2', newH(), 'Nossa evolução'));
         if (!E.seen && !E.missionsDone) { box.appendChild(mk('p', 'lb-note', 'Quando você fizer a primeira missão, aqui aparece o que aprendemos e como você está evoluindo.')); return box; }
         const nums = mk('div', 'tj-nums'); nums.id = 'tj-nums';
         [['Nível', E.level], ['XP', E.xp], ['Sequência', E.streak + (E.streak === 1 ? ' dia' : ' dias')], ['Missões', E.missionsDone + '/' + E.missionsTotal], ['Estrelas', E.stars + '/' + E.starsMax],

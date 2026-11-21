@@ -551,7 +551,10 @@ $test = @'
       var bl = J.run.m;
       ok('K21c a missão traz o inglês do livro com a tradução oficial em português', bl.scene.length >= 3 && bl.scene.every(function (l) { return l.pt && !/^\[pt\]/.test(l.pt) && l.pt.indexOf('(sem') !== 0; }) && /[a-z]/.test(bl.scene[0].en), bl.scene[0].en.slice(0, 50) + ' | ' + bl.scene[0].pt.slice(0, 50));
       ok('K21d as etapas são ler, palavras, shadowing, conversar e escrever', J.run.phases.join(',') === 'scene,practice,speak,discuss,write' && bl.discuss.length === 3 && !!bl.write);
-      J.reset(); await wait(60);      // ==== PROXIMAS ====
+      J.reset(); await wait(60);      W().localStorage.removeItem('dd-curso-novidades'); J.showMap(); await wait(80);
+      ok('K22 o Curso destaca as novidades no topo, com atalhos e selo NOVO nos painéis', !!jq('#tj-news') && jqa('#tj-news .tj-news-go').length === 2 && jqa('.tj-new-h').length === 2 && /Biblioteca/.test(jq('#tj-news').textContent) && /livro/.test(jq('#tj-news').textContent), jqa('.tj-new-h').length + ' selos');
+      jq('#tj-news-ok').click(); await wait(80);
+      ok('K22b "Entendi" dispensa o quadro e tira os selos, e a escolha fica guardada', !jq('#tj-news') && jqa('.tj-new-h').length === 0 && W().localStorage.getItem('dd-curso-novidades') === '2026-11-21');      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();
