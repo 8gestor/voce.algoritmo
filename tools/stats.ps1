@@ -19,7 +19,7 @@ $srcDir = Join-Path $repo 'assets\i18n\src'
 $outFile = Join-Path $repo 'assets\js\estatisticas-dados.js'
 
 function Get-Pages {
-    Get-ChildItem "$repo\*.html" | Where-Object { $_.Name -notin @('index.html', 'estatisticas.html', 'ingles.html', 'trilha.html') } |
+    Get-ChildItem "$repo\*.html" | Where-Object { $_.Name -notin @('index.html', 'estatisticas.html', 'ingles.html') } |
         ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_.Name) } | Sort-Object
 }
 

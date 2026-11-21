@@ -407,7 +407,6 @@ function init() {
 function loadChapter(idx) {
     saveStats();                 // grava o avanço do capítulo que está saindo (a página de estatísticas lê daqui)
     inExtra = false;
-    document.body.classList.remove('sem-rodape');
     setLegendBtn(false, false);
     currentIdx = idx;
     const frame = frameEl();
@@ -437,7 +436,6 @@ function loadChapter(idx) {
 function loadExtra(k) {
     saveStats();
     inExtra = true;
-    document.body.classList.toggle('sem-rodape', extras[k].f === 'trilha.html');   // a Trilha tem o próprio HUD: sem ANT/PRÓX e progresso do livro
     setLegendBtn(false, false);       // o botão Legenda só aparece quando a página (ingles-legenda.js) avisa que tem legenda
     labHud = null;
     const frame = frameEl();
