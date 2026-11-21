@@ -22,11 +22,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Build e deploy em jobs separados: o artefato precisa ficar visivel para a API antes do deploy
+  # (falhas "No artifacts named github-pages" aconteciam quando os dois passos rodavam no mesmo job).
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,6 +36,24 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Aguardar o artefato ficar visivel
+        run: sleep 15
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Nova tentativa apos pausa
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 45
+      - name: Deploy to GitHub Pages (segunda tentativa)
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
