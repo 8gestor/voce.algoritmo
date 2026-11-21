@@ -146,3 +146,23 @@ body {
 
 /* Palavras incomuns (ingles-destaque.js, CSS Custom Highlight API) */
 ::highlight(dd-incomum) { background-color: color-mix(in srgb, #f2b705 32%, transparent); text-decoration: underline dotted; text-underline-offset: 3px; }
+
+/* Legenda (ingles-legenda.js): faixa fixa embaixo, como legenda de filme */
+.lg { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--c-bg); color: var(--c-text); border-top: 2px solid var(--c-text); box-shadow: 0 -8px 24px rgba(0,0,0,.18);
+      padding: 8px max(14px, env(safe-area-inset-left, 0px)) 10px max(14px, env(safe-area-inset-right, 0px)); --lg-size: 1; }
+.lg[hidden], .lg-spacer[hidden] { display: none; }
+.lg-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.lg-gap { flex: 1; }
+.lg-b { font-family: var(--font-tech); font-size: 0.72rem; background: transparent; color: var(--c-text); border: 1px solid var(--lb-line); border-radius: 4px; min-width: 38px; height: 36px; padding: 0 8px; cursor: pointer; }
+.lg-b:hover, .lg-b:focus-visible { background: var(--c-text); color: var(--c-bg); outline: none; }
+.lg-play { min-width: 46px; background: var(--c-text); color: var(--c-bg); }
+.lg-ctx { font-size: calc(0.82rem * var(--lg-size)); color: var(--c-dim); line-height: 1.35; opacity: .75; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lg-ctx:hover { opacity: 1; }
+.lg-main { font-size: calc(1.3rem * var(--lg-size)); line-height: 1.4; font-weight: 600; margin: 4px 0 2px; overflow-wrap: anywhere; max-height: 38vh; overflow-y: auto; }
+.lg-sub { font-size: calc(1rem * var(--lg-size)); line-height: 1.4; color: var(--c-dim); margin-bottom: 4px; overflow-wrap: anywhere; max-height: 22vh; overflow-y: auto; }
+.lg-sub.wait { font-style: italic; opacity: .7; }
+.lg-w { cursor: pointer; border-radius: 3px; }
+.lg-w.now { background: var(--c-text); color: var(--c-bg); }
+.lg-spacer { width: 100%; }
+@media (max-height: 520px) { .lg-main { max-height: 30vh; } .lg-ctx { display: none; } }
+@media (prefers-reduced-motion: no-preference) { .lg-w { transition: background-color .08s; } }

@@ -396,7 +396,8 @@
     const waiters = {};
     let trSaveTimer = null;
 
-    const needTranslation = () => doc && (state.readLang !== doc.lang || state.audioLang !== doc.lang || fullMode);
+    let wantBoth = false;                                  // a legenda pede sempre os dois idiomas
+    const needTranslation = () => doc && (state.readLang !== doc.lang || state.audioLang !== doc.lang || fullMode || wantBoth);
     const trCount = () => (doc ? Object.keys(doc.tr).length : 0);
 
     function nextPending() {
@@ -705,11 +706,12 @@
             const piece = await textFor(c.p, c.s, state.audioLang, token);
             if (!piece || token !== tts.token) return;
             setMark(c.p, c.s);
+            emit('piece', { p: c.p, s: c.s, text: piece.text, lang: piece.lang });      // texto exato que será falado (a legenda usa)
             anchor = c.p;
             if (!/\p{L}|\p{N}/u.test(piece.text)) { tts.cursor = { p: c.p, s: c.s + 1 }; continue; }
             if (c.s === 0 || c.s === doc.paras[c.p].s.length - 1) pump();     // mantém a tradução à frente da voz
             const tStart = performance.now();
-            const r = await speakOne(piece.text, piece.lang, (ci, len) => { if (token === tts.token) setWordAt(ci, len, piece.text); });
+            const r = await speakOne(piece.text, piece.lang, (ci, len) => { if (token === tts.token) { setWordAt(ci, len, piece.text); emit('wordpos', { ci, len, text: piece.text }); } });
             if (token !== tts.token) return;
             if (r === 'end') { const hw = piece.text.split(/\s+/).length; doc.heard = (doc.heard || 0) + hw; scheduleMetaSave(); emit('heard', { words: hw, p: c.p, s: c.s }); }
             if (r === 'restart') continue;
@@ -1065,6 +1067,8 @@
             const v = pickVoice(lang); if (v) { u.voice = v; u.lang = v.lang; }
             synth.speak(u);
         },
+        needBoth(on) { wantBoth = !!on; if (wantBoth) pump(); else setStatus(); },
+        setRate(v) { v = Number(v); if (v > 0 && v !== state.rate) { state.rate = v; restartCurrent(); } },
         state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },

@@ -24,9 +24,16 @@
     function paint() {
         clear();
         const host = D.$('lb-text'), nv = window.__ddNivel;
-        if (!on || !nv || !D.doc || D.state.readLang !== D.doc.lang || D.doc.lang !== 'en' || !host) return;
-        const ranges = [], walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+        if (!on || !nv || !D.doc || !host) return;
+        const roots = [];
+        if (D.state.readLang === D.doc.lang && D.doc.lang === 'en') roots.push(host);          // texto na tela em inglês
+        const lg = D.$('lb-leg-main');
+        if (lg && !lg.closest('[hidden]') && lg.dataset.lang === 'en') roots.push(lg);         // legenda em inglês
+        if (!roots.length) return;
+        const ranges = [];
         const re = /[\p{L}][\p{L}'’]*/gu;
+        for (const root of roots) {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
         for (let n = walker.nextNode(); n; n = walker.nextNode()) {
             const txt = n.nodeValue;
             if (!txt || !txt.trim()) continue;
@@ -41,6 +48,7 @@
                 r.setStart(n, m.index); r.setEnd(n, m.index + w.length);
                 ranges.push(r);
             }
+        }
         }
         if (ranges.length) CSS.highlights.set(NAME, new Highlight(...ranges));
     }
@@ -68,6 +76,10 @@
     build();
     // o texto é repintado pelo núcleo (tradução chegando, narração, troca de idioma): reaplica depois de cada mudança
     new MutationObserver(later).observe(D.$('lb-text'), { childList: true, subtree: true });
+    const legMain = D.$('lb-leg-main');                      // a legenda (ingles-legenda.js) também é repintada a cada frase
+    if (legMain) new MutationObserver(later).observe(legMain, { childList: true, attributes: true, attributeFilter: ['data-lang'] });
+    const legBox = D.$('lb-legenda');
+    if (legBox) new MutationObserver(later).observe(legBox, { attributes: true, attributeFilter: ['hidden'] });
     D.on('open', () => { label(); later(); });
     D.on('close', clear);
     D.on('lang', () => { label(); later(); });

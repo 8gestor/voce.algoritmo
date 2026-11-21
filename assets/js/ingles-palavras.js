@@ -70,7 +70,7 @@
     let pop = null;
     function closePop() { if (pop) { pop.remove(); pop = null; } }
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
-    document.addEventListener('click', (e) => { if (pop && !pop.contains(e.target) && !(e.target.closest && e.target.closest('.lb-s'))) closePop(); });
+    document.addEventListener('click', (e) => { if (pop && !pop.contains(e.target) && !(e.target.closest && e.target.closest('.lb-s, .lg-main'))) closePop(); });
     window.addEventListener('scroll', closePop, { passive: true });
 
     const speakCache = {};
@@ -83,10 +83,10 @@
         closePop();
         const sp = ev.sp, tr = doc.tr[ev.p];
         const shownOther = D.state.readLang !== doc.lang && !sp.classList.contains('pending');
-        const wlang = shownOther ? D.other(doc.lang) : doc.lang;           // idioma em que a palavra aparece na tela
+        const wlang = ev.wlang || (shownOther ? D.other(doc.lang) : doc.lang);   // idioma em que a palavra aparece na tela (a legenda informa o seu)
         const olang = D.other(wlang);
-        const sentHere = sp.textContent.trim();
-        const sentOther = tr && tr[ev.s] != null ? (shownOther ? doc.paras[ev.p].s[ev.s] : tr[ev.s]) : '';
+        const sentHere = ev.sentHere != null ? ev.sentHere : sp.textContent.trim();
+        const sentOther = ev.sentOther != null ? ev.sentOther : (tr && tr[ev.s] != null ? (shownOther ? doc.paras[ev.p].s[ev.s] : tr[ev.s]) : '');
         const lower = word.toLowerCase();
 
         pop = el('div', 'lb-pop');

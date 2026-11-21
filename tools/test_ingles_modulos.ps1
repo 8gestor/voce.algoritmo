@@ -338,6 +338,55 @@ $test = @'
       topd.getElementById('btn-aa').click(); await wait(100);
       ok('I6 abrir Aa fecha o painel de voz', topd.getElementById('aa-panel').classList.contains('open') && !topd.getElementById('voz-panel').classList.contains('open') && topd.getElementById('btn-voz').getAttribute('aria-expanded') === 'false');
       topd.getElementById('btn-aa').click();
+      // ===================== J. legenda sincronizada com a narração =====================
+      D().$('lb-back').click(); await wait(300);
+      await D().addText('Legenda', 'Algorithms decide what we read. They shape our behavioural surplus every day. Nobody explains how they work. Few people ask.');
+      await until(function () { return D().doc && D().doc.title === 'Legenda'; }, 20000);
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(500);
+      var oldSpeak = w.speechSynthesis.speak;
+      w.speechSynthesis.speak = function (u) { w.__cur = u; u.onstart && u.onstart(); setTimeout(function () { if (w.__cur === u) { w.__cur = null; u.onend && u.onend(); } }, 6000); };   // frase longa: deixa a legenda parada para conferir
+      var jP0 = D().doc.paras[0].s;
+      var jlb = idoc().getElementById('lb-legend-btn'), jdk = idoc().getElementById('lb-legenda');
+      var jLM = function () { return idoc().getElementById('lb-leg-main').textContent; };
+      var jLS = function () { return idoc().getElementById('lb-leg-sub').textContent; };
+      ok('J1 botão Legenda fica no grupo Estudo e a faixa começa fechada', !!jlb && !!idoc().getElementById('lb-study').contains(jlb) && jlb.getAttribute('aria-pressed') === 'false' && jdk.hidden === true);
+      jlb.click(); await wait(500);
+      ok('J2 ligar abre a faixa com a frase da posição atual', jdk.hidden === false && jLM() === jP0[0], jLM());
+      var gotSub = await until(function () { return /^\[pt\] /.test(jLS()); }, 4000);
+      ok('J3 a tradução aparece na linha de baixo', gotSub, jLS());
+      ok('J4 a próxima frase aparece esmaecida e não há anterior na primeira', idoc().querySelector('.lg-next').textContent.indexOf(jP0[1].slice(0, 20)) === 0 && idoc().querySelector('.lg-prev').hidden === true);
+      idoc().querySelectorAll('.lg-bar .lg-b')[2].click();            // ⏭
+      var movedNext = await until(function () { return jLM() === jP0[1]; }, 3000);
+      ok('J5 próxima frase leva a legenda e a narração para a frase 2', movedNext && D().tts.playing === true && D().tts.mark && D().tts.mark.s === 1, jLM());
+      ok('J6 a frase anterior passa a aparecer', idoc().querySelector('.lg-prev').hidden === false && idoc().querySelector('.lg-prev').textContent.indexOf(jP0[0].slice(0, 20)) === 0);
+      D().emit('wordpos', { ci: 0, len: 5, text: jP0[1] });
+      var jnowW = idoc().querySelector('.lg-w.now');
+      ok('J7 a palavra falada fica marcada', !!jnowW && jnowW.textContent === 'They', jnowW && jnowW.textContent);
+      D().emit('wordpos', { ci: jP0[1].indexOf(' ') + 1, len: 5, text: jP0[1] });
+      jnowW = idoc().querySelector('.lg-w.now');
+      ok('J8 a marca anda para a palavra seguinte', !!jnowW && jnowW.textContent === 'shape' && idoc().querySelectorAll('.lg-w.now').length === 1, jnowW && jnowW.textContent);
+      var jpb = idoc().querySelector('.lg-play');
+      jpb.click(); await wait(200);
+      ok('J9 pausar para a narração e mostra ▶', D().tts.playing === false && jpb.textContent === String.fromCharCode(0x25b6), jpb.textContent);
+      jpb.click(); await wait(200);
+      ok('J10 ler retoma a partir da frase mostrada', D().tts.playing === true && D().tts.mark && D().tts.mark.s === 1 && jpb.textContent === String.fromCharCode(0x275a, 0x275a), jpb.textContent);
+      D().stopTts();
+      var fs0 = parseFloat(idoc().defaultView.getComputedStyle(idoc().getElementById('lb-leg-main')).fontSize);
+      idoc().querySelectorAll('.lg-bar .lg-b')[5].click(); await wait(100);      // A+
+      var fs1 = parseFloat(idoc().defaultView.getComputedStyle(idoc().getElementById('lb-leg-main')).fontSize);
+      ok('J11 A+ aumenta a letra da legenda', fs1 > fs0, fs0 + ' -> ' + fs1);
+      clickAt(idoc().querySelector('.lg-w'), 0.5);
+      var popOk = await until(function () { return idoc().querySelector('.lb-pop'); }, 3000);
+      ok('J12 tocar numa palavra da legenda abre o cartão da palavra', popOk && /^They$/i.test(idoc().querySelector('.lb-pop-word').textContent) && !!idoc().querySelector('.lb-pop-ctx'), popOk && idoc().querySelector('.lb-pop-word').textContent);
+      idoc().querySelector('.lb-pop .lb-btn:last-child').click();
+      var jhlBtn = idoc().getElementById('lb-highlight'); if (jhlBtn.getAttribute('aria-pressed') !== 'true') jhlBtn.click(); await wait(500);
+      var jhlr = idoc().defaultView.CSS.highlights.get('dd-incomum'), jinLeg = false;
+      if (jhlr) Array.from(jhlr).forEach(function (r) { if (idoc().getElementById('lb-leg-main').contains(r.startContainer)) jinLeg = true; });
+      ok('J13 destacar incomuns também marca palavras na legenda', jinLeg, 'texto=' + jLM() + ' ranges=' + (jhlr ? jhlr.size : 0) + ' lang=' + idoc().getElementById('lb-leg-main').dataset.lang);
+      jhlBtn.click();
+      idoc().querySelector('.lg-off').click(); await wait(200);
+      ok('J14 fechar a legenda esconde a faixa e solta o botão', jdk.hidden === true && jlb.getAttribute('aria-pressed') === 'false');
+      w.speechSynthesis.speak = oldSpeak;
       // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
