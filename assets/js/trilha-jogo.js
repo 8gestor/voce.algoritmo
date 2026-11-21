@@ -254,6 +254,7 @@
             list.forEach((x, i) => box.appendChild(missionNode(x, i, list)));
             body.appendChild(box);
         });
+        body.appendChild(bookPanel());
         body.appendChild(evolutionPanel());
         body.appendChild(achPanel());
         body.appendChild(teacherPanel());
@@ -713,13 +714,76 @@
         return out;
     }
     const textList = (tx) => tx.chapters.map((c, i) => ({ m: { id: 't:' + tx.id + ':' + i, n: i + 1, title: { pt: tx.title + ' · parte ' + (i + 1) }, goal: { pt: 'Ler, ouvir, falar, discutir e escrever sobre este trecho.' } }, w: WORLDS[0], text: tx, ch: c }));
+    /* ---- O livro em inglês: capítulos do Data Double como texto de estudo (inglês e português oficiais do próprio livro) ---- */
+    const BOOK = {};
+    const stripTags = (h) => String(h).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+    const splitSents = (t) => t.split(/(?<=[.!?…]["”')\]]*)\s+(?=["“(\[]?[A-ZÀ-Ý0-9])/).map((s) => s.trim()).filter(Boolean);
+    const loadScript = (src) => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('script ' + src)); document.head.appendChild(s); });
+    const loadText = (url) => new Promise((ok, no) => { const x = new XMLHttpRequest(); x.open('GET', url); x.onload = () => ((x.status === 0 || (x.status >= 200 && x.status < 300)) && x.responseText ? ok(x.responseText) : no(new Error('http ' + x.status))); x.onerror = () => no(new Error('rede')); x.send(); });
+    async function loadBook(f) {
+        const key = f.replace(/\.html$/i, '');
+        if (BOOK[key]) return BOOK[key];
+        if (!(window.DD_I18N && window.DD_I18N[key])) await loadScript('assets/i18n/en/' + key + '.js');
+        const en = window.DD_I18N && window.DD_I18N[key];
+        if (!en) throw new Error('sem inglês para ' + f);
+        const ptById = {};
+        try {
+            const doc = new DOMParser().parseFromString(await loadText(f), 'text/html');
+            doc.querySelectorAll('[data-id]').forEach((e) => { ptById[e.getAttribute('data-id')] = stripTags(e.innerHTML); });
+        } catch (e) { /* sem o português oficial: a tradução cai para o tradutor do navegador */ }
+        const paras = [], pt = new Map();
+        Object.keys(en).forEach((id) => {
+            const s = splitSents(stripTags(en[id]));
+            if (!s.length || !/[a-z]/i.test(s.join(' '))) return;
+            paras.push({ t: 'p', s });
+            if (ptById[id]) { const ps = splitSents(ptById[id]); if (ps.length === s.length) s.forEach((x, i) => pt.set(x, ps[i])); }
+        });
+        return (BOOK[key] = { paras, pt });
+    }
+    function bookPanel() {
+        const box = mk('section', 'tj-world tj-book'); box.id = 'tj-book';
+        box.appendChild(mk('h2', null, 'O livro em inglês'));
+        box.appendChild(mk('p', 'lb-note', 'Os capítulos do Data Double viram missões de leitura: o texto em inglês com a tradução do próprio livro, palavras do trecho, shadowing, conversa e escrita.'));
+        const mine = mk('div', 'tj-list'); box.appendChild(mine);
+        S.texts.filter((tx) => tx.book).forEach((tx) => {
+            mine.appendChild(mk('h3', 'tj-sub', tx.title));
+            const list = textList(tx);
+            list.forEach((x, i) => {
+                const ok = unlockedAt(list, i), r = doneRec(x.m.id);
+                const node = mk('div', 'tj-node' + (ok ? '' : ' tj-locked') + (passed(x.m.id) ? ' tj-done' : '')); node.dataset.id = x.m.id;
+                const info = mk('div', 'tj-node-info'); info.append(mk('strong', null, txt(x.m.title)), mk('div', 'tj-stars', r.done ? '★'.repeat(r.stars || 0) + '☆'.repeat(3 - (r.stars || 0)) : '☆☆☆'));
+                const acts = mk('div', 'tj-node-acts');
+                if (ok) { const b = btn(r.done ? 'Jogar de novo' : 'Começar', () => startTextMission(x), r.done ? '' : 'lb-primary'); b.classList.add('tj-go'); acts.appendChild(b); }
+                else acts.appendChild(btn('Liberar mesmo assim', () => { const prev = list[i - 1].m.id; S.missions[prev] = Object.assign(S.missions[prev] || {}, { free: true }); save(); showMap(); }));
+                node.append(mk('div', 'tj-num', String(i + 1)), info, acts); mine.appendChild(node);
+            });
+        });
+        const make = mk('div', 'tj-make'); box.appendChild(make);
+        const chaps = (typeof structure !== 'undefined' ? structure : []).filter((c) => !/^cap1[56]\.html$/.test(c.f) && !S.texts.some((t) => t.book === c.f.replace(/\.html$/i, '')));
+        if (!chaps.length) { make.appendChild(mk('p', 'lb-note', 'Todos os capítulos já têm missões.')); return box; }
+        const sel = mk('select', 'lb-input'); sel.id = 'tj-book-src';
+        chaps.forEach((c) => { const o = mk('option', null, c.t); o.value = c.f; sel.appendChild(o); });
+        const msg = mk('p', 'lb-note'); msg.id = 'tj-book-msg';
+        const go = btn('Criar missões do capítulo', async () => {
+            go.disabled = true; msg.textContent = 'Carregando o capítulo…';
+            try {
+                const key = sel.value.replace(/\.html$/i, ''), title = (chaps.find((c) => c.f === sel.value) || {}).t || key, bk = await loadBook(sel.value);
+                const chs = chaptersOf(bk.paras, 450).map((c, i) => ({ from: c.from, to: c.to, n: i + 1 }));
+                S.texts.push({ id: 'book:' + key, book: key, docId: null, title, chapters: chs }); save(); showMap();
+            } catch (e) { msg.textContent = 'Não consegui carregar este capítulo: ' + (e && e.message ? e.message : e); go.disabled = false; }
+        }, 'lb-primary'); go.id = 'tj-book-make';
+        make.append(sel, go); box.appendChild(msg);
+        return box;
+    }
     const STOP = new Set('this that with from have will would there their about which could should because while where when what your they them then than into over after before every other these those'.split(' '));
     async function buildTextLesson(x) {
-        const d = await D.db.get('docs', x.text.docId);
-        const paras = d.paras.slice(x.ch.from, x.ch.to), sents = [];
-        paras.forEach((p) => { if (p.t === 'h') return; p.s.forEach((s) => { const n = s.split(/\s+/).length; if (n >= 4 && n <= 22 && /[a-z]/i.test(s)) sents.push(s); }); });
+        const bk = x.text.book ? await loadBook(x.text.book + '.html') : null;
+        const d = bk ? { paras: bk.paras } : await D.db.get('docs', x.text.docId);
+        const paras = d.paras.slice(x.ch.from, x.ch.to); let sents = [];
+        paras.forEach((p) => { if (p.t === 'h') return; p.s.forEach((s) => { const n = s.split(/\s+/).length; if (n >= 4 && n <= 22 && /[a-z]/i.test(s) && !/\|/.test(s) && s !== s.toUpperCase()) sents.push(s); }); });
+        if (bk) { const off = sents.filter((s) => bk.pt.has(s)); if (off.length >= 6) sents = off; }
         const scene = [];
-        const ptOf = async (s) => { try { return await window.DDLab.translateText(s, 'en'); } catch (e) { return null; } };
+        const ptOf = async (s) => { if (bk && bk.pt.has(s)) return bk.pt.get(s); try { return await window.DDLab.translateText(s, 'en'); } catch (e) { return null; } };
         const first = sents.slice(0, 6);
         for (const s of first) scene.push({ who: 'Texto', en: s, pt: await ptOf(s) });
         const withPt = scene.filter((l) => l.pt);
@@ -833,7 +897,7 @@
         const texts = S.texts.map((tx) => {
             const ls = textList(tx), keys = Object.keys(S.items).filter((k) => k.indexOf('t:' + tx.id + ':') === 0 && !S.items[k].pattern);
             const items = keys.map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
-            return { id: tx.id, title: tx.title, parts: ls.length, done: ls.filter((x) => doneRec(x.m.id).done).length, stars: ls.reduce((a, x) => a + (doneRec(x.m.id).stars || 0), 0), items };
+            return { id: tx.id, title: tx.title, book: !!tx.book, parts: ls.length, done: ls.filter((x) => doneRec(x.m.id).done).length, stars: ls.reduce((a, x) => a + (doneRec(x.m.id).stars || 0), 0), items };
         });
         const library = Object.keys(S.items).filter((k) => S.items[k].lib).map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
         const done = missions.filter((m) => m.done), bests = done.map((m) => m.best);
@@ -900,7 +964,7 @@
         E.texts.forEach((tx) => {
             const det = mk('details', 'tj-learn tj-textlearn'); det.dataset.id = tx.id;
             const known = tx.items.filter((i) => i.lvl >= 2).length;
-            det.appendChild(mk('summary', null, 'Do seu texto: ' + tx.title + ' · ' + tx.done + '/' + tx.parts + ' partes · ' + known + '/' + tx.items.length + ' palavras dominadas' + (tx.stars ? ' · ' + '★'.repeat(Math.min(tx.stars, 9)) : '')));
+            det.appendChild(mk('summary', null, (tx.book ? 'Do livro: ' : 'Do seu texto: ') + tx.title + ' · ' + tx.done + '/' + tx.parts + ' partes · ' + known + '/' + tx.items.length + ' palavras dominadas' + (tx.stars ? ' · ' + '★'.repeat(Math.min(tx.stars, 9)) : '')));
             const ul = mk('ul', 'tj-words');
             tx.items.forEach((i) => {
                 const li = mk('li', i.due && i.lvl > 0 ? 'tj-due' : null);
@@ -972,7 +1036,7 @@
     importLibrary();
     window.__ddJogo = {
         norm, tokens, accept, diffWords, explain, levelOf, touchDay, gain, ensureItem, reviewItem, dueItems, masteredCount, buildQueue, evalChecks, checkAch,
-        importLibrary, chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
+        importLibrary, loadBook, chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
         reset() { S = blankState(); save(); showMap(); }, renderPhase, nextPhase, get S() { return S; }, set S(v) { S = v; }, get run() { return run; }, save, dayKey
     };
 })();

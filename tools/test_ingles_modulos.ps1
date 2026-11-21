@@ -541,7 +541,17 @@ $test = @'
       J.S.items['lib:en:surplus'].lvl = 1; J.S.items['lib:en:surplus'].due = Date.now() - 1000; var dueBib = J.dueItems().indexOf('lib:en:surplus') >= 0;
       ok('K20c a palavra da Biblioteca entra na Revisão do dia quando vence', dueBib);
       var before = E.mastered; J.reset(); await wait(100);
-      ok('K19g sem histórico, o painel só convida a fazer a primeira missão', !!jq('#tj-evo') && !jq('#tj-nums') && /primeira miss/.test(jq('#tj-evo').textContent) && before > 0);      // ==== PROXIMAS ====
+      ok('K19g sem histórico, o painel só convida a fazer a primeira missão', !!jq('#tj-evo') && !jq('#tj-nums') && /primeira miss/.test(jq('#tj-evo').textContent) && before > 0);      J.showMap(); await wait(100);
+      ok('K21 o Curso oferece os capítulos do livro em inglês e nenhum PDF próprio', !!jq('#tj-book') && !!jq('#tj-book-src') && jqa('#tj-book-src option').length >= 10 && !jq('#tj-text-src') && !jq('#tj-texts'), jqa('#tj-book-src option').length + ' capítulos');
+      jq('#tj-book-src').value = 'cap01.html'; jq('#tj-book-make').click();
+      await until(function () { return jqa('.tj-book .tj-node').length >= 2 || (jq('#tj-book-msg') && /Não consegui/.test(jq('#tj-book-msg').textContent)); }, 10000);
+      var bn = jqa('.tj-book .tj-node');
+      ok('K21b o capítulo vira missões em ordem, só a primeira aberta', bn.length >= 2 && !bn[0].classList.contains('tj-locked') && bn[1].classList.contains('tj-locked'), bn.length + ' partes ' + (jq('#tj-book-msg') ? jq('#tj-book-msg').textContent : ''));
+      bn[0].querySelector('.tj-go').click(); await until(function () { return jq('#tj-start'); }, 20000);
+      var bl = J.run.m;
+      ok('K21c a missão traz o inglês do livro com a tradução oficial em português', bl.scene.length >= 3 && bl.scene.every(function (l) { return l.pt && !/^\[pt\]/.test(l.pt) && l.pt.indexOf('(sem') !== 0; }) && /[a-z]/.test(bl.scene[0].en), bl.scene[0].en.slice(0, 50) + ' | ' + bl.scene[0].pt.slice(0, 50));
+      ok('K21d as etapas são ler, palavras, shadowing, conversar e escrever', J.run.phases.join(',') === 'scene,practice,speak,discuss,write' && bl.discuss.length === 3 && !!bl.write);
+      J.reset(); await wait(60);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();
