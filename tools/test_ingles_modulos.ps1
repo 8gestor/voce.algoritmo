@@ -401,7 +401,7 @@ $test = @'
       w.speechSynthesis.speak = oldSpeak;
       // ===================== K. trilha gamificada (trilha.html) =====================
       var tlk = document.querySelectorAll('.chapter-link');
-      ok('K1 aba Trilha fica abaixo do Leitor de PDF', /Trilha/.test(tlk[tlk.length - 1].textContent) && /PDF/.test(tlk[tlk.length - 2].textContent));
+      ok('K1 o menu tem Biblioteca e, logo abaixo, Curso', /Curso/.test(tlk[tlk.length - 1].textContent) && /Biblioteca/.test(tlk[tlk.length - 2].textContent));
       tlk[tlk.length - 1].click();
       await until(function () { return W().__ddJogo && W().DDLab; }, 8000);
       var w2 = W(), J = w2.__ddJogo, DD = w2.DDLab;
@@ -532,6 +532,14 @@ $test = @'
       ok('K19e estruturas descobertas aparecem com a regra e a tabela', !!jq('.tj-pat[data-id="w1m1"]') && jqa('.tj-pat').length >= 1 && !!jq('.tj-pat table'));
       var tx = jq('.tj-textlearn');
       ok('K19f a evolução mostra o texto estudado: partes, palavras do texto e domínio', !!tx && /Texto da trilha/.test(tx.textContent) && E.texts.length === 1 && E.texts[0].items.length >= 2 && tx.querySelectorAll('.tj-dots').length === E.texts[0].items.length, tx && tx.querySelector('summary').textContent);
+      var card = { id: 'en:surplus', word: 'surplus', lang: 'en', tr: 'excedente', sent: 'Behavioural surplus.', sentTr: 'Excedente comportamental.', doc: 'Texto da trilha', added: Date.now(), due: Date.now(), ivl: 0, ease: 2.5, reps: 0, lapses: 0 };
+      await DD.db.put('vocab', card); await DD.db.put('vocab', { id: 'pt:casa', word: 'casa', lang: 'pt', tr: 'house', added: Date.now(), due: Date.now(), ivl: 0, ease: 2.5, reps: 0, lapses: 0 });
+      var n1 = await J.importLibrary(), n2 = await J.importLibrary(), li = J.S.items['lib:en:surplus'];
+      ok('K20 a Biblioteca alimenta o Curso: palavra salva em inglês vira item de revisão, uma vez só, e palavra em português não entra', n1 >= 1 && n2 === 0 && !!li && li.pt === 'excedente' && li.lvl === 0 && /Texto da trilha/.test(li.tip) && !J.S.items['lib:pt:casa'], 'n1=' + n1 + ' n2=' + n2);
+      J.showMap(); await wait(100);
+      ok('K20b a evolução mostra "Da sua Biblioteca" com a palavra e o domínio', !!jq('.tj-liblearn') && /surplus/.test(jq('.tj-liblearn').textContent) && /excedente/.test(jq('.tj-liblearn').textContent) && jq('.tj-liblearn').querySelectorAll('.tj-dots').length === J.evolution().library.length);
+      J.S.items['lib:en:surplus'].lvl = 1; J.S.items['lib:en:surplus'].due = Date.now() - 1000; var dueBib = J.dueItems().indexOf('lib:en:surplus') >= 0;
+      ok('K20c a palavra da Biblioteca entra na Revisão do dia quando vence', dueBib);
       var before = E.mastered; J.reset(); await wait(100);
       ok('K19g sem histórico, o painel só convida a fazer a primeira missão', !!jq('#tj-evo') && !jq('#tj-nums') && /primeira miss/.test(jq('#tj-evo').textContent) && before > 0);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }

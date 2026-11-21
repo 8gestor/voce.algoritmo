@@ -56,8 +56,8 @@ const structure = [
  * (não entram em ANT/PRÓX, nas estatísticas nem na contagem de capítulos).
  */
 const extras = [
-    { t: "Leitor de PDF", f: "ingles.html", cat: "ESTUDO DE INGLÊS" },
-    { t: "Trilha por capítulos", f: "trilha.html", cat: "ESTUDO DE INGLÊS" }
+    { t: "Biblioteca", f: "ingles.html", cat: "ESTUDO DE INGLÊS" },
+    { t: "Curso", f: "trilha.html", cat: "ESTUDO DE INGLÊS" }
 ];
 
 /* Títulos em inglês (usados quando o idioma de leitura é EN). Chave = arquivo. */
@@ -93,8 +93,8 @@ const TITLES_EN = {
     "cap15.html": "Glossary",
     "cap16.html": "Bibliography",
     "estatisticas.html": "Statistics",
-    "ingles.html": "PDF Reader",
-    "trilha.html": "Chapter Path"
+    "ingles.html": "Library",
+    "trilha.html": "Course"
 };
 const CATEGORIES_EN = {
     "INICIALIZAÇÃO": "INITIALIZATION",

@@ -49,7 +49,7 @@ $test = @'
       var cats = Array.prototype.map.call(document.querySelectorAll('.nav-cat'), function (e) { return e.textContent; });
       ok('1a seção ESTUDO DE INGLÊS é a última do menu', cats[cats.length - 1] === 'ESTUDO DE INGLÊS', cats.slice(-2).join(' | '));
       var links = document.querySelectorAll('.chapter-link');
-      ok('1b link do leitor vem depois dos capítulos', links.length === structure.length + 2 && /PDF/.test(links[links.length - 2].textContent) && /Trilha/.test(links[links.length - 1].textContent), links.length + ' links');
+      ok('1b Biblioteca e Curso vêm depois dos capítulos', links.length === structure.length + 2 && /Biblioteca/.test(links[links.length - 2].textContent) && /Curso/.test(links[links.length - 1].textContent), links.length + ' links');
       ok('1c fora de structure', !structure.some(function (s) { return s.f === 'ingles.html'; }));
       links[links.length - 2].click();
       await until(function () { return ifr().contentWindow.__ddLab; }, 8000);

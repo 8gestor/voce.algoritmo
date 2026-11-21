@@ -835,13 +835,14 @@
             const items = keys.map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
             return { id: tx.id, title: tx.title, parts: ls.length, done: ls.filter((x) => doneRec(x.m.id).done).length, stars: ls.reduce((a, x) => a + (doneRec(x.m.id).stars || 0), 0), items };
         });
+        const library = Object.keys(S.items).filter((k) => S.items[k].lib).map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
         const done = missions.filter((m) => m.done), bests = done.map((m) => m.best);
         const days = [];
         for (let i = 13; i >= 0; i--) { const k = dayKey(now() - i * DAY), d = (S.log || {})[k] || { xp: 0, ok: 0, bad: 0 }; days.push({ key: k, xp: d.xp || 0, items: (d.ok || 0) + (d.bad || 0) }); }
         const allItems = Object.keys(S.items).filter((k) => !S.items[k].pattern && S.items[k].en);
         return {
             level: levelOf(S.xp), xp: S.xp, streak: S.streak.n, mastered: masteredCount(), seen: allItems.length, due: dueItems().length,
-            spoken: S.stats.spoken, written: S.stats.written, discussed: S.stats.discussed || 0, texts, reviews: S.stats.reviews,
+            spoken: S.stats.spoken, written: S.stats.written, discussed: S.stats.discussed || 0, texts, library, reviews: S.stats.reviews,
             missionsDone: done.length, missionsTotal: missions.length, stars: missions.reduce((a, m) => a + m.stars, 0), starsMax: missions.length * 3,
             avg: bests.length ? Math.round(bests.reduce((a, b) => a + b, 0) / bests.length) : null, missions, days
         };
@@ -882,6 +883,18 @@
                 });
                 det.appendChild(ul); box.appendChild(det);
             });
+        }
+        // palavras salvas na Biblioteca (Leitor) que entraram no Curso
+        if (E.library.length) {
+            const det = mk('details', 'tj-learn tj-liblearn');
+            det.appendChild(mk('summary', null, 'Da sua Biblioteca · ' + E.library.filter((i) => i.lvl >= 2).length + '/' + E.library.length + ' palavras dominadas'));
+            const ul = mk('ul', 'tj-words');
+            E.library.forEach((i) => {
+                const li = mk('li', i.due && i.lvl > 0 ? 'tj-due' : null);
+                li.append(mk('span', 'tj-en', i.en), mk('span', 'tj-pt', ' = ' + i.pt), mk('span', 'tj-dots', ' ' + '●'.repeat(i.lvl) + '○'.repeat(5 - i.lvl)));
+                ul.appendChild(li);
+            });
+            det.appendChild(ul); box.appendChild(det);
         }
         // palavras e progresso dos textos que estudamos (leitura)
         E.texts.forEach((tx) => {
@@ -940,10 +953,26 @@
     }
 
     /* ------------------------------------------------------------ início */
+    // Ponte Biblioteca -> Curso: palavras em inglês salvas no Leitor viram itens da Revisão do dia (uma vez cada; o progresso é preservado)
+    async function importLibrary() {
+        let cards = [];
+        try { cards = await D.db.all('vocab'); } catch (e) { return 0; }
+        let added = 0;
+        cards.forEach((c) => {
+            if (c.lang !== 'en' || !c.word || !c.tr) return;
+            const key = 'lib:' + c.id;
+            if (S.items[key]) return;
+            S.items[key] = { lvl: 0, due: now(), ok: 0, bad: 0, lib: true, en: c.word, pt: c.tr, tip: c.sent ? 'Do seu texto' + (c.doc ? ' "' + c.doc + '"' : '') + ': "' + c.sent + '"' : '', typable: isTypable({ en: c.word }) };
+            added++;
+        });
+        if (added) { save(); if (!run) showMap(); }
+        return added;
+    }
     showMap();
+    importLibrary();
     window.__ddJogo = {
         norm, tokens, accept, diffWords, explain, levelOf, touchDay, gain, ensureItem, reviewItem, dueItems, masteredCount, buildQueue, evalChecks, checkAch,
-        chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
+        importLibrary, chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
         reset() { S = blankState(); save(); showMap(); }, renderPhase, nextPhase, get S() { return S; }, set S(v) { S = v; }, get run() { return run; }, save, dayKey
     };
 })();
