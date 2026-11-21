@@ -13,8 +13,8 @@
     if (!D) return;
     const KEY = 'dd-ingles-legenda', RATES = [0.75, 1, 1.25, 1.5];
     const L = {
-        pt: { btn: 'Legenda', tip: 'Mostra a frase narrada embaixo, como legenda de filme', prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Diminuir a letra', bigger: 'Aumentar a letra', off: 'Fechar a legenda', wait: 'traduzindo…', group: 'Legenda' },
-        en: { btn: 'Captions', tip: 'Shows the narrated sentence at the bottom, like movie captions', prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Larger text', off: 'Close captions', wait: 'translating…', group: 'Captions' }
+        pt: { btn: 'Legenda', tip: 'Mostra a frase narrada embaixo, como legenda de filme', prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Diminuir a letra', bigger: 'Aumentar a letra', off: 'Fechar a legenda', swap: 'Inverter: trocar o idioma do texto e o da legenda/áudio', wait: 'traduzindo…', group: 'Legenda' },
+        en: { btn: 'Captions', tip: 'Shows the narrated sentence at the bottom, like movie captions', prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Larger text', off: 'Close captions', swap: 'Swap: exchange the text language and the captions/audio language', wait: 'translating…', group: 'Captions' }
     };
     const t = (k) => L[D.state.readLang][k];
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
@@ -32,9 +32,10 @@
     dock.setAttribute('role', 'region');
     const bar = el('div', 'lg-bar');
     const bPrev = el('button', 'lg-b', '⏮'), bPlay = el('button', 'lg-b lg-play', '▶'), bNext = el('button', 'lg-b', '⏭');
+    const bSwap = el('button', 'lg-b lg-swap', '⇄');
     const bRate = el('button', 'lg-b lg-rate', '1×'), bMin = el('button', 'lg-b', 'A−'), bMax = el('button', 'lg-b', 'A+'), bOff = el('button', 'lg-b lg-off', '✕');
-    [bPrev, bPlay, bNext, bRate, bMin, bMax, bOff].forEach((b) => { b.type = 'button'; });
-    bar.append(bPrev, bPlay, bNext, el('span', 'lg-gap'), bRate, bMin, bMax, bOff);
+    [bPrev, bPlay, bNext, bSwap, bRate, bMin, bMax, bOff].forEach((b) => { b.type = 'button'; });
+    bar.append(bPrev, bPlay, bNext, el('span', 'lg-gap'), bSwap, bRate, bMin, bMax, bOff);
     const lnPrev = el('div', 'lg-ctx lg-prev'), main = el('div', 'lg-main'), sub = el('div', 'lg-sub'), lnNext = el('div', 'lg-ctx lg-next');
     main.id = 'lb-leg-main'; sub.id = 'lb-leg-sub';
     dock.append(bar, lnPrev, main, sub, lnNext);
@@ -97,7 +98,15 @@
         sub.textContent = subText != null ? subText : t('wait');
         sub.classList.toggle('wait', subText == null);
         sub.lang = otherLang;
-        if (subText == null && D.ensureTr) D.ensureTr(cur.p).then(() => { if (cur && on) renderSubOnly(); });
+        if (subText == null) {                                   // traduz só esta frase (rápido); o parágrafo continua atrás
+            const want = { p: cur.p, s: cur.s };
+            const job = D.trSentence ? D.trSentence(want.p, want.s) : D.ensureTr(want.p);
+            job.then((x) => {
+                if (!cur || !on || cur.p !== want.p || cur.s !== want.s) return;
+                if (typeof x === 'string' && x) { sub.textContent = x; sub.classList.remove('wait'); }
+                renderSubOnly();
+            });
+        }
         const a = neighbour(cur.p, cur.s, -1), b = neighbour(cur.p, cur.s, 1);
         const ctx = (n) => (n ? shortLine(textIn(n.p, n.s, mainLang) != null ? textIn(n.p, n.s, mainLang) : textIn(n.p, n.s, doc.lang)) : '');
         lnPrev.textContent = ctx(a); lnNext.textContent = ctx(b);
@@ -120,6 +129,7 @@
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
         bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
+        bSwap.title = bSwap.ariaLabel = t('swap');
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bOff.title = bOff.ariaLabel = t('off');
         dock.setAttribute('aria-label', t('group'));
         D.postParent({ type: 'legend-state', on });
@@ -138,6 +148,7 @@
         const show = on && open;
         dock.hidden = !show; spacer.hidden = !show;
         if (D.needBoth) D.needBoth(show);
+        if (show && D.state.readLang === D.state.audioLang) D.postParent({ type: 'legend-swap', ifEqual: true });   // legenda e texto em idiomas opostos
         if (show) { cur = cur && D.doc.paras[cur.p] ? cur : position(); spoken = null; render(); fit(); } else labels();
         labels();
     }
@@ -167,6 +178,7 @@
     bPrev.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, -1)); });
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
+    bSwap.addEventListener('click', () => { D.postParent({ type: 'legend-swap' }); });
     bRate.addEventListener('click', () => { rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
     bMin.addEventListener('click', () => { size = Math.max(0.8, Math.round((size - 0.1) * 10) / 10); save(); render(); fit(); });
     bMax.addEventListener('click', () => { size = Math.min(1.8, Math.round((size + 0.1) * 10) / 10); save(); render(); fit(); });

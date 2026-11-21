@@ -53,6 +53,8 @@ body {
 .lab h1 { font-size: 1.5rem; margin-bottom: 8px; padding-bottom: 0; overflow-wrap: anywhere; }
 .lb-doc-meta { font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-dim); margin-bottom: 28px; }
 .lb-para { overflow-wrap: break-word; }
+.lb-big .lb-para { content-visibility: auto; contain-intrinsic-size: auto 6em; }   /* texto longo: só o que está na tela é desenhado (rolagem leve) */   /* só o que está na tela é desenhado: rolagem leve em texto longo */
+.lb-para.speaking { content-visibility: visible; }   /* o parágrafo narrado sempre tem medidas reais (faixa e marca da palavra) */
 .lab h2.lb-head { font-size: 1.15rem; text-transform: none; letter-spacing: 0; margin: 1.8em 0 0.7em; }
 .lb-s { cursor: pointer; }
 .lb-s.pending { opacity: 0.55; font-style: italic; }

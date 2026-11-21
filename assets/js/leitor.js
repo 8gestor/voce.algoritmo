@@ -502,6 +502,12 @@ window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'dd-lab-hud') { labHud = e.data.hud || null; if (inExtra) renderLabHud(); }
     if (e.data && e.data.type === 'dd-progress') onProgress(e.data);
     if (e.data && e.data.type === 'dd-listen') onListen(e.data);
+    if (e.data && e.data.type === 'legend-swap') {
+        const r = settings.readLang, a = settings.audioLang, opp = (l) => (l === 'en' ? 'pt' : 'en');
+        if (e.data.ifEqual) { if (r === a) setOption('audioLang', opp(r)); }
+        else if (r === a) setOption('audioLang', opp(r));
+        else { setOption('readLang', a); setOption('audioLang', r); }
+    }
     if (e.data && e.data.type === 'legend-state') setLegendBtn(true, e.data.on);
     if (e.data && e.data.type === 'tts-state') {
         const btn = document.getElementById('btn-tts');

@@ -408,14 +408,36 @@
         return -1;
     }
 
+    // Tradução imediata de uma frase: a narração e a legenda não esperam o parágrafo inteiro ficar pronto.
+    const sentTr = {};
+    function trSentence(p, s) {
+        if (!doc) return Promise.resolve(null);
+        if (doc.tr[p] && doc.tr[p][s] != null) return Promise.resolve(doc.tr[p][s]);
+        const src = doc.paras[p] && doc.paras[p].s[s];
+        if (src == null) return Promise.resolve(null);
+        if (!/\p{L}/u.test(src)) return Promise.resolve(src);
+        const key = doc.id + ':' + p + ':' + s, from = doc.lang;
+        if (!sentTr[key]) {
+            sentTr[key] = (async () => {
+                const inst = await getInst(from, other(from));
+                if (!inst) return null;
+                return String(await inst.translate(src)).trim() || null;
+            })().catch(() => null).then((r) => { if (r === null) delete sentTr[key]; return r; });
+        }
+        return sentTr[key];
+    }
+
     async function translatePara(i, inst) {
-        const out = [];
-        for (const s of doc.paras[i].s) {
-            if (!/\p{L}/u.test(s)) { out.push(s); continue; }
+        const d0 = doc;
+        const out = await Promise.all(d0.paras[i].s.map(async (s, k) => {       // frases do parágrafo em paralelo
+            if (!/\p{L}/u.test(s)) return s;
+            const c = sentTr[d0.id + ':' + i + ':' + k];
+            if (c) { const r0 = await c; if (r0) return r0; }
             const r = String(await inst.translate(s)).trim();
             if (!r) throw new Error('tradução vazia');
-            out.push(r);
-        }
+            return r;
+        }));
+        if (doc !== d0) return;
         doc.tr[i] = out;
         if (persist) dbPut('tr', out, doc.id + ':' + i).catch(() => {});
         paintPara(i);
@@ -518,9 +540,24 @@
             frag.appendChild(el);
         });
         host.appendChild(frag);
-        for (let i = 0; i < doc.paras.length; i++) paintPara(i);
+        host.classList.toggle('lb-big', doc.paras.length > 300);
+        paintAll(Math.min(anchor, doc.paras.length - 1));
     }
-    function repaintAll() { if (doc) { for (let i = 0; i < doc.paras.length; i++) paintPara(i); } }
+    // Documentos grandes: pinta primeiro o que está perto da leitura e o resto aos poucos (a tela abre rápido).
+    let paintRun = 0;
+    function paintAll(center) {
+        const N = doc.paras.length, run = ++paintRun, mine = doc;
+        if (N <= 300) { for (let i = 0; i < N; i++) paintPara(i); return; }
+        const order = [];
+        for (let d = 0; d < N; d++) { if (center + d < N) order.push(center + d); if (d && center - d >= 0) order.push(center - d); }
+        let k = 0;
+        const step = (n) => { for (let j = 0; j < n && k < order.length; j++) paintPara(order[k++]); };
+        step(80);
+        const later = window.requestIdleCallback ? (f) => requestIdleCallback(f, { timeout: 200 }) : (f) => setTimeout(f, 16);
+        const loop = () => { if (run !== paintRun || doc !== mine) return; step(40); if (k < order.length) later(loop); };
+        later(loop);
+    }
+    function repaintAll() { if (doc) paintAll(doc.paras.length > 300 ? firstVisible() : 0); }
 
     function firstVisible() {
         const kids = $('lb-text').children;
@@ -681,6 +718,7 @@
     }
     function setMark(p, s) {
         markSpan(false);
+        const pe = paraEl(p); if (pe && !pe.firstChild) paintPara(p);        // pintura em partes: garante o parágrafo falado
         tts.mark = { p, s }; tts.word = -1;
         const sp = markSpan(true);
         if (sp) { moveBand(sp); keepInView(sp); }
@@ -691,6 +729,12 @@
     // Texto da frase no idioma pedido; se a tradução não existe, cai para o original (e a voz acompanha).
     async function textFor(p, s, lang, token) {
         if (lang === doc.lang) return { text: doc.paras[p].s[s], lang };
+        if (!(doc.tr[p] && doc.tr[p][s] != null)) {          // caminho rápido: só esta frase, enquanto o resto traduz atrás
+            anchor = p;
+            const q = await trSentence(p, s);
+            if (token !== tts.token) return null;
+            if (q != null) { pump(); return { text: q, lang }; }
+        }
         if (!doc.tr[p]) { setStatus(true); await ensureTr(p); }
         if (token !== tts.token) return null;
         const t = doc.tr[p] && doc.tr[p][s];
@@ -710,6 +754,10 @@
             anchor = c.p;
             if (!/\p{L}|\p{N}/u.test(piece.text)) { tts.cursor = { p: c.p, s: c.s + 1 }; continue; }
             if (c.s === 0 || c.s === doc.paras[c.p].s.length - 1) pump();     // mantém a tradução à frente da voz
+            if (state.audioLang !== doc.lang) {                                  // já traduz a próxima frase enquanto esta toca
+                const nx = c.s + 1 < doc.paras[c.p].s.length ? [c.p, c.s + 1] : (c.p + 1 < doc.paras.length ? [c.p + 1, 0] : null);
+                if (nx) trSentence(nx[0], nx[1]);
+            }
             const tStart = performance.now();
             const r = await speakOne(piece.text, piece.lang, (ci, len) => { if (token === tts.token) { setWordAt(ci, len, piece.text); emit('wordpos', { ci, len, text: piece.text }); } });
             if (token !== tts.token) return;
@@ -914,12 +962,16 @@
                 lang, pages: ex.pageCount, paras, words, added: Date.now(), pos: 0, x: {},
                 sentences: paras.reduce((a, p) => a + p.s.length, 0)
             };
+            let saving = null;                                  // grava em segundo plano: o documento abre sem esperar o disco
             if (persist) {
-                try {
-                    await dbPut('docs', { id: d.id, lang: d.lang, paras: d.paras });
-                    await dbPut('meta', { id: d.id, title: d.title, lang: d.lang, pages: d.pages, sentences: d.sentences, words: d.words, added: d.added, trDone: 0, trTotal: paras.length, pos: 0, heard: 0, lastOpened: 0, x: d.x || {} });
-                } catch (e) { persist = false; dbErr = e; }
+                saving = (async () => {
+                    try {
+                        await dbPut('docs', { id: d.id, lang: d.lang, paras: d.paras });
+                        await dbPut('meta', { id: d.id, title: d.title, lang: d.lang, pages: d.pages, sentences: d.sentences, words: d.words, added: d.added, trDone: 0, trTotal: paras.length, pos: 0, heard: 0, lastOpened: 0, x: d.x || {} });
+                    } catch (e) { persist = false; dbErr = e; }
+                })();
             }
+            if (saving) await saving;                           // (o disco é rápido; a ordem segura evita corrida com a biblioteca)
             showProgress(null);
             emit('imported', d);
             enterDoc(Object.assign(d, { tr: {} }));
@@ -1034,7 +1086,7 @@
         }
         if (d.type === 'audiolang') {
             const v = d.value === 'en' ? 'en' : 'pt';
-            if (v !== state.audioLang) { state.audioLang = v; restartCurrent(); pump(); }
+            if (v !== state.audioLang) { state.audioLang = v; restartCurrent(); pump(); emit('audiolang', v); emit('lang', state.readLang); }
         }
         if (d.type === 'voice' && d.value && LANG_TAG[d.value.lang]) {
             state.voices[d.value.lang] = d.value.name || '';
@@ -1069,7 +1121,7 @@
         },
         needBoth(on) { wantBoth = !!on; if (wantBoth) pump(); else setStatus(); },
         setRate(v) { v = Number(v); if (v > 0 && v !== state.rate) { state.rate = v; restartCurrent(); } },
-        state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, other, langName, nf, tx, LANG_TAG,
+        state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },
         renderDocs, setStatus, ensureTr, importFile, saveMeta, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))

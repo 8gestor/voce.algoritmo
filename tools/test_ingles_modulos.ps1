@@ -342,7 +342,7 @@ $test = @'
       D().$('lb-back').click(); await wait(300);
       await D().addText('Legenda', 'Algorithms decide what we read. They shape our behavioural surplus every day. Nobody explains how they work. Few people ask.');
       await until(function () { return D().doc && D().doc.title === 'Legenda'; }, 20000);
-      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(500);
+      post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'en' }); await wait(500);
       var oldSpeak = w.speechSynthesis.speak;
       w.speechSynthesis.speak = function (u) { w.__cur = u; u.onstart && u.onstart(); setTimeout(function () { if (w.__cur === u) { w.__cur = null; u.onend && u.onend(); } }, 6000); };   // frase longa: deixa a legenda parada para conferir
       var jP0 = D().doc.paras[0].s;
@@ -372,7 +372,7 @@ $test = @'
       ok('J10 ler retoma a partir da frase mostrada', D().tts.playing === true && D().tts.mark && D().tts.mark.s === 1 && jpb.textContent === String.fromCharCode(0x275a, 0x275a), jpb.textContent);
       D().stopTts();
       var fs0 = parseFloat(idoc().defaultView.getComputedStyle(idoc().getElementById('lb-leg-main')).fontSize);
-      idoc().querySelectorAll('.lg-bar .lg-b')[5].click(); await wait(100);      // A+
+      idoc().querySelectorAll('.lg-bar .lg-b')[6].click(); await wait(100);      // A+
       var fs1 = parseFloat(idoc().defaultView.getComputedStyle(idoc().getElementById('lb-leg-main')).fontSize);
       ok('J11 A+ aumenta a letra da legenda', fs1 > fs0, fs0 + ' -> ' + fs1);
       clickAt(idoc().querySelector('.lg-w'), 0.5);
@@ -386,6 +386,17 @@ $test = @'
       jhlBtn.click();
       idoc().querySelector('.lg-off').click(); await wait(200);
       ok('J14 fechar a legenda esconde a faixa e solta o botão', jdk.hidden === true && jlb.getAttribute('aria-pressed') === 'false');
+      jlb.click(); await wait(400);
+      topd.defaultView.setOption('readLang', 'pt'); topd.defaultView.setOption('audioLang', 'en'); await wait(200);   // a barra principal guarda as opções
+      idoc().querySelector('.lg-swap').click();
+      var swapped =await until(function () { return D().state.readLang === 'en' && D().state.audioLang === 'pt'; }, 3000);
+      ok('J15 inverter troca o idioma do texto e o da legenda/áudio', swapped, D().state.readLang + '/' + D().state.audioLang);
+      idoc().querySelector('.lg-swap').click();
+      var swapped2 = await until(function () { return D().state.readLang === 'pt' && D().state.audioLang === 'en'; }, 3000);
+      ok('J16 inverter de novo volta ao original', swapped2, D().state.readLang + '/' + D().state.audioLang);
+      var t0s = Date.now(); var sq = await D().trSentence(0, 3);
+      ok('J17 traduz uma frase isolada sem esperar o parágrafo', typeof sq === 'string' && sq.length > 0 && Date.now() - t0s < 1500, String(sq));
+      idoc().querySelector('.lg-off').click(); await wait(200);
       w.speechSynthesis.speak = oldSpeak;
       // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
