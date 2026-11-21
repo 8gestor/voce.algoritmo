@@ -436,7 +436,7 @@ function loadChapter(idx) {
 function loadExtra(k) {
     saveStats();
     inExtra = true;
-    setLegendBtn(true, false);
+    setLegendBtn(false, false);       // o botão Legenda só aparece quando a página (ingles-legenda.js) avisa que tem legenda
     labHud = null;
     const frame = frameEl();
     const btnTts = document.getElementById('btn-tts');
@@ -508,7 +508,7 @@ window.addEventListener('message', (e) => {
         else if (r === a) setOption('audioLang', opp(r));
         else { setOption('readLang', a); setOption('audioLang', r); }
     }
-    if (e.data && e.data.type === 'legend-state') setLegendBtn(true, e.data.on);
+    if (e.data && e.data.type === 'legend-state' && (!e.data.page || (frameEl().src || '').split('?')[0].split('#')[0].endsWith(e.data.page))) setLegendBtn(true, e.data.on);   // ignora aviso atrasado de página anterior
     if (e.data && e.data.type === 'tts-state') {
         const btn = document.getElementById('btn-tts');
         ttsPlaying = !!e.data.isPlaying;

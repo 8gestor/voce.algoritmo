@@ -132,7 +132,7 @@
         bSwap.title = bSwap.ariaLabel = t('swap');
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bOff.title = bOff.ariaLabel = t('off');
         dock.setAttribute('aria-label', t('group'));
-        D.postParent({ type: 'legend-state', on });
+        D.postParent({ type: 'legend-state', on, page: location.pathname.split('/').pop() });
         if (btn) { btn.textContent = t('btn'); btn.title = t('tip'); btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on)); }
     }
 

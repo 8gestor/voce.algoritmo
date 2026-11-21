@@ -22,7 +22,8 @@ $test = @'
 <script>
 (function () {
   var out = [], fails = 0;
-  function ok(name, cond, extra) { if (!cond) fails++; out.push((cond ? 'PASS ' : 'FAIL ') + name + (extra ? '  [' + extra + ']' : '')); }
+  function live() { var p = document.getElementById('result'); if (!p) { p = document.createElement('pre'); p.id = 'result'; p.style.cssText = 'position:fixed;left:-99999px;top:0;width:10px;height:10px;overflow:hidden'; document.body.appendChild(p); } p.textContent = out.join(String.fromCharCode(10)); }
+  function ok(name, cond, extra) { if (!cond) fails++; out.push((cond ? 'PASS ' : 'FAIL ') + name + (extra ? '  [' + extra + ']' : '')); live(); }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   var $ = function (id) { return document.getElementById(id); };
   function ifr() { return $('content-frame'); }
@@ -398,87 +399,120 @@ $test = @'
       ok('J17 traduz uma frase isolada sem esperar o parágrafo', typeof sq === 'string' && sq.length > 0 && Date.now() - t0s < 1500, String(sq));
       idoc().querySelector('.lg-off').click(); await wait(200);
       w.speechSynthesis.speak = oldSpeak;
-      // ===================== K. trilha por capítulos (trilha.html) =====================
+      // ===================== K. trilha gamificada (trilha.html) =====================
       var tlk = document.querySelectorAll('.chapter-link');
-      ok('K1 aba Trilha por capítulos fica abaixo do Leitor de PDF', /Trilha/.test(tlk[tlk.length - 1].textContent) && /PDF/.test(tlk[tlk.length - 2].textContent));
+      ok('K1 aba Trilha fica abaixo do Leitor de PDF', /Trilha/.test(tlk[tlk.length - 1].textContent) && /PDF/.test(tlk[tlk.length - 2].textContent));
       tlk[tlk.length - 1].click();
-      await until(function () { return W().__ddTrilha && W().DDLab && W().DDLab.openDoc; }, 8000);
-      var w2 = W(), T = w2.__ddTrilha;
+      await until(function () { return W().__ddJogo && W().DDLab; }, 8000);
+      var w2 = W(), J = w2.__ddJogo, DD = w2.DDLab;
       w2.DD_TRANSLATOR_FACTORY = function (a, b) { return { translate: async function (t) { await wait(2); return '[' + b + '] ' + t; } }; };
       w2.speechSynthesis.cancel = function () {};
       w2.speechSynthesis.speak = function (u) { w2.__said = u.text; u.onstart && u.onstart(); setTimeout(function () { u.onend && u.onend(); }, 5); };
-      if (w2.__ddTreino) w2.__ddTreino.setMode('normal');
-      var kmk = function (n, wd) { var a = []; for (var i = 0; i < n; i++) a.push({ t: 'p', s: [Array(wd + 1).join('word ').trim() + '.'] }); return a; };
-      var kp = kmk(20, 40);
-      ok('K2 dividir por tamanho corta em capítulos parecidos', T.bySize(kp, 200).length === 4 && T.bySize(kp, 200)[0].to === 5, T.bySize(kp, 200).length + ' capítulos');
-      var hp = []; ['Um', 'Dois', 'Três'].forEach(function (h) { hp.push({ t: 'h', s: [h] }); kmk(4, 40).forEach(function (p) { hp.push(p); }); });
-      var hc = T.byHeadings(hp, 150);
-      ok('K3 dividir pelos títulos usa cada título como capítulo', !!hc && hc.length === 3 && hc[1].title === 'Dois' && hc[2].to === hp.length, hc && hc.map(function (c) { return c.title; }).join(','));
-      ok('K3b texto sem títulos cai para o tamanho', T.splitChapters(kp, 'head', 200).length === 4);
+      w2.webkitSpeechRecognition = w2.SpeechRecognition = function () { this.start = function () { var me = this; setTimeout(function () { me.onresult({ results: [[{ transcript: J.run.ex.answer }]] }); }, 10); }; };
+      J.reset(); await wait(100);
+      var jq = function (s) { return w2.document.querySelector(s); };
+      var jqa = function (s) { return Array.prototype.slice.call(w2.document.querySelectorAll(s)); };
+      var clickOpt = function (text) { var b = jqa('.tj-opt').filter(function (x) { return x.textContent.toLowerCase() === String(text).toLowerCase(); })[0]; if (b) b.click(); return !!b; };
+      var clickWrong = function (answer) { var b = jqa('.tj-opt').filter(function (x) { return x.textContent !== answer; })[0]; b.click(); };
+      var nextBtn = async function () { await until(function () { return jq('#tj-next'); }, 3000); jq('#tj-next').click(); await wait(25); };
+      var plain = function (s) { return s.normalize('NFD').replace(new RegExp('[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + ']', 'g'), ''); };
+      ok('K2 contrações e acentos não atrapalham a correção', J.accept("I'm Ana.", ['I am Ana.']) === 'ok' && J.accept('my name is ana', ['My name is Ana.']) === 'ok' && J.accept('Sao Paulo', ['S' + String.fromCharCode(227) + 'o Paulo']) === 'ok' && J.accept('I do not work', ["I don't work"]) === 'ok', [J.accept("I'm Ana.", ['I am Ana.']), J.accept('my name is ana', ['My name is Ana.']), J.accept('Sao Paulo', ['Sa' + String.fromCharCode(227) + 'o Paulo']), J.accept('I do not work', ["I don't work"]), J.tokens('Sao Paulo').join('|'), J.tokens('Sa' + String.fromCharCode(227) + 'o Paulo').join('|')].join(','));
+      ok('K2b erro de uma letra é "quase" e frase errada é recusada', J.accept('My name is Annn.', ['My name is Anna.']) === 'near' && J.accept('I Ana', ['I am Ana.']) === 'bad');
+      ok('K2c explicação: português nos mundos iniciais, inglês depois', J.explain({ pt: 'a', en: 'b' }, 1).main === 'a' && J.explain({ pt: 'a', en: 'b' }, 3).main === 'b' && J.explain({ pt: 'a', en: 'b' }, 2).open === true);
+      await wait(700);
+      ok('K3 a barra principal não mostra o botão Legenda na Trilha', topd.getElementById('btn-legenda').hidden === true && topd.defaultView.getComputedStyle(topd.getElementById('btn-legenda')).display === 'none', 'hidden=' + topd.getElementById('btn-legenda').hidden + ' display=' + topd.defaultView.getComputedStyle(topd.getElementById('btn-legenda')).display + ' src=' + ifr().src.slice(-12));
+      ok('K4 mapa: Mundo 1 tem 6 missões e o chefão, só a primeira aberta', jqa('.tj-node').length === 7 && jqa('.tj-node.tj-locked').length === 6 && !!jq('.tj-node[data-id="w1m1"] .tj-go'), jqa('.tj-node').length + ' nós');
+      jq('.tj-node[data-id="w1m1"] .tj-go').click(); await wait(80);
+      ok('K5 abrir a missão mostra objetivo, fala do professor e as etapas', !!jq('#tj-start') && !!jq('.tj-teach') && jqa('.tj-steps li').length === 5);
+      jq('#tj-start').click(); await wait(80);
+      ok('K6 etapa Descobrir: barra de etapas e cena em balões', jqa('.tj-phase').length === 5 && jqa('.tj-phase.on')[0].textContent === 'Descobrir' && jqa('.tj-bubble').length === 1);
+      var nl = J.run.m.scene.length;
+      for (var li = 0; li < nl; li++) {
+        await until(function () { return jqa('.tj-opt').length > 0 && !jqa('.tj-opt')[0].disabled; }, 3000);
+        if (li === 0) clickWrong(J.run.ex.answer); else clickOpt(J.run.ex.answer);
+        await nextBtn();
+      }
+      ok('K6b errar não pune: mostra o certo e segue; precisão cai', J.run.stat.ok === nl - 1 && J.run.stat.n === nl, J.run.stat.ok + '/' + J.run.stat.n);
+      ok('K7 etapa Notar: o aluno responde antes de ver a regra', J.run.phases[J.run.pi] === 'notice' && jqa('.tj-opt').length === 3 && !jq('.tj-rule'));
+      clickOpt(J.run.ex.answer); await wait(60);
+      ok('K7b depois de responder aparecem regra, tabela e contraste', !!jq('.tj-rule') && !!jq('.tj-table') && !!jq('.tj-contrast'));
+      await nextBtn();
+      var drive = async function (wrongFirst) {
+        var guard = 0, wrongDone = !wrongFirst, requeued = null;
+        while (J.run && J.run.phases[J.run.pi] === 'practice' && guard++ < 150) {
+          if (J.run.qi >= J.run.queue.length) { await nextBtn(); continue; }
+          var ex = J.run.queue[J.run.qi];
+          await until(function () { return jq('.tj-ex') && (jqa('.tj-opt').length || jq('#tj-ta') || jq('#tj-pool')); }, 3000);
+          if (ex.kind === 'listen_pt') { if (!wrongDone) { var q0 = J.run.queue.length; clickWrong(ex.f.pt); wrongDone = true; await wait(40); requeued = J.run.queue.length === q0 + 1; } else clickOpt(ex.f.pt); }
+          else if (ex.kind === 'see_en') clickOpt(ex.f.en);
+          else if (ex.kind === 'cloze') clickOpt(ex.c.answer[0]);
+          else if (ex.kind === 'type_en' || ex.kind === 'dictate') { jq('#tj-ta').value = plain(ex.kind === 'type_en' ? ex.f.en : ex.b.en[0]); jq('#tj-check').click(); }
+          else if (ex.kind === 'build') { var ws = ex.b.en[0].split(/\s+/); for (var wi = 0; wi < ws.length; wi++) { var tile = jqa('#tj-pool .tj-tile').filter(function (t) { return t.dataset.w === ws[wi]; })[0]; tile.click(); } jq('#tj-check').click(); }
+          await nextBtn();
+        }
+        return requeued;
+      };
+      var rq = await drive(true);
+      ok('K8 praticar: erro volta para a fila e a prática termina', rq === true && J.run.phases[J.run.pi] === 'speak', 'fila=' + J.run.queue.length);
+      ok('K8b domínio por palavra sobe com acertos e agenda revisão', J.S.items['w1m1:hello'].lvl >= 1 && J.S.items['w1m1:hello'].due > Date.now());
+      for (var si = 0; si < J.run.m.speak.length; si++) { await until(function () { return jq('#tj-mic') && !jq('#tj-mic').disabled; }, 3000); jq('#tj-mic').click(); await nextBtn(); }
+      ok('K9 falar: reconhecimento de voz acerta e conta conquista', J.S.stats.spoken >= 1 && !!J.S.ach.speaker && J.run.phases[J.run.pi] === 'write');
+      jq('#tj-ta').value = 'hello'; jq('#tj-check').click(); await wait(60);
+      ok('K10 escrever: resposta incompleta recebe dicas sem passar', jqa('.tj-checks li').length === 2 && jqa('.tj-checks .lb-miss').length >= 1 && !J.run.wrote);
+      jq('#tj-ta').value = J.run.m.write.model; jq('#tj-check').click(); await wait(60);
+      ok('K10b escrever: frase certa passa e mostra o modelo', J.run.wrote === true && J.S.stats.written >= 1);
+      await nextBtn();
+      var sm = J.S.missions.w1m1;
+      ok('K11 missão concluída: estrelas, XP e botão da próxima missão', sm && sm.done && sm.stars >= 1 && J.S.xp > 100 && !!jq('.tj-stars-big') && !!jq('#tj-next-mission'), JSON.stringify(sm) + ' xp=' + J.S.xp);
+      ok('K11b conquistas: primeiro passo e primeira frase', !!J.S.ach.first && !!J.S.ach.writer);
+      jq('#tj-map').click(); await wait(80);
+      ok('K12 a missão 2 abre por evidência', !jq('.tj-node[data-id="w1m2"]').classList.contains('tj-locked') && jq('.tj-node[data-id="w1m3"]').classList.contains('tj-locked'));
+      jqa('.tj-node[data-id="w1m3"] button').filter(function (b) { return /Liberar/.test(b.textContent); })[0].click(); await wait(60);
+      ok('K12b "liberar mesmo assim" destrava sem bloquear o aluno', J.S.missions.w1m2.free === true && !jq('.tj-node[data-id="w1m3"]').classList.contains('tj-locked'));
+      Object.keys(J.S.items).slice(0, 5).forEach(function (k) { J.S.items[k].due = Date.now() - 1000; }); J.save(); J.showMap(); await wait(60);
+      ok('K13 revisão do dia aparece quando há palavras vencidas', !!jq('#tj-review-btn'));
+      jq('#tj-review-btn').click(); await wait(80);
+      await drive(false);
+      ok('K13b terminar a revisão dá XP, conquista e volta ao mapa', J.S.stats.reviews === 1 && !!J.S.ach.review, 'rev=' + J.S.stats.reviews);
+      var yday = J.dayKey(Date.now() - 86400000), d2 = J.dayKey(Date.now() - 2 * 86400000), d5 = J.dayKey(Date.now() - 5 * 86400000);
+      J.S.streak = { n: 4, last: yday, shield: 1 }; J.touchDay(); var st1 = J.S.streak.n;
+      J.S.streak = { n: 4, last: d2, shield: 1 }; J.touchDay(); var st2 = J.S.streak.n + '/' + J.S.streak.shield;
+      J.S.streak = { n: 4, last: d5, shield: 1 }; J.touchDay(); var st3 = J.S.streak.n;
+      ok('K14 sequência gentil: dia seguinte soma, um dia faltado usa o escudo, muito tempo recomeça', st1 === 5 && st2 === '5/0' && st3 === 1, st1 + ' ' + st2 + ' ' + st3);
+      var bossW = J.WORLDS[0];
+      J.startMission(bossW.boss, bossW, 'boss'); await wait(60); jq('#tj-start').click(); await wait(80);
+      for (var bi = 0; bi < bossW.boss.turns.length; bi++) { await until(function () { return jqa('.tj-opt').length > 0 && !jqa('.tj-opt')[0].disabled; }, 3000); clickOpt(J.run.ex.answer); await nextBtn(); }
+      await nextBtn();
+      jq('#tj-ta').value = bossW.boss.write.model; jq('#tj-check').click(); await wait(60);
+      await nextBtn();
+      ok('K15 chefão: conversa certa e apresentação escrita vencem o mundo', J.S.missions.w1boss && J.S.missions.w1boss.stars >= 1 && J.S.stats.bosses === 1 && !!J.S.ach.boss1, JSON.stringify(J.S.missions.w1boss));
+      jq('#tj-map').click(); await wait(60);
+      w2.LanguageModel = { availability: async function () { return 'available'; }, create: async function () { return { prompt: async function (p) { return 'Corrected: I am Sam. Dica: use am.'; } }; } };
+      J.startMission(J.WORLDS[0].missions[1], J.WORLDS[0], 'curriculum'); await wait(60);
+      J.run.pi = J.run.phases.indexOf('write'); J.renderPhase();
+      await until(function () { return jq('#tj-ai-btn'); }, 3000);
+      jq('#tj-ta').value = 'I Sam'; jq('#tj-ai-btn').click();
+      await until(function () { return jq('.tj-ai') && /Corrected/.test(jq('.tj-ai').textContent); }, 3000);
+      ok('K16 professor virtual (IA local simulada) corrige a frase do aluno', !!jq('.tj-ai') && /Corrected/.test(jq('.tj-ai').textContent));
       var kpar = function (k) { return ['Surveillance capitalism harvests behavioural surplus number ' + k + ' every single day.', 'Platforms predict what people will do tomorrow morning.', 'Nobody explains how these hidden systems really work.', 'Algorithms rank every message before anyone reads it.', 'Companies sell predictions about our future behaviour.', 'Citizens rarely notice this quiet economic exchange.'].join(' '); };
-      var ktxt = [1, 2, 3, 4, 5, 6].map(kpar).join('\n\n');
-      await w2.DDLab.addText('Livro da trilha', ktxt);
-      await until(function () { return w2.DDLab.doc && w2.DDLab.doc.title === 'Livro da trilha'; }, 20000);
-      var ksrc = w2.DDLab.doc.id, kchs = T.splitChapters(w2.DDLab.doc.paras, 'size', 100);
-      var krec = await T.createTrail(ksrc, kchs);
-      ok('K4 criar trilha gera um documento por capítulo', krec.chapters.length === kchs.length && kchs.length >= 2, krec.chapters.length + ' capítulos de ' + w2.DDLab.doc.paras.length + ' parágrafos');
-      var km = await w2.DDLab.db.get('meta', krec.chapters[0].id), kd = await w2.DDLab.db.get('docs', krec.chapters[0].id);
-      ok('K4b capítulo é documento marcado e com parte do texto', !!km && km.x && km.x.trilha === krec.id && kd.paras.length === kchs[0].to - kchs[0].from, km && km.title);
-      w2.DDLab.$('lb-back').click(); await wait(400);
-      await T.renderLibrary(); await wait(200);
-      var kcard = w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"]');
-      ok('K5 biblioteca mostra a trilha: primeiro capítulo aberto, segundo travado', !!kcard && kcard.querySelectorAll('.tr-ch').length === krec.chapters.length && !!kcard.querySelector('.tr-ch[data-n="1"] .tr-open') && !kcard.querySelector('.tr-ch[data-n="2"] .tr-open'));
-      w2.DDLab.renderDocs(); await wait(400);
-      ok('K6 a biblioteca comum não lista os capítulos da trilha', w2.document.getElementById('lb-docs').textContent.indexOf('Livro da trilha — 1.') < 0);
-      kcard.querySelector('.tr-ch[data-n="1"] .tr-open').click();
-      await until(function () { return w2.DDLab.doc && w2.DDLab.doc.id === krec.chapters[0].id && T.cur; }, 8000);
-      var ksteps = w2.document.getElementById('tr-steps'); await until(function () { return ksteps.querySelectorAll('.tr-chip button').length === 10; }, 3000);
-      ok('K7 abrir o capítulo mostra as 5 etapas nos dois idiomas', !ksteps.hidden && ksteps.querySelectorAll('.tr-chip button').length === 10, ksteps.querySelectorAll('.tr-chip button').length + ' botões');
-      post({ type: 'audiolang', value: 'en' }); await wait(300);
-      w2.DDLab.startTts(0, 0);
-      var kheard = await until(function () { return T.cur && T.cur.ch.done.listen.en; }, 20000);
-      w2.DDLab.stopTts();
-      ok('K8 ouvir o capítulo até o fim em EN conclui a etapa Ouvir EN', kheard, T.cur && JSON.stringify(T.cur.ch.heard.en.length));
-      T.mark('read', 'en');
-      ok('K8b ler em EN conclui a etapa Ler EN e atualiza a barra', T.cur.ch.done.read.en && ksteps.querySelector('.tr-chip[data-stage="read"] button[data-lang="en"]').classList.contains('tr-ok') || /x/.test(ksteps.querySelector('.tr-chip[data-stage="read"] button[data-lang="en"]').textContent));
-      w2.webkitSpeechRecognition = w2.SpeechRecognition = function () { this.start = function () { var me = this; setTimeout(function () { me.onresult({ results: [[{ transcript: w2.document.getElementById('tr-sent').textContent }]] }); }, 10); }; };
-      var kround = async function (nextId) { for (var n = 0; n < 5; n++) { await until(function () { return w2.document.getElementById(nextId.mic); }, 5000); if (!w2.document.getElementById(nextId.mic)) { out.push('DBG ' + n + ' ' + ((w2.document.querySelector('.tr-ov') || {}).textContent || 'sem overlay') + ' | cur=' + !!T.cur); } w2.document.getElementById(nextId.mic).click(); await until(function () { return w2.document.getElementById('tr-next'); }, 5000); if (!w2.document.getElementById('tr-next')) { out.push('DBG2 ' + n + ' ' + ((w2.document.querySelector('.tr-ov') || {}).textContent || 'sem overlay')); } w2.document.getElementById('tr-next').click(); await wait(30); } };
-      T.openStage('speak', 'en');
-      await kround({ mic: 'tr-mic' });
-      ok('K9 falar: repetir 5 frases com 100% conclui Falar EN', await until(function () { return T.cur.ch.done.speak.en; }, 5000));
-      w2.document.querySelector('.tr-ov .tr-tabs button[data-lang="pt"]').click();
-      await kround({ mic: 'tr-mic' });
-      ok('K9b falar também vale para o outro idioma (traduzido)', await until(function () { return T.cur.ch.done.speak.pt; }, 5000));
-      T.openStage('write', 'en');
-      for (var wn = 0; wn < 5; wn++) {
-        await until(function () { return w2.document.getElementById('tr-ta'); }, 5000); await wait(260);
-        w2.document.getElementById('tr-ta').value = w2.__said; w2.document.getElementById('tr-check').click();
-        await until(function () { return w2.document.getElementById('tr-next'); }, 3000); w2.document.getElementById('tr-next').click(); await wait(30);
-      }
-      ok('K10 escrever: ditado certo nas 5 frases conclui Escrever EN', await until(function () { return T.cur.ch.done.write.en; }, 5000));
-      T.openStage('words', 'en');
-      var kfirst = true;
-      for (var wi = 0; wi < 12 && !T.cur.ch.done.words.en; wi++) {
-        if (!await until(function () { return w2.document.getElementById('tr-show'); }, 4000)) break;
-        w2.document.getElementById('tr-show').click();
-        await until(function () { return w2.document.getElementById('tr-knew'); }, 4000);
-        w2.document.getElementById(kfirst ? 'tr-notyet' : 'tr-knew').click(); kfirst = false; await wait(60);
-      }
-      ok('K11 palavras: revisar os cartões do capítulo conclui Palavras EN', await until(function () { return T.cur.ch.done.words.en; }, 4000));
-      var kv = await w2.__ddVocab.loadAll();
-      ok('K11b palavra que não sabia vai para o vocabulário com contexto', kv.some(function (c) { return c.lang === 'en' && c.sent && /Surveillance|Platforms|Nobody|Algorithms|Companies|Citizens/.test(c.sent); }), kv.length + ' cartões');
-      ok('K12 capítulo 2 continua travado enquanto faltam etapas', !T.unlocked(krec, 1));
-      ['read', 'listen', 'speak', 'words', 'write'].forEach(function (s) { ['pt', 'en'].forEach(function (l) { T.mark(s, l); }); });
-      ok('K13 concluir todas as etapas libera o capítulo seguinte', T.complete(krec.chapters[0]) && T.unlocked(krec, 1) && !w2.document.getElementById('tr-steps').hidden && !!w2.document.querySelector('.tr-steps-foot .lb-primary'));
-      w2.DDLab.$('lb-back').click(); await wait(500); await until(function () { return !!w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"] .tr-ch[data-n="2"] .tr-open'); }, 3000);
-      ok('K13b biblioteca mostra o capítulo 2 aberto depois', !!w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"] .tr-ch[data-n="2"] .tr-open'), ((w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"]') || w2.document.getElementById('tr-root')).textContent.slice(0, 400)) + ' reader.hidden=' + w2.document.getElementById('lb-reader').hidden);
-      var ktl = T.trails.length;
-      await T.deleteTrail(krec.id);
-      ok('K14 excluir a trilha remove os capítulos e mantém o documento original', T.trails.length === ktl - 1 && !(await w2.DDLab.db.get('meta', krec.chapters[0].id)) && !!(await w2.DDLab.db.get('meta', ksrc)));
+      await DD.addText('Texto da trilha', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(kpar).join('\n\n'));
+      await until(function () { return DD.doc && DD.doc.title === 'Texto da trilha'; }, 20000);
+      DD.$('lb-back').click(); await wait(300); J.showMap(); await until(function () { return jq('#tj-text-src'); }, 5000);
+      ok('K17 seus textos: aparece a escolha do texto em inglês da biblioteca', !!jq('#tj-text-src') && jqa('#tj-text-src option').some(function (o) { return o.textContent === 'Texto da trilha'; }), 'sel=' + !!jq('#tj-text-src') + ' doc=' + (DD.doc && DD.doc.title) + ' metas=' + (await DD.db.all('meta')).map(function (m) { return m.title + ':' + m.lang; }).join(';') + ' make=' + (jq('.tj-make') ? jq('.tj-make').innerHTML.slice(0, 300) : 'sem make'));
+      var sel = jq('#tj-text-src'); sel.value = jqa('#tj-text-src option').filter(function (o) { return o.textContent === 'Texto da trilha'; })[0].value;
+      jq('#tj-text-make').click(); await until(function () { return jqa('.tj-texts .tj-node').length >= 2; }, 5000);
+      var tnodes = jqa('.tj-texts .tj-node');
+      ok('K17b o texto vira missões de leitura em ordem, só a primeira aberta', tnodes.length >= 2 && !tnodes[0].classList.contains('tj-locked') && tnodes[1].classList.contains('tj-locked'), tnodes.length + ' missões');
+      tnodes[0].querySelector('.tj-go').click();
+      await until(function () { return jq('#tj-start'); }, 8000);
+      var tl = J.run.m;
+      ok('K17c missão de leitura gera cena traduzida, palavras do trecho, frases e escrita', tl.scene.length >= 3 && tl.focus.length >= 2 && tl.build.length >= 1 && tl.cloze.length >= 1 && tl.speak.length >= 1 && !!tl.write && !tl.pattern, tl.scene.length + ' falas, ' + tl.focus.length + ' palavras');
+      ok('K17d palavras do trecho trazem significado e o contexto', tl.focus.every(function (f) { return f.pt && f.tip; }) && J.run.phases.indexOf('notice') < 0);
+      jq('#tj-home').click(); await wait(60);
       // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
-    var pre = document.createElement('pre'); pre.id = 'result'; pre.textContent = out.join('\n'); document.body.appendChild(pre);
+    live();
   });
 })();
 </script>
@@ -494,7 +528,7 @@ Start-Process -FilePath $Chrome -ArgumentList @('--headless=new', '--disable-gpu
     '--window-size=1400,900', '--virtual-time-budget=900000', '--allow-file-access-from-files', '--dump-dom',
     "`"file:///$($testFile.Replace('\','/'))`"") -Wait -NoNewWindow -RedirectStandardOutput $outFile -RedirectStandardError "$tmp\err.txt"
 $dom = [IO.File]::ReadAllText($outFile)
-$m = [regex]::Match($dom, '(?s)<pre id="result">(.*?)</pre>')
+$m = [regex]::Match($dom, '(?s)<pre id="result"[^>]*>(.*?)</pre>')
 if (-not $m.Success) { 'Teste não produziu resultado. Erros do Chrome:'; Get-Content "$tmp\err.txt" -TotalCount 15; exit 2 }
 [System.Net.WebUtility]::HtmlDecode($m.Groups[1].Value)
 Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue

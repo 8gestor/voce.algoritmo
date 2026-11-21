@@ -1,0 +1,78 @@
+/* Trilha de Inglês (trilha-jogo.js). Mesma identidade do livro: variáveis de tema, nada de cor fixa para texto. */
+.tr-mode #lb-library > :not(#tj-root) { display: none; }
+.tj-root { margin: 0 0 40px; }
+.tj-hud { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; align-items: center; padding: 8px 0; margin-bottom: 14px; background: var(--c-bg); border-bottom: 1px solid var(--lb-line); }
+.tj-hud-left { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; min-width: 160px; flex: 1 1 200px; }
+.tj-hud-left .lb-bar { flex-basis: 100%; height: 6px; }
+.tj-hud-right { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tj-chip { font-family: var(--font-tech); font-size: 0.7rem; border: 1px solid var(--lb-line); border-radius: 4px; padding: 4px 8px; }
+.tj-body { display: flex; flex-direction: column; gap: 12px; }
+.tj-card { border: 2px solid var(--c-text); border-radius: 6px; padding: 12px 14px; }
+.tj-world { border: 1px solid var(--lb-line); border-radius: 6px; padding: 12px 14px; }
+.tj-world h2 { margin: 0 0 4px; font-size: 1.1rem; }
+.tj-world-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.tj-node { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 0; border-top: 1px solid var(--lb-line); }
+.tj-node.tj-locked { opacity: .6; }
+.tj-num { flex: 0 0 34px; height: 34px; border: 2px solid var(--c-text); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-tech); font-size: 0.85rem; }
+.tj-done .tj-num { background: var(--c-text); color: var(--c-bg); }
+.tj-node-info { flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px; }
+.tj-node-info small { color: var(--c-dim); }
+.tj-stars { font-family: var(--font-tech); letter-spacing: 2px; font-size: 0.9rem; }
+.tj-stars-big { font-size: 2.2rem; letter-spacing: 6px; }
+.tj-node-acts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tj-ach { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
+.tj-ach-item { border: 1px dashed var(--lb-line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; opacity: .6; }
+.tj-ach-item.on { border-style: solid; border-color: var(--c-text); opacity: 1; }
+.tj-ach-item small { color: var(--c-dim); }
+.tj-kicker { font-family: var(--font-tech); font-size: 0.72rem; color: var(--c-dim); letter-spacing: .04em; text-transform: uppercase; }
+.tj-title { margin: 0; }
+.tj-sub { margin: 4px 0; font-size: 1.05rem; }
+.tj-goal { font-weight: 600; margin: 0; }
+.tj-teach { border-left: 3px solid var(--c-text); padding: 4px 0 4px 12px; }
+.tj-who { font-family: var(--font-tech); font-size: 0.68rem; color: var(--c-dim); text-transform: uppercase; }
+.tj-steps { padding-left: 22px; margin: 4px 0; }
+.tj-phases { display: flex; flex-wrap: wrap; gap: 4px; }
+.tj-phase { font-family: var(--font-tech); font-size: 0.68rem; padding: 3px 8px; border: 1px solid var(--lb-line); border-radius: 4px; color: var(--c-dim); }
+.tj-phase.on { background: var(--c-text); color: var(--c-bg); border-color: var(--c-text); }
+.tj-phase.done { color: var(--c-text); }
+.tj-chat { display: flex; flex-direction: column; gap: 8px; }
+.tj-bubble { align-self: flex-start; max-width: min(520px, 92%); border: 1px solid var(--lb-line); border-radius: 10px 10px 10px 2px; padding: 8px 12px; }
+.tj-bubble.tj-me { align-self: flex-end; border-radius: 10px 10px 2px 10px; border-color: var(--c-text); }
+.tj-en { font-size: 1.1rem; }
+.tj-pt { color: var(--c-dim); font-size: 0.92rem; }
+.tj-big { font-size: 1.35rem; line-height: 1.4; }
+.tj-kind { font-family: var(--font-tech); font-size: 0.72rem; color: var(--c-dim); text-transform: uppercase; }
+.tj-q { font-size: 1.05rem; margin: 4px 0; }
+.tj-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-top: 6px; }
+.tj-opt { text-align: left; padding: 10px 12px; min-height: 44px; font-size: 1rem; }
+.tj-opt.tj-right { background: var(--c-text); color: var(--c-bg); }
+.tj-opt.tj-wrong { text-decoration: line-through; opacity: .7; }
+.tj-tools { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+.tj-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tj-type { flex: 1 1 240px; font-size: 1.05rem; }
+.tj-write { width: 100%; max-width: 640px; font-size: 1.05rem; }
+.tj-tiles { display: flex; flex-wrap: wrap; gap: 6px; min-height: 46px; padding: 6px; border: 1px dashed var(--lb-line); border-radius: 6px; }
+.tj-answer { border-style: solid; border-color: var(--c-text); }
+.tj-tile { font-size: 1rem; padding: 8px 12px; }
+.tj-feed { border-left: 4px solid var(--c-text); padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; margin-top: 8px; }
+.tj-feed-no { border-left-style: dashed; }
+.tj-feed p { margin: 0; }
+.tj-prog { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
+.tj-prog .lb-bar { height: 6px; }
+.tj-count { font-family: var(--font-tech); font-size: 0.72rem; color: var(--c-dim); }
+.tj-tip { color: var(--c-dim); font-size: 0.92rem; margin: 2px 0; }
+.tj-result { min-height: 24px; }
+.tj-diff { font-size: 1.1rem; line-height: 1.6; }
+.tj-checks { padding-left: 18px; margin: 6px 0; }
+.tj-ai { border: 1px solid var(--c-text); border-radius: 6px; padding: 8px 12px; white-space: pre-wrap; margin-top: 8px; }
+.tj-rule ul { padding-left: 20px; }
+.tj-table { border-collapse: collapse; width: 100%; max-width: 520px; }
+.tj-table td { border-top: 1px solid var(--lb-line); padding: 6px 4px; }
+.tj-contrast { border-left: 3px dashed var(--c-text); padding-left: 10px; color: var(--c-dim); }
+.tj-learned { padding-left: 20px; margin: 4px 0; }
+.tj-explain details { margin-top: 4px; color: var(--c-dim); }
+.tj-toast { position: fixed; left: 50%; top: 60px; transform: translateX(-50%); z-index: 70; background: var(--c-text); color: var(--c-bg); padding: 8px 14px; border-radius: 6px; font-size: 0.88rem; max-width: 90vw; }
+.tj-toast[hidden] { display: none; }
+.tj-make { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.tj-make select { flex: 1 1 240px; }
+@media (prefers-reduced-motion: no-preference) { .tj-feed, .tj-bubble { animation: tj-in .18s ease-out; } @keyframes tj-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } } }
