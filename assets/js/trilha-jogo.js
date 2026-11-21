@@ -80,7 +80,7 @@
     }
 
     /* ------------------------------------------------------------ estado e persistência */
-    const blankState = () => ({ v: 1, xp: 0, streak: { n: 0, last: '', shield: 1 }, missions: {}, items: {}, ach: {}, texts: [], stats: { spoken: 0, written: 0, reviews: 0, bosses: 0 } });
+    const blankState = () => ({ v: 1, xp: 0, streak: { n: 0, last: '', shield: 1 }, missions: {}, items: {}, ach: {}, log: {}, texts: [], stats: { spoken: 0, written: 0, reviews: 0, bosses: 0 } });
     let S = blankState();
     try { const raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 1) S = Object.assign(blankState(), raw); } catch (e) { /* sem storage */ }
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignora */ } };
@@ -100,9 +100,16 @@
         }
         st.last = today;
     }
+    // diário de atividade por dia (alimenta a linha do tempo da evolução)
+    function logDay(field, n) {
+        const k = dayKey(); S.log = S.log || {};
+        const d = S.log[k] = S.log[k] || { xp: 0, ok: 0, bad: 0 };
+        d[field] = (d[field] || 0) + n;
+        const keys = Object.keys(S.log).sort(); while (keys.length > 120) delete S.log[keys.shift()];
+    }
     function gain(n) {
         const before = levelOf(S.xp);
-        S.xp += n; touchDay(); save();
+        S.xp += n; touchDay(); logDay('xp', n); save();
         if (levelOf(S.xp) > before) flash('Nível ' + levelOf(S.xp) + '! Você está evoluindo.');
         if (run) run.xp += n;
         renderHud();
@@ -118,7 +125,7 @@
         const it = S.items[key]; if (!it) return;
         if (ok) { it.lvl = Math.min(5, it.lvl + 1); it.ok++; it.due = now() + INTERVALS[it.lvl] * DAY; }
         else { it.lvl = Math.max(0, it.lvl - 1); it.bad++; it.due = now() + 10 * 60000; }
-        save();
+        logDay(ok ? 'ok' : 'bad', 1); save();
     }
     const dueItems = () => Object.keys(S.items).filter((k) => S.items[k].due <= now() && S.items[k].en && S.items[k].pt && !S.items[k].pattern).sort((a, b) => S.items[a].due - S.items[b].due);
     const masteredCount = () => Object.keys(S.items).filter((k) => S.items[k].lvl >= 2 && !S.items[k].pattern).length;
@@ -169,6 +176,10 @@
         async correct(student, task) {
             const s = await this.session('You are a warm native English teacher for a Brazilian adult at A1 level. Be brief, concrete and kind. Never lecture.');
             return String(await s.prompt('Task given to the student: "' + task + '"\nStudent wrote: "' + student + '"\nShow the corrected sentence in English (if it is already correct, say so and praise it). Then explain the main mistake in at most 2 short sentences in Brazilian Portuguese.')).trim();
+        },
+        async react(answer, question) {
+            const s = await this.session('You are a warm native English teacher talking with a Brazilian adult (A1-A2) about a text they just read. Reply in at most 2 very simple English sentences: react to what they said, then ask one short follow-up question. Do not correct them unless it blocks understanding.');
+            return String(await s.prompt('Question: ' + question + '\nStudent answered: ' + answer)).trim();
         }
     };
 
@@ -244,6 +255,7 @@
             body.appendChild(box);
         });
         body.appendChild(textsPanel());
+        body.appendChild(evolutionPanel());
         body.appendChild(achPanel());
         body.appendChild(teacherPanel());
     }
@@ -279,11 +291,12 @@
 
     /* ------------------------------------------------------------ rodada */
     let run = null;
-    const PHASE_NAMES = { scene: 'Descobrir', notice: 'Notar', practice: 'Praticar', speak: 'Falar', write: 'Escrever', boss: 'Conversa' };
+    const PHASE_NAMES = { scene: 'Descobrir', notice: 'Notar', practice: 'Praticar', speak: 'Falar', write: 'Escrever', boss: 'Conversa', discuss: 'Conversar' };
 
-    function startMission(m, w, kind) {
-        const phases = kind === 'boss' ? ['boss', 'write'] : (m.pattern ? ['scene', 'notice', 'practice', 'speak', 'write'] : ['scene', 'practice', 'speak', 'write']);
+    function startMission(m, w, kind, extra) {
+        const phases = kind === 'boss' ? ['boss', 'write'] : kind === 'text' ? ['scene', 'practice', 'speak', 'discuss', 'write'] : (m.pattern ? ['scene', 'notice', 'practice', 'speak', 'write'] : ['scene', 'practice', 'speak', 'write']);
         run = { m, w, kind, phases, pi: 0, stat: { ok: 0, n: 0 }, xp: 0, started: now(), speak: { best: 0 }, wrote: false, bossOk: 0, bossN: 0 };
+        if (extra) Object.assign(run, extra);
         if (m.focus) m.focus.forEach((f) => ensureItem(m.id + ':' + f.id, { en: f.en, pt: f.pt, tip: f.tip || '', typable: isTypable(f) }));
         if (m.pattern) ensureItem(m.id + ':pattern', { pattern: true, en: '', pt: '' });
         save(); briefing();
@@ -304,7 +317,7 @@
     function renderPhase() {
         clear(); renderHud();
         const p = run.phases[run.pi];
-        ({ scene: phScene, notice: phNotice, practice: phPractice, speak: phSpeak, write: phWrite, boss: phBoss })[p]();
+        ({ scene: phScene, notice: phNotice, practice: phPractice, speak: phSpeak, write: phWrite, boss: phBoss, discuss: phDiscuss })[p]();
     }
     function briefing() {
         clear(); renderHud();
@@ -677,6 +690,7 @@
         if (stars === 0) body.appendChild(mk('p', 'lb-note', isBoss ? 'Para vencer o chefão: acerte 4 das 6 respostas e passe na apresentação escrita. Tente de novo quando quiser.' : 'Para abrir a próxima missão, refaça a prática: abaixo de 60% de acerto ela ainda não abre. Você também pode liberar no mapa.'));
         const acts = mk('div', 'tj-tools');
         const list = WORLDS.map(worldList).reduce((a, b) => a.concat(b), []), idx = list.findIndex((x) => x.m.id === m.id), nxt = list[idx + 1];
+        if (stars > 0 && run.kind === 'text' && run.list) { const k = run.list.findIndex((y) => y.m.id === m.id), nt = run.list[k + 1]; if (nt) { const b = btn('Próxima parte do texto', () => startTextMission(nt), 'lb-primary'); b.id = 'tj-next-mission'; acts.appendChild(b); } }
         if (stars > 0 && nxt && run.kind !== 'text') { const b = btn('Próxima missão', () => startMission(nxt.m, nxt.w, nxt.boss ? 'boss' : 'curriculum'), 'lb-primary'); b.id = 'tj-next-mission'; acts.appendChild(b); }
         if (stars === 0) acts.appendChild(btn('Tentar de novo', () => startMission(m, run.w, run.kind), 'lb-primary'));
         const mp = btn('Mapa', () => { run = null; showMap(); }); mp.id = 'tj-map'; acts.appendChild(mp);
@@ -685,7 +699,9 @@
         run.done = true;
     }
 
-    /* ------------------------------------------------------------ Seus textos: missões de leitura */
+    /* ------------------------------------------------------------ Leitura: missões geradas do texto que estamos estudando */
+    // Método (ver CLAUDE.md): leitura apoiada (input compreensível) -> palavras do trecho com repetição espaçada e lacunas (recuperação)
+    // -> shadowing (ouvir e falar logo atrás) -> discussão (responder, não só ler) -> escrita própria. Tudo a partir das frases do texto.
     const wcOf = (p) => p.s.join(' ').split(/\s+/).filter(Boolean).length;
     function chaptersOf(paras, size) {
         const out = []; let from = 0, acc = 0;
@@ -697,14 +713,15 @@
         if (out.length > 1 && out[out.length - 1].to - out[out.length - 1].from < 2 && acc < size * 0.4) { out[out.length - 2].to = paras.length; out.pop(); }
         return out;
     }
+    const textList = (tx) => tx.chapters.map((c, i) => ({ m: { id: 't:' + tx.id + ':' + i, n: i + 1, title: { pt: tx.title + ' · parte ' + (i + 1) }, goal: { pt: 'Ler, ouvir, falar, discutir e escrever sobre este trecho.' } }, w: WORLDS[0], text: tx, ch: c }));
     function textsPanel() {
         const box = mk('section', 'tj-world tj-texts'); box.id = 'tj-texts';
-        box.appendChild(mk('h2', null, 'Seus textos'));
-        box.appendChild(mk('p', 'lb-note', 'Qualquer texto em inglês que você enviou na aba Leitor de PDF vira missões de leitura: cena com tradução, palavras do trecho, frases para montar, fala e escrita.'));
+        box.appendChild(mk('h2', null, 'Lendo agora'));
+        box.appendChild(mk('p', 'lb-note', 'O texto em inglês que você está estudando no Leitor de PDF vira missões: leitura com tradução, palavras do trecho, shadowing, discussão e escrita. A lista começa pelo que você abriu por último.'));
         const mine = mk('div', 'tj-list'); box.appendChild(mine);
         S.texts.forEach((tx) => {
-            const list = tx.chapters.map((c, i) => ({ m: { id: 't:' + tx.id + ':' + i, n: i + 1, title: { pt: tx.title + ' · parte ' + (i + 1) }, goal: { pt: 'Ler, ouvir, falar e escrever sobre este trecho.' } }, w: WORLDS[0], text: tx, ch: c }));
-            const h = mk('h3', 'tj-sub', tx.title); mine.appendChild(h);
+            mine.appendChild(mk('h3', 'tj-sub', tx.title));
+            const list = textList(tx);
             list.forEach((x, i) => {
                 const ok = unlockedAt(list, i), r = doneRec(x.m.id);
                 const node = mk('div', 'tj-node' + (ok ? '' : ' tj-locked') + (passed(x.m.id) ? ' tj-done' : '')); node.dataset.id = x.m.id;
@@ -717,15 +734,15 @@
         });
         const make = mk('div', 'tj-make'); box.appendChild(make);
         D.db.all('meta').then((metas) => {
-            metas = metas.filter((m) => m.lang === 'en' && !(m.x && m.x.trilha));
-            if (!metas.length) { make.appendChild(mk('p', 'lb-note', 'Nenhum texto em inglês na biblioteca ainda. Envie um na aba Leitor de PDF e volte aqui.')); return; }
+            metas = metas.filter((m) => m.lang === 'en' && !(m.x && m.x.trilha) && !S.texts.some((t) => t.docId === m.id)).sort((a, b) => (b.lastOpened || 0) - (a.lastOpened || 0));
+            if (!metas.length) { make.appendChild(mk('p', 'lb-note', S.texts.length ? 'Todos os textos em inglês da biblioteca já têm missões.' : 'Nenhum texto em inglês na biblioteca ainda. Envie um na aba Leitor de PDF e volte aqui.')); return; }
             const sel = mk('select', 'lb-input'); sel.id = 'tj-text-src';
             metas.forEach((m) => { const o = mk('option', null, m.title); o.value = m.id; sel.appendChild(o); });
             const go = btn('Criar missões de leitura', async () => {
                 go.disabled = true;
                 const d = await D.db.get('docs', sel.value), meta = metas.find((m) => m.id === sel.value);
                 const chs = chaptersOf(d.paras, 450).map((c, i) => ({ from: c.from, to: c.to, n: i + 1 }));
-                S.texts.push({ id: sel.value + '-' + Math.random().toString(36).slice(2, 6), docId: sel.value, title: meta.title, chapters: chs }); save(); showMap();
+                S.texts.push({ id: sel.value, docId: sel.value, title: meta.title, chapters: chs }); save(); showMap();
             }, 'lb-primary'); go.id = 'tj-text-make';
             make.append(sel, go);
         }).catch((e) => { make.appendChild(mk('p', 'lb-error', 'Não consegui ler a biblioteca: ' + (e && e.message ? e.message : e))); });
@@ -736,7 +753,7 @@
         const d = await D.db.get('docs', x.text.docId);
         const paras = d.paras.slice(x.ch.from, x.ch.to), sents = [];
         paras.forEach((p) => { if (p.t === 'h') return; p.s.forEach((s) => { const n = s.split(/\s+/).length; if (n >= 4 && n <= 22 && /[a-z]/i.test(s)) sents.push(s); }); });
-        const scene = [], D2 = { en: 'en' };
+        const scene = [];
         const ptOf = async (s) => { try { return await window.DDLab.translateText(s, 'en'); } catch (e) { return null; } };
         const first = sents.slice(0, 6);
         for (const s of first) scene.push({ who: 'Texto', en: s, pt: await ptOf(s) });
@@ -759,24 +776,177 @@
             if (others.length < 2) continue;
             cloze.push({ en: s.replace(new RegExp('\\b' + f.en + '\\b', 'i'), '___'), answer: [f.en], options: [f.en].concat(others), pt: f.pt, why: 'Aqui o sentido pede "' + f.en + '" (' + f.pt + ').' });
         }
-        const keyRe = Array.from(new Set(sents.join(' ').toLowerCase().match(/\p{L}{5,}/gu) || [])).filter((w) => !STOP.has(w)).slice(0, 80).join('|');
+        const keys = Array.from(new Set(sents.join(' ').toLowerCase().match(/\p{L}{5,}/gu) || [])).filter((w) => !STOP.has(w)).slice(0, 80).join('|');
+        const keyRe = keys ? '\\b(' + keys + ')\\b' : '\\w+';
         const title = x.text.title + ' · parte ' + x.m.n;
-        void D2;
+        const lenCheck = (n, msg) => ({ re: '(\\w+\\W+){' + (n - 1) + '}\\w+', miss: msg, hit: 'Resposta completa.' });
         return {
-            id: x.m.id, n: x.m.n, minutes: 12, title: { pt: title }, goal: { pt: 'Entender, falar e escrever sobre este trecho.' },
-            teach: { pt: 'Este trecho é seu. Ouça, entenda pelo contexto e depois fixe as palavras que mais valem a pena.' },
+            id: x.m.id, n: x.m.n, minutes: 15, title: { pt: title }, goal: { pt: 'Entender, falar, discutir e escrever sobre este trecho.' },
+            teach: { pt: 'Este trecho é seu. Ouça, entenda pelo contexto, fixe as palavras que mais valem a pena e depois use o inglês para dizer o que pensa.' },
             scene: (withPt.length >= 3 ? withPt : scene.map((l) => Object.assign({}, l, { pt: l.pt || '(sem tradução: ative o tradutor no Leitor de PDF)' }))),
-            focus, build, cloze, speak: first.slice(0, 3).map((s) => ({ en: s, pt: (scene.find((l) => l.en === s) || {}).pt || '' })),
-            write: { prompt: { pt: 'Escreva, em inglês, uma frase sobre o que você leu neste trecho.' }, model: first[0] || 'I read this text.', checks: [{ re: '(\\w+\\W+){3}\\w+', miss: 'Escreva uma frase com pelo menos 4 palavras.', hit: 'Frase completa.' }, { re: keyRe ? '\\b(' + keyRe + ')\\b' : '\\w+', miss: 'Use alguma palavra do trecho.', hit: 'Usou palavras do trecho.' }], pass: 2 }
+            focus, build, cloze,
+            speak: first.slice(0, 3).map((s) => ({ en: s, pt: (scene.find((l) => l.en === s) || {}).pt || '', tip: 'Shadowing: ouça uma vez e fale logo atrás da voz, com o mesmo ritmo.' })),
+            discuss: [
+                { q: 'What is this part about? Say it in your own words.', hint: 'Diga com suas palavras do que trata este trecho.', model: first[0] || 'This part is about the text.', checks: [lenCheck(5, 'Use pelo menos 5 palavras.'), { re: keyRe, miss: 'Use alguma palavra do trecho.', hit: 'Usou palavras do trecho.' }], pass: 2 },
+                { q: 'Which idea is the most interesting to you? Why?', hint: 'Escolha uma ideia e explique por quê.', model: 'I find this idea interesting because it is part of my daily life.', checks: [lenCheck(6, 'Use pelo menos 6 palavras.'), { re: '\\b(because|since|so|but|and)\\b', miss: 'Tente explicar com "because" (porque).', hit: 'Deu uma razão.' }], pass: 2 },
+                { q: 'Do you agree with the text? Yes or no, and why?', hint: 'Concorde ou discorde, com um motivo.', model: 'I agree with the text, but I would add one more example.', checks: [lenCheck(5, 'Use pelo menos 5 palavras.'), { re: '\\b(yes|no|agree|disagree|not sure|maybe|think|believe)\\b', miss: 'Diga se concorda: "I agree" ou "I disagree".', hit: 'Deu a sua posição.' }], pass: 2 }
+            ],
+            write: { prompt: { pt: 'Escreva, em inglês, um pequeno resumo (2 frases) do que você leu e a sua opinião.' }, model: (first[0] || 'I read this text.') + ' I think it is important.', checks: [lenCheck(8, 'Escreva pelo menos 8 palavras (duas frases curtas).'), { re: keyRe, miss: 'Use alguma palavra do trecho.', hit: 'Usou palavras do trecho.' }, { re: '\\b(I|my|me)\\b', miss: 'Inclua a sua opinião (I think…).', hit: 'Incluiu a sua opinião.' }], pass: 2 }
         };
     }
     async function startTextMission(x) {
         clear(); renderHud();
         body.appendChild(mk('p', 'lb-note', 'Preparando a sua missão a partir do texto…'));
         let lesson;
-        try { lesson = await buildTextLesson(x); } catch (e) { body.appendChild(mk('p', 'lb-error', 'Não consegui preparar este trecho.')); return; }
+        try { lesson = await buildTextLesson(x); } catch (e) { body.textContent = ''; body.appendChild(mk('p', 'lb-error', 'Não consegui preparar este trecho.')); body.appendChild(btn('Mapa', showMap)); return; }
         if (!lesson.scene.length) { body.textContent = ''; body.appendChild(mk('p', 'lb-error', 'Este trecho não tem frases suficientes.')); body.appendChild(btn('Mapa', showMap)); return; }
-        startMission(lesson, WORLDS[0], 'text');
+        startMission(lesson, WORLDS[0], 'text', { text: x.text, list: textList(x.text) });
+    }
+
+    /* ---- Conversar: discussão sobre o trecho (responder por voz ou texto; o professor local reage, se existir) ---- */
+    function phDiscuss() {
+        const m = run.m, qs = m.discuss || []; head('Conversar');
+        if (!qs.length) return nextPhase();
+        body.appendChild(mk('p', 'lb-note', 'Agora é a sua vez de falar sobre o texto. Responda com poucas palavras: não precisa ser perfeito. Vale por voz ou escrevendo.'));
+        const zone = mk('div', 'tj-zone'); body.appendChild(zone);
+        function turn(i) {
+            zone.textContent = '';
+            if (i >= qs.length) { const b = btn('Continuar', nextPhase, 'lb-primary'); b.id = 'tj-next'; zone.appendChild(b); return; }
+            const q = qs[i]; run.ex = { kind: 'discuss', answer: q.model };
+            const card = mk('div', 'tj-speak');
+            card.append(mk('div', 'tj-count', (i + 1) + ' de ' + qs.length), mk('div', 'tj-big tj-en', q.q), mk('div', 'tj-pt', q.hint));
+            const ta = mk('textarea', 'lb-input tj-write'); ta.rows = 2; ta.id = 'tj-dta'; ta.placeholder = 'Responda em inglês'; ta.spellcheck = false;
+            const out = mk('div', 'tj-result'); out.id = 'tj-dres';
+            const acts = mk('div', 'tj-tools');
+            acts.appendChild(btn('Ouvir a pergunta', () => say(q.q)));
+            if (getSR()) {
+                const mic = btn('Responder falando', async () => {
+                    mic.disabled = true; out.textContent = 'Ouvindo…';
+                    try { const said = await listenOnce(); ta.value = said; out.textContent = said ? 'Entendi: ' + said + ' (ajuste se quiser e verifique).' : 'Não entendi. Tente de novo ou escreva.'; }
+                    catch (e) { out.textContent = 'Não consegui ouvir. Escreva a resposta.'; }
+                    mic.disabled = false;
+                }); mic.id = 'tj-dmic'; acts.appendChild(mic);
+            }
+            let tries = 0;
+            const check = btn('Verificar', () => {
+                tries++;
+                const text = ta.value.trim(), r = evalChecks(q, text);
+                out.textContent = '';
+                const ul = mk('ul', 'tj-checks'); r.hits.forEach((h) => ul.appendChild(mk('li', h.ok ? 'lb-ok' : 'lb-miss', h.ok ? h.good : h.msg))); out.appendChild(ul);
+                const ok = r.n >= q.pass;
+                if (ok || tries >= 2) {
+                    tally(ok); gain(ok ? 15 : 3); if (ok) { S.stats.discussed = (S.stats.discussed || 0) + 1; save(); }
+                    out.appendChild(mk('p', ok ? 'lb-ok' : null, (ok ? 'Muito bem! ' : 'Siga em frente. ') + 'Uma resposta possível: "' + q.model + '"'));
+                    check.disabled = true; ta.disabled = true; say(q.model);
+                    const fin = () => { if (out.querySelector('#tj-next')) return; const nx = btn(i + 1 >= qs.length ? 'Terminar a conversa' : 'Próxima pergunta', () => turn(i + 1), 'lb-primary'); nx.id = 'tj-next'; out.appendChild(nx); };
+                    if (ok && text) {
+                        const reply = mk('div', 'tj-ai', ''); out.appendChild(reply);
+                        ai.avail().then(async (v) => {
+                            if (!v) { reply.remove(); return fin(); }
+                            reply.textContent = 'O professor está lendo…';
+                            try { reply.textContent = await ai.react(text, q.q); } catch (e) { reply.remove(); }
+                            fin();
+                        }).catch(() => { reply.remove(); fin(); });
+                    } else fin();
+                } else out.appendChild(mk('p', null, 'Ajuste e tente de novo. Sem pressa.'));
+            }, 'lb-primary'); check.id = 'tj-dcheck';
+            acts.appendChild(check);
+            card.append(ta, acts, out); zone.appendChild(card);
+        }
+        turn(0);
+    }
+
+    /* ------------------------------------------------------------ Nossa evolução: o que já aprendemos e como estamos indo */
+    // dados puros (testáveis): números gerais, itens por missão, padrões descobertos e últimos 14 dias
+    function evolution() {
+        const list = WORLDS.map(worldList).reduce((a, b) => a.concat(b), []);
+        const missions = list.map((x) => {
+            const r = doneRec(x.m.id), keys = Object.keys(S.items).filter((k) => k.indexOf(x.m.id + ':') === 0 && !S.items[k].pattern);
+            const items = keys.map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
+            return { id: x.m.id, n: x.m.n, boss: !!x.boss, title: txt(x.m.title), done: !!r.done, stars: r.stars || 0, best: r.best || 0, items, pattern: x.m.pattern && (r.done || (S.items[x.m.id + ':pattern'] && S.items[x.m.id + ':pattern'].ok > 0)) ? x.m.pattern : null };
+        });
+        const texts = S.texts.map((tx) => {
+            const ls = textList(tx), keys = Object.keys(S.items).filter((k) => k.indexOf('t:' + tx.id + ':') === 0 && !S.items[k].pattern);
+            const items = keys.map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
+            return { id: tx.id, title: tx.title, parts: ls.length, done: ls.filter((x) => doneRec(x.m.id).done).length, stars: ls.reduce((a, x) => a + (doneRec(x.m.id).stars || 0), 0), items };
+        });
+        const done = missions.filter((m) => m.done), bests = done.map((m) => m.best);
+        const days = [];
+        for (let i = 13; i >= 0; i--) { const k = dayKey(now() - i * DAY), d = (S.log || {})[k] || { xp: 0, ok: 0, bad: 0 }; days.push({ key: k, xp: d.xp || 0, items: (d.ok || 0) + (d.bad || 0) }); }
+        const allItems = Object.keys(S.items).filter((k) => !S.items[k].pattern && S.items[k].en);
+        return {
+            level: levelOf(S.xp), xp: S.xp, streak: S.streak.n, mastered: masteredCount(), seen: allItems.length, due: dueItems().length,
+            spoken: S.stats.spoken, written: S.stats.written, discussed: S.stats.discussed || 0, texts, reviews: S.stats.reviews,
+            missionsDone: done.length, missionsTotal: missions.length, stars: missions.reduce((a, m) => a + m.stars, 0), starsMax: missions.length * 3,
+            avg: bests.length ? Math.round(bests.reduce((a, b) => a + b, 0) / bests.length) : null, missions, days
+        };
+    }
+    function evolutionPanel() {
+        const E = evolution(), box = mk('section', 'tj-world tj-evo'); box.id = 'tj-evo';
+        box.appendChild(mk('h2', null, 'Nossa evolução'));
+        if (!E.seen && !E.missionsDone) { box.appendChild(mk('p', 'lb-note', 'Quando você fizer a primeira missão, aqui aparece o que aprendemos e como você está evoluindo.')); return box; }
+        const nums = mk('div', 'tj-nums'); nums.id = 'tj-nums';
+        [['Nível', E.level], ['XP', E.xp], ['Sequência', E.streak + (E.streak === 1 ? ' dia' : ' dias')], ['Missões', E.missionsDone + '/' + E.missionsTotal], ['Estrelas', E.stars + '/' + E.starsMax],
+            ['Palavras dominadas', E.mastered + ' de ' + E.seen], ['Para revisar', E.due], ['Frases faladas', E.spoken], ['Frases escritas', E.written], ['Respostas na conversa', E.discussed], ['Precisão média', E.avg == null ? '—' : E.avg + '%']].forEach((p) => {
+            const c = mk('div', 'tj-num-card'); c.append(mk('strong', null, String(p[1])), mk('small', null, p[0])); nums.appendChild(c);
+        });
+        box.appendChild(nums);
+        // linha do tempo: barras dos últimos 14 dias (XP do dia)
+        const peak = Math.max(10, ...E.days.map((d) => d.xp)), tl = mk('div', 'tj-timeline'); tl.id = 'tj-timeline'; tl.setAttribute('role', 'img');
+        tl.setAttribute('aria-label', 'Atividade dos últimos 14 dias: ' + E.days.filter((d) => d.xp > 0).length + ' dias com estudo');
+        E.days.forEach((d, i) => {
+            const col = mk('div', 'tj-tl-col'), bar = mk('div', 'tj-tl-bar'); bar.style.height = Math.max(d.xp ? 6 : 2, Math.round(d.xp / peak * 70)) + 'px'; bar.title = d.key + ': ' + d.xp + ' XP, ' + d.items + ' itens revisados';
+            if (d.xp) bar.classList.add('on');
+            col.append(bar, mk('small', null, i === 13 ? 'hoje' : d.key.slice(8))); tl.appendChild(col);
+        });
+        box.append(mk('h3', 'tj-sub', 'Últimos 14 dias'), tl);
+        // o que já aprendemos, por missão
+        const learned = E.missions.filter((m) => m.items.length);
+        if (learned.length) {
+            box.appendChild(mk('h3', 'tj-sub', 'O que já aprendemos'));
+            learned.forEach((m) => {
+                const det = mk('details', 'tj-learn'); det.dataset.id = m.id;
+                const known = m.items.filter((i) => i.lvl >= 2).length;
+                det.appendChild(mk('summary', null, (m.boss ? 'Chefão' : m.n + '. ' + m.title) + ' · ' + known + '/' + m.items.length + ' dominadas' + (m.stars ? ' · ' + '★'.repeat(m.stars) : '')));
+                const ul = mk('ul', 'tj-words');
+                m.items.forEach((i) => {
+                    const li = mk('li', i.due && i.lvl > 0 ? 'tj-due' : null);
+                    li.append(mk('span', 'tj-en', i.en), mk('span', 'tj-pt', ' = ' + i.pt), mk('span', 'tj-dots', ' ' + '●'.repeat(i.lvl) + '○'.repeat(5 - i.lvl)));
+                    li.title = 'Domínio ' + i.lvl + ' de 5 · acertos ' + i.ok + ' · erros ' + i.bad + (i.due && i.lvl > 0 ? ' · pede revisão' : '');
+                    ul.appendChild(li);
+                });
+                det.appendChild(ul); box.appendChild(det);
+            });
+        }
+        // palavras e progresso dos textos que estudamos (leitura)
+        E.texts.forEach((tx) => {
+            const det = mk('details', 'tj-learn tj-textlearn'); det.dataset.id = tx.id;
+            const known = tx.items.filter((i) => i.lvl >= 2).length;
+            det.appendChild(mk('summary', null, 'Do seu texto: ' + tx.title + ' · ' + tx.done + '/' + tx.parts + ' partes · ' + known + '/' + tx.items.length + ' palavras dominadas' + (tx.stars ? ' · ' + '★'.repeat(Math.min(tx.stars, 9)) : '')));
+            const ul = mk('ul', 'tj-words');
+            tx.items.forEach((i) => {
+                const li = mk('li', i.due && i.lvl > 0 ? 'tj-due' : null);
+                li.append(mk('span', 'tj-en', i.en), mk('span', 'tj-pt', ' = ' + i.pt), mk('span', 'tj-dots', ' ' + '●'.repeat(i.lvl) + '○'.repeat(5 - i.lvl)));
+                ul.appendChild(li);
+            });
+            if (!tx.items.length) ul.appendChild(mk('li', null, 'Faça a primeira parte para as palavras do texto aparecerem aqui.'));
+            det.appendChild(ul); box.appendChild(det);
+        });
+        // estruturas e padrões descobertos
+        const pats = E.missions.filter((m) => m.pattern);
+        if (pats.length) {
+            box.appendChild(mk('h3', 'tj-sub', 'Estruturas que já descobrimos'));
+            pats.forEach((m) => {
+                const p = m.pattern, det = mk('details', 'tj-learn tj-pat'); det.dataset.id = m.id;
+                det.appendChild(mk('summary', null, txt(p.title)));
+                const ul = mk('ul'); p.rule.forEach((r) => ul.appendChild(mk('li', null, r.pt)));
+                det.appendChild(ul);
+                if (p.table && p.table.length) { const tb = mk('table', 'tj-table'); p.table.forEach((row) => { const tr = mk('tr'); tr.append(mk('td', 'tj-en', row[0]), mk('td', 'tj-pt', row[1])); tb.appendChild(tr); }); det.appendChild(tb); }
+                if (p.contrast) det.appendChild(mk('p', 'tj-contrast', p.contrast));
+                box.appendChild(det);
+            });
+        }
+        return box;
     }
 
     /* ------------------------------------------------------------ conversa livre com o professor (IA local) */
@@ -807,8 +977,8 @@
     /* ------------------------------------------------------------ início */
     showMap();
     window.__ddJogo = {
-        norm, tokens, accept, diffWords, explain, levelOf, touchDay, gain, ensureItem, reviewItem, dueItems, masteredCount, buildQueue, chaptersOf, evalChecks, checkAch,
-        startMission, startReview, showMap, startTextMission, buildTextLesson, ai, ACH, WORLDS,
+        norm, tokens, accept, diffWords, explain, levelOf, touchDay, gain, ensureItem, reviewItem, dueItems, masteredCount, buildQueue, evalChecks, checkAch,
+        chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
         reset() { S = blankState(); save(); showMap(); }, renderPhase, nextPhase, get S() { return S; }, set S(v) { S = v; }, get run() { return run; }, save, dayKey
     };
 })();

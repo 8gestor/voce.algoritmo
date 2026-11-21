@@ -73,6 +73,25 @@
 .tj-explain details { margin-top: 4px; color: var(--c-dim); }
 .tj-toast { position: fixed; left: 50%; top: 60px; transform: translateX(-50%); z-index: 70; background: var(--c-text); color: var(--c-bg); padding: 8px 14px; border-radius: 6px; font-size: 0.88rem; max-width: 90vw; }
 .tj-toast[hidden] { display: none; }
+@media (prefers-reduced-motion: no-preference) { .tj-feed, .tj-bubble { animation: tj-in .18s ease-out; } @keyframes tj-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } } }
+
+/* Nossa evolução */
+.tj-nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin: 8px 0; }
+.tj-num-card { border: 1px solid var(--lb-line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; }
+.tj-num-card strong { font-size: 1.25rem; }
+.tj-num-card small { color: var(--c-dim); }
+.tj-timeline { display: flex; align-items: flex-end; gap: 4px; height: 100px; border-bottom: 1px solid var(--lb-line); padding-top: 6px; }
+.tj-tl-col { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; min-width: 0; }
+.tj-tl-col small { font-family: var(--font-tech); font-size: 0.6rem; color: var(--c-dim); }
+.tj-tl-bar { width: 100%; max-width: 26px; background: var(--lb-line); border-radius: 2px 2px 0 0; }
+.tj-tl-bar.on { background: var(--c-text); }
+.tj-learn { border-top: 1px solid var(--lb-line); padding: 6px 0; }
+.tj-learn summary { cursor: pointer; font-weight: 600; }
+.tj-words { list-style: none; padding-left: 4px; margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
+.tj-words li { display: flex; flex-wrap: wrap; gap: 0 4px; align-items: baseline; }
+.tj-dots { font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-dim); letter-spacing: 1px; }
+.tj-due .tj-dots::after { content: ' · rever'; color: var(--c-text); letter-spacing: 0; }
+
+/* Lendo agora */
 .tj-make { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .tj-make select { flex: 1 1 240px; }
-@media (prefers-reduced-motion: no-preference) { .tj-feed, .tj-bubble { animation: tj-in .18s ease-out; } @keyframes tj-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } } }

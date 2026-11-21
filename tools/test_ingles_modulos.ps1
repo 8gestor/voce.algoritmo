@@ -498,18 +498,43 @@ $test = @'
       await DD.addText('Texto da trilha', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(kpar).join('\n\n'));
       await until(function () { return DD.doc && DD.doc.title === 'Texto da trilha'; }, 20000);
       DD.$('lb-back').click(); await wait(300); J.showMap(); await until(function () { return jq('#tj-text-src'); }, 5000);
-      ok('K17 seus textos: aparece a escolha do texto em inglês da biblioteca', !!jq('#tj-text-src') && jqa('#tj-text-src option').some(function (o) { return o.textContent === 'Texto da trilha'; }), 'sel=' + !!jq('#tj-text-src') + ' doc=' + (DD.doc && DD.doc.title) + ' metas=' + (await DD.db.all('meta')).map(function (m) { return m.title + ':' + m.lang; }).join(';') + ' make=' + (jq('.tj-make') ? jq('.tj-make').innerHTML.slice(0, 300) : 'sem make'));
+      ok('K18 lendo agora: o texto em inglês da biblioteca aparece para criar missões', !!jq('#tj-texts') && !!jq('#tj-text-src') && jqa('#tj-text-src option').some(function (o) { return o.textContent === 'Texto da trilha'; }));
       var sel = jq('#tj-text-src'); sel.value = jqa('#tj-text-src option').filter(function (o) { return o.textContent === 'Texto da trilha'; })[0].value;
       jq('#tj-text-make').click(); await until(function () { return jqa('.tj-texts .tj-node').length >= 2; }, 5000);
       var tnodes = jqa('.tj-texts .tj-node');
-      ok('K17b o texto vira missões de leitura em ordem, só a primeira aberta', tnodes.length >= 2 && !tnodes[0].classList.contains('tj-locked') && tnodes[1].classList.contains('tj-locked'), tnodes.length + ' missões');
+      ok('K18b o texto vira missões de leitura em ordem, só a primeira aberta', tnodes.length >= 2 && !tnodes[0].classList.contains('tj-locked') && tnodes[1].classList.contains('tj-locked'), tnodes.length + ' missões');
       tnodes[0].querySelector('.tj-go').click();
       await until(function () { return jq('#tj-start'); }, 8000);
       var tl = J.run.m;
-      ok('K17c missão de leitura gera cena traduzida, palavras do trecho, frases e escrita', tl.scene.length >= 3 && tl.focus.length >= 2 && tl.build.length >= 1 && tl.cloze.length >= 1 && tl.speak.length >= 1 && !!tl.write && !tl.pattern, tl.scene.length + ' falas, ' + tl.focus.length + ' palavras');
-      ok('K17d palavras do trecho trazem significado e o contexto', tl.focus.every(function (f) { return f.pt && f.tip; }) && J.run.phases.indexOf('notice') < 0);
+      ok('K18c missão de leitura gera cena traduzida, palavras, frases, shadowing, discussão e escrita', tl.scene.length >= 3 && tl.focus.length >= 2 && tl.build.length >= 1 && tl.cloze.length >= 1 && tl.speak.length >= 1 && tl.discuss.length === 3 && !!tl.write && !tl.pattern, tl.scene.length + ' falas, ' + tl.focus.length + ' palavras');
+      ok('K18d as etapas seguem o método: ler, palavras, shadowing, conversar, escrever', J.run.phases.join(',') === 'scene,practice,speak,discuss,write' && tl.speak[0].tip.indexOf('Shadowing') === 0 && tl.focus.every(function (f) { return f.pt && f.tip; }));
+      J.run.pi = J.run.phases.indexOf('discuss'); J.renderPhase(); await wait(80);
+      var dsteps = jqa('#tj-phases .tj-phase').map(function (e) { return e.textContent; });
+      ok('K18e etapa Conversar mostra a pergunta em inglês, a dica e a resposta por texto', dsteps.indexOf('Conversar') >= 0 && /What is this part about/.test(document.body.textContent) && !!jq('#tj-dta') && !!jq('#tj-dcheck'));
+      jq('#tj-dta').value = 'ok'; jq('#tj-dcheck').click(); await wait(80);
+      ok('K18f resposta curta recebe dica e não passa', /pelo menos 5 palavras/.test(jq('#tj-dres').textContent) && !jq('#tj-next'));
+      var answers = ['This part is about surveillance capitalism and behavioural surplus', 'I find the predictions idea interesting because platforms know my habits', 'Yes I agree with the text because companies sell our behaviour'];
+      for (var di = 0; di < 3; di++) {
+        jq('#tj-dta').value = answers[di]; jq('#tj-dcheck').click();
+        await until(function () { return jq('#tj-dres #tj-next'); }, 4000);
+        if (di === 0) ok('K18g resposta boa passa, mostra uma resposta possível e libera a próxima pergunta', /Muito bem/.test(jq('#tj-dres').textContent) && /Uma resposta poss/.test(jq('#tj-dres').textContent));
+        jq('#tj-dres #tj-next').click(); await wait(60);
+      }
+      ok('K18h a conversa termina, conta as respostas e segue para a escrita', J.S.stats.discussed >= 3 && !!jq('#tj-next'), 'discussed=' + J.S.stats.discussed);
       jq('#tj-home').click(); await wait(60);
-      // ==== PROXIMAS ====
+      J.showMap(); await wait(120);
+      ok('K19 o painel Lendo agora e o painel Nossa evolução convivem no mapa', !!jq('#tj-texts') && !!jq('#tj-evo'));
+      var evn = jqa('#tj-nums .tj-num-card').map(function (c) { return c.textContent; });
+      ok('K19b números da evolução: nível, XP, sequência, missões, estrelas, palavras, falas, escritas, conversas, precisão', evn.length === 11 && evn.some(function (t) { return /^\d+N.vel$/.test(t); }) && evn.some(function (t) { return /^\d+\/7Miss/.test(t); }) && evn.some(function (t) { return /^\d+%Precis/.test(t); }) && evn.some(function (t) { return /^\d+ de \d+Palavras/.test(t); }) && evn.some(function (t) { return /^\d+Respostas na conversa$/.test(t); }), evn.join(' | '));
+      var E = J.evolution();
+      ok('K19c a linha do tempo tem 14 dias e destaca o dia de hoje com XP', jqa('#tj-timeline .tj-tl-col').length === 14 && jqa('#tj-timeline .tj-tl-bar.on').length >= 1 && E.days[13].xp > 0, 'xp hoje=' + E.days[13].xp);
+      var lm = jq('.tj-learn[data-id="w1m1"]');
+      ok('K19d o que já aprendemos: palavras da missão 1 com tradução e domínio', !!lm && lm.querySelectorAll('.tj-words li').length === 8 && /Hello/.test(lm.textContent) && lm.querySelectorAll('.tj-dots').length === 8, lm && lm.querySelectorAll('.tj-words li').length + ' itens');
+      ok('K19e estruturas descobertas aparecem com a regra e a tabela', !!jq('.tj-pat[data-id="w1m1"]') && jqa('.tj-pat').length >= 1 && !!jq('.tj-pat table'));
+      var tx = jq('.tj-textlearn');
+      ok('K19f a evolução mostra o texto estudado: partes, palavras do texto e domínio', !!tx && /Texto da trilha/.test(tx.textContent) && E.texts.length === 1 && E.texts[0].items.length >= 2 && tx.querySelectorAll('.tj-dots').length === E.texts[0].items.length, tx && tx.querySelector('summary').textContent);
+      var before = E.mastered; J.reset(); await wait(100);
+      ok('K19g sem histórico, o painel só convida a fazer a primeira missão', !!jq('#tj-evo') && !jq('#tj-nums') && /primeira miss/.test(jq('#tj-evo').textContent) && before > 0);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();
