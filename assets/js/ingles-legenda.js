@@ -122,6 +122,7 @@
         bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bOff.title = bOff.ariaLabel = t('off');
         dock.setAttribute('aria-label', t('group'));
+        D.postParent({ type: 'legend-state', on });
         if (btn) { btn.textContent = t('btn'); btn.title = t('tip'); btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on)); }
     }
 
@@ -183,6 +184,7 @@
         D.emit('tap', ev);
     });
 
+    window.addEventListener('message', (e) => { if (e.data && e.data.type === 'legend-toggle') { on = !on; save(); sync(); } });
     buildButton();
     labels();
     sync();

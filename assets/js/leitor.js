@@ -32,6 +32,12 @@ let inExtra = false;      // true quando a página aberta é uma ferramenta de `
 
 const frameEl = () => document.getElementById('content-frame');
 
+function setLegendBtn(show, on) {
+    const b = document.getElementById('btn-legenda');
+    if (!b) return;
+    b.hidden = !show; b.classList.toggle('active', !!on); b.setAttribute('aria-pressed', String(!!on));
+}
+
 function sendMsg(type, value) {
     const win = frameEl().contentWindow;
     if (win) win.postMessage({ type, value }, '*');
@@ -401,6 +407,7 @@ function init() {
 function loadChapter(idx) {
     saveStats();                 // grava o avanço do capítulo que está saindo (a página de estatísticas lê daqui)
     inExtra = false;
+    setLegendBtn(false, false);
     currentIdx = idx;
     const frame = frameEl();
     const btnTts = document.getElementById('btn-tts');
@@ -429,6 +436,7 @@ function loadChapter(idx) {
 function loadExtra(k) {
     saveStats();
     inExtra = true;
+    setLegendBtn(true, false);
     labHud = null;
     const frame = frameEl();
     const btnTts = document.getElementById('btn-tts');
@@ -494,6 +502,7 @@ window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'dd-lab-hud') { labHud = e.data.hud || null; if (inExtra) renderLabHud(); }
     if (e.data && e.data.type === 'dd-progress') onProgress(e.data);
     if (e.data && e.data.type === 'dd-listen') onListen(e.data);
+    if (e.data && e.data.type === 'legend-state') setLegendBtn(true, e.data.on);
     if (e.data && e.data.type === 'tts-state') {
         const btn = document.getElementById('btn-tts');
         ttsPlaying = !!e.data.isPlaying;
