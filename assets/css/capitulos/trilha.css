@@ -92,6 +92,3 @@
 .tj-dots { font-family: var(--font-tech); font-size: 0.7rem; color: var(--c-dim); letter-spacing: 1px; }
 .tj-due .tj-dots::after { content: ' · rever'; color: var(--c-text); letter-spacing: 0; }
 
-/* Lendo agora */
-.tj-make { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-.tj-make select { flex: 1 1 240px; }

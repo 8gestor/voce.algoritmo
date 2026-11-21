@@ -254,7 +254,6 @@
             list.forEach((x, i) => box.appendChild(missionNode(x, i, list)));
             body.appendChild(box);
         });
-        body.appendChild(textsPanel());
         body.appendChild(evolutionPanel());
         body.appendChild(achPanel());
         body.appendChild(teacherPanel());
@@ -714,40 +713,6 @@
         return out;
     }
     const textList = (tx) => tx.chapters.map((c, i) => ({ m: { id: 't:' + tx.id + ':' + i, n: i + 1, title: { pt: tx.title + ' · parte ' + (i + 1) }, goal: { pt: 'Ler, ouvir, falar, discutir e escrever sobre este trecho.' } }, w: WORLDS[0], text: tx, ch: c }));
-    function textsPanel() {
-        const box = mk('section', 'tj-world tj-texts'); box.id = 'tj-texts';
-        box.appendChild(mk('h2', null, 'Lendo agora'));
-        box.appendChild(mk('p', 'lb-note', 'O texto em inglês que você está estudando no Leitor de PDF vira missões: leitura com tradução, palavras do trecho, shadowing, discussão e escrita. A lista começa pelo que você abriu por último.'));
-        const mine = mk('div', 'tj-list'); box.appendChild(mine);
-        S.texts.forEach((tx) => {
-            mine.appendChild(mk('h3', 'tj-sub', tx.title));
-            const list = textList(tx);
-            list.forEach((x, i) => {
-                const ok = unlockedAt(list, i), r = doneRec(x.m.id);
-                const node = mk('div', 'tj-node' + (ok ? '' : ' tj-locked') + (passed(x.m.id) ? ' tj-done' : '')); node.dataset.id = x.m.id;
-                const info = mk('div', 'tj-node-info'); info.append(mk('strong', null, txt(x.m.title)), mk('div', 'tj-stars', r.done ? '★'.repeat(r.stars || 0) + '☆'.repeat(3 - (r.stars || 0)) : '☆☆☆'));
-                const acts = mk('div', 'tj-node-acts');
-                if (ok) { const b = btn(r.done ? 'Jogar de novo' : 'Começar', () => startTextMission(x), r.done ? '' : 'lb-primary'); b.classList.add('tj-go'); acts.appendChild(b); }
-                else acts.appendChild(btn('Liberar mesmo assim', () => { const prev = list[i - 1].m.id; S.missions[prev] = Object.assign(S.missions[prev] || {}, { free: true }); save(); showMap(); }));
-                node.append(mk('div', 'tj-num', String(i + 1)), info, acts); mine.appendChild(node);
-            });
-        });
-        const make = mk('div', 'tj-make'); box.appendChild(make);
-        D.db.all('meta').then((metas) => {
-            metas = metas.filter((m) => m.lang === 'en' && !(m.x && m.x.trilha) && !S.texts.some((t) => t.docId === m.id)).sort((a, b) => (b.lastOpened || 0) - (a.lastOpened || 0));
-            if (!metas.length) { make.appendChild(mk('p', 'lb-note', S.texts.length ? 'Todos os textos em inglês da biblioteca já têm missões.' : 'Nenhum texto em inglês na biblioteca ainda. Envie um na aba Leitor de PDF e volte aqui.')); return; }
-            const sel = mk('select', 'lb-input'); sel.id = 'tj-text-src';
-            metas.forEach((m) => { const o = mk('option', null, m.title); o.value = m.id; sel.appendChild(o); });
-            const go = btn('Criar missões de leitura', async () => {
-                go.disabled = true;
-                const d = await D.db.get('docs', sel.value), meta = metas.find((m) => m.id === sel.value);
-                const chs = chaptersOf(d.paras, 450).map((c, i) => ({ from: c.from, to: c.to, n: i + 1 }));
-                S.texts.push({ id: sel.value, docId: sel.value, title: meta.title, chapters: chs }); save(); showMap();
-            }, 'lb-primary'); go.id = 'tj-text-make';
-            make.append(sel, go);
-        }).catch((e) => { make.appendChild(mk('p', 'lb-error', 'Não consegui ler a biblioteca: ' + (e && e.message ? e.message : e))); });
-        return box;
-    }
     const STOP = new Set('this that with from have will would there their about which could should because while where when what your they them then than into over after before every other these those'.split(' '));
     async function buildTextLesson(x) {
         const d = await D.db.get('docs', x.text.docId);
