@@ -7,7 +7,11 @@ body {
 
 .meta-tag { border: 1px solid var(--lb-line); color: var(--c-dim); }
 .lab h2 { font-family: var(--font-tech); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 2.2em 0 0.8em; }
-.lb-intro { color: var(--c-dim); font-size: 0.95em; max-width: 62ch; margin-bottom: 1.6em; }
+/* cabeçalho da Biblioteca: mesmo padrão dos capítulos (selo preenchido, título forte com filete), com subtítulo e texto de apoio em hierarquia clara */
+body:not(.paper-mode) #lb-title { border-bottom: 1px solid var(--lb-line); }
+#lb-title { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.1; margin: 0 0 18px; padding-bottom: 16px; }
+.lb-lead { font-size: clamp(1.15rem, 2.6vw, 1.4rem); line-height: 1.35; font-weight: 600; color: var(--c-text); margin: 0 0 12px; max-width: 34ch; }
+.lb-intro { color: var(--c-dim); font-size: 0.95em; line-height: 1.6; max-width: 62ch; margin: 0 0 1.8em; }
 
 /* envio */
 .lb-drop {

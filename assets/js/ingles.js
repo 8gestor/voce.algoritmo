@@ -34,8 +34,9 @@
     /* ------------------------------------------------------------------ textos da interface */
     const T = {
         pt: {
-            meta: 'ESTUDO DE INGLÊS // LER NUM IDIOMA, OUVIR NO OUTRO',
-            title: 'Leia seus próprios textos em inglês',
+            meta: 'ESTUDO DE INGLÊS // BIBLIOTECA',
+            title: 'Biblioteca',
+            lead: 'Leia em um idioma, ouça no outro.',
             intro: 'Envie um artigo ou e-book em PDF. A página extrai o texto, limpa cabeçalhos e quebras de linha e traduz frase por frase, para você ler em um idioma e ouvir no outro, como no livro. Tudo acontece neste aparelho: o arquivo não é enviado a ninguém.',
             dropMain: 'Toque ou arraste um PDF aqui',
             dropSub: 'PDF com texto selecionável (ou .txt). PDFs escaneados, só com imagem, não funcionam.',
@@ -59,8 +60,9 @@
             langPt: 'Português', langEn: 'Inglês', noStorage: 'Armazenamento do navegador indisponível: o documento vale só nesta sessão.'
         },
         en: {
-            meta: 'ENGLISH STUDY // READ IN ONE LANGUAGE, LISTEN IN THE OTHER',
-            title: 'Read your own texts in English',
+            meta: 'ENGLISH STUDY // LIBRARY',
+            title: 'Library',
+            lead: 'Read in one language, listen in the other.',
             intro: 'Upload an article or e-book as a PDF. The page extracts the text, cleans headers and line breaks, and translates sentence by sentence, so you can read in one language and listen in the other, as in the book. Everything happens on this device: the file is not sent to anyone.',
             dropMain: 'Tap or drag a PDF here',
             dropSub: 'PDF with selectable text (or .txt). Scanned, image-only PDFs will not work.',
@@ -1035,6 +1037,7 @@
         document.documentElement.lang = state.readLang === 'en' ? 'en' : 'pt-BR';
         $('lb-meta').textContent = tx('meta');
         $('lb-title').textContent = tx('title');
+        $('lb-lead').textContent = tx('lead');
         $('lb-intro').textContent = tx('intro');
         $('lb-drop-main').textContent = tx('dropMain');
         $('lb-drop-sub').textContent = tx('dropSub');
