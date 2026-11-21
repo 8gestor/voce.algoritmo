@@ -52,7 +52,7 @@
         btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(on));
     }
     function build() {
-        const bar = document.querySelector('.lb-toolbar');
+        const bar = D.$('lb-study') || document.querySelector('.lb-toolbar');
         if (!bar || btn) return;
         btn = document.createElement('button');
         btn.type = 'button'; btn.className = 'lb-btn'; btn.id = 'lb-highlight';
@@ -61,8 +61,7 @@
             try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) { /* ignora */ }
             label(); paint();
         });
-        const status = D.$('lb-status');
-        bar.insertBefore(btn, status || null);
+        bar.appendChild(btn);
         label();
     }
 

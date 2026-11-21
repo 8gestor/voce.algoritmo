@@ -22,7 +22,8 @@
 
     const tb = document.querySelector('.lb-toolbar');
     const btn = el('button', 'lb-btn', ''); btn.type = 'button'; btn.id = 'lb-quiz'; btn.hidden = true;
-    if (tb) tb.insertBefore(btn, D.$('lb-status'));
+    const host = D.$('lb-study') || tb;
+    if (host) host.appendChild(btn);
 
     async function available() {
         if (!('LanguageModel' in self)) return false;

@@ -48,7 +48,7 @@
             stAvailable: 'Pronta (traduz neste aparelho)', stDownloadable: 'Precisa baixar o modelo (uma vez)',
             stDownloading: 'Baixando o modelo…', stUnsupported: 'Indisponível neste navegador. Use o Chrome para computador (138+), em https.',
             activate: 'Ativar tradução',
-            back: '← Biblioteca', transAll: 'Traduzir tudo agora', transStop: 'Parar de traduzir',
+            back: '← Biblioteca', study: 'ESTUDO', studyGroup: 'Ferramentas de estudo', transAll: 'Traduzir tudo agora', transStop: 'Parar de traduzir',
             reading: 'Lendo', extracting: 'Extraindo o texto', page: 'página', saving: 'Salvando…',
             errNoText: 'Não encontrei texto neste arquivo. Se for um PDF escaneado (imagens de páginas), ele precisa de OCR antes.',
             errRead: 'Não consegui ler este arquivo: ', errType: 'Formato não suportado. Envie um PDF ou .txt.',
@@ -73,7 +73,7 @@
             stAvailable: 'Ready (translates on this device)', stDownloadable: 'Needs a one-time model download',
             stDownloading: 'Downloading the model…', stUnsupported: 'Unavailable in this browser. Use desktop Chrome (138+) over https.',
             activate: 'Enable translation',
-            back: '← Library', transAll: 'Translate all now', transStop: 'Stop translating',
+            back: '← Library', study: 'STUDY', studyGroup: 'Study tools', transAll: 'Translate all now', transStop: 'Stop translating',
             reading: 'Reading', extracting: 'Extracting text', page: 'page', saving: 'Saving…',
             errNoText: 'I found no text in this file. If it is a scanned PDF (page images), it needs OCR first.',
             errRead: 'Could not read this file: ', errType: 'Unsupported format. Upload a PDF or .txt.',
@@ -996,6 +996,7 @@
         so.value = libSort;
         $('lb-note').textContent = tx('note');
         $('lb-back').textContent = tx('back');
+        $('lb-study-label').textContent = tx('study'); $('lb-study').setAttribute('aria-label', tx('studyGroup'));
         if (doc) { renderDocMeta(); setStatus(); } else renderDocs();
         renderEngine(); renderVoice();
     }

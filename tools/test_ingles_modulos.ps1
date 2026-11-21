@@ -326,6 +326,18 @@ $test = @'
       ok('H5 voltando ao inglês o destaque volta', HL().indexOf('capitalism') >= 0);
       hb.click(); await wait(300);
       ok('H6 desligar limpa o destaque', HL().length === 0 && hb.getAttribute('aria-pressed') === 'false');
+      // ===================== I. configurações separadas da experiência de leitura =====================
+      var st = idoc().getElementById('lb-study');
+      ok('I1 controles de estudo ficam num grupo próprio', !!st && !!st.querySelector('#lb-translate-all') && !!st.querySelector('#lb-mode') && !!st.querySelector('#lb-highlight'), st && st.children.length + ' itens');
+      ok('I2 voltar e status ficam fora do grupo de estudo', !!idoc().getElementById('lb-back') && !st.contains(idoc().getElementById('lb-back')) && !st.contains(idoc().getElementById('lb-status')));
+      ok('I3 grupo de estudo tem rótulo acessível', !!st.getAttribute('aria-label') && idoc().getElementById('lb-study-label').textContent.length > 0, st.getAttribute('aria-label'));
+      var topd = W().parent.document;
+      ok('I4 voz da narração fica no painel Voz, não no Aa', !!topd.querySelector('#voz-panel #voice-pt') && !!topd.querySelector('#voz-panel #voice-en') && !topd.querySelector('#aa-panel #voice-pt'));
+      topd.getElementById('btn-voz').click(); await wait(100);
+      ok('I5 botão Voz abre só o painel de voz', topd.getElementById('voz-panel').classList.contains('open') && !topd.getElementById('aa-panel').classList.contains('open') && topd.getElementById('btn-voz').getAttribute('aria-expanded') === 'true');
+      topd.getElementById('btn-aa').click(); await wait(100);
+      ok('I6 abrir Aa fecha o painel de voz', topd.getElementById('aa-panel').classList.contains('open') && !topd.getElementById('voz-panel').classList.contains('open') && topd.getElementById('btn-voz').getAttribute('aria-expanded') === 'false');
+      topd.getElementById('btn-aa').click();
       // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));

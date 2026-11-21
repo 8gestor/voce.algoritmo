@@ -34,7 +34,8 @@
     const lab = el('span');
     const sel = el('select', 'lb-input'); sel.id = 'lb-mode';
     wrap.append(lab, sel);
-    if (tb) tb.insertBefore(wrap, D.$('lb-status'));
+    const host = D.$('lb-study') || tb;
+    if (host) host.appendChild(wrap);
     function fillSel() {
         lab.textContent = t('label') + ' ';
         sel.textContent = '';

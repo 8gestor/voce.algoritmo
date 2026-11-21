@@ -117,11 +117,12 @@ function cycleTheme() {
 }
 
 function togglePanel(id) {
-    ['aa-panel', 'raiox'].forEach((x) => {
+    ['aa-panel', 'voz-panel', 'raiox'].forEach((x) => {
         const el = document.getElementById(x);
         if (x === id) el.classList.toggle('open'); else el.classList.remove('open');
     });
     document.getElementById('btn-aa').setAttribute('aria-expanded', String(document.getElementById('aa-panel').classList.contains('open')));
+    document.getElementById('btn-voz').setAttribute('aria-expanded', String(document.getElementById('voz-panel').classList.contains('open')));
     document.getElementById('btn-raiox').setAttribute('aria-expanded', String(document.getElementById('raiox').classList.contains('open')));
 }
 function closePanels() { togglePanel(null); }
