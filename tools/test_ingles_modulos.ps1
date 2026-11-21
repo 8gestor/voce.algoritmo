@@ -308,6 +308,24 @@ $test = @'
       idoc().querySelectorAll('#lb-neural .lb-eng-row')[1].querySelectorAll('.lb-btn')[1].click();   // Remover
       await until(function () { return !W().__ddVoz.prefs().ready['en_US-lessac-medium']; }, 5000);
       ok('G11 remover apaga a voz baixada', !W().__ddVoz.prefs().ready['en_US-lessac-medium'] && !W().__ddVoz.active('en'));
+      // ===================== H. destaque de palavras incomuns =====================
+      D().$('lb-back').click(); await wait(300);
+      await D().addText('Destaque', 'Surveillance capitalism harvests behavioural surplus. Then Maria reads every day. People believe the machine.');
+      await until(function () { return D().doc && D().doc.title === 'Destaque'; }, 20000);
+      post({ type: 'readlang', value: 'en' }); await wait(400);
+      var hb = idoc().getElementById('lb-highlight');
+      var HL = function () { var h = idoc().defaultView.CSS.highlights.get('dd-incomum'); return h ? Array.from(h).map(function (r) { return r.toString(); }) : []; };
+      ok('H1 botão Destacar existe e começa desligado', !!hb && hb.getAttribute('aria-pressed') === 'false' && HL().length === 0);
+      hb.click(); await wait(400);
+      var hw = HL();
+      ok('H2 ligar destaca palavras incomuns', hw.indexOf('capitalism') >= 0 && hw.indexOf('surplus') >= 0, hw.join(','));
+      ok('H3 palavra comum e nome próprio no meio da frase não são destacados', hw.indexOf('every') < 0 && hw.indexOf('People') < 0 && hw.indexOf('Maria') < 0 && hw.indexOf('believe') < 0, hw.join(','));
+      post({ type: 'readlang', value: 'pt' }); await wait(600);
+      ok('H4 lendo em português não destaca nada', HL().length === 0);
+      post({ type: 'readlang', value: 'en' }); await wait(500);
+      ok('H5 voltando ao inglês o destaque volta', HL().indexOf('capitalism') >= 0);
+      hb.click(); await wait(300);
+      ok('H6 desligar limpa o destaque', HL().length === 0 && hb.getAttribute('aria-pressed') === 'false');
       // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));

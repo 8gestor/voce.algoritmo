@@ -140,3 +140,6 @@ body {
 .lb-paste-form { flex: 1 1 100%; display: flex; flex-direction: column; gap: 8px; }
 .lb-paste-form textarea { width: 100%; resize: vertical; }
 .lb-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Palavras incomuns (ingles-destaque.js, CSS Custom Highlight API) */
+::highlight(dd-incomum) { background-color: color-mix(in srgb, #f2b705 32%, transparent); text-decoration: underline dotted; text-underline-offset: 3px; }

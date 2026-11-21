@@ -111,6 +111,7 @@ cap15 11 unidades, cap16 c16-007) pertencem à frente de tradução.
 | `ingles-treino.js` | modos Repetir / Shadowing / Ditado (usa `DDLab.afterSentence` e `DDLab.rateScale`) |
 | `ingles-compreensao.js` | perguntas sobre o trecho com o modelo LOCAL do Chrome (`LanguageModel`); botão só aparece se o navegador tiver |
 | `ingles-progresso.js` | sequência de dias, minutos, palavras ouvidas/salvas, revisões, gráfico de 7 dias (localStorage `dd-ingles-log`) |
+| `ingles-destaque.js` | botão "Destacar incomuns": pinta no texto as palavras fora da lista comum (CSS Custom Highlight API, não altera o DOM; usa `__ddNivel.isCommon`); escolha em localStorage `dd-ingles-destaque` |
 | `ingles-importar.js` | EPUB (ZIP lido com `DecompressionStream`) e texto colado |
 | `ingles-voz.js` | voz neural LOCAL opcional (Piper, `assets/vendor/piper`): ~60 MB por idioma, baixa uma vez, cai para a voz do navegador se falhar |
 
@@ -124,7 +125,6 @@ No `index.html`, `ingles.html` NÃO entra em `structure` (ver `extras` em `sumar
 
 1. Voz neural: avaliar vozes melhores do Piper (só há 2 em PT-BR, ambas ~60 MB) ou outro motor; hoje a melhor voz continua sendo a "Natural" do Edge.
 2. Importar páginas web por URL: o navegador bloqueia (CORS); só com um serviço intermediário (fora da regra de privacidade).
-3. Reforçar o nível: destacar palavras incomuns no texto (hoje só aparece na dica da palavra tocada).
 4. Perguntas de compreensão: avaliar com o modelo local quando a API de prompt estiver estável no Chrome.
 ## 9. Skills do projeto (`.claude/skills/`)
 
