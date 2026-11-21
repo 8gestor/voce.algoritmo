@@ -37,7 +37,7 @@ $test = @'
   window.addEventListener('load', async function () {
     try {
       await wait(1200);
-      var links = document.querySelectorAll('.chapter-link'); links[links.length - 1].click();
+      var links = document.querySelectorAll('.chapter-link'); links[links.length - 2].click();
       await until(function () { return ifr().contentWindow.DDLab; }, 8000);
       var w = W(), spoken = [];
       w.DD_TRANSLATOR_FACTORY = function (a, b) { return { translate: async function (t) { await wait(2); return '[' + b + '] ' + t; } }; };
@@ -398,6 +398,83 @@ $test = @'
       ok('J17 traduz uma frase isolada sem esperar o parágrafo', typeof sq === 'string' && sq.length > 0 && Date.now() - t0s < 1500, String(sq));
       idoc().querySelector('.lg-off').click(); await wait(200);
       w.speechSynthesis.speak = oldSpeak;
+      // ===================== K. trilha por capítulos (trilha.html) =====================
+      var tlk = document.querySelectorAll('.chapter-link');
+      ok('K1 aba Trilha por capítulos fica abaixo do Leitor de PDF', /Trilha/.test(tlk[tlk.length - 1].textContent) && /PDF/.test(tlk[tlk.length - 2].textContent));
+      tlk[tlk.length - 1].click();
+      await until(function () { return W().__ddTrilha && W().DDLab && W().DDLab.openDoc; }, 8000);
+      var w2 = W(), T = w2.__ddTrilha;
+      w2.DD_TRANSLATOR_FACTORY = function (a, b) { return { translate: async function (t) { await wait(2); return '[' + b + '] ' + t; } }; };
+      w2.speechSynthesis.cancel = function () {};
+      w2.speechSynthesis.speak = function (u) { w2.__said = u.text; u.onstart && u.onstart(); setTimeout(function () { u.onend && u.onend(); }, 5); };
+      if (w2.__ddTreino) w2.__ddTreino.setMode('normal');
+      var kmk = function (n, wd) { var a = []; for (var i = 0; i < n; i++) a.push({ t: 'p', s: [Array(wd + 1).join('word ').trim() + '.'] }); return a; };
+      var kp = kmk(20, 40);
+      ok('K2 dividir por tamanho corta em capítulos parecidos', T.bySize(kp, 200).length === 4 && T.bySize(kp, 200)[0].to === 5, T.bySize(kp, 200).length + ' capítulos');
+      var hp = []; ['Um', 'Dois', 'Três'].forEach(function (h) { hp.push({ t: 'h', s: [h] }); kmk(4, 40).forEach(function (p) { hp.push(p); }); });
+      var hc = T.byHeadings(hp, 150);
+      ok('K3 dividir pelos títulos usa cada título como capítulo', !!hc && hc.length === 3 && hc[1].title === 'Dois' && hc[2].to === hp.length, hc && hc.map(function (c) { return c.title; }).join(','));
+      ok('K3b texto sem títulos cai para o tamanho', T.splitChapters(kp, 'head', 200).length === 4);
+      var kpar = function (k) { return ['Surveillance capitalism harvests behavioural surplus number ' + k + ' every single day.', 'Platforms predict what people will do tomorrow morning.', 'Nobody explains how these hidden systems really work.', 'Algorithms rank every message before anyone reads it.', 'Companies sell predictions about our future behaviour.', 'Citizens rarely notice this quiet economic exchange.'].join(' '); };
+      var ktxt = [1, 2, 3, 4, 5, 6].map(kpar).join('\n\n');
+      await w2.DDLab.addText('Livro da trilha', ktxt);
+      await until(function () { return w2.DDLab.doc && w2.DDLab.doc.title === 'Livro da trilha'; }, 20000);
+      var ksrc = w2.DDLab.doc.id, kchs = T.splitChapters(w2.DDLab.doc.paras, 'size', 100);
+      var krec = await T.createTrail(ksrc, kchs);
+      ok('K4 criar trilha gera um documento por capítulo', krec.chapters.length === kchs.length && kchs.length >= 2, krec.chapters.length + ' capítulos de ' + w2.DDLab.doc.paras.length + ' parágrafos');
+      var km = await w2.DDLab.db.get('meta', krec.chapters[0].id), kd = await w2.DDLab.db.get('docs', krec.chapters[0].id);
+      ok('K4b capítulo é documento marcado e com parte do texto', !!km && km.x && km.x.trilha === krec.id && kd.paras.length === kchs[0].to - kchs[0].from, km && km.title);
+      w2.DDLab.$('lb-back').click(); await wait(400);
+      await T.renderLibrary(); await wait(200);
+      var kcard = w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"]');
+      ok('K5 biblioteca mostra a trilha: primeiro capítulo aberto, segundo travado', !!kcard && kcard.querySelectorAll('.tr-ch').length === krec.chapters.length && !!kcard.querySelector('.tr-ch[data-n="1"] .tr-open') && !kcard.querySelector('.tr-ch[data-n="2"] .tr-open'));
+      w2.DDLab.renderDocs(); await wait(400);
+      ok('K6 a biblioteca comum não lista os capítulos da trilha', w2.document.getElementById('lb-docs').textContent.indexOf('Livro da trilha — 1.') < 0);
+      kcard.querySelector('.tr-ch[data-n="1"] .tr-open').click();
+      await until(function () { return w2.DDLab.doc && w2.DDLab.doc.id === krec.chapters[0].id && T.cur; }, 8000);
+      var ksteps = w2.document.getElementById('tr-steps'); await until(function () { return ksteps.querySelectorAll('.tr-chip button').length === 10; }, 3000);
+      ok('K7 abrir o capítulo mostra as 5 etapas nos dois idiomas', !ksteps.hidden && ksteps.querySelectorAll('.tr-chip button').length === 10, ksteps.querySelectorAll('.tr-chip button').length + ' botões');
+      post({ type: 'audiolang', value: 'en' }); await wait(300);
+      w2.DDLab.startTts(0, 0);
+      var kheard = await until(function () { return T.cur && T.cur.ch.done.listen.en; }, 20000);
+      w2.DDLab.stopTts();
+      ok('K8 ouvir o capítulo até o fim em EN conclui a etapa Ouvir EN', kheard, T.cur && JSON.stringify(T.cur.ch.heard.en.length));
+      T.mark('read', 'en');
+      ok('K8b ler em EN conclui a etapa Ler EN e atualiza a barra', T.cur.ch.done.read.en && ksteps.querySelector('.tr-chip[data-stage="read"] button[data-lang="en"]').classList.contains('tr-ok') || /x/.test(ksteps.querySelector('.tr-chip[data-stage="read"] button[data-lang="en"]').textContent));
+      w2.webkitSpeechRecognition = w2.SpeechRecognition = function () { this.start = function () { var me = this; setTimeout(function () { me.onresult({ results: [[{ transcript: w2.document.getElementById('tr-sent').textContent }]] }); }, 10); }; };
+      var kround = async function (nextId) { for (var n = 0; n < 5; n++) { await until(function () { return w2.document.getElementById(nextId.mic); }, 5000); if (!w2.document.getElementById(nextId.mic)) { out.push('DBG ' + n + ' ' + ((w2.document.querySelector('.tr-ov') || {}).textContent || 'sem overlay') + ' | cur=' + !!T.cur); } w2.document.getElementById(nextId.mic).click(); await until(function () { return w2.document.getElementById('tr-next'); }, 5000); if (!w2.document.getElementById('tr-next')) { out.push('DBG2 ' + n + ' ' + ((w2.document.querySelector('.tr-ov') || {}).textContent || 'sem overlay')); } w2.document.getElementById('tr-next').click(); await wait(30); } };
+      T.openStage('speak', 'en');
+      await kround({ mic: 'tr-mic' });
+      ok('K9 falar: repetir 5 frases com 100% conclui Falar EN', await until(function () { return T.cur.ch.done.speak.en; }, 5000));
+      w2.document.querySelector('.tr-ov .tr-tabs button[data-lang="pt"]').click();
+      await kround({ mic: 'tr-mic' });
+      ok('K9b falar também vale para o outro idioma (traduzido)', await until(function () { return T.cur.ch.done.speak.pt; }, 5000));
+      T.openStage('write', 'en');
+      for (var wn = 0; wn < 5; wn++) {
+        await until(function () { return w2.document.getElementById('tr-ta'); }, 5000); await wait(260);
+        w2.document.getElementById('tr-ta').value = w2.__said; w2.document.getElementById('tr-check').click();
+        await until(function () { return w2.document.getElementById('tr-next'); }, 3000); w2.document.getElementById('tr-next').click(); await wait(30);
+      }
+      ok('K10 escrever: ditado certo nas 5 frases conclui Escrever EN', await until(function () { return T.cur.ch.done.write.en; }, 5000));
+      T.openStage('words', 'en');
+      var kfirst = true;
+      for (var wi = 0; wi < 12 && !T.cur.ch.done.words.en; wi++) {
+        if (!await until(function () { return w2.document.getElementById('tr-show'); }, 4000)) break;
+        w2.document.getElementById('tr-show').click();
+        await until(function () { return w2.document.getElementById('tr-knew'); }, 4000);
+        w2.document.getElementById(kfirst ? 'tr-notyet' : 'tr-knew').click(); kfirst = false; await wait(60);
+      }
+      ok('K11 palavras: revisar os cartões do capítulo conclui Palavras EN', await until(function () { return T.cur.ch.done.words.en; }, 4000));
+      var kv = await w2.__ddVocab.loadAll();
+      ok('K11b palavra que não sabia vai para o vocabulário com contexto', kv.some(function (c) { return c.lang === 'en' && c.sent && /Surveillance|Platforms|Nobody|Algorithms|Companies|Citizens/.test(c.sent); }), kv.length + ' cartões');
+      ok('K12 capítulo 2 continua travado enquanto faltam etapas', !T.unlocked(krec, 1));
+      ['read', 'listen', 'speak', 'words', 'write'].forEach(function (s) { ['pt', 'en'].forEach(function (l) { T.mark(s, l); }); });
+      ok('K13 concluir todas as etapas libera o capítulo seguinte', T.complete(krec.chapters[0]) && T.unlocked(krec, 1) && !w2.document.getElementById('tr-steps').hidden && !!w2.document.querySelector('.tr-steps-foot .lb-primary'));
+      w2.DDLab.$('lb-back').click(); await wait(500); await until(function () { return !!w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"] .tr-ch[data-n="2"] .tr-open'); }, 3000);
+      ok('K13b biblioteca mostra o capítulo 2 aberto depois', !!w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"] .tr-ch[data-n="2"] .tr-open'), ((w2.document.querySelector('.tr-card[data-trail="' + krec.id + '"]') || w2.document.getElementById('tr-root')).textContent.slice(0, 400)) + ' reader.hidden=' + w2.document.getElementById('lb-reader').hidden);
+      var ktl = T.trails.length;
+      await T.deleteTrail(krec.id);
+      ok('K14 excluir a trilha remove os capítulos e mantém o documento original', T.trails.length === ktl - 1 && !(await w2.DDLab.db.get('meta', krec.chapters[0].id)) && !!(await w2.DDLab.db.get('meta', ksrc)));
       // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));

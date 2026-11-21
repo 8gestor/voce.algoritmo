@@ -871,7 +871,7 @@
     async function renderDocs() {
         const my = ++renderSeq, host = $('lb-docs');
         let list = [];
-        if (persist) { try { list = await dbAll('meta'); } catch (e) { persist = false; dbErr = e; } }
+        if (persist) { try { list = (await dbAll('meta')).filter((m) => !(m.x && m.x.trilha)); } catch (e) { persist = false; dbErr = e; } }
         if (my !== renderSeq) return;      // outra renderização mais nova assumiu
         host.textContent = '';
         if (!persist) { const p = document.createElement('p'); p.className = 'lb-note'; p.textContent = tx('noStorage'); host.appendChild(p); }
@@ -1124,7 +1124,7 @@
         state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },
-        renderDocs, setStatus, ensureTr, importFile, saveMeta, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
+        renderDocs, setStatus, ensureTr, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
     };
 
     // gancho de teste

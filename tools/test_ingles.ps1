@@ -49,9 +49,9 @@ $test = @'
       var cats = Array.prototype.map.call(document.querySelectorAll('.nav-cat'), function (e) { return e.textContent; });
       ok('1a seção ESTUDO DE INGLÊS é a última do menu', cats[cats.length - 1] === 'ESTUDO DE INGLÊS', cats.slice(-2).join(' | '));
       var links = document.querySelectorAll('.chapter-link');
-      ok('1b link do leitor vem depois dos capítulos', links.length === structure.length + 1 && /PDF/.test(links[links.length - 1].textContent), links.length + ' links');
+      ok('1b link do leitor vem depois dos capítulos', links.length === structure.length + 2 && /PDF/.test(links[links.length - 2].textContent) && /Trilha/.test(links[links.length - 1].textContent), links.length + ' links');
       ok('1c fora de structure', !structure.some(function (s) { return s.f === 'ingles.html'; }));
-      links[links.length - 1].click();
+      links[links.length - 2].click();
       await until(function () { return ifr().contentWindow.__ddLab; }, 8000);
       ok('1d abre a página no quadro', !!lab(), ifr().src.slice(-12));
       ok('1e barra inferior de capítulo escondida', $('hud-live').style.display === 'none');
