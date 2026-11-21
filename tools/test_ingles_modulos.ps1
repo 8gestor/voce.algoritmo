@@ -552,9 +552,42 @@ $test = @'
       ok('K21c a missão traz o inglês do livro com a tradução oficial em português', bl.scene.length >= 3 && bl.scene.every(function (l) { return l.pt && !/^\[pt\]/.test(l.pt) && l.pt.indexOf('(sem') !== 0; }) && /[a-z]/.test(bl.scene[0].en), bl.scene[0].en.slice(0, 50) + ' | ' + bl.scene[0].pt.slice(0, 50));
       ok('K21d as etapas são ler, palavras, shadowing, conversar e escrever', J.run.phases.join(',') === 'scene,practice,speak,discuss,write' && bl.discuss.length === 3 && !!bl.write);
       J.reset(); await wait(60);      W().localStorage.removeItem('dd-curso-novidades'); J.showMap(); await wait(80);
-      ok('K22 o Curso destaca as novidades no topo, com atalhos e selo NOVO nos painéis', !!jq('#tj-news') && jqa('#tj-news .tj-news-go').length === 2 && jqa('.tj-new-h').length === 2 && /Biblioteca/.test(jq('#tj-news').textContent) && /livro/.test(jq('#tj-news').textContent), jqa('.tj-new-h').length + ' selos');
+      ok('K22 o Curso destaca as novidades no topo, com atalhos e selo NOVO nos painéis', !!jq('#tj-news') && jqa('#tj-news .tj-news-go').length === 3 && jqa('.tj-new-h').length === 3 && /Biblioteca/.test(jq('#tj-news').textContent) && /livro/.test(jq('#tj-news').textContent) && /Como o Curso funciona agora/.test(jq('#tj-news').textContent) && /1\. Envie o livro/.test(jq('#tj-news').textContent) && /4\. Acompanhe a evolu/.test(jq('#tj-news').textContent), jqa('.tj-new-h').length + ' selos');
       jq('#tj-news-ok').click(); await wait(80);
-      ok('K22b "Entendi" dispensa o quadro e tira os selos, e a escolha fica guardada', !jq('#tj-news') && jqa('.tj-new-h').length === 0 && W().localStorage.getItem('dd-curso-novidades') === '2026-11-21');      // ==== PROXIMAS ====
+      ok('K22b "Entendi" dispensa o quadro e tira os selos, e a escolha fica guardada', !jq('#tj-news') && jqa('.tj-new-h').length === 0 && W().localStorage.getItem('dd-curso-novidades') === '2026-11-21c');      var sp = function (k) { return '(' + k + '.1) Most of mankind complains about the meanness of nature, because our allotted span of life is so short and runs its course so quickly. (' + k + '.2) It is not that we have a short time to live, but that we waste a great deal of it, so that life is long enough if the whole of it is well invested.'; };
+      await DD.addText('Seneca teste', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(sp).join('\n\n') + '\n\nNotes\n\n1. From the first Aphorism of Hippocrates of Cos, probably quoted here.');
+      await until(function () { return DD.doc && DD.doc.title === 'Seneca teste'; }, 20000);
+      var sid = DD.doc.id; DD.$('lb-back').click(); await wait(300);
+      ok('K23a a página do Curso carrega o leitor de PDF (sem isso o envio do livro falha)', typeof W().pdfjsLib === 'object' && !!W().pdfjsLib.getDocument);
+      J.reset(); await until(function () { return jq('#tj-sen-src'); }, 5000);
+      ok('K23 sem o livro, o Curso pede o PDF do Sêneca (envio local) e oferece usar um documento da Biblioteca', !!jq('#tj-sen') && !!jq('#tj-sen-file') && !!jq('#tj-sen-up') && /só neste aparelho/.test(jq('#tj-sen').textContent) && jqa('#tj-sen-src option').some(function (o) { return o.textContent === 'Seneca teste'; }));
+      jq('#tj-sen-src').value = sid; jq('#tj-sen-use').click();
+      await until(function () { return jqa('.tj-sen .tj-node').length >= 2; }, 8000);
+      var sn = jqa('.tj-sen .tj-node');
+      ok('K23b o livro vira partes em ordem, só a primeira aberta, antes dos Fundamentos recolhidos', sn.length >= 2 && !sn[0].classList.contains('tj-locked') && sn[1].classList.contains('tj-locked') && (jq('#tj-sen').compareDocumentPosition(jq('details.tj-fund')) & 4) !== 0 && !jq('details.tj-fund').open, sn.length + ' partes ' + (jq('#tj-sen-msg') ? jq('#tj-sen-msg').textContent : 'sem msg') + ' | texts=' + JSON.stringify(J.S.texts.map(function (x) { return x.id + ':' + x.chapters.length; })));
+      var pass = await J.senPassages();
+      ok('K23c as notas de rodapé ficam de fora e a busca acha o trecho certo', pass.length >= 2 && !pass.some(function (p) { return /Hippocrates/.test(p.text); }) && /allotted/.test(J.retrieve(pass, 'what is the allotted span of life', 1)[0].text), pass.length + ' trechos');
+      sn[0].querySelector('.tj-go').click(); await until(function () { return jq('#tj-start'); }, 20000);
+      var sl = J.run.m;
+      ok('K23d a missão do livro aceita frases longas, sem notas, com discussão e escrita no nível do texto', sl.scene.some(function (l) { return l.en.split(/\s+/).length > 22; }) && !sl.scene.some(function (l) { return /Hippocrates/.test(l.en); }) && /main argument/.test(sl.discuss[0].q) && sl.minutes === 20 && sl.write.pass === 3 && sl.speak.length >= 1 && sl.speak.every(function (s) { return s.en.split(/\s+/).length <= 28; }), sl.scene.length + ' falas');
+      var asked = [];
+      W().LanguageModel = { availability: async function () { return 'available'; }, create: async function () { return { prompt: async function (p) { asked.push(p); return 'Time is our only real property. What do you do with yours? Dica: use "my".'; } }; } };
+      jq('#tj-home').click(); await wait(80); J.showMap();
+      await until(function () { return jq('#tj-bc-seneca'); }, 5000);
+      ok('K24 o simulador oferece Sêneca, tutor socrático e advogado do diabo', !!jq('#tj-bc-seneca') && !!jq('#tj-bc-tutor') && !!jq('#tj-bc-debate'));
+      jq('#tj-bc-seneca').click(); await until(function () { return jq('#tj-bc-in'); }, 5000);
+      jq('#tj-bc-in').value = 'I waste my time at work because of many preoccupations'; jq('#tj-bc-send').click();
+      await until(function () { return jqa('#tj-chat .tj-bubble').length >= 3; }, 5000);
+      ok('K24b a mensagem vai com trechos do livro como fonte e a resposta volta com fonte e dica', asked.length === 1 && /EXCERPTS:/.test(asked[0]) && /\[\d+\.\d+\]|\[p\d+\]/.test(asked[0]) && jqa('.tj-src-chip').length >= 1 && /Dica/.test(jq('#tj-chat').textContent), asked[0] && asked[0].slice(0, 90));
+      jq('.tj-src-chip').click(); await wait(30);
+      ok('K24c abrir a fonte mostra o trecho do livro', !jq('.tj-src').hidden && jq('.tj-src').textContent.length > 50);
+      ok('K24d a conversa conta mensagens, palavras, termos do livro e correções', J.S.sen.chatTurns === 1 && J.S.sen.chatWords >= 8 && J.S.sen.corrections === 1 && Object.keys(J.S.sen.terms).length >= 1, JSON.stringify(J.S.sen.terms));
+      jq('#tj-bc-end').click(); await wait(60);
+      ok('K24e o resumo mostra os números e guarda a conversa', /1 mensagens suas/.test(jq('.tj-learned').textContent) && J.S.chats.length === 1 && J.S.sen.chatSessions === 1);
+      jq('#tj-map').click(); await wait(100);
+      var sk = jqa('.tj-sen-skills .tj-sen-card').map(function (c) { return c.textContent; });
+      ok('K25 a evolução parte do Sêneca: barra do livro e 6 habilidades (ler, ouvir, falar, escrever, conversar, vocabulário)', !!jq('#tj-sen-prog') && sk.length === 6 && /^Ler/.test(sk[0]) && /^Conversar1 mensagens em 1 conversas/.test(sk[4]) && /^Vocabul/.test(sk[5]), sk.join(' | '));
+      J.reset(); await wait(60);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

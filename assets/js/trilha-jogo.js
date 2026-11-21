@@ -80,7 +80,7 @@
     }
 
     /* ------------------------------------------------------------ estado e persistência */
-    const blankState = () => ({ v: 1, xp: 0, streak: { n: 0, last: '', shield: 1 }, missions: {}, items: {}, ach: {}, log: {}, texts: [], stats: { spoken: 0, written: 0, reviews: 0, bosses: 0 } });
+    const blankState = () => ({ v: 1, xp: 0, streak: { n: 0, last: '', shield: 1 }, missions: {}, items: {}, ach: {}, log: {}, texts: [], chats: [], sen: {}, stats: { spoken: 0, written: 0, reviews: 0, bosses: 0 } });
     let S = blankState();
     try { const raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 1) S = Object.assign(blankState(), raw); } catch (e) { /* sem storage */ }
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignora */ } };
@@ -147,6 +147,7 @@
 
     /* ------------------------------------------------------------ voz: ouvir e falar */
     function say(text, slow) {
+        if (senActive()) SEN().heard++;
         const clean = String(text).replace(/…/g, '').replace(/\s*\/\s*/g, ', ');
         const old = D.state.rate;
         try { if (slow) D.state.rate = 0.7; D.say(clean, 'en'); } finally { D.state.rate = old; }
@@ -237,19 +238,21 @@
     const worldList = (w) => w.missions.map((m) => ({ m, w })).concat(w.boss ? [{ m: w.boss, w, boss: true }] : []);
 
     /* ------------------------------------------------------------ novidades: quadro no topo + selo NOVO nos painéis (some com "Entendi") */
-    const NEWS_KEY = 'dd-curso-novidades', NEWS_VER = '2026-11-21';
+    const NEWS_KEY = 'dd-curso-novidades', NEWS_VER = '2026-11-21c';
     const newsSeen = () => { try { return localStorage.getItem(NEWS_KEY) === NEWS_VER; } catch (e) { return false; } };
     const newH = () => (newsSeen() ? null : 'tj-new-h');
     function newsCard() {
         if (newsSeen()) return null;
         const c = mk('section', 'tj-card tj-news'); c.id = 'tj-news';
-        c.appendChild(mk('h2', null, 'O que mudou no Curso'));
+        c.appendChild(mk('h2', null, 'Como o Curso funciona agora'));
+        c.appendChild(mk('p', 'lb-note', 'O Curso deixou de ser uma coleção de exercícios soltos. Agora ele gira em torno de um livro: Sobre a Brevidade da Vida, de Sêneca.'));
         const ul = mk('ul', 'tj-news-list');
         [
-            ['No menu, agora há Biblioteca (ler e ouvir os seus textos) e Curso (aprender).', null],
-            ['Palavras em inglês que você salvar na Biblioteca entram sozinhas na Revisão do dia.', null],
-            ['NOVO: os capítulos do livro viram missões de leitura, com conversa e escrita.', 'tj-book'],
-            ['NOVO: o painel Nossa evolução mostra números, os últimos 14 dias e as palavras aprendidas.', 'tj-evo']
+            ['1. Envie o livro. O PDF de Sobre a Brevidade da Vida fica só neste aparelho e nunca vai para o site. Se ele já estiver na Biblioteca, é só escolhê-lo.', 'tj-sen'],
+            ['2. Estude por partes. Cada parte tem leitura com apoio, palavras do trecho, shadowing (ouvir e falar), discussão em inglês e escrita. As partes abrem em ordem.', null],
+            ['3. Converse sobre o livro. O simulador fala com Sêneca, com um tutor ou com um advogado do diabo, e mostra de qual trecho vem cada resposta. Precisa do modelo local do Chrome.', 'tj-sen'],
+            ['4. Acompanhe a evolução. O painel parte do livro: ler, ouvir, falar, escrever, conversar e vocabulário.', 'tj-evo'],
+            ['Daqui para a frente: o Mundo 1 virou "Fundamentos de inglês" (opcional, recolhido). Palavras salvas na Biblioteca entram na Revisão do dia.', null]
         ].forEach((n) => {
             const li = mk('li'); li.appendChild(mk('span', null, n[0] + ' '));
             if (n[1]) { const b = btn('Ver', () => { const e = document.getElementById(n[1]); if (e) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); b.classList.add('tj-news-go'); li.appendChild(b); }
@@ -263,6 +266,7 @@
     function showMap() {
         clear(); renderHud();
         const nc = newsCard(); if (nc) body.appendChild(nc);
+        body.appendChild(senecaPanel());
         const due = dueItems();
         if (due.length >= 3) {
             const card = mk('div', 'tj-card tj-review');
@@ -277,7 +281,11 @@
             head.append(mk('h2', null, 'Mundo ' + w.id + ' · ' + txt(w.name)), mk('small', null, w.level + ' · ' + doneN + '/' + list.length));
             box.append(head, mk('p', 'lb-note', txt(w.blurb)));
             list.forEach((x, i) => box.appendChild(missionNode(x, i, list)));
-            body.appendChild(box);
+            if (w.id === 1) {   // o Mundo 1 vira "Fundamentos" opcional: o centro do Curso é o livro
+                const det = mk('details', 'tj-fund'); det.open = doneN > 0;
+                det.appendChild(mk('summary', null, 'Fundamentos de inglês (opcional) · ' + doneN + '/' + list.length + ' missões'));
+                det.appendChild(box); body.appendChild(det);
+            } else body.appendChild(box);
         });
         body.appendChild(bookPanel());
         body.appendChild(evolutionPanel());
@@ -597,6 +605,7 @@
             const mic = btn(getSR() ? 'Falar' : 'Repeti em voz alta', null, 'lb-primary'); mic.id = 'tj-mic';
             const done = (score) => {
                 run.speak.best = Math.max(run.speak.best, score);
+                if (run.text && run.text.seneca) { const sn = SEN(); sn.shadowN++; sn.shadowSum += score; }
                 if (score >= 0.8) { S.stats.spoken++; save(); }
                 gain(score >= need ? 10 : 3); checkAch();
                 zone.querySelectorAll('.tj-nextrow').forEach((n) => n.remove());
@@ -804,11 +813,22 @@
     async function buildTextLesson(x) {
         const bk = x.text.book ? await loadBook(x.text.book + '.html') : null;
         const d = bk ? { paras: bk.paras } : await D.db.get('docs', x.text.docId);
-        const paras = d.paras.slice(x.ch.from, x.ch.to); let sents = [];
-        paras.forEach((p) => { if (p.t === 'h') return; p.s.forEach((s) => { const n = s.split(/\s+/).length; if (n >= 4 && n <= 22 && /[a-z]/i.test(s) && !/\|/.test(s) && s !== s.toUpperCase()) sents.push(s); }); });
+        const sen = !!x.text.seneca, maxW = sen ? 45 : 22;
+        const paras = (sen ? bodyParas(d.paras).map((p) => ({ t: p.t, s: p.s.map((s) => s.replace(/^\(\d+(\.\d+)?\)\s*/, '')).filter(Boolean) })) : d.paras).slice(x.ch.from, x.ch.to); let sents = [];
+        paras.forEach((p) => { if (p.t === 'h') return; p.s.forEach((s) => { const n = s.split(/\s+/).length; if (n >= 4 && n <= maxW && /[a-z]/i.test(s) && !/\|/.test(s) && s !== s.toUpperCase()) sents.push(s); }); });
         if (bk) { const off = sents.filter((s) => bk.pt.has(s)); if (off.length >= 6) sents = off; }
         const scene = [];
-        const ptOf = async (s) => { if (bk && bk.pt.has(s)) return bk.pt.get(s); try { return await window.DDLab.translateText(s, 'en'); } catch (e) { return null; } };
+        // tradução automática com limite de tempo: se o Tradutor do Chrome não responde (modelo ainda não baixado, por exemplo), a missão não trava
+        let tdead = 0;
+        const ptOf = async (s) => {
+            if (bk && bk.pt.has(s)) return bk.pt.get(s);
+            if (tdead >= 2) return null;
+            try {
+                const r = await Promise.race([window.DDLab.translateText(s, 'en'), new Promise((res) => setTimeout(() => res(null), 4000))]);
+                if (r == null) tdead++; else tdead = 0;
+                return r;
+            } catch (e) { tdead++; return null; }
+        };
         const first = sents.slice(0, 6);
         for (const s of first) scene.push({ who: 'Texto', en: s, pt: await ptOf(s) });
         const withPt = scene.filter((l) => l.pt);
@@ -824,17 +844,18 @@
         const build = [];
         for (const s of sents.filter((z) => z.split(/\s+/).length <= 9).slice(0, 3)) { const pt = await ptOf(s); if (pt) build.push({ pt, en: [s] }); }
         const cloze = [];
-        for (const f of focus.slice(0, 3)) {
+        const cpool = focus.length >= 3 ? focus : shuffle(cand).slice(0, 8).map((c) => ({ en: c.w, pt: '' }));   // sem tradutor no navegador: lacunas só com palavras do trecho
+        for (const f of cpool.slice(0, 3)) {
             const s = sents.find((z) => new RegExp('\\b' + f.en + '\\b', 'i').test(z)); if (!s) continue;
-            const others = shuffle(focus.filter((g) => g.en !== f.en).map((g) => g.en)).slice(0, 2);
+            const others = shuffle(cpool.filter((g) => g.en !== f.en).map((g) => g.en)).slice(0, 2);
             if (others.length < 2) continue;
-            cloze.push({ en: s.replace(new RegExp('\\b' + f.en + '\\b', 'i'), '___'), answer: [f.en], options: [f.en].concat(others), pt: f.pt, why: 'Aqui o sentido pede "' + f.en + '" (' + f.pt + ').' });
+            cloze.push({ en: s.replace(new RegExp('\\b' + f.en + '\\b', 'i'), '___'), answer: [f.en], options: [f.en].concat(others), pt: f.pt, why: 'Aqui o sentido pede "' + f.en + '"' + (f.pt ? ' (' + f.pt + ')' : '') + '.' });
         }
         const keys = Array.from(new Set(sents.join(' ').toLowerCase().match(/\p{L}{5,}/gu) || [])).filter((w) => !STOP.has(w)).slice(0, 80).join('|');
         const keyRe = keys ? '\\b(' + keys + ')\\b' : '\\w+';
         const title = x.text.title + ' · parte ' + x.m.n;
         const lenCheck = (n, msg) => ({ re: '(\\w+\\W+){' + (n - 1) + '}\\w+', miss: msg, hit: 'Resposta completa.' });
-        return {
+        const lesson = {
             id: x.m.id, n: x.m.n, minutes: 15, title: { pt: title }, goal: { pt: 'Entender, falar, discutir e escrever sobre este trecho.' },
             teach: { pt: 'Este trecho é seu. Ouça, entenda pelo contexto, fixe as palavras que mais valem a pena e depois use o inglês para dizer o que pensa.' },
             scene: (withPt.length >= 3 ? withPt : scene.map((l) => Object.assign({}, l, { pt: l.pt || '(sem tradução: ative o tradutor no Leitor de PDF)' }))),
@@ -847,6 +868,21 @@
             ],
             write: { prompt: { pt: 'Escreva, em inglês, um pequeno resumo (2 frases) do que você leu e a sua opinião.' }, model: (first[0] || 'I read this text.') + ' I think it is important.', checks: [lenCheck(8, 'Escreva pelo menos 8 palavras (duas frases curtas).'), { re: keyRe, miss: 'Use alguma palavra do trecho.', hit: 'Usou palavras do trecho.' }, { re: '\\b(I|my|me)\\b', miss: 'Inclua a sua opinião (I think…).', hit: 'Incluiu a sua opinião.' }], pass: 2 }
         };
+        if (sen) {
+            // nível do livro: shadowing em trechos de até 28 palavras, discussão e escrita mais exigentes
+            const clause = (s) => { if (s.split(/\s+/).length <= 28) return s; const ok = s.split(/(?<=[;:])\s+/).find((p) => { const n = p.split(/\s+/).length; return n >= 6 && n <= 28; }); return ok || null; };
+            const sp = [];
+            for (const s of first.map(clause).filter(Boolean).slice(0, 3)) sp.push({ en: s, pt: (scene.find((l) => l.en === s) || {}).pt || (await ptOf(s)) || '', tip: 'Shadowing: ouça uma vez e fale logo atrás da voz, com o mesmo ritmo e as pausas do texto.' });
+            lesson.speak = sp; lesson.minutes = 20;
+            lesson.teach = { pt: 'Texto de nível avançado (Sêneca). Não tente entender palavra por palavra: leia pelo sentido, ouça, e só depois fixe as palavras que mais valem a pena.' };
+            lesson.discuss = [
+                { q: 'In your own words, what is Seneca\'s main argument in this passage?', hint: 'Resuma o argumento central do trecho.', model: 'Seneca argues that life is long enough if we use it well.', checks: [lenCheck(8, 'Use pelo menos 8 palavras.'), { re: keyRe, miss: 'Use ideias ou palavras do trecho.', hit: 'Usou o vocabulário do trecho.' }], pass: 2 },
+                { q: 'Which sentence do you disagree with, and why?', hint: 'Escolha uma afirmação e conteste.', model: 'I disagree with the idea that busy people waste their lives, because work can give life meaning.', checks: [lenCheck(8, 'Use pelo menos 8 palavras.'), { re: '\\b(disagree|however|but|although|not|because)\\b', miss: 'Mostre a objeção com "I disagree" ou "however".', hit: 'Apresentou uma objeção.' }], pass: 2 },
+                { q: 'How does this idea apply to your own working life today?', hint: 'Relacione o trecho com a sua rotina de trabalho.', model: 'In my work I often spend my time on urgent tasks that do not really matter.', checks: [lenCheck(8, 'Use pelo menos 8 palavras.'), { re: '\\b(my|I|me|work|job|day)\\b', miss: 'Fale da sua própria experiência (my work, I…).', hit: 'Falou da própria experiência.' }], pass: 2 }
+            ];
+            lesson.write = { prompt: { pt: 'Escreva, em inglês, um resumo do trecho em 2 ou 3 frases e acrescente uma objeção sua.' }, model: 'Seneca says that we waste most of our time on trivial things. However, I think some busy work is necessary to live well.', checks: [lenCheck(15, 'Escreva pelo menos 15 palavras (resumo e objeção).'), { re: keyRe, miss: 'Use ideias ou palavras do trecho.', hit: 'Usou o vocabulário do trecho.' }, { re: '\\b(however|but|although|on the other hand|I disagree|I think)\\b', miss: 'Inclua a sua objeção (however, but, I think…).', hit: 'Incluiu uma objeção.' }], pass: 3 };
+        }
+        return lesson;
     }
     async function startTextMission(x) {
         clear(); renderHud();
@@ -855,6 +891,183 @@
         try { lesson = await buildTextLesson(x); } catch (e) { body.textContent = ''; body.appendChild(mk('p', 'lb-error', 'Não consegui preparar este trecho.')); body.appendChild(btn('Mapa', showMap)); return; }
         if (!lesson.scene.length) { body.textContent = ''; body.appendChild(mk('p', 'lb-error', 'Este trecho não tem frases suficientes.')); body.appendChild(btn('Mapa', showMap)); return; }
         startMission(lesson, WORLDS[0], 'text', { text: x.text, list: textList(x.text) });
+    }
+
+    /* ------------------------------------------------------------ Livro 1: Sêneca, Sobre a Brevidade da Vida
+       O livro (tradução moderna, protegida) NUNCA vai para o site: fica no IndexedDB deste aparelho, na mesma biblioteca da aba Biblioteca. */
+    const SEN_TITLE = 'Sêneca · Sobre a Brevidade da Vida';
+    const SEN = () => (S.sen = Object.assign({ heard: 0, shadowN: 0, shadowSum: 0, chatTurns: 0, chatSessions: 0, chatWords: 0, corrections: 0, terms: {} }, S.sen));
+    const senText = () => S.texts.find((t) => t.seneca);
+    let chatOn = false;
+    const senActive = () => !!((run && run.text && run.text.seneca) || chatOn);
+    const cleanSent = (s) => s.replace(/(\p{L})- (\p{L})/gu, '$1$2').replace(/\s+/g, ' ').trim();
+    // corpo do livro: corta as notas de rodapé (a partir de "Notes") e limpa quebras do OCR
+    function bodyParas(paras) {
+        let end = paras.length;
+        for (let i = Math.floor(paras.length * 0.3); i < paras.length; i++) { if (/^Notes\b/.test((paras[i].s && paras[i].s[0]) || '')) { end = i; break; } }
+        return paras.slice(0, end).map((p) => ({ t: p.t, s: p.s.map(cleanSent).filter(Boolean) })).filter((p) => p.s.length);
+    }
+    async function bindSeneca(docId) {
+        const d = await D.db.get('docs', docId);
+        if (!d) throw new Error('documento não encontrado na biblioteca');
+        const chs = chaptersOf(bodyParas(d.paras), 380).map((c, i) => ({ from: c.from, to: c.to, n: i + 1 }));
+        if (!chs.length) throw new Error('não encontrei texto no documento');
+        S.texts = S.texts.filter((t) => !t.seneca);
+        S.texts.unshift({ id: 'seneca', seneca: true, docId, title: SEN_TITLE, chapters: chs });
+        delete senCache.p; delete senCache.vocab; save();
+    }
+    // trechos do livro para ancorar a conversa (janelas de ~110 palavras) e busca por relevância (TF-IDF simples)
+    const senCache = {};
+    const kw = (t) => (String(t).toLowerCase().match(/\p{L}{4,}/gu) || []).map((w) => w.replace(/s$/, '')).filter((w) => !STOP.has(w));
+    async function senPassages() {
+        if (senCache.p) return senCache.p;
+        const tx = senText(); if (!tx) throw new Error('livro não configurado');
+        const d = await D.db.get('docs', tx.docId), out = []; let cur = [], w = 0;
+        const flush = () => { if (cur.length) { const text = cur.join(' '), m = text.match(/\((\d+\.\d+)\)/); out.push({ id: m ? m[1] : 'p' + (out.length + 1), text, tok: kw(text) }); } cur = []; w = 0; };
+        bodyParas(d.paras).forEach((p) => p.s.forEach((s) => { cur.push(s); w += s.split(/\s+/).length; if (w >= 110) flush(); }));
+        flush();
+        return (senCache.p = out);
+    }
+    function retrieve(passages, query, k) {
+        const q = Array.from(new Set(kw(query))), N = passages.length, df = {};
+        passages.forEach((p) => new Set(p.tok).forEach((w) => { df[w] = (df[w] || 0) + 1; }));
+        const scored = passages.map((p, i) => { const set = new Set(p.tok); let s = 0; q.forEach((w) => { if (set.has(w)) s += Math.log(1 + N / df[w]); }); return { p, s, i }; });
+        scored.sort((a, b) => b.s - a.s || a.i - b.i);
+        const hit = scored.filter((x) => x.s > 0).slice(0, k).map((x) => x.p);
+        return hit.length ? hit : passages.slice(0, 1);
+    }
+    const senVocab = (passages) => senCache.vocab || (senCache.vocab = new Set(passages.reduce((a, p) => a.concat(p.tok), []).filter((w) => !(window.__ddNivel && window.__ddNivel.isCommon(w)))));
+
+    function partsList(tx, mine) {
+        const list = textList(tx);
+        list.forEach((x, i) => {
+            const ok = unlockedAt(list, i), r = doneRec(x.m.id);
+            const node = mk('div', 'tj-node' + (ok ? '' : ' tj-locked') + (passed(x.m.id) ? ' tj-done' : '')); node.dataset.id = x.m.id;
+            const info = mk('div', 'tj-node-info'); info.append(mk('strong', null, txt(x.m.title)), mk('div', 'tj-stars', r.done ? '★'.repeat(r.stars || 0) + '☆'.repeat(3 - (r.stars || 0)) : '☆☆☆'));
+            const acts = mk('div', 'tj-node-acts');
+            if (ok) { const b = btn(r.done ? 'Jogar de novo' : 'Começar', () => startTextMission(x), r.done ? '' : 'lb-primary'); b.classList.add('tj-go'); acts.appendChild(b); }
+            else acts.appendChild(btn('Liberar mesmo assim', () => { const prev = list[i - 1].m.id; S.missions[prev] = Object.assign(S.missions[prev] || {}, { free: true }); save(); showMap(); }));
+            node.append(mk('div', 'tj-num', String(i + 1)), info, acts); mine.appendChild(node);
+        });
+    }
+    function senecaPanel() {
+        const box = mk('section', 'tj-world tj-sen'); box.id = 'tj-sen';
+        box.appendChild(mk('h2', newH(), 'Livro 1 · ' + SEN_TITLE));
+        const tx = senText();
+        if (!tx) {
+            box.appendChild(mk('p', 'lb-note', 'Sobre a Brevidade da Vida, de Sêneca, é o primeiro livro do Curso: leitura, escuta, shadowing, escrita e conversa em inglês partem dele. Envie o seu PDF. Ele fica só neste aparelho e não é publicado no site.'));
+            const row = mk('div', 'tj-make'), msg = mk('p', 'lb-note'); msg.id = 'tj-sen-msg';
+            const file = mk('input'); file.type = 'file'; file.accept = '.pdf,.txt,application/pdf,text/plain'; file.id = 'tj-sen-file'; file.hidden = true;
+            const up = btn('Enviar o PDF do livro', () => file.click(), 'lb-primary'); up.id = 'tj-sen-up';
+            file.addEventListener('change', async () => {
+                if (!file.files[0]) return;
+                up.disabled = true; msg.textContent = 'Lendo o livro… (pode levar alguns instantes)';
+                try {
+                    await D.importFile(file.files[0]);
+                    const d = D.doc; if (!d) throw new Error('não consegui extrair o texto (PDF escaneado precisa de OCR)');
+                    const id = d.id; try { D.$('lb-back').click(); } catch (e) { /* ignora */ }
+                    await bindSeneca(id); showMap();
+                } catch (e) { msg.textContent = 'Não consegui: ' + (e && e.message ? e.message : e); up.disabled = false; }
+            });
+            row.append(file, up); box.append(row, msg);
+            D.db.all('meta').then((metas) => {
+                metas = metas.filter((m) => m.lang === 'en' && !(m.x && m.x.trilha)).sort((a, b) => (b.lastOpened || 0) - (a.lastOpened || 0));
+                if (!metas.length) return;
+                const r2 = mk('div', 'tj-make'); r2.appendChild(mk('small', 'lb-note', 'Ou use um documento que já está na Biblioteca:'));
+                const sel = mk('select', 'lb-input'); sel.id = 'tj-sen-src';
+                metas.forEach((m) => { const o = mk('option', null, m.title); o.value = m.id; sel.appendChild(o); });
+                const use = btn('Usar como o livro do Sêneca', async () => { use.disabled = true; try { await bindSeneca(sel.value); showMap(); } catch (e) { msg.textContent = 'Não consegui: ' + (e && e.message ? e.message : e); use.disabled = false; } }); use.id = 'tj-sen-use';
+                r2.append(sel, use); box.appendChild(r2);
+            }).catch(() => {});
+            return box;
+        }
+        box.appendChild(mk('p', 'lb-note', 'Cada parte tem leitura apoiada, palavras do trecho, shadowing, discussão em inglês e escrita. Abaixo, o simulador de conversa usa os trechos do livro como fonte.'));
+        const mine = mk('div', 'tj-list'); box.appendChild(mine);
+        partsList(tx, mine);
+        const chat = mk('div', 'tj-card tj-sen-chat'); chat.id = 'tj-sen-chat';
+        chat.append(mk('strong', null, 'Simulador de conversa sobre o livro'), mk('p', null, 'Converse em inglês com Sêneca, com um tutor socrático ou com um advogado do diabo. As respostas se apoiam em trechos do livro, que você pode abrir para conferir.'));
+        ai.avail().then((v) => {
+            if (!v) { chat.appendChild(mk('p', 'lb-note', 'O simulador precisa do modelo local do Chrome para computador (recurso de IA no aparelho). Neste navegador ele não está disponível; as missões, a escrita e a evolução funcionam normalmente.')); return; }
+            ['seneca', 'tutor', 'debate'].forEach((k) => { const b = btn(SEN_ROLES[k].name, () => startBookChat(k), k === 'seneca' ? 'lb-primary' : ''); b.id = 'tj-bc-' + k; chat.appendChild(b); });
+        }).catch(() => {});
+        box.appendChild(chat);
+        return box;
+    }
+
+    /* ---- simulador de conversa ancorado no livro ---- */
+    const SEN_RULES = 'Write 2 to 4 sentences of natural, clear English (level B1-B2). Use ONLY the EXCERPTS in each message as the source for Seneca\'s ideas; if the learner asks for something the excerpts do not cover, say that the text does not cover it and reason briefly in a Stoic spirit. Finish with one short question. If the learner made a clear language mistake that blocks meaning, add a last line starting with "Dica:" with the fix, written in Brazilian Portuguese.';
+    const SEN_ROLES = {
+        seneca: { name: 'Sêneca', note: 'Sêneca conversa com você e responde com base no livro.', open: 'Welcome. Tell me: which part of your day do you feel you waste?', sys: 'You are Lucius Annaeus Seneca, speaking with a modern adult who is learning English. Speak in the first person, with calm Stoic authority. ' + SEN_RULES },
+        tutor: { name: 'Tutor socrático', note: 'O tutor faz perguntas sobre o texto e ajuda você a expressar a resposta em inglês.', open: 'Let us read together. In your own words, what does Seneca say about how we use our time?', sys: 'You are a Socratic English tutor guiding a learner through Seneca\'s "On the Shortness of Life". Ask about the passages, never give the answer first, and ask for evidence from the text. ' + SEN_RULES },
+        debate: { name: 'Advogado do diabo', note: 'Ele contesta Sêneca e você defende (ou critica) as ideias do livro.', open: 'I will argue against Seneca. Defend him: is life really long enough if we use it well?', sys: 'You are a respectful devil\'s advocate who challenges Seneca\'s claims with modern counter-examples, so the learner must defend or refine the argument in English. ' + SEN_RULES }
+    };
+    async function startBookChat(roleKey) {
+        const role = SEN_ROLES[roleKey]; clear(); renderHud();
+        body.appendChild(mk('h2', 'tj-title', role.name + ' · conversa sobre o livro'));
+        body.appendChild(mk('p', 'lb-note', role.note));
+        const log = mk('div', 'tj-chat'); log.id = 'tj-chat'; body.appendChild(log);
+        let passages, session;
+        try { passages = await senPassages(); session = await ai.session(role.sys); }
+        catch (e) { body.appendChild(mk('p', 'lb-error', 'Não consegui iniciar a conversa: ' + (e && e.message ? e.message : e))); body.appendChild(btn('Mapa', showMap)); return; }
+        chatOn = true;
+        const vocab = senVocab(passages), sess = { role: roleKey, at: now(), turns: [] };
+        let speakOn = true;
+        const add = (who, text, mine, srcs) => {
+            const b = mk('div', 'tj-bubble' + (mine ? ' tj-me' : '')); const main = String(text).split(/\n?Dica:/)[0].trim(), tip = String(text).match(/Dica:\s*([\s\S]*)$/);
+            b.append(mk('small', 'tj-who', who), mk('div', 'tj-en', main));
+            if (tip) b.appendChild(mk('div', 'tj-tip', 'Dica: ' + tip[1].trim()));
+            if (srcs && srcs.length) {
+                const row = mk('div', 'tj-srcs'); row.appendChild(mk('small', null, 'Fonte no livro: '));
+                srcs.forEach((p) => { const c = btn(p.id, null); c.classList.add('tj-src-chip'); const q = mk('blockquote', 'tj-src'); q.hidden = true; q.textContent = p.text; c.addEventListener('click', () => { q.hidden = !q.hidden; }); row.appendChild(c); b.appendChild(q); });
+                b.insertBefore(row, b.querySelector('blockquote'));
+            }
+            log.appendChild(b); b.scrollIntoView({ block: 'nearest' });
+            if (!mine && speakOn) say(main);
+        };
+        add(role.name, role.open, false);
+        const input = mk('textarea', 'lb-input tj-write'); input.rows = 2; input.id = 'tj-bc-in'; input.placeholder = 'Escreva em inglês (ou use o microfone)'; input.spellcheck = false;
+        const out = mk('div', 'tj-result'); out.id = 'tj-bc-res';
+        let lastQ = role.open;
+        const send = btn('Enviar', async () => {
+            const v = input.value.trim(); if (!v) return;
+            input.value = ''; add('Você', v, true); send.disabled = true;
+            const srcs = retrieve(passages, v + ' ' + lastQ, 2);
+            let reply;
+            try { reply = String(await session.prompt('EXCERPTS:\n' + srcs.map((p) => '[' + p.id + '] ' + p.text).join('\n') + '\n\nLearner: ' + v)).trim(); }
+            catch (e) { reply = 'Sorry, I had a problem. Please try again.'; }
+            add(role.name, reply, false, srcs); lastQ = reply;
+            const s = SEN(); s.chatTurns++; s.chatWords += v.split(/\s+/).length;
+            kw(v).filter((w) => vocab.has(w)).forEach((w) => { s.terms[w] = (s.terms[w] || 0) + 1; });
+            if (/Dica:/.test(reply)) s.corrections++;
+            sess.turns.push({ u: v, a: reply, src: srcs.map((p) => p.id) });
+            S.sen = s; gain(8); save();
+            send.disabled = false; input.focus();
+        }, 'lb-primary'); send.id = 'tj-bc-send';
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send.click(); } });
+        const acts = mk('div', 'tj-tools'); acts.appendChild(send);
+        if (getSR()) {
+            const mic = btn('Falar', async () => {
+                mic.disabled = true; out.textContent = 'Ouvindo…';
+                try { const said = await listenOnce(); input.value = (input.value + ' ' + said).trim(); out.textContent = said ? 'Entendi: ' + said : 'Não entendi. Tente de novo.'; }
+                catch (e) { out.textContent = 'Não consegui ouvir. Escreva a mensagem.'; }
+                mic.disabled = false;
+            }); mic.id = 'tj-bc-mic'; acts.appendChild(mic);
+        }
+        const vz = btn('Voz: ligada', () => { speakOn = !speakOn; vz.textContent = 'Voz: ' + (speakOn ? 'ligada' : 'desligada'); }); vz.id = 'tj-bc-voice'; acts.appendChild(vz);
+        const end = btn('Encerrar e ver o resumo', () => {
+            chatOn = false;
+            const s = SEN(); if (sess.turns.length) { s.chatSessions++; S.chats = [sess].concat(S.chats || []).slice(0, 20); if (sess.turns.length >= 5) gain(20); S.sen = s; save(); }
+            clear(); renderHud();
+            body.appendChild(mk('h2', 'tj-title', 'Resumo da conversa'));
+            const used = Array.from(new Set(sess.turns.reduce((a, t) => a.concat(kw(t.u).filter((w) => vocab.has(w))), [])));
+            const ul = mk('ul', 'tj-learned');
+            [sess.turns.length + ' mensagens suas', sess.turns.reduce((a, t) => a + t.u.split(/\s+/).length, 0) + ' palavras escritas', used.length + ' termos do livro usados' + (used.length ? ': ' + used.slice(0, 12).join(', ') : ''), sess.turns.filter((t) => /Dica:/.test(t.a)).length + ' dicas de correção recebidas'].forEach((t) => ul.appendChild(mk('li', null, t)));
+            body.appendChild(ul);
+            if (sess.turns.length < 1) body.appendChild(mk('p', 'lb-note', 'Nenhuma mensagem nesta conversa. Tente de novo quando quiser.'));
+            const row = mk('div', 'tj-tools'); const back = btn('Mapa', () => { run = null; showMap(); }, 'lb-primary'); back.id = 'tj-map'; row.appendChild(back); body.appendChild(row);
+        }); end.id = 'tj-bc-end'; acts.appendChild(end);
+        body.append(input, acts, out);
+        setTimeout(() => input.focus(), 30);
     }
 
     /* ---- Conversar: discussão sobre o trecho (responder por voz ou texto; o professor local reage, se existir) ---- */
@@ -924,6 +1137,9 @@
             const items = keys.map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
             return { id: tx.id, title: tx.title, book: !!tx.book, parts: ls.length, done: ls.filter((x) => doneRec(x.m.id).done).length, stars: ls.reduce((a, x) => a + (doneRec(x.m.id).stars || 0), 0), items };
         });
+        const sn = senText(), sl = sn ? textList(sn) : [], st = SEN();
+        const senWords = sn ? Object.keys(S.items).filter((k) => k.indexOf('t:seneca:') === 0 && !S.items[k].pattern) : [];
+        const seneca = sn ? { parts: sl.length, done: sl.filter((x) => doneRec(x.m.id).done).length, stars: sl.reduce((a, x) => a + (doneRec(x.m.id).stars || 0), 0), heard: st.heard, shadowN: st.shadowN, shadowAvg: st.shadowN ? Math.round(st.shadowSum / st.shadowN * 100) : null, answers: (S.stats.discussed || 0) + (S.stats.written || 0), chatTurns: st.chatTurns, chatSessions: st.chatSessions, chatWords: st.chatWords, corrections: st.corrections, terms: Object.keys(st.terms).length, words: senWords.length, mastered: senWords.filter((k) => S.items[k].lvl >= 2).length } : null;
         const library = Object.keys(S.items).filter((k) => S.items[k].lib).map((k) => ({ key: k, en: S.items[k].en, pt: S.items[k].pt, lvl: S.items[k].lvl, due: S.items[k].due <= now(), ok: S.items[k].ok, bad: S.items[k].bad }));
         const done = missions.filter((m) => m.done), bests = done.map((m) => m.best);
         const days = [];
@@ -931,7 +1147,7 @@
         const allItems = Object.keys(S.items).filter((k) => !S.items[k].pattern && S.items[k].en);
         return {
             level: levelOf(S.xp), xp: S.xp, streak: S.streak.n, mastered: masteredCount(), seen: allItems.length, due: dueItems().length,
-            spoken: S.stats.spoken, written: S.stats.written, discussed: S.stats.discussed || 0, texts, library, reviews: S.stats.reviews,
+            spoken: S.stats.spoken, written: S.stats.written, discussed: S.stats.discussed || 0, texts, library, seneca, reviews: S.stats.reviews,
             missionsDone: done.length, missionsTotal: missions.length, stars: missions.reduce((a, m) => a + m.stars, 0), starsMax: missions.length * 3,
             avg: bests.length ? Math.round(bests.reduce((a, b) => a + b, 0) / bests.length) : null, missions, days
         };
@@ -939,6 +1155,17 @@
     function evolutionPanel() {
         const E = evolution(), box = mk('section', 'tj-world tj-evo'); box.id = 'tj-evo';
         box.appendChild(mk('h2', newH(), 'Nossa evolução'));
+        if (E.seneca) {
+            const q = E.seneca, blk = mk('div', 'tj-sen-prog'); blk.id = 'tj-sen-prog';
+            blk.appendChild(mk('h3', 'tj-sub', 'Sêneca: o seu progresso no livro'));
+            const bar = mk('div', 'lb-bar'), fill = mk('div', 'lb-bar-fill'); fill.style.width = Math.round(q.done / Math.max(1, q.parts) * 100) + '%'; bar.appendChild(fill);
+            blk.append(mk('small', null, q.done + ' de ' + q.parts + ' partes concluídas · ' + q.stars + ' estrelas'), bar);
+            const grid = mk('div', 'tj-nums tj-sen-skills');
+            [['Ler', q.done + '/' + q.parts + ' partes'], ['Ouvir', q.heard + ' frases ouvidas'], ['Falar (shadowing)', q.shadowN ? q.shadowN + ' frases · média ' + q.shadowAvg + '%' : 'ainda sem treino'], ['Escrever', q.answers + ' respostas e textos'], ['Conversar', q.chatTurns + ' mensagens em ' + q.chatSessions + ' conversas'], ['Vocabulário do livro', q.mastered + ' de ' + q.words + ' palavras dominadas · ' + q.terms + ' usadas na conversa']].forEach((p) => {
+                const c = mk('div', 'tj-num-card tj-sen-card'); c.append(mk('strong', null, p[0]), mk('small', null, p[1])); grid.appendChild(c);
+            });
+            blk.appendChild(grid); box.appendChild(blk);
+        }
         if (!E.seen && !E.missionsDone) { box.appendChild(mk('p', 'lb-note', 'Quando você fizer a primeira missão, aqui aparece o que aprendemos e como você está evoluindo.')); return box; }
         const nums = mk('div', 'tj-nums'); nums.id = 'tj-nums';
         [['Nível', E.level], ['XP', E.xp], ['Sequência', E.streak + (E.streak === 1 ? ' dia' : ' dias')], ['Missões', E.missionsDone + '/' + E.missionsTotal], ['Estrelas', E.stars + '/' + E.starsMax],
@@ -1061,7 +1288,7 @@
     importLibrary();
     window.__ddJogo = {
         norm, tokens, accept, diffWords, explain, levelOf, touchDay, gain, ensureItem, reviewItem, dueItems, masteredCount, buildQueue, evalChecks, checkAch,
-        importLibrary, loadBook, chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
+        importLibrary, loadBook, bindSeneca, bodyParas, senPassages, retrieve, startBookChat, senecaPanel, chaptersOf, startMission, startReview, showMap, startTextMission, buildTextLesson, evolution, ai, ACH, WORLDS,
         reset() { S = blankState(); save(); showMap(); }, renderPhase, nextPhase, get S() { return S; }, set S(v) { S = v; }, get run() { return run; }, save, dayKey
     };
 })();

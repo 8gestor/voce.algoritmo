@@ -102,3 +102,17 @@
 .tj-news-list { margin: 6px 0 10px; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
 .tj-news-go { margin-left: 4px; }
 .tj-new-h::after { content: 'NOVO'; font-family: var(--font-tech); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; margin-left: 10px; padding: 2px 7px; border-radius: 4px; background: var(--c-text); color: var(--c-bg); vertical-align: middle; }
+
+/* Livro 1: Sêneca */
+.tj-fund { margin: 10px 0; }
+.tj-fund > summary { cursor: pointer; font-weight: 600; padding: 8px 2px; color: var(--c-dim); }
+.tj-sen { border: 2px solid var(--c-text); }
+.tj-sen-chat { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tj-sen-chat strong, .tj-sen-chat p { flex: 1 1 100%; margin: 0; }
+.tj-sen-prog { margin: 8px 0 12px; }
+.tj-sen-skills { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.tj-sen-card strong { font-size: 1rem; }
+.tj-srcs { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tj-src-chip { padding: 1px 8px; font-size: 0.72rem; }
+.tj-src { margin: 6px 0 0; padding: 6px 10px; border-left: 3px solid var(--lb-line); color: var(--c-dim); font-size: 0.85rem; }
+.tj-src[hidden] { display: none; }
