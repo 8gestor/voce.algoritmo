@@ -430,7 +430,33 @@ $test = @'
       var nid = D().doc.id, ndoc = await D().db.get('docs', nid), ninfo = await W().__ddWeek.bookInfo(nid);
       var allWords = ndoc.paras.reduce(function (a, p) { return a + p.s.join(' ').split(/\s+/).length; }, 0);
       ok('L8 as notas de rodapé no fim do livro não entram no total nem na cota', ninfo.n === 10 && ninfo.words < allWords && ninfo.words === ninfo.cum[10] && ndoc.paras.length >= 15, ninfo.n + ' parágrafos de corpo de ' + ndoc.paras.length + ' | ' + ninfo.words + ' de ' + allWords + ' palavras');
-      D().$('lb-back').click(); await wait(200);      // ==== PROXIMAS ====
+      D().$('lb-back').click(); await wait(200);      // ----- roteiro de 8 semanas (livros de domínio público em assets/livros/) -----
+      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');
+      await W().__ddWeek.render(); await until(function () { return idoc().getElementById('lb-rot-2'); }, 5000);
+      var rrows = idoc().querySelectorAll('#lb-rot .lb-rot-item');
+      ok('L9 roteiro: 8 semanas com autor, título e tamanho, e um botão para começar cada uma', rrows.length === 8 && /Semana 1 · Sêneca — Sobre a Brevidade da Vida/.test(rrows[0].textContent) && /Semana 8 · Stevenson/.test(rrows[7].textContent) && /mil palavras/.test(rrows[0].textContent) && idoc().querySelectorAll('#lb-rot button').length === 8);
+      var slugs = ['seneca-brevidade-da-vida', 'epicteto-enchiridion', 'seneca-paz-de-espirito', 'platao-apologia', 'thoreau-desobediencia-civil', 'emerson-self-reliance', 'tolstoi-confissao', 'stevenson-jekyll-hyde'], rbad = [];
+      for (var si = 0; si < slugs.length; si++) {
+        var rtxt = await new Promise(function (res, rej) { var xr = new (W().XMLHttpRequest)(); xr.open('GET', 'assets/livros/' + slugs[si] + '.txt'); xr.onload = function () { res(xr.responseText); }; xr.onerror = function () { rej('erro'); }; xr.send(); }).catch(function () { return ''; });
+        var rw = rtxt.split(/\s+/).filter(Boolean).length, rthe = (rtxt.match(/\bthe\b/gi) || []).length;
+        if (rw < 6000 || rw > 30000 || rthe < 150 || /Standard Ebooks|Project Gutenberg/i.test(rtxt)) rbad.push(slugs[si] + ':' + rw + '/' + rthe);
+      }
+      ok('L9b os 8 arquivos do roteiro existem, são texto em inglês, cabem em 50 min por dia (até 30 mil palavras) e não trazem cabeçalho de edição', rbad.length === 0, rbad.join(' | '));
+      idoc().getElementById('lb-rot-2').click();
+      await until(function () { return idoc().getElementById('lb-week-title'); }, 40000);
+      var rm = (await D().db.all('meta')).filter(function (m) { return m.x && m.x.roteiro === 'epicteto-enchiridion'; })[0];
+      var rinfo = rm ? await W().__ddWeek.bookInfo(rm.id) : null;
+      ok('L10 começar a semana 2 traz o livro de domínio público para a biblioteca e inicia o plano', !!rm && rm.title === 'Epictetus — The Enchiridion' && rm.lang === 'en' && idoc().getElementById('lb-week-title').textContent === 'Epictetus — The Enchiridion' && JSON.parse(W().localStorage.getItem('dd-ingles-semana')).slug === 'epicteto-enchiridion' && !!rinfo && rinfo.words > 7500 && rinfo.words < 9000 && /Dia 1 de 7/.test(idoc().getElementById('lb-week-day').textContent), rinfo && (rinfo.words + ' palavras'));
+      ok('L11 durante o plano o roteiro fica recolhido e marca a semana atual como em andamento, sem botões de começar outra', !!idoc().querySelector('details#lb-rot') && /em andamento/.test(idoc().querySelector('.lb-rot-item[data-slug="epicteto-enchiridion"]').textContent) && idoc().querySelectorAll('#lb-rot button').length === 0);
+      rm.pos = rinfo.n - 1; await D().db.put('meta', rm); await W().__ddWeek.render();
+      var rh = JSON.parse(W().localStorage.getItem('dd-ingles-semana-hist') || '[]');
+      ok('L12 terminar o livro registra no histórico uma única vez, mesmo renderizando de novo', rh.length === 1 && rh[0].slug === 'epicteto-enchiridion' && !!idoc().getElementById('lb-week-fin'), JSON.stringify(rh));
+      await W().__ddWeek.render();
+      ok('L12b renderizar de novo não duplica o registro', JSON.parse(W().localStorage.getItem('dd-ingles-semana-hist')).length === 1);
+      Array.prototype.filter.call(idoc().querySelectorAll('#lb-week-body button'), function (b) { return /próximo livro/.test(b.textContent); })[0].click();
+      await until(function () { return idoc().getElementById('lb-rot-1'); }, 5000);
+      ok('L13 depois de ler, a semana 2 aparece como lida e as outras 7 continuam disponíveis', /lido/.test(idoc().querySelector('.lb-rot-item[data-slug="epicteto-enchiridion"] .lb-rot-done').textContent) && !idoc().getElementById('lb-rot-2') && idoc().querySelectorAll('#lb-rot button').length === 7);
+      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

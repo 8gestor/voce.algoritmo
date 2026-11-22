@@ -115,7 +115,7 @@ cap15 11 unidades, cap16 c16-007) pertencem à frente de tradução.
 | `ingles-progresso.js` | sequência de dias, minutos, palavras ouvidas/salvas, revisões, gráfico de 7 dias (localStorage `dd-ingles-log`) |
 | `ingles-destaque.js` | botão "Destacar incomuns": pinta no texto as palavras fora da lista comum (CSS Custom Highlight API, não altera o DOM; usa `__ddNivel.isCommon`); escolha em localStorage `dd-ingles-destaque` |
 | `ingles-importar.js` | EPUB (ZIP lido com `DecompressionStream`) e texto colado |
-| `ingles-semana.js` | Livro da semana: plano de 7 dias para um livro em inglês da biblioteca, cota diária de palavras, ritmo (em dia/adiantado/atrasado) e palavras difíceis para ver antes; progresso pela posição de leitura (`meta.pos`), plano em localStorage `dd-ingles-semana` |
+| `ingles-semana.js` | Livro da semana: **roteiro de 8 semanas** (livros de domínio público em `assets/livros/*.txt`, extraídos da Standard Ebooks; ver o LEIAME da pasta; botão traz o livro para a biblioteca e começa a semana; histórico em `dd-ingles-semana-hist`) e plano de 7 dias para qualquer livro em inglês da biblioteca, cota diária de palavras, ritmo (em dia/adiantado/atrasado) e palavras difíceis para ver antes; progresso pela posição de leitura (`meta.pos`), plano em localStorage `dd-ingles-semana` |
 | `ingles-voz.js` | voz neural LOCAL opcional (Piper, `assets/vendor/piper`): ~60 MB por idioma, baixa uma vez, cai para a voz do navegador se falhar |
 
 Pontos de extensão do núcleo: eventos `open`, `close`, `lang`, `sentence`, `heard`, `tap`, `stop`, `imported`, `vocab-saved`, `reviewed`, `dictation`;

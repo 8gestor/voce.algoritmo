@@ -22,6 +22,7 @@
             onPace: 'No ritmo da semana', behind: (n) => 'Atrasado em ' + n + ' palavras', ahead: (n) => 'Adiantado em ' + n + ' palavras',
             cont: 'Continuar a leitura', end: 'Encerrar a semana', gone: 'O livro da semana não está mais na biblioteca.',
             finished: (d) => 'Livro concluído em ' + d + (d === 1 ? ' dia' : ' dias') + '. Boa leitura!', next: 'Escolher o próximo livro',
+            rotH: 'Roteiro de 8 semanas', rotNote: 'Edições de domínio público (Standard Ebooks). Cada livro cabe em uma semana com 50 minutos por dia.', week: 'Semana', words: 'mil palavras', startThis: 'Começar esta semana', preparing: 'Preparando o livro…', reading: 'em andamento', doneTag: 'lido', other: 'Ou escolha outro livro da sua biblioteca (por exemplo, um PDF que você enviou):', rotFail: 'Não consegui carregar o livro: ',
             hard: 'Palavras para ver antes de ler', hardNote: 'As mais frequentes e menos comuns do livro. Toque nas palavras durante a leitura para salvar as que importam.'
         },
         en: {
@@ -36,6 +37,7 @@
             onPace: 'On pace for the week', behind: (n) => 'Behind by ' + n + ' words', ahead: (n) => 'Ahead by ' + n + ' words',
             cont: 'Continue reading', end: 'End the week', gone: 'This week\'s book is no longer in the library.',
             finished: (d) => 'Book finished in ' + d + (d === 1 ? ' day' : ' days') + '. Well read!', next: 'Pick the next book',
+            rotH: '8-week reading plan', rotNote: 'Public-domain editions (Standard Ebooks). Each book fits in a week at 50 minutes a day.', week: 'Week', words: 'k words', startThis: 'Start this week', preparing: 'Preparing the book…', reading: 'in progress', doneTag: 'read', other: 'Or pick another book from your library (for example, a PDF you uploaded):', rotFail: 'Could not load the book: ',
             hard: 'Words to preview before reading', hardNote: 'The most frequent and least common words in the book. Tap words while reading to save the ones that matter.'
         }
     };
@@ -45,6 +47,31 @@
     const dayKey = (d) => { const x = d || new Date(); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
     const dayNum = (k) => { const p = k.split('-').map(Number); return Math.round(Date.UTC(p[0], p[1] - 1, p[2]) / DAY); };
 
+    // roteiro de 8 semanas: textos de domínio público em assets/livros/ (Standard Ebooks), um por semana
+    const ROTEIRO = [
+        { n: 1, slug: 'seneca-brevidade-da-vida', doc: 'Seneca — On the Shortness of Life', w: 10623, pt: ['Sêneca', 'Sobre a Brevidade da Vida'], en: ['Seneca', 'On the Shortness of Life'] },
+        { n: 2, slug: 'epicteto-enchiridion', doc: 'Epictetus — The Enchiridion', w: 8181, pt: ['Epicteto', 'Enchiridion (Manual)'], en: ['Epictetus', 'The Enchiridion'] },
+        { n: 3, slug: 'seneca-paz-de-espirito', doc: 'Seneca — On Peace of Mind', w: 13257, pt: ['Sêneca', 'Sobre a Paz de Espírito'], en: ['Seneca', 'On Peace of Mind'] },
+        { n: 4, slug: 'platao-apologia', doc: 'Plato — Apology', w: 11329, pt: ['Platão', 'Apologia de Sócrates'], en: ['Plato', 'Apology'] },
+        { n: 5, slug: 'thoreau-desobediencia-civil', doc: 'Thoreau — On the Duty of Civil Disobedience', w: 9370, pt: ['Thoreau', 'Desobediência Civil'], en: ['Thoreau', 'Civil Disobedience'] },
+        { n: 6, slug: 'emerson-self-reliance', doc: 'Emerson — Self-Reliance', w: 10115, pt: ['Emerson', 'Confiança em Si Mesmo (Self-Reliance)'], en: ['Emerson', 'Self-Reliance'] },
+        { n: 7, slug: 'tolstoi-confissao', doc: 'Tolstoy — A Confession', w: 25781, pt: ['Tolstói', 'Uma Confissão'], en: ['Tolstoy', 'A Confession'] },
+        { n: 8, slug: 'stevenson-jekyll-hyde', doc: 'Stevenson — The Strange Case of Dr Jekyll and Mr Hyde', w: 25609, pt: ['Stevenson', 'O Médico e o Monstro'], en: ['Stevenson', 'Dr Jekyll and Mr Hyde'] }
+    ];
+    const HKEY = 'dd-ingles-semana-hist';
+    const hist = () => { try { const h = JSON.parse(localStorage.getItem(HKEY) || '[]'); return Array.isArray(h) ? h : []; } catch (e) { return []; } };
+    const addHist = (e) => { try { const h = hist(); h.push(e); localStorage.setItem(HKEY, JSON.stringify(h)); } catch (err) { /* sem storage */ } };
+    const loadText = (url) => new Promise((ok, no) => { const x = new XMLHttpRequest(); x.open('GET', url); x.onload = () => ((x.status === 0 || (x.status >= 200 && x.status < 300)) && x.responseText ? ok(x.responseText) : no(new Error('http ' + x.status))); x.onerror = () => no(new Error('rede')); x.send(); });
+    // traz o livro do roteiro para a biblioteca (uma vez) e devolve o id do documento
+    async function addRoteiro(item, metas) {
+        const have = metas.find((m) => m.x && m.x.roteiro === item.slug);
+        if (have) return have.id;
+        await D.addText(item.doc, await loadText('assets/livros/' + item.slug + '.txt'));
+        const d = D.doc; if (!d) throw new Error('não consegui ler o texto');
+        d.x = Object.assign({}, d.x, { roteiro: item.slug }); D.saveMeta();
+        const id = d.id; D.$('lb-back').click();
+        return id;
+    }
     const load = () => { try { const p = JSON.parse(localStorage.getItem(KEY) || 'null'); return p && p.docId ? p : null; } catch (e) { return null; } };
     const store = (p) => { try { if (p) localStorage.setItem(KEY, JSON.stringify(p)); else localStorage.removeItem(KEY); } catch (e) { /* sem storage */ } };
 
@@ -79,6 +106,36 @@
     const anchor = D.$('lb-drop');
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
 
+    function roteiroList(plan, metas, collapsed) {
+        const done = hist(), wrap = collapsed ? el('details', 'lb-rot') : el('div', 'lb-rot'); wrap.id = 'lb-rot';
+        const head = collapsed ? el('summary', null, t('rotH')) : el('h3', 'lb-rot-h', t('rotH'));
+        wrap.append(head, el('p', 'lb-note', t('rotNote')));
+        const msg = el('p', 'lb-note'); msg.id = 'lb-rot-msg';
+        ROTEIRO.forEach((it) => {
+            const row = el('div', 'lb-rot-item'); row.dataset.slug = it.slug;
+            const names = it[D.state.readLang];
+            const info = el('div', 'lb-rot-info');
+            info.append(el('strong', null, t('week') + ' ' + it.n + ' · ' + names[0] + ' — ' + names[1]), el('small', null, Math.round(it.w / 1000) + ' ' + t('words')));
+            const act = el('div', 'lb-rot-act');
+            if (done.some((h) => h.slug === it.slug)) { const s = el('span', 'lb-ok', '✓ ' + t('doneTag')); s.className = 'lb-ok lb-rot-done'; act.appendChild(s); }
+            else if (plan && plan.slug === it.slug) act.appendChild(el('span', 'lb-rot-now', t('reading')));
+            else if (!plan) {
+                const b = btn(t('startThis'), async () => {
+                    wrap.querySelectorAll('button').forEach((x) => { x.disabled = true; });
+                    msg.textContent = t('preparing');
+                    try {
+                        const id = await addRoteiro(it, metas), m = (await D.db.get('meta', id)), info2 = await bookInfo(id);
+                        store({ docId: id, title: m ? m.title : it.doc, slug: it.slug, start: dayKey(), startWords: readWords(info2, (m && m.pos) || 0) });
+                        render();
+                    } catch (e) { msg.textContent = t('rotFail') + (e && e.message ? e.message : e); wrap.querySelectorAll('button').forEach((x) => { x.disabled = false; }); }
+                }, 'lb-primary'); b.id = 'lb-rot-' + it.n; act.appendChild(b);
+            }
+            row.append(info, act); wrap.appendChild(row);
+        });
+        wrap.appendChild(msg);
+        return wrap;
+    }
+
     let seq = 0;
     async function render() {
         const my = ++seq, fmt = (n) => D.nf().format(n);
@@ -89,8 +146,10 @@
         if (my !== seq) return;
         body.textContent = '';
         if (!plan) {
-            if (!metas.length) { body.appendChild(el('p', 'lb-note', t('none'))); return; }
             body.appendChild(el('p', 'lb-note', t('pick')));
+            body.appendChild(roteiroList(null, metas, false));
+            if (!metas.length) return;
+            body.appendChild(el('p', 'lb-note', t('other')));
             const row = el('div', 'lb-week-row');
             const sel = el('select', 'lb-input'); sel.id = 'lb-week-src';
             metas.forEach((m) => { const o = el('option', null, m.title); o.value = m.id; sel.appendChild(o); });
@@ -124,6 +183,7 @@
         body.append(prog, bar);
         if (finished) {
             const used = Math.min(idx, DAYS) || 1;
+            if (!plan.logged) { addHist({ slug: plan.slug || null, docId: plan.docId, title: plan.title, date: today, days: used }); plan.logged = true; store(plan); }
             const fin = el('p', 'lb-ok', t('finished')(used)); fin.id = 'lb-week-fin';
             body.appendChild(fin);
             body.appendChild(btn(t('next'), () => { store(null); render(); }, 'lb-primary'));
@@ -149,6 +209,7 @@
             info.hard.forEach((w) => chips.appendChild(el('span', 'lb-week-chip', w)));
             det.appendChild(chips); body.appendChild(det);
         }
+        body.appendChild(roteiroList(plan, metas, true));
     }
     D.on('close', render); D.on('lang', render); D.on('imported', render);
     render();

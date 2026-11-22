@@ -187,3 +187,12 @@ body:not(.paper-mode) #lb-title { border-bottom: 1px solid var(--lb-line); }
 .lb-week-hard summary { cursor: pointer; font-weight: 600; }
 .lb-week-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .lb-week-chip { border: 1px solid var(--lb-line); border-radius: 999px; padding: 2px 10px; font-family: var(--font-tech); font-size: 0.78rem; }
+
+/* Roteiro de 8 semanas */
+.lb-rot { margin-top: 14px; }
+.lb-rot-h { font-size: 1rem; margin: 0 0 4px; }
+.lb-rot > summary { cursor: pointer; font-weight: 600; }
+.lb-rot-item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 0; border-top: 1px solid var(--lb-line); }
+.lb-rot-info { display: flex; flex-direction: column; flex: 1 1 260px; }
+.lb-rot-info small { color: var(--c-dim); }
+.lb-rot-now { font-family: var(--font-tech); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
