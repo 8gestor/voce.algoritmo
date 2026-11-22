@@ -24,7 +24,7 @@
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
     const WORD = /[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}'’-]*/gu;
 
-    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set();
+    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set(), painted = null;
     try { size = Math.min(1.7, Math.max(0.6, Number(localStorage.getItem(KEY)) || 1)); } catch (e) { /* sem storage */ }
     const saveSize = () => { try { localStorage.setItem(KEY, String(size)); } catch (e) { /* ignora */ } };
 
@@ -114,10 +114,8 @@
             }
             if (pos < text.length) track.append(text.slice(pos));
         }
-        if (nextText) {                       // buffer: a frase seguinte já está carregada à direita, esmaecida; só a atual é destacada
-            track.append(el('span', 'tl-gap'));
-            nx = el('span', 'tl-nx', nextText); nx.dataset.text = nextText; track.append(nx);
-        }
+        setPreview(nextText);
+        painted = { sig: (text || '') + '|' + (lang || ''), next: nextText || '' };
         if (carry != null) {
             track.style.transition = 'none';
             track.style.transform = 'translateX(' + Math.round(carry) + 'px)';
@@ -131,6 +129,13 @@
             track.style.transition = '';
             requestAnimationFrame(() => place(wi));
         } else place(wi);
+    }
+    // buffer: a frase seguinte já está carregada à direita, esmaecida; só a atual é destacada. Trocar só a prévia não mexe na frase atual.
+    function setPreview(nextText) {
+        if (nx) { if (nx.previousSibling && nx.previousSibling.className === 'tl-gap') nx.previousSibling.remove(); nx.remove(); nx = null; }
+        if (!nextText) return;
+        track.append(el('span', 'tl-gap'));
+        nx = el('span', 'tl-nx', nextText); nx.dataset.text = nextText; track.append(nx);
     }
     function mark(k) {
         if (k === wi) return;
@@ -146,7 +151,9 @@
         const base = cur.p + ':' + cur.s + ':' + rl;               // mesma frase e mesmo idioma: só repinta (a tradução chegando não faz a linha entrar de novo)
         const nb = neighbour(cur.p, cur.s, 1), nbText = nb ? textIn(nb.p, nb.s, mainLang) : null;
         const how = base === lastBase ? 'stay' : (lastBase && base === pendingNext ? 'carry' : 'slide');
-        paintLine(mainText, mainLang, how, nbText);
+        if (how === 'stay' && painted && painted.sig === (mainText || '') + '|' + (mainLang || '')) {
+            if (painted.next !== (nbText || '')) { setPreview(nbText); painted.next = nbText || ''; }     // só a prévia mudou: a linha atual e o destaque ficam como estão (sem refazer, sem pulo)
+        } else paintLine(mainText, mainLang, how, nbText);
         lastBase = base; pendingNext = nb && nbText != null ? nb.p + ':' + nb.s + ':' + rl : '';
         prefetch(nb); if (nb) prefetch(neighbour(nb.p, nb.s, 1));
         const otherLang = D.other(mainLang), subText = textIn(cur.p, cur.s, otherLang);
@@ -192,7 +199,7 @@
         root.hidden = !show;
         setImmersive(show);
         if (show) {
-            cur = cur && D.doc.paras[cur.p] ? cur : position(); spoken = null; lastBase = ''; render();
+            cur = cur && D.doc.paras[cur.p] ? cur : position(); spoken = null; lastBase = ''; painted = null; render();
             try { root.focus({ preventScroll: true }); } catch (e) { /* ignora */ }
             if (autoplay && !D.tts.playing && cur) setTimeout(() => { if (active() && !D.tts.playing) D.startTts(cur.p, cur.s); }, 150);
         } else labels();
@@ -211,7 +218,7 @@
     });
     D.on('stop', labels); D.on('restartspeech', labels);
     D.on('open', () => { cur = null; spoken = null; setTimeout(() => sync(false), 40); });
-    D.on('close', () => { cur = null; spoken = null; pf.clear(); pendingNext = ''; root.hidden = true; setImmersive(false); });
+    D.on('close', () => { cur = null; spoken = null; pf.clear(); pendingNext = ''; painted = null; root.hidden = true; setImmersive(false); });
     D.on('mode', () => { cur = null; spoken = null; sync(true); });
     D.on('lang', () => { asked = ''; pf.clear(); labels(); render(); });
     window.addEventListener('resize', () => { if (!root.hidden) place(wi); });

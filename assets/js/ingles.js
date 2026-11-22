@@ -792,7 +792,7 @@
     }
     function moveBand(target) {
         const band = $('lb-band');
-        if (!target) { band.style.display = 'none'; return; }
+        if (!target || state.mode === 'tele') { band.style.display = 'none'; return; }      // teleprompter: a faixa fica escondida, nem calcula
         const c = $('lb-wrap').getBoundingClientRect(), r = target.getBoundingClientRect();
         band.style.display = 'block';
         band.style.top = Math.round(r.top - c.top - 2) + 'px';
@@ -800,7 +800,7 @@
     }
     function keepInView(el) {
         const r = el.getBoundingClientRect();
-        if (r.top < 90 || r.bottom > window.innerHeight - 110) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        if (r.top < 90 || r.bottom > window.innerHeight - 110) el.scrollIntoView({ block: 'center', behavior: state.mode === 'tele' ? 'auto' : 'smooth' });   // no teleprompter o texto está coberto: rolagem suave só competiria com a animação da legenda
     }
     // charIndex dentro do texto falado -> palavra da frase na tela (mesma posição, ou proporcional se o idioma da tela é outro)
     function setWordAt(charIndex, len, spokenText) {

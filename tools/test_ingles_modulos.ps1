@@ -885,7 +885,13 @@ $test = @'
       await until(function () { return /^\[pt\]/.test(idoc().getElementById('lb-tele-line').dataset.text) && idoc().querySelector('#lb-tele-line .tl-nx'); }, 10000);
       var zpre = idoc().querySelector('#lb-tele-line .tl-nx'), zhas = !!zpre && /^\[pt\]/.test(zpre.textContent) && parseFloat(W().getComputedStyle(zpre).opacity) < 0.6;
       ok('Z3 a próxima frase já aparece carregada à direita, esmaecida, enquanto só a atual é destacada', zhas, (zpre ? zpre.textContent.slice(0, 30) : 'sem prévia') + ' | leitura=' + D().state.readLang + ' linha=' + idoc().getElementById('lb-tele-line').dataset.text.slice(0, 25) + ' op=' + (zpre ? W().getComputedStyle(zpre).opacity : '') + ' tr0=' + JSON.stringify((D().doc.tr[0] || []).map(function (x) { return x == null ? null : x.slice(0, 8); })) + ' doclang=' + D().doc.lang + ' modo=' + D().state.mode + ' oculto=' + idoc().getElementById('lb-tele').hidden + ' lbreader=' + D().$('lb-reader').hidden + ' ERROS=' + zerrs.join(' ## ').slice(0, 400));      // ===================== T. botão Teleprompter no lugar do Raio-X (moldura do site) =====================
-      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
+      // estabilidade: uma atualização sem mudança (tradução chegando, troca de idioma igual) não refaz a linha, não perde o destaque e não faz a linha pular
+      var zen = D().doc.paras[0].s[0];
+      D().emit('piece', { p: 0, s: 0, text: zen, lang: 'en' }); D().emit('wordpos', { ci: Math.floor(zen.length * 0.5), len: zen.length, text: zen });
+      var zw0 = idoc().querySelector('#lb-tele-line .tl-w'), znow0 = idoc().querySelector('#lb-tele-line .tl-w.now'), ztx0 = idoc().getElementById('lb-tele-line').style.transform, zrb = 0;
+      for (var zq2 = 0; zq2 < 5; zq2++) { D().emit('lang', D().state.readLang); }
+      var znow1 = idoc().querySelector('#lb-tele-line .tl-w.now');
+      ok('Z4 atualizações repetidas sem mudança não refazem a linha: mesmos elementos, mesma palavra destacada e a linha não se mexe (sem travada na transição)', !!znow0 && znow1 === znow0 && idoc().querySelector('#lb-tele-line .tl-w') === zw0 && idoc().getElementById('lb-tele-line').style.transform === ztx0, 'palavra mantida=' + (znow1 === znow0) + ' linha igual=' + (idoc().querySelector('#lb-tele-line .tl-w') === zw0));      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       await until(function () { return !$('btn-tele').hidden; }, 4000);
       ok('T1 na Biblioteca, com documento aberto, o Raio-X some e aparece o botão Teleprompter', $('btn-raiox').hidden && !$('btn-tele').hidden && /Teleprompter/.test($('btn-tele').textContent));
       var tmode0 = D().state.mode;

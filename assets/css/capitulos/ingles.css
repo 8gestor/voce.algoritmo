@@ -320,7 +320,7 @@ body.lb-tele-open .lg, body.lb-tele-open .lg-spacer { display: none !important; 
 .tl-stage { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
 .tl-view { position: relative; overflow: hidden; width: 100%; padding: 1.4vh 0; }
 .tl-head { position: absolute; top: 8%; bottom: 8%; width: 3px; border-radius: 2px; background: var(--mk-word); opacity: 0.45; pointer-events: none; }   /* o ponto de leitura: a palavra falada fica aqui */
-.tl-track { display: inline-block; white-space: nowrap; font-size: calc(clamp(2.6rem, 9vw, 7rem) * var(--tl-size, 1)); line-height: 1.25; font-weight: 600; transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.3, 1); will-change: transform; }
+.tl-track { display: inline-block; white-space: nowrap; font-size: calc(clamp(2.6rem, 9vw, 7rem) * var(--tl-size, 1)); line-height: 1.25; font-weight: 600; transition: transform 0.4s cubic-bezier(0.25, 0.7, 0.3, 1); will-change: transform; contain: layout style; }
 .tl-w { padding: 0 0.08em; border-radius: 0.12em; transition: background 0.12s, color 0.12s, opacity 0.2s; cursor: pointer; }
 .tl-w.past { opacity: 0.35; }
 .tl-gap { display: inline-block; width: 2.4em; }
