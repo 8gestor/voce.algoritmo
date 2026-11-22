@@ -661,7 +661,7 @@
     });
 
     /* ------------------------------------------------------------------ narração */
-    const tts = { playing: false, token: 0, cursor: null, mark: null, word: -1, restart: false };
+    const tts = { playing: false, token: 0, cursor: null, mark: null, word: -1, restart: false, pre: null };
     function postParent(msg) { if (window.parent && window.parent !== window) window.parent.postMessage(msg, '*'); }
 
     // Preferência de voz: neural ("Natural", Edge) > Google (rede) > locais; o idioma exato (en-US, pt-BR) desempata.
@@ -686,20 +686,52 @@
 
     // onProg(charIndex, length): posição da fala dentro do texto falado (evento da voz ou estimativa por tempo)
     // Fala uma frase: voz neural local (módulo ingles-voz.js) quando ativa; senão (ou se falhar) a voz do navegador.
-    async function speakOne(text, lang, onProg) {
+    async function speakOne(text, lang, onProg, ahead) {
         const nv = window.DDLab && window.DDLab.neural;
         if (nv && nv.active(lang)) {
             const r = await nv.speak(text, lang, state.rate * ((window.DDLab && window.DDLab.rateScale) || 1), onProg);
             if (r !== 'fallback') return tts.restart ? (tts.restart = false, 'restart') : r;
         }
-        return speakBrowser(text, lang, onProg);
+        return speakBrowser(text, lang, onProg, ahead);
     }
-    function speakBrowser(text, lang, onProg) {
+    // Uma fala do navegador com ganchos (começou, palavra, terminou) que podem ser ligados depois de criada:
+    // é isso que permite enfileirar a frase seguinte enquanto a atual ainda toca (sem a lacuna entre frases).
+    function newUtt(text, lang, rate) {
+        const u = new SpeechSynthesisUtterance(text), v = pickVoice(lang);
+        u.lang = LANG_TAG[lang]; u.rate = rate; if (v) { u.voice = v; u.lang = v.lang; }
+        const h = { u, v, text, lang, rate, started: false, t0: 0, ended: null, onstart: null, onboundary: null, onend: null };
+        u.onstart = () => { h.started = true; h.t0 = performance.now(); if (h.onstart) h.onstart(); };
+        u.onboundary = (e) => { if (h.onboundary) h.onboundary(e); };
+        u.onend = () => { h.ended = 'end'; if (h.onend) h.onend('end'); };
+        u.onerror = (e) => { h.ended = e && (e.error === 'canceled' || e.error === 'interrupted') ? 'cancel' : 'error'; if (h.onend) h.onend(h.ended); };
+        return h;
+    }
+    const curRate = () => state.rate * ((window.DDLab && window.DDLab.rateScale) || 1);   // módulos podem desacelerar a repetição
+    // Frase seguinte já pronta para falar (texto no idioma de áudio disponível agora, sem esperar tradução), ou null
+    function nextPiece(p, s) {
+        if (!doc) return null;
+        let q = p, k = s;
+        for (let guard = 0; guard < 4; guard++) {
+            k++;
+            if (k >= doc.paras[q].s.length) { q++; k = 0; if (q >= doc.paras.length) return null; }
+            const x = state.audioLang === doc.lang ? doc.paras[q].s[k] : (doc.tr[q] && doc.tr[q][k]);
+            if (x == null) return null;
+            if (/\p{L}|\p{N}/u.test(x)) return { text: x, lang: state.audioLang };
+        }
+        return null;
+    }
+    function canQueueAhead() {
+        const tr = window.DDLab && window.DDLab.trainMode;
+        return !!synth && synth.speaking === true && synth.pending === false && (!tr || tr() === 'normal');   // só com motor que informa fila e fora dos modos de treino
+    }
+    function speakBrowser(text, lang, onProg, ahead) {
         return new Promise((resolve) => {
-            const u = new SpeechSynthesisUtterance(text);
-            const rate = state.rate * ((window.DDLab && window.DDLab.rateScale) || 1);   // módulos podem desacelerar a repetição
-            u.lang = LANG_TAG[lang]; u.rate = rate;
-            const v = pickVoice(lang); if (v) { u.voice = v; u.lang = v.lang; }
+            const rate = curRate();
+            let h = tts.pre && tts.pre.text === text && tts.pre.lang === lang && tts.pre.rate === rate ? tts.pre : null;
+            if (tts.pre && !h) { synth.cancel(); }                       // sobrou frase enfileirada que não é esta (o fluxo mudou): limpa a fila
+            tts.pre = null;                                              // a frase já estava na fila do motor: só assume os ganchos
+            const fresh = !h; if (!h) h = newUtt(text, lang, rate);
+            const v = h.v;
             let settled = false, t0 = 0, gotB = false, timer = null;
             const ck = lang + '|' + (v ? v.name : ''), cps = CPS[ck] || CPS[lang];
             const cum = new Float32Array(text.length + 1);                   // tempo acumulado esperado por caractere, com as pausas da pontuação
@@ -713,8 +745,8 @@
                 }
                 resolve(tts.restart ? (tts.restart = false, 'restart') : r);
             };
-            u.onstart = () => {
-                t0 = performance.now();
+            const begin = () => {
+                t0 = h.t0 || performance.now();
                 timer = setInterval(() => {      // vozes sem evento de palavra: segue pelo tempo estimado
                     if (gotB || !onProg) return;
                     const el = (performance.now() - t0) / 1000;
@@ -723,11 +755,16 @@
                     while (lo < hi) { const mid = (lo + hi) >> 1; if (cum[mid + 1] > target) hi = mid; else lo = mid + 1; }
                     onProg(lo, text.length);
                 }, 60);
+                if (ahead && !tts.pre && canQueueAhead()) {                      // buffer: a próxima frase entra na fila agora e o motor a fala sem lacuna
+                    const nx = ahead();
+                    if (nx) { tts.pre = newUtt(nx.text, nx.lang, rate); synth.speak(tts.pre.u); }
+                }
             };
-            u.onboundary = (e) => { if (e && e.name && e.name !== 'word') return; gotB = true; if (onProg) onProg(e.charIndex || 0, text.length); };
-            u.onend = () => done('end');
-            u.onerror = (e) => done(e && (e.error === 'canceled' || e.error === 'interrupted') ? 'cancel' : 'error');
-            synth.speak(u);
+            h.onstart = begin;
+            h.onboundary = (e) => { if (e && e.name && e.name !== 'word') return; gotB = true; if (onProg) onProg(e.charIndex || 0, text.length); };
+            h.onend = (r) => done(r);
+            if (h.started) begin();
+            if (h.ended) done(h.ended); else if (fresh) synth.speak(h.u);
         });
     }
 
@@ -841,7 +878,7 @@
             if (resume && resume.p === c.p && resume.s === c.s && resume.text === piece.text) { off = piece.text.lastIndexOf(' ', Math.max(0, resume.ci - 1)) + 1; }
             resume = null;
             let lastCi = off;
-            const r = await speakOne(off ? piece.text.slice(off) : piece.text, piece.lang, (ci, len) => { if (token === tts.token) { lastCi = ci + off; setWordAt(lastCi, piece.text.length, piece.text); emit('wordpos', { ci: lastCi, len: piece.text.length, text: piece.text }); } });
+            const r = await speakOne(off ? piece.text.slice(off) : piece.text, piece.lang, (ci, len) => { if (token === tts.token) { lastCi = ci + off; setWordAt(lastCi, piece.text.length, piece.text); emit('wordpos', { ci: lastCi, len: piece.text.length, text: piece.text }); } }, () => nextPiece(c.p, c.s));
             if (token !== tts.token) return;
             if (r === 'end') { const hw = piece.text.split(/\s+/).length; doc.heard = (doc.heard || 0) + hw; scheduleMetaSave(); emit('heard', { words: hw, p: c.p, s: c.s }); }
             if (r === 'restart') { resume = { p: c.p, s: c.s, text: piece.text, ci: lastCi }; continue; }
@@ -858,7 +895,7 @@
 
     function startTts(p, s) {
         if (!synth || !doc) return;
-        synth.cancel();
+        tts.pre = null; synth.cancel();
         tts.token++;
         emit('stop');
         tts.restart = false;
@@ -875,11 +912,11 @@
     function stopTts() {
         tts.token++;
         emit('stop');
-        if (synth) synth.cancel();
+        tts.pre = null; if (synth) synth.cancel();
         if (tts.playing) { tts.playing = false; postParent({ type: 'tts-state', isPlaying: false }); emit('playstate', { playing: false }); }
         if (tts.mark) { markSpan(false); moveBand(null); tts.word = -1; markSpan(true); }
     }
-    function restartCurrent() { if (tts.playing && synth) { tts.restart = true; synth.cancel(); emit('restartspeech'); } }
+    function restartCurrent() { if (tts.playing && synth) { tts.restart = true; tts.pre = null; synth.cancel(); emit('restartspeech'); } }
 
     /* ------------------------------------------------------------------ barra inferior do leitor: páginas e avanço */
     let cw = [], totalW = 0, hudTimer = null;

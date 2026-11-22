@@ -136,6 +136,7 @@ No `index.html`, `ingles.html` NÃO entra em `structure` (ver `extras` em `sumar
 - Sem evento de palavra da voz, o destaque é estimado por tempo com **pausas ponderadas** (vírgula/ponto contam mais), velocidade aprendida **por idioma e por voz** (`CPS`) e busca binária a cada 60 ms.
 - Trocar velocidade ou voz no meio da frase **retoma da palavra falada** (`resume` em `runTts`), não do início da frase.
 - Evento `playstate` `{playing}` (início/fim da narração) alimenta o ▶/❚❚ do teleprompter e da legenda; não há mais sondagem a cada 600 ms. A velocidade mostrada vem de `D.state.rate`.
+- **Buffer à frente:** a frase seguinte entra na fila do motor de voz enquanto a atual toca (`newUtt`/`nextPiece`/`tts.pre` em `speakBrowser`; só com motor que informa `speaking`/`pending` e fora dos modos de treino, via `D.trainMode`), sem lacuna entre frases. O teleprompter mostra a próxima frase esmaecida à direita (`.tl-nx`), segue contínuo ao avançar (modo `carry` de `paintLine`) e traduz as 2 frases seguintes (`prefetch`). Seção Z de `test_ingles_modulos.ps1` mede centragem (erro máx. < 2 px), fila sem lacuna e prévia.
 - `pdf.min.js` (320 KB) só é baixado ao importar um PDF (`loadPdfjs`); a página abre sem ele.
 - Testes: seções Y (velocidade) e X (combinações ler x ouvir) em `test_ingles_modulos.ps1`.
 

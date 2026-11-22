@@ -698,7 +698,7 @@ $test = @'
       var utrack = idoc().getElementById('lb-tele-line'), usub = idoc().getElementById('lb-tele-sub'), ufs = parseFloat(W().getComputedStyle(utrack).fontSize);
       ok('U4 ler em português e ouvir em inglês: a linha grande está em português (idioma de leitura), de uma linha só e letras grandes, e embaixo está o inglês que se ouve', /^\[pt\]/.test(utrack.textContent) && /^Of things some/.test(usub.textContent) && D().state.readLang === 'pt' && D().state.audioLang === 'en' && W().getComputedStyle(utrack).whiteSpace === 'nowrap' && ufs >= 40 && utrack.getBoundingClientRect().height < ufs * 1.6, 'fonte=' + Math.round(ufs) + 'px | ' + utrack.textContent.slice(0, 40));
       D().stopTts(); await wait(300);
-      var uspoken = usub.textContent, uen = D().doc.paras[0].s[0], uptxt = utrack.textContent;
+      var uspoken = usub.textContent, uen = D().doc.paras[0].s[0], uptxt = utrack.dataset.text;
       D().emit('piece', { p: 0, s: 0, text: uen, lang: 'en' }); D().emit('wordpos', { ci: Math.floor(uen.length * 0.6), len: uen.length, text: uen }); await wait(200);
       var unow = idoc().querySelector('#lb-tele-line .tl-w.now'), ufrac = unow ? uptxt.indexOf(unow.textContent, 0) / uptxt.length : -1;
       var upos = 0, uidx = -1; Array.prototype.forEach.call(idoc().querySelectorAll('#lb-tele-line .tl-w'), function (w, i) { if (w === unow) uidx = i; });
@@ -707,9 +707,10 @@ $test = @'
       D().emit('wordpos', { ci: Math.floor(uen.length * 0.9), len: uen.length, text: uen }); await wait(100);
       var utx2 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
       ok('U6 a linha corre da direita para a esquerda: avançar a voz move o texto para a esquerda, mantendo a palavra no ponto de leitura', utx2 < utx1 && idoc().querySelector('.tl-head').style.left === '30%', utx1 + ' -> ' + utx2);
+      var upre = idoc().querySelector('#lb-tele-line .tl-nx'), upreOk = !!upre && /^\[pt\]/.test(upre.textContent);
       D().emit('sentence', { p: 0, s: 1 });
       var uenter = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10), uvw = idoc().querySelector('#lb-tele .tl-view').clientWidth;
-      ok('U7 a frase seguinte entra pela direita da tela', uenter >= uvw - 2, 'começa em ' + uenter + ' px; a janela tem ' + uvw);
+      ok('U7 a frase seguinte já estava carregada à direita (prévia) e vira a atual vindo da direita, sem salto', upreOk && uenter > uvw * 0.25 && uenter < uvw * 3, 'prévia=' + upreOk + ' começa em ' + uenter + ' px; a janela tem ' + uvw);
       idoc().getElementById('lb-tele-read-en').click();
       await until(function () { return D().state.readLang === 'en'; }, 10000);
       idoc().getElementById('lb-tele-listen-pt').click();
@@ -837,7 +838,54 @@ $test = @'
       idoc().getElementById('lb-tele-read-en').click();
       await until(function () { return !/^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent) && /^\[pt\]/.test(idoc().getElementById('lb-tele-sub').textContent); }, 20000);
       ok('X2 com a narração tocando, trocar Ouvir muda a voz na hora e trocar Ler muda a linha na hora, sem parar o modo', xv1 === 'pt' && D().tts.playing && !/^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent));      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
-      // ===================== T. botão Teleprompter no lugar do Raio-X (moldura do site) =====================
+      // ===================== Z. sincronia do teleprompter: centragem, prévia da frase seguinte e fila sem lacuna =====================
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
+      D().setMode('tele');
+      await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 5 && !D().$('lb-reader').hidden; }, 40000);
+      D().stopTts(); await wait(200);
+      var zst = idoc().createElement('style'); zst.textContent = '.tl-track { transition: none !important; }'; idoc().head.appendChild(zst);
+      var zsp = D().doc.tr[0][0], zerr = [], zmono = true, zlast = -1, zview = idoc().querySelector('#lb-tele .tl-view');
+      D().emit('sentence', { p: 0, s: 0 }); D().emit('piece', { p: 0, s: 0, text: zsp, lang: 'pt' });
+      var zw = []; zsp.replace(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu, function (m, off) { zw.push(off); return m; });
+      for (var zi = 0; zi < zw.length; zi++) {
+        D().emit('wordpos', { ci: zw[zi], len: zsp.length, text: zsp });
+        var znow = idoc().querySelector('#lb-tele-line .tl-w.now'), zk = -1;
+        Array.prototype.forEach.call(idoc().querySelectorAll('#lb-tele-line .tl-w'), function (w, i) { if (w === znow) zk = i; });
+        if (zk < zlast) zmono = false; zlast = zk;
+        if (!znow) { zerr.push('sem palavra em ' + zi); continue; }
+        var zr = znow.getBoundingClientRect(), zv = zview.getBoundingClientRect();
+        zerr.push(Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.3)));
+      }
+      var zmax = Math.max.apply(null, zerr.filter(function (x) { return typeof x === 'number'; }));
+      ok('Z1 a palavra falada fica sempre no ponto de leitura (erro máximo de centragem em px) e o destaque nunca volta atrás, com voz em um idioma e legenda em outro', zerr.length > 8 && zerr.every(function (x) { return typeof x === 'number'; }) && zmax <= 2 && zmono, 'palavras=' + zerr.length + ' erro máx=' + zmax.toFixed(2) + 'px monótono=' + zmono);
+      // fila sem lacuna: motor que informa fila (speaking/pending) recebe a frase seguinte enquanto a atual ainda toca
+      var zq = [], zpl = null, zlog = [], zsent = [], ztm = null, zws = W(), zsy = zws.speechSynthesis;
+      var zrun = function () {
+        if (zpl || !zq.length) return;
+        zpl = zq.shift(); var u = zpl, ws = u.text.split(/\s+/), ix = 0, ci = 0; zlog.push({ k: 'start', txt: u.text, t: performance.now() }); u.onstart && u.onstart();
+        ztm = setInterval(function () { if (ix >= ws.length) { clearInterval(ztm); zlog.push({ k: 'end', txt: u.text, t: performance.now() }); zpl = null; u.onend && u.onend(); zrun(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 120);
+      };
+      Object.defineProperty(zsy, 'speaking', { configurable: true, get: function () { return !!zpl; } });
+      Object.defineProperty(zsy, 'pending', { configurable: true, get: function () { return zq.length > 0; } });
+      zsy.speak = function (u) { zlog.push({ k: 'queued', txt: u.text, t: performance.now() }); zq.push(u); zrun(); };
+      zsy.cancel = function () { clearInterval(ztm); zq = []; if (zpl) { var u0 = zpl; zpl = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      D().on('sentence', function (e) { zsent.push(e.p + ':' + e.s); });
+      D().startTts(0, 0);
+      await until(function () { return zsent.length >= 4; }, 60000);
+      var zahead = 0; for (var zj = 1; zj < zlog.length; zj++) { if (zlog[zj].k === 'queued') { var zprev = null; for (var zk2 = zj - 1; zk2 >= 0; zk2--) if (zlog[zk2].k === 'start') { zprev = zk2; break; } var zended = zlog.slice(zprev + 1, zj).some(function (e) { return e.k === 'end'; }); if (zprev !== null && !zended) zahead++; } }
+      var zok = zsent.slice(0, 4).join(',') === '0:0,0:1,1:0,1:1';
+      ok('Z2 a frase seguinte entra na fila do motor enquanto a atual ainda toca (sem lacuna), e a marcação segue a ordem sem repetir nem pular frases', zahead >= 2 && zok, 'enfileiradas antes do fim=' + zahead + ' ordem=' + zsent.slice(0, 4).join(','));
+      D().stopTts(); delete zsy.speaking; delete zsy.pending; await wait(200);
+      // prévia: a frase seguinte já está na tela, esmaecida, e vira a atual sem salto
+      post({ type: 'readlang', value: 'pt' }); await wait(300);
+      var zerrs = []; W().console.error = function () { zerrs.push(Array.prototype.map.call(arguments, function (a) { return a && a.stack ? a.stack.split('\n').slice(0, 2).join(' / ') : String(a); }).join(' ')); };
+      await until(function () { return D().state.readLang === 'pt'; }, 10000);
+      D().emit('sentence', { p: 0, s: 0 });
+      await until(function () { return /^\[pt\]/.test(idoc().getElementById('lb-tele-line').dataset.text) && idoc().querySelector('#lb-tele-line .tl-nx'); }, 10000);
+      var zpre = idoc().querySelector('#lb-tele-line .tl-nx'), zhas = !!zpre && /^\[pt\]/.test(zpre.textContent) && parseFloat(W().getComputedStyle(zpre).opacity) < 0.6;
+      ok('Z3 a próxima frase já aparece carregada à direita, esmaecida, enquanto só a atual é destacada', zhas, (zpre ? zpre.textContent.slice(0, 30) : 'sem prévia') + ' | leitura=' + D().state.readLang + ' linha=' + idoc().getElementById('lb-tele-line').dataset.text.slice(0, 25) + ' op=' + (zpre ? W().getComputedStyle(zpre).opacity : '') + ' tr0=' + JSON.stringify((D().doc.tr[0] || []).map(function (x) { return x == null ? null : x.slice(0, 8); })) + ' doclang=' + D().doc.lang + ' modo=' + D().state.mode + ' oculto=' + idoc().getElementById('lb-tele').hidden + ' lbreader=' + D().$('lb-reader').hidden + ' ERROS=' + zerrs.join(' ## ').slice(0, 400));      // ===================== T. botão Teleprompter no lugar do Raio-X (moldura do site) =====================
+      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       await until(function () { return !$('btn-tele').hidden; }, 4000);
       ok('T1 na Biblioteca, com documento aberto, o Raio-X some e aparece o botão Teleprompter', $('btn-raiox').hidden && !$('btn-tele').hidden && /Teleprompter/.test($('btn-tele').textContent));
       var tmode0 = D().state.mode;

@@ -323,6 +323,8 @@ body.lb-tele-open .lg, body.lb-tele-open .lg-spacer { display: none !important; 
 .tl-track { display: inline-block; white-space: nowrap; font-size: calc(clamp(2.6rem, 9vw, 7rem) * var(--tl-size, 1)); line-height: 1.25; font-weight: 600; transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.3, 1); will-change: transform; }
 .tl-w { padding: 0 0.08em; border-radius: 0.12em; transition: background 0.12s, color 0.12s, opacity 0.2s; cursor: pointer; }
 .tl-w.past { opacity: 0.35; }
+.tl-gap { display: inline-block; width: 2.4em; }
+.tl-nx { opacity: 0.38; font-weight: 500; }   /* a próxima frase, já carregada à direita */
 html body[class] .tl-w.now { background: var(--mk-word); color: var(--mk-word-fg); opacity: 1; }
 .tl-sub { text-align: center; padding: 20px 6vw 0; font-size: calc(clamp(1.1rem, 2.6vw, 2rem) * var(--tl-size, 1)); line-height: 1.35; color: var(--c-dim, #888); min-height: 3em; }
 .tl-sub.wait { opacity: 0.5; font-style: italic; }

@@ -24,7 +24,7 @@
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
     const WORD = /[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}'’-]*/gu;
 
-    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', asked = '';
+    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set();
     try { size = Math.min(1.7, Math.max(0.6, Number(localStorage.getItem(KEY)) || 1)); } catch (e) { /* sem storage */ }
     const saveSize = () => { try { localStorage.setItem(KEY, String(size)); } catch (e) { /* ignora */ } };
 
@@ -99,8 +99,10 @@
         return vw * READ_AT - (w.offsetLeft + w.offsetWidth / 2);
     }
     function place(k) { track.style.transform = 'translateX(' + Math.round(target(k)) + 'px)'; }
-    function paintLine(text, lang, slide) {
-        track.textContent = ''; words = []; wi = -1; track.dataset.lang = lang || ''; track.lang = lang || ''; track.dataset.text = text == null ? '' : text;
+    // modo: 'slide' = frase nova entra pela direita; 'carry' = a frase que já aparecia à direita como prévia vira a atual e a linha segue contínua; 'stay' = só repinta
+    function paintLine(text, lang, mode, nextText) {
+        const carry = mode === 'carry' && nx ? new DOMMatrix(getComputedStyle(track).transform).m41 + nx.offsetLeft : null;   // onde a prévia estava na tela
+        track.textContent = ''; nx = null; words = []; wi = -1; track.dataset.lang = lang || ''; track.lang = lang || ''; track.dataset.text = text == null ? '' : text;
         if (text != null) {
             let pos = 0, m;
             WORD.lastIndex = 0;
@@ -112,7 +114,17 @@
             }
             if (pos < text.length) track.append(text.slice(pos));
         }
-        if (slide) {                          // frase nova: entra pela direita e corre até o ponto de leitura
+        if (nextText) {                       // buffer: a frase seguinte já está carregada à direita, esmaecida; só a atual é destacada
+            track.append(el('span', 'tl-gap'));
+            nx = el('span', 'tl-nx', nextText); nx.dataset.text = nextText; track.append(nx);
+        }
+        if (carry != null) {
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(' + Math.round(carry) + 'px)';
+            void track.offsetWidth;
+            track.style.transition = '';
+            requestAnimationFrame(() => place(wi));
+        } else if (mode === 'slide') {                          // frase nova: entra pela direita e corre até o ponto de leitura
             track.style.transition = 'none';
             track.style.transform = 'translateX(' + view.clientWidth + 'px)';
             void track.offsetWidth;
@@ -132,8 +144,11 @@
         let mainText = textIn(cur.p, cur.s, rl), mainLang = rl;
         if (mainText == null) { mainText = textIn(cur.p, cur.s, doc.lang); mainLang = doc.lang; }     // a tradução ainda não chegou: mostra o original
         const base = cur.p + ':' + cur.s + ':' + rl;               // mesma frase e mesmo idioma: só repinta (a tradução chegando não faz a linha entrar de novo)
-        paintLine(mainText, mainLang, base !== lastBase);
-        lastBase = base;
+        const nb = neighbour(cur.p, cur.s, 1), nbText = nb ? textIn(nb.p, nb.s, mainLang) : null;
+        const how = base === lastBase ? 'stay' : (lastBase && base === pendingNext ? 'carry' : 'slide');
+        paintLine(mainText, mainLang, how, nbText);
+        lastBase = base; pendingNext = nb && nbText != null ? nb.p + ':' + nb.s + ':' + rl : '';
+        prefetch(nb); if (nb) prefetch(neighbour(nb.p, nb.s, 1));
         const otherLang = D.other(mainLang), subText = textIn(cur.p, cur.s, otherLang);
         sub.textContent = subText != null ? subText : t('wait');
         sub.classList.toggle('wait', subText == null); sub.lang = otherLang;
@@ -148,6 +163,14 @@
         fill.style.width = pct + '%';
         root.style.setProperty('--tl-size', String(size));
         labels();
+    }
+    // buffer à frente: traduz as próximas frases enquanto a atual é lida, para a prévia e a troca nunca esperarem a tradução
+    function prefetch(n) {
+        if (!n || !D.doc || !D.trSentence) return;
+        const key = D.doc.id + ':' + n.p + ':' + n.s;
+        if (pf.has(key) || (textIn(n.p, n.s, 'pt') != null && textIn(n.p, n.s, 'en') != null)) return;
+        pf.add(key);
+        D.trSentence(n.p, n.s).then(() => { if (cur && active()) { const a = neighbour(cur.p, cur.s, 1); if (a && a.p === n.p && a.s === n.s) render(); } });
     }
     function labels() {
         bPrev.title = bPrev.ariaLabel = t('prev'); bNext.title = bNext.ariaLabel = t('next');
@@ -188,9 +211,9 @@
     });
     D.on('stop', labels); D.on('restartspeech', labels);
     D.on('open', () => { cur = null; spoken = null; setTimeout(() => sync(false), 40); });
-    D.on('close', () => { cur = null; spoken = null; root.hidden = true; setImmersive(false); });
+    D.on('close', () => { cur = null; spoken = null; pf.clear(); pendingNext = ''; root.hidden = true; setImmersive(false); });
     D.on('mode', () => { cur = null; spoken = null; sync(true); });
-    D.on('lang', () => { asked = ''; labels(); render(); });
+    D.on('lang', () => { asked = ''; pf.clear(); labels(); render(); });
     window.addEventListener('resize', () => { if (!root.hidden) place(wi); });
     D.on('playstate', () => { if (!root.hidden) labels(); });      // ▶/❚❚ acompanha a narração iniciada de fora (sem sondar a cada instante)
 
@@ -215,7 +238,7 @@
     // toque numa palavra da linha: mesmo cartão do texto (significado, pronúncia, salvar)
     track.addEventListener('click', (e) => {
         if (!cur || !D.doc) return;
-        D.emit('tap', { e, sp: track, p: cur.p, s: cur.s, handled: false, wlang: track.dataset.lang || D.state.readLang, sentHere: track.textContent.trim(), sentOther: sub.classList.contains('wait') ? '' : sub.textContent.trim() });
+        D.emit('tap', { e, sp: track, p: cur.p, s: cur.s, handled: false, wlang: track.dataset.lang || D.state.readLang, sentHere: (track.dataset.text || '').trim(), sentOther: sub.classList.contains('wait') ? '' : sub.textContent.trim() });
     });
     labels();
 })();

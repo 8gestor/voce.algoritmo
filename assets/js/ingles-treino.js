@@ -113,6 +113,7 @@
 
     D.speakAgain = (text, lang) => D.say(text, lang);
 
+    D.trainMode = () => mode;          // o núcleo só enfileira a frase seguinte no modo Normal
     D.afterSentence = async (ctx) => {
         if (mode === 'normal') return null;
         const key = ctx.p + ':' + ctx.s;
