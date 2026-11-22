@@ -23,7 +23,9 @@
     const other = (l) => (l === 'en' ? 'pt' : 'en');
     const $ = (id) => document.getElementById(id);
 
-    const state = { readLang: 'pt', audioLang: 'pt', voices: { pt: '', en: '' }, rate: 1 };
+    const MODES = ['single', 'wide', 'side', 'focus'];   // modos de leitura: coluna única, larga, lado a lado, foco com painel (ver ingles-modos.js)
+    const state = { readLang: 'pt', audioLang: 'pt', voices: { pt: '', en: '' }, rate: 1, mode: (() => { try { const m = localStorage.getItem('dd-ingles-modo'); return MODES.indexOf(m) >= 0 ? m : 'single'; } catch (e) { return 'single'; } })() };
+    state.side = state.mode === 'side';
 
     // Pequeno barramento de eventos: os módulos (ingles-*.js) se encaixam aqui sem tocar no núcleo.
     const hooks = {};
@@ -399,7 +401,7 @@
     let trSaveTimer = null;
 
     let wantBoth = false;                                  // a legenda pede sempre os dois idiomas
-    const needTranslation = () => doc && (state.readLang !== doc.lang || state.audioLang !== doc.lang || fullMode || wantBoth);
+    const needTranslation = () => doc && (state.readLang !== doc.lang || state.audioLang !== doc.lang || fullMode || wantBoth || state.side);
     const trCount = () => (doc ? Object.keys(doc.tr).length : 0);
 
     function nextPending() {
@@ -520,6 +522,15 @@
         if (!el || !doc) return;
         const p = doc.paras[i], tr = doc.tr[i], toOther = state.readLang !== doc.lang;
         el.textContent = '';
+        if (state.side && p.t !== 'h') {          // lado a lado: original à esquerda (frases clicáveis e narradas) e tradução à direita
+            const colL = document.createElement('span'), colR = document.createElement('span');
+            colL.className = 'lb-col lb-col-src'; colR.className = 'lb-col lb-col-tr' + (tr ? '' : ' pending');
+            p.s.forEach((src, k) => { const sp = document.createElement('span'); sp.className = 'lb-s'; sp.dataset.k = String(k); sp.textContent = src; colL.append(sp, ' '); });
+            if (tr) colR.textContent = tr.join(' ');
+            el.append(colL, colR);
+            if (tts.mark && tts.mark.p === i) { tts.word = -1; markSpan(true); }
+            return;
+        }
         p.s.forEach((src, k) => {
             const sp = document.createElement('span');
             sp.className = 'lb-s'; sp.dataset.k = String(k);
@@ -1003,6 +1014,7 @@
         anchor = d.pos || 0;
         $('lb-library').hidden = true;
         $('lb-reader').hidden = false;
+        applyMode();
         $('lb-doc-title').textContent = d.title;
         renderDocMeta();
         buildText();
@@ -1017,7 +1029,16 @@
         const n = nf();
         $('lb-doc-meta').textContent = tx('origin') + ': ' + langName(doc.lang) + ' · ' + (doc.pages ? n.format(doc.pages) + ' ' + tx('pages') + ' · ' : '') + n.format(doc.sentences) + ' ' + tx('sentences') + ' · ' + n.format(doc.words) + ' ' + tx('words');
     }
+    // modo de leitura: classes no <body> só enquanto há um documento aberto (a biblioteca mantém a largura normal)
+    function applyMode() { const open = !!doc && !$('lb-reader').hidden; MODES.forEach((m) => document.body.classList.toggle('lb-' + m + '-open', open && state.mode === m)); }
+    function setMode(m) {
+        state.mode = MODES.indexOf(m) >= 0 ? m : 'single'; state.side = state.mode === 'side';
+        try { localStorage.setItem('dd-ingles-modo', state.mode); } catch (e) { /* sem storage */ }
+        applyMode();
+        if (doc) { repaintAll(); pump(); setStatus(); }
+    }
     function closeDoc() {
+        MODES.forEach((m) => document.body.classList.remove('lb-' + m + '-open'));
         stopTts();
         clearMark();
         saveMeta();
@@ -1127,7 +1148,7 @@
         state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },
-        renderDocs, setStatus, ensureTr, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
+        renderDocs, setStatus, ensureTr, setMode, MODES, repaintAll, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
     };
 
     // gancho de teste

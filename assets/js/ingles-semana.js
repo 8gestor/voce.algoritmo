@@ -213,5 +213,14 @@
     }
     D.on('close', render); D.on('lang', render); D.on('imported', render);
     render();
-    window.__ddWeek = { render, bookInfo, readWords, load, store, dayKey };
+    // estado do plano para o livro aberto (painel do modo foco): cota de hoje e palavras lidas hoje; null se não há plano para ele
+    async function status(docId, pos) {
+        const plan = load(); if (!plan || plan.docId !== docId) return null;
+        const info = await bookInfo(docId); if (!info) return null;
+        const today = dayKey(), idx = Math.max(1, dayNum(today) - dayNum(plan.start) + 1), r = readWords(info, pos || 0);
+        if (!plan.snap || plan.snap.date !== today) { plan.snap = { date: today, words: r }; store(plan); }
+        const daysLeft = Math.max(1, DAYS - Math.min(idx, DAYS) + 1);
+        return { quota: Math.ceil((info.words - plan.snap.words) / daysLeft), readToday: Math.max(0, r - plan.snap.words), read: r, words: info.words, idx };
+    }
+    window.__ddWeek = { render, bookInfo, readWords, load, store, dayKey, status };
 })();

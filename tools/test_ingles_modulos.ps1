@@ -456,7 +456,39 @@ $test = @'
       Array.prototype.filter.call(idoc().querySelectorAll('#lb-week-body button'), function (b) { return /próximo livro/.test(b.textContent); })[0].click();
       await until(function () { return idoc().getElementById('lb-rot-1'); }, 5000);
       ok('L13 depois de ler, a semana 2 aparece como lida e as outras 7 continuam disponíveis', /lido/.test(idoc().querySelector('.lb-rot-item[data-slug="epicteto-enchiridion"] .lb-rot-done').textContent) && !idoc().getElementById('lb-rot-2') && idoc().querySelectorAll('#lb-rot button').length === 7);
-      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');      // ==== PROXIMAS ====
+      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');      // ===================== M. modos de leitura (seletor único) e cabeçalho do leitor =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      W().localStorage.removeItem('dd-ingles-modo');
+      var sbook = [1, 2, 3, 4, 5, 6].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');
+      await D().addText('Modos de leitura teste', sbook);
+      await until(function () { return D().doc && D().doc.title === 'Modos de leitura teste'; }, 20000);
+      var msel = idoc().getElementById('lb-read-mode');
+      ok('M1 um seletor reúne os 4 modos de leitura, começa em coluna única e o corpo não tem classe de modo', !!msel && idoc().querySelector('.lb-toolbar').contains(msel) && Array.prototype.map.call(msel.options, function (o) { return o.value; }).join(',') === 'single,wide,side,focus' && msel.value === 'single' && !/lb-(wide|side|focus)-open/.test(idoc().body.className) && /Coluna única/.test(msel.options[0].textContent));
+      var tb = idoc().querySelector('.lb-toolbar').getBoundingClientRect(), bk = idoc().getElementById('lb-back').getBoundingClientRect(), md = idoc().getElementById('lb-readmode').getBoundingClientRect(), stu = idoc().getElementById('lb-study').getBoundingClientRect();
+      ok('M2 cabeçalho simétrico: voltar encosta na esquerda, o modo na direita e a barra de estudo ocupa a largura toda', Math.abs(bk.left - tb.left) < 3 && Math.abs(md.right - tb.right) < 3 && stu.width >= tb.width - 3 && Math.abs(stu.left - tb.left) < 3, 'toolbar ' + Math.round(tb.width) + 'px | estudo ' + Math.round(stu.width) + 'px');
+      var w1 = idoc().body.getBoundingClientRect().width;
+      msel.value = 'wide'; msel.dispatchEvent(new Event('change')); await wait(150);
+      var w2 = idoc().body.getBoundingClientRect().width;
+      ok('M3 coluna larga: o cartão de leitura fica mais largo e a escolha é guardada', idoc().body.classList.contains('lb-wide-open') && w2 > w1 + 10 && w2 <= idoc().documentElement.clientWidth && W().localStorage.getItem('dd-ingles-modo') === 'wide', Math.round(w1) + ' px -> ' + Math.round(w2) + ' px');
+      msel.value = 'side'; msel.dispatchEvent(new Event('change'));
+      await until(function () { return idoc().querySelectorAll('.lb-col-tr:not(.pending)').length >= 2; }, 15000);
+      var s1 = idoc().querySelector('.lb-para:not(.lb-head)');
+      ok('M4 lado a lado: original à esquerda com frases clicáveis, tradução à direita e rótulos das colunas', idoc().body.classList.contains('lb-side-open') && !idoc().body.classList.contains('lb-wide-open') && !!s1.querySelector('.lb-col-src .lb-s[data-k="0"]') && /Of things some/.test(s1.querySelector('.lb-col-src').textContent) && /^\[pt\]/.test(idoc().querySelector('.lb-col-tr:not(.pending)').textContent) && /INGLÊS/.test(idoc().getElementById('lb-side-head').textContent) && /PORTUGUÊS/.test(idoc().getElementById('lb-side-head').textContent), idoc().querySelectorAll('.lb-col-tr:not(.pending)').length + ' parágrafos traduzidos');
+      ok('M5 as duas colunas ficam lado a lado, na mesma altura', idoc().querySelector('.lb-col-src').getBoundingClientRect().left < idoc().querySelector('.lb-col-tr').getBoundingClientRect().left && Math.abs(idoc().querySelector('.lb-col-src').getBoundingClientRect().top - idoc().querySelector('.lb-col-tr').getBoundingClientRect().top) < 4);
+      D().$('lb-back').click(); await wait(200);
+      ok('M6 voltar à biblioteca devolve a largura normal e reabrir o livro mantém o modo escolhido', !/lb-(wide|side|focus)-open/.test(idoc().body.className));
+      await D().openDoc((await D().db.all('meta')).filter(function (m) { return m.title === 'Modos de leitura teste'; })[0].id);
+      await until(function () { return D().doc && idoc().querySelectorAll('.lb-col-src').length >= 2; }, 8000);
+      ok('M7 reabrir mantém lado a lado e o seletor mostra o modo', idoc().body.classList.contains('lb-side-open') && idoc().getElementById('lb-read-mode').value === 'side');
+      var mid = D().doc.id; W().__ddWeek.store({ docId: mid, title: 'Modos de leitura teste', start: W().__ddWeek.dayKey(), startWords: 0 });
+      msel = idoc().getElementById('lb-read-mode'); msel.value = 'focus'; msel.dispatchEvent(new Event('change'));
+      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 3; }, 8000);
+      var fp = idoc().getElementById('lb-focus-panel');
+      ok('M8 foco com painel: menu do site recolhido, texto em coluna única e painel ao lado com hoje, livro e palavras', idoc().body.classList.contains('lb-focus-open') && document.getElementById('sidebar').classList.contains('collapsed') && idoc().querySelectorAll('.lb-col').length === 0 && fp.getBoundingClientRect().left > idoc().getElementById('lb-wrap').getBoundingClientRect().right - 2 && /HOJE/.test(fp.textContent) && /Cota de hoje: \d+ palavras/.test(fp.textContent) && /ESTE LIVRO/.test(fp.textContent) && /PALAVRAS SALVAS/.test(fp.textContent), 'foco=' + idoc().body.classList.contains('lb-focus-open') + ' menu=' + document.getElementById('sidebar').classList.contains('collapsed') + ' cols=' + idoc().querySelectorAll('.lb-col').length + ' painelLeft=' + Math.round(fp.getBoundingClientRect().left) + ' wrapRight=' + Math.round(idoc().getElementById('lb-wrap').getBoundingClientRect().right) + ' iframeW=' + idoc().documentElement.clientWidth);
+      msel.value = 'single'; msel.dispatchEvent(new Event('change')); await wait(300);
+      ok('M9 sair do modo foco reabre o menu do site e esconde o painel', !document.getElementById('sidebar').classList.contains('collapsed') && !/lb-focus-open/.test(idoc().body.className) && idoc().getElementById('lb-focus-panel').getBoundingClientRect().width === 0);
+      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-modo');
+      D().$('lb-back').click(); await wait(200);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

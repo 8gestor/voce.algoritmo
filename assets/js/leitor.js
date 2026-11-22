@@ -499,6 +499,7 @@ window.addEventListener('message', (e) => {
         Object.keys(seenAt).forEach((k) => delete seenAt[k]);
         statsDirty = true; saveStats(); updateHud();
     }
+    if (e.data && e.data.type === 'dd-lab-sidebar' && !isMobile()) document.getElementById('sidebar').classList.toggle('collapsed', !!e.data.hide);   // modo foco da Biblioteca
     if (e.data && e.data.type === 'dd-lab-hud') { labHud = e.data.hud || null; if (inExtra) renderLabHud(); }
     if (e.data && e.data.type === 'dd-progress') onProgress(e.data);
     if (e.data && e.data.type === 'dd-listen') onListen(e.data);
