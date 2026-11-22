@@ -141,7 +141,7 @@
     }
     sel.addEventListener('change', () => { D.setMode(sel.value); refresh(); });
     D.on('open', () => { prepare(); refresh(); });
-    D.on('lang', refresh);
+    D.on('lang', refresh); D.on('mode', refresh);   // o seletor acompanha mudanças feitas de fora (sair do teleprompter, por exemplo)
     D.on('close', () => { sidebar(false); cum = null; ui = null; });
     D.on('progress', () => { tick(); later(1500); });         // posição mudou: números na hora, partes do banco com folga
     D.on('sentence', () => later(1500)); D.on('vocab-saved', () => later(400));

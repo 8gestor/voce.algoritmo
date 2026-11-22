@@ -544,7 +544,7 @@
             const colL = document.createElement('span'), colR = document.createElement('span');
             colL.className = 'lb-col lb-col-src'; colR.className = 'lb-col lb-col-tr' + (tr ? '' : ' pending');
             p.s.forEach((src, k) => { const sp = document.createElement('span'); sp.className = 'lb-s'; sp.dataset.k = String(k); sp.textContent = src; colL.append(sp, ' '); });
-            if (tr) colR.textContent = tr.join(p.t === 'v' ? '\n' : ' ');
+            if (tr) tr.forEach((x, k) => { const tsp = document.createElement('span'); tsp.className = 'lb-t'; tsp.dataset.k = String(k); tsp.textContent = x; colR.append(tsp, p.t === 'v' ? '\n' : ' '); });
             el.append(colL, colR);
             if (tts.mark && tts.mark.p === i) { tts.word = -1; markSpan(true); }
             return;
@@ -774,6 +774,8 @@
         el.classList.toggle('speaking', on);
         const sp = el.querySelector('.lb-s[data-k="' + tts.mark.s + '"]');
         if (sp) { sp.classList.toggle('w', on); sp.classList.toggle('seg', on); if (!on) unwrapWords(sp); }
+        const tsp = el.querySelector('.lb-t[data-k="' + tts.mark.s + '"]');         // lado a lado: a mesma frase na coluna da tradução
+        if (tsp) tsp.classList.toggle('seg', on);
         return sp;
     }
     function setMark(p, s) {
@@ -1154,6 +1156,7 @@
 
     window.addEventListener('message', (e) => {
         const d = e.data || {};
+        if (d.type === 'lab-tele' && doc) setMode(state.mode === 'tele' ? 'single' : 'tele');   // botao Teleprompter do leitor
         if (d.type === 'theme') document.body.className = d.value + '-mode';
         if (d.type === 'font') root.style.setProperty('--base-size', d.value + 'px');
         if (d.type === 'typeface') root.dataset.face = d.value;

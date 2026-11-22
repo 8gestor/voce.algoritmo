@@ -290,28 +290,46 @@ body.lb-focus-open #lb-reader > .lb-focus-panel { display: block; grid-column: 2
 .lb-close-quote { margin: 8px 0 14px; padding: 8px 14px; border-left: 3px solid var(--lb-line); font-size: 0.92rem; white-space: pre-wrap; }
 .lb-close-next .lb-btn { margin: 4px 8px 0 0; }
 
-/* modo Teleprompter: uma linha grande que rola com a palavra falada, tradução embaixo */
+
+/* Marcas da narração, cada uma de uma cor (famílias diferentes, para distinguir de relance):
+   estrofe/parágrafo = tom quente suave · FRASE (texto destacado) = âmbar · LINHA (faixa) = azul · PALAVRA sincronizada = magenta forte */
+body { --mk-stanza: rgba(128, 128, 128, 0.10); --mk-seg: rgba(255, 190, 0, 0.30); --mk-line: rgba(40, 120, 255, 0.16); --mk-line-edge: #2878ff; --mk-word: #e0245e; --mk-word-fg: #ffffff; }
+body.paper-mode { --mk-stanza: #F7F3E3; --mk-seg: rgba(255, 190, 0, 0.34); --mk-line: rgba(30, 120, 255, 0.15); --mk-line-edge: #1e78ff; --mk-word: #e0245e; --mk-word-fg: #ffffff; }
+body.dark-mode { --mk-stanza: rgba(255, 255, 255, 0.05); --mk-seg: rgba(255, 190, 0, 0.24); --mk-line: rgba(70, 150, 255, 0.24); --mk-line-edge: #4696ff; --mk-word: #ff4d8d; --mk-word-fg: #111111; }
+body.light-mode { --mk-stanza: rgba(0, 0, 0, 0.04); --mk-seg: rgba(255, 190, 0, 0.38); --mk-line: rgba(40, 120, 255, 0.16); --mk-line-edge: #2878ff; --mk-word: #d81b60; --mk-word-fg: #ffffff; }
+body.sepia-mode { --mk-stanza: rgba(91, 70, 54, 0.08); --mk-seg: rgba(214, 150, 30, 0.36); --mk-line: rgba(30, 110, 200, 0.16); --mk-line-edge: #1e6eb4; --mk-word: #a6234f; --mk-word-fg: #fff8ec; }
+html body[class] .lb-para.speaking { background: var(--mk-stanza) !important; }
+html body[class] .lb-s.seg, html body[class] .lb-t.seg { background: var(--mk-seg) !important; border-radius: 3px; }
+html body[class] .wd.now { background: var(--mk-word) !important; color: var(--mk-word-fg) !important; border-radius: 3px; box-shadow: 0 0 0 2px var(--mk-word); }
+html body[class] .lb-band { background: var(--mk-line) !important; border-left: 3px solid var(--mk-line-edge); border-right: 3px solid var(--mk-line-edge); }
+
+/* modo Teleprompter: legenda corrida (da direita para a esquerda), idioma de leitura na linha grande, o outro idioma embaixo */
 .lb-tele { display: none; }
 body.lb-tele-open { overflow: hidden; }
-body.lb-tele-open #lb-tele { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 90; background: inherit; color: inherit; font-family: inherit; }
+body.lb-tele-open #lb-tele { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 90; background: inherit; color: inherit; font-family: inherit; outline: none; }
 body.lb-tele-open .lg, body.lb-tele-open .lg-spacer { display: none !important; }
-.tl-bar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--lb-line); }
-.tl-count { flex: 1; font-family: var(--font-tech); font-size: 0.78rem; color: var(--c-dim); padding: 0 8px; }
+.tl-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--lb-line); }
+.tl-count { flex: 1; font-family: var(--font-tech); font-size: 0.78rem; color: var(--c-dim); padding: 0 8px; min-width: 140px; }
 .tl-b { min-width: 44px; height: 40px; padding: 0 10px; border: 1px solid var(--lb-line); background: transparent; color: inherit; border-radius: 6px; cursor: pointer; font: inherit; font-size: 0.9rem; }
 .tl-b:hover { background: var(--lb-soft, rgba(128, 128, 128, 0.15)); }
+.tl-b.on { background: var(--c-text); color: var(--c-bg); }
+.tl-langs { display: flex; gap: 14px; margin: 0 6px; }
+.tl-lg { display: flex; align-items: center; gap: 4px; }
+.tl-lg .tl-b { min-width: 38px; height: 34px; padding: 0 8px; font-family: var(--font-tech); font-size: 0.78rem; }
+.tl-lab { font-family: var(--font-tech); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.65; margin-right: 2px; }
 .tl-stage { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
-.tl-view { overflow: hidden; width: 100%; }
-.tl-track { display: inline-block; white-space: nowrap; font-size: calc(clamp(2.6rem, 9vw, 7rem) * var(--tl-size, 1)); line-height: 1.25; font-weight: 600; transition: transform 0.28s ease-out; will-change: transform; }
+.tl-view { position: relative; overflow: hidden; width: 100%; padding: 1.4vh 0; }
+.tl-head { position: absolute; top: 8%; bottom: 8%; width: 3px; border-radius: 2px; background: var(--mk-word); opacity: 0.45; pointer-events: none; }   /* o ponto de leitura: a palavra falada fica aqui */
+.tl-track { display: inline-block; white-space: nowrap; font-size: calc(clamp(2.6rem, 9vw, 7rem) * var(--tl-size, 1)); line-height: 1.25; font-weight: 600; transition: transform 0.55s cubic-bezier(0.22, 0.8, 0.3, 1); will-change: transform; }
 .tl-w { padding: 0 0.08em; border-radius: 0.12em; transition: background 0.12s, color 0.12s, opacity 0.2s; cursor: pointer; }
 .tl-w.past { opacity: 0.35; }
-.tl-w.now { background: #ffd400; color: #111; opacity: 1; }
+html body[class] .tl-w.now { background: var(--mk-word); color: var(--mk-word-fg); opacity: 1; }
 .tl-sub { text-align: center; padding: 20px 6vw 0; font-size: calc(clamp(1.1rem, 2.6vw, 2rem) * var(--tl-size, 1)); line-height: 1.35; color: var(--c-dim, #888); min-height: 3em; }
 .tl-sub.wait { opacity: 0.5; font-style: italic; }
 .tl-prog { height: 5px; background: var(--lb-line); }
 .tl-prog-fill { height: 100%; width: 0; background: currentColor; }
 @media (prefers-reduced-motion: reduce) { .tl-track { transition: none; } }
-@media (max-width: 600px) { .tl-bar { flex-wrap: wrap; } .tl-count { flex: 1 1 100%; order: 9; } }
-
+@media (max-width: 700px) { .tl-count { flex: 1 1 100%; order: 9; } }
 /* versos: a estrofe é o bloco, cada linha é uma unidade narrada (a linha falada, a palavra e a faixa seguem por cima, como no texto corrido) */
 .lb-para.lb-verse { margin: 1.5em 0; padding-left: 1.1em; border-left: 3px solid var(--lb-line); }
 .lb-para.lb-verse .lb-s { display: block; }

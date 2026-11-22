@@ -254,7 +254,14 @@ function bookTotals() {
 }
 
 // Barra inferior/superior quando o Estudo de Inglês tem um documento aberto: páginas, palavras e tempo restante.
+/* Raio-X Ã© do livro; na Biblioteca o botÃ£o vira Teleprompter (sÃ³ com um documento aberto) */
+function setToolBtn(extra, tele) {
+    const rx = document.getElementById('btn-raiox'), tl = document.getElementById('btn-tele');
+    if (rx) rx.hidden = !!extra;
+    if (tl) tl.hidden = !tele;
+}
 function renderLabHud() {
+    setToolBtn(true, !!labHud);
     const en = settings.readLang === 'en', h = labHud, live = document.getElementById('hud-live');
     const ind = document.getElementById('chapter-indicator'), bar = document.getElementById('p-bar'), line = document.getElementById('read-line');
     if (!h) {
@@ -406,7 +413,7 @@ function init() {
 
 function loadChapter(idx) {
     saveStats();                 // grava o avanço do capítulo que está saindo (a página de estatísticas lê daqui)
-    inExtra = false;
+    inExtra = false; setToolBtn(false, false);
     setLegendBtn(false, false);
     currentIdx = idx;
     const frame = frameEl();
@@ -435,7 +442,7 @@ function loadChapter(idx) {
 // Abre uma ferramenta de `extras` no mesmo quadro do leitor (sem barra de progresso nem estatísticas de capítulo).
 function loadExtra(k) {
     saveStats();
-    inExtra = true;
+    inExtra = true; setToolBtn(true, false);
     setLegendBtn(false, false);       // o botão Legenda só aparece quando a página (ingles-legenda.js) avisa que tem legenda
     labHud = null;
     const frame = frameEl();
@@ -500,6 +507,8 @@ window.addEventListener('message', (e) => {
         statsDirty = true; saveStats(); updateHud();
     }
     if (e.data && e.data.type === 'dd-lab-sidebar' && !isMobile()) document.getElementById('sidebar').classList.toggle('collapsed', !!e.data.hide);   // modo foco da Biblioteca
+    if (e.data && e.data.type === 'dd-lab-immersive') document.body.classList.toggle('imersivo', !!e.data.on);   // teleprompter: só a legenda na tela
+    if (e.data && e.data.type === 'dd-set-option' && (e.data.key === 'readLang' || e.data.key === 'audioLang') && (e.data.value === 'pt' || e.data.value === 'en')) setOption(e.data.key, e.data.value);
     if (e.data && e.data.type === 'dd-lab-hud') { labHud = e.data.hud || null; if (inExtra) renderLabHud(); }
     if (e.data && e.data.type === 'dd-progress') onProgress(e.data);
     if (e.data && e.data.type === 'dd-listen') onListen(e.data);

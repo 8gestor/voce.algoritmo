@@ -1,42 +1,62 @@
 /*
- * ingles-teleprompter.js — modo de leitura Teleprompter: UMA linha de cada vez, letras grandes, a linha rola para manter a palavra
- * falada no centro e a palavra é destacada em sincronia com a narração; embaixo, a tradução da frase (a mesma que o sistema já mostra
- * na legenda). Ligado pelo seletor "Modo de leitura" (ingles-modos.js), com a opção "Teleprompter".
- * Usa os eventos do núcleo: `sentence` (qual frase), `piece` (texto exato falado e idioma), `wordpos` (palavra falada), `stop`, `open`,
- * `close`, `mode`. O texto da narração mostrado é o que está sendo falado (idioma do áudio); a tradução é o outro idioma.
+ * ingles-teleprompter.js — modo de leitura Teleprompter: uma LEGENDA CORRIDA, como as de TV e cinema.
+ * - A linha grande mostra a frase no idioma de LEITURA ("Ler") e corre da direita para a esquerda: a frase nova entra pela direita e a palavra
+ *   falada fica sempre no ponto de leitura (30% da largura), destacada, em sincronia com a narração.
+ * - A narração fala no idioma de ÁUDIO ("Ouvir"), que pode ser outro: ler em português e ouvir em inglês, ou o contrário. Como o texto da
+ *   linha e o texto falado têm tamanhos diferentes, a posição da palavra falada é mapeada proporcionalmente (igual ao texto corrido).
+ * - Embaixo, em letra menor, a frase no outro idioma (o que se ouve, ou a tradução).
+ * - O resto da tela some: o site pai esconde menu, barra de comandos e rodapé (mensagem dd-lab-immersive). Ficam a legenda, os controles
+ *   mínimos (sair, frase anterior/próxima, ler/pausar, velocidade, tamanho, Ler PT/EN, Ouvir PT/EN) e o acompanhamento (frase N de M, %).
+ * Ao escolher o modo no seletor a narração começa sozinha; ao reabrir um livro já no modo, espera o ▶ (o navegador exige um toque).
+ * Eventos do núcleo: `sentence`, `piece` (texto exato falado e idioma), `wordpos`, `stop`, `open`, `close`, `mode`, `lang`.
  * Teclado: Espaço = ler/pausar, ← e → = frase anterior/próxima, + e − = tamanho, Esc = sair. Tamanho em localStorage dd-ingles-tele-size.
  */
 (function () {
     'use strict';
     const D = window.DDLab;
     if (!D || !D.setMode) return;
-    const KEY = 'dd-ingles-tele-size', RATES = [0.75, 1, 1.25, 1.5], PAD = 48;
+    const KEY = 'dd-ingles-tele-size', RATES = [0.75, 1, 1.25, 1.5], READ_AT = 0.3;
     const L = {
-        pt: { prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Letra menor', bigger: 'Letra maior', exit: 'Sair do teleprompter', swap: 'Trocar o idioma da linha grande', wait: 'traduzindo…', count: (a, b, p) => 'Frase ' + a + ' de ' + b + ' · ' + p + '%', group: 'Teleprompter' },
-        en: { prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Bigger text', exit: 'Leave the teleprompter', swap: 'Swap the language of the big line', wait: 'translating…', count: (a, b, p) => 'Sentence ' + a + ' of ' + b + ' · ' + p + '%', group: 'Teleprompter' }
+        pt: { prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Letra menor', bigger: 'Letra maior', exit: 'Sair do teleprompter', wait: 'traduzindo…', read: 'Ler', listen: 'Ouvir', count: (a, b, p) => 'Frase ' + a + ' de ' + b + ' · ' + p + '%', group: 'Teleprompter' },
+        en: { prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Bigger text', exit: 'Leave the teleprompter', wait: 'translating…', read: 'Read', listen: 'Listen', count: (a, b, p) => 'Sentence ' + a + ' of ' + b + ' · ' + p + '%', group: 'Teleprompter' }
     };
     const t = (k) => L[D.state.readLang][k];
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
     const WORD = /[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}'’-]*/gu;
 
-    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, hidSidebar = false, cumSent = null;
+    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', asked = '';
     try { size = Math.min(1.7, Math.max(0.6, Number(localStorage.getItem(KEY)) || 1)); } catch (e) { /* sem storage */ }
     const saveSize = () => { try { localStorage.setItem(KEY, String(size)); } catch (e) { /* ignora */ } };
 
     /* ------------------------------------------------------------ montagem */
-    const root = el('section', 'lb-tele'); root.id = 'lb-tele'; root.hidden = true; root.setAttribute('role', 'region');
+    const root = el('section', 'lb-tele'); root.id = 'lb-tele'; root.hidden = true; root.tabIndex = -1; root.setAttribute('role', 'region');
     const bar = el('div', 'tl-bar');
     const bExit = el('button', 'tl-b tl-exit', '✕'), bPrev = el('button', 'tl-b', '⏮'), bPlay = el('button', 'tl-b tl-play', '▶'), bNext = el('button', 'tl-b', '⏭');
-    const bSwap = el('button', 'tl-b', '⇄'), bRate = el('button', 'tl-b tl-rate', '1×'), bMin = el('button', 'tl-b', 'A−'), bMax = el('button', 'tl-b', 'A+');
-    [bExit, bPrev, bPlay, bNext, bSwap, bRate, bMin, bMax].forEach((b) => { b.type = 'button'; });
+    const bRate = el('button', 'tl-b tl-rate', '1×'), bMin = el('button', 'tl-b', 'A−'), bMax = el('button', 'tl-b', 'A+');
+    [bExit, bPrev, bPlay, bNext, bRate, bMin, bMax].forEach((b) => { b.type = 'button'; });
+    // idiomas: ler num e ouvir em outro (e o contrário); o site pai guarda a escolha e atualiza os botões LER/OUVIR dele
+    const langs = el('div', 'tl-langs'), groups = {};
+    [['readLang', 'read'], ['audioLang', 'listen']].forEach((g) => {
+        const box = el('div', 'tl-lg'), lab = el('span', 'tl-lab'); box.appendChild(lab); groups[g[0]] = { lab, key: g[1], btns: {} };
+        ['pt', 'en'].forEach((v) => {
+            const b = el('button', 'tl-b tl-lang', v.toUpperCase()); b.type = 'button'; b.id = 'lb-tele-' + (g[0] === 'readLang' ? 'read' : 'listen') + '-' + v; b.dataset.opt = g[0]; b.dataset.val = v;
+            b.addEventListener('click', () => setOpt(g[0], v)); box.appendChild(b); groups[g[0]].btns[v] = b;
+        });
+        langs.appendChild(box);
+    });
     const count = el('div', 'tl-count'); count.id = 'lb-tele-count';
-    bar.append(bExit, count, bPrev, bPlay, bNext, bSwap, bRate, bMin, bMax);
-    const stage = el('div', 'tl-stage'), view = el('div', 'tl-view'), track = el('div', 'tl-track'), sub = el('div', 'tl-sub');
-    track.id = 'lb-tele-line'; sub.id = 'lb-tele-sub';
-    view.appendChild(track); stage.append(view, sub);
+    bar.append(bExit, count, langs, bPrev, bPlay, bNext, bRate, bMin, bMax);
+    const stage = el('div', 'tl-stage'), view = el('div', 'tl-view'), track = el('div', 'tl-track'), head = el('div', 'tl-head'), sub = el('div', 'tl-sub');
+    track.id = 'lb-tele-line'; sub.id = 'lb-tele-sub'; head.style.left = (READ_AT * 100) + '%';
+    view.append(head, track); stage.append(view, sub);
     const prog = el('div', 'tl-prog'), fill = el('div', 'tl-prog-fill'); prog.appendChild(fill);
     root.append(bar, stage, prog);
     document.body.appendChild(root);
+
+    function setOpt(key, val) {
+        if (window.parent && window.parent !== window) D.postParent({ type: 'dd-set-option', key, value: val });
+        else window.postMessage({ type: key === 'readLang' ? 'readlang' : 'audiolang', value: val }, '*');
+    }
 
     /* ------------------------------------------------------------ texto de uma frase em um idioma */
     function textIn(p, s, lang) {
@@ -62,62 +82,66 @@
         if (D.tts.cursor && D.tts.cursor.p < doc.paras.length) return { p: D.tts.cursor.p, s: D.tts.cursor.s };
         return { p: Math.min(D.firstVisible(), doc.paras.length - 1), s: 0 };
     }
-    // número da frase no livro (para o contador e a barra de progresso)
     function sentIndex(p, s) {
         const doc = D.doc; if (!doc) return { n: 0, total: 0 };
         if (!cumSent || cumSent.id !== doc.id) { const c = [0]; doc.paras.forEach((q) => c.push(c[c.length - 1] + q.s.length)); cumSent = { id: doc.id, c }; }
         return { n: cumSent.c[Math.min(p, cumSent.c.length - 2)] + s + 1, total: cumSent.c[cumSent.c.length - 1] };
     }
 
-    /* ------------------------------------------------------------ desenho: a linha única, com rolagem até a palavra falada */
+    /* ------------------------------------------------------------ a linha corrida */
     const active = () => D.state.mode === 'tele' && !!D.doc && !D.$('lb-reader').hidden;
-    function paintLine(text, lang) {
-        track.textContent = ''; words = []; wi = -1; track.dataset.lang = lang || ''; track.lang = lang || '';
-        if (text == null) return;
-        let pos = 0, m;
-        WORD.lastIndex = 0;
-        while ((m = WORD.exec(text))) {
-            if (m.index > pos) track.append(text.slice(pos, m.index));
-            const w = el('span', 'tl-w', m[0]);
-            track.append(w); words.push({ el: w, s: m.index, e: m.index + m[0].length });
-            pos = m.index + m[0].length;
-        }
-        if (pos < text.length) track.append(text.slice(pos));
-        center(-1);
+    // x (no track) do centro da palavra k que deve ficar no ponto de leitura; antes da 1ª palavra, o começo da linha fica nele
+    function target(k) {
+        const vw = view.clientWidth;
+        if (!words.length) return vw * READ_AT;
+        if (k < 0 || !words[k]) return vw * READ_AT - words[0].el.offsetLeft;
+        const w = words[k].el;
+        return vw * READ_AT - (w.offsetLeft + w.offsetWidth / 2);
     }
-    // a linha cabe? centraliza inteira. Não cabe? a palavra atual fica no centro, sem deixar sobrar vazio nas pontas
-    function center(k) {
-        const vw = view.clientWidth, tw = track.scrollWidth;
-        let tx;
-        if (tw <= vw - 2 * PAD) tx = (vw - tw) / 2;
-        else if (k < 0 || !words[k]) tx = PAD;
-        else { const w = words[k].el, x = w.offsetLeft + w.offsetWidth / 2; tx = Math.min(PAD, Math.max(vw - tw - PAD, vw / 2 - x)); }
-        track.style.transform = 'translateX(' + Math.round(tx) + 'px)';
+    function place(k) { track.style.transform = 'translateX(' + Math.round(target(k)) + 'px)'; }
+    function paintLine(text, lang, slide) {
+        track.textContent = ''; words = []; wi = -1; track.dataset.lang = lang || ''; track.lang = lang || ''; track.dataset.text = text == null ? '' : text;
+        if (text != null) {
+            let pos = 0, m;
+            WORD.lastIndex = 0;
+            while ((m = WORD.exec(text))) {
+                if (m.index > pos) track.append(text.slice(pos, m.index));
+                const w = el('span', 'tl-w', m[0]);
+                track.append(w); words.push({ el: w, s: m.index, e: m.index + m[0].length });
+                pos = m.index + m[0].length;
+            }
+            if (pos < text.length) track.append(text.slice(pos));
+        }
+        if (slide) {                          // frase nova: entra pela direita e corre até o ponto de leitura
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(' + view.clientWidth + 'px)';
+            void track.offsetWidth;
+            track.style.transition = '';
+            requestAnimationFrame(() => place(wi));
+        } else place(wi);
     }
     function mark(k) {
         if (k === wi) return;
         words.forEach((w, i) => { w.el.classList.toggle('now', i === k); w.el.classList.toggle('past', i < k); });
-        wi = k; center(k);
+        wi = k; place(k);
     }
     function render() {
         const doc = D.doc;
         if (!active() || !doc || !cur) return;
-        const same = spoken && spoken.p === cur.p && spoken.s === cur.s;
-        const lang = same ? spoken.lang : D.state.audioLang;
-        let mainText = same ? spoken.text : textIn(cur.p, cur.s, lang), mainLang = lang;
-        if (mainText == null) { mainText = textIn(cur.p, cur.s, doc.lang); mainLang = doc.lang; }     // sem tradução ainda: o original
-        paintLine(mainText, mainLang);
+        const rl = D.state.readLang;
+        let mainText = textIn(cur.p, cur.s, rl), mainLang = rl;
+        if (mainText == null) { mainText = textIn(cur.p, cur.s, doc.lang); mainLang = doc.lang; }     // a tradução ainda não chegou: mostra o original
+        const base = cur.p + ':' + cur.s + ':' + rl;               // mesma frase e mesmo idioma: só repinta (a tradução chegando não faz a linha entrar de novo)
+        paintLine(mainText, mainLang, base !== lastBase);
+        lastBase = base;
         const otherLang = D.other(mainLang), subText = textIn(cur.p, cur.s, otherLang);
         sub.textContent = subText != null ? subText : t('wait');
         sub.classList.toggle('wait', subText == null); sub.lang = otherLang;
-        if (subText == null) {                                   // traduz só esta frase (rápido); o parágrafo continua atrás
+        if ((subText == null || mainLang !== rl) && asked !== base) {     // traduz só esta frase (rápido); uma vez por frase, para não repetir sem tradutor
+            asked = base;
             const want = { p: cur.p, s: cur.s };
             const job = D.trSentence ? D.trSentence(want.p, want.s) : D.ensureTr(want.p);
-            job.then((x) => {
-                if (!cur || !active() || cur.p !== want.p || cur.s !== want.s) return;
-                const y = typeof x === 'string' && x ? x : textIn(want.p, want.s, otherLang);
-                if (y) { sub.textContent = y; sub.classList.remove('wait'); }
-            });
+            job.then(() => { if (cur && active() && cur.p === want.p && cur.s === want.s) render(); });
         }
         const ix = sentIndex(cur.p, cur.s), pct = ix.total ? Math.round(ix.n / ix.total * 100) : 0;
         count.textContent = t('count')(D.nf().format(ix.n), D.nf().format(ix.total), pct);
@@ -130,46 +154,55 @@
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
         bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
-        bSwap.title = bSwap.ariaLabel = t('swap'); bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bExit.title = bExit.ariaLabel = t('exit');
+        bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bExit.title = bExit.ariaLabel = t('exit');
+        Object.keys(groups).forEach((k) => {
+            const g = groups[k]; g.lab.textContent = t(g.key);
+            Object.keys(g.btns).forEach((v) => { const on = D.state[k] === v; g.btns[v].classList.toggle('on', on); g.btns[v].setAttribute('aria-pressed', on ? 'true' : 'false'); });
+        });
         root.setAttribute('aria-label', t('group'));
     }
 
-    /* ------------------------------------------------------------ ligar e desligar com o modo */
-    function sidebar(hide) { if (hide === hidSidebar) return; hidSidebar = hide; D.postParent({ type: 'dd-lab-sidebar', hide }); }
-    function sync() {
+    /* ------------------------------------------------------------ ligar e desligar com o modo (o resto da tela some) */
+    function setImmersive(on) { if (on === immersive) return; immersive = on; D.postParent({ type: 'dd-lab-immersive', on }); }
+    function sync(autoplay) {
         const show = active();
         root.hidden = !show;
-        sidebar(show);
-        if (show) { cur = cur && D.doc.paras[cur.p] ? cur : position(); spoken = null; render(); } else labels();
+        setImmersive(show);
+        if (show) {
+            cur = cur && D.doc.paras[cur.p] ? cur : position(); spoken = null; lastBase = ''; render();
+            try { root.focus({ preventScroll: true }); } catch (e) { /* ignora */ }
+            if (autoplay && !D.tts.playing && cur) setTimeout(() => { if (active() && !D.tts.playing) D.startTts(cur.p, cur.s); }, 150);
+        } else labels();
     }
 
     /* ------------------------------------------------------------ eventos do núcleo */
     D.on('sentence', (ev) => { cur = { p: ev.p, s: ev.s }; spoken = null; render(); });
-    D.on('piece', (ev) => { if (!cur || cur.p !== ev.p || cur.s !== ev.s) cur = { p: ev.p, s: ev.s }; spoken = ev; render(); });
+    D.on('piece', (ev) => { if (!cur || cur.p !== ev.p || cur.s !== ev.s) { cur = { p: ev.p, s: ev.s }; render(); } spoken = ev; });
     D.on('wordpos', (ev) => {
         if (!active() || !words.length || !spoken || spoken.text !== ev.text) return;
+        const text = track.dataset.text || '';
+        const pos = text === ev.text ? ev.ci : (ev.ci / Math.max(1, ev.len || ev.text.length)) * text.length;   // outro idioma: posição proporcional
         let k = 0;
-        while (k < words.length - 1 && words[k].e <= ev.ci) k++;
+        while (k < words.length - 1 && words[k].e <= pos) k++;
         mark(k);
     });
     D.on('stop', labels); D.on('restartspeech', labels);
-    D.on('open', () => { cur = null; spoken = null; setTimeout(sync, 40); });
-    D.on('close', () => { cur = null; spoken = null; root.hidden = true; sidebar(false); });
-    D.on('mode', () => { cur = null; spoken = null; sync(); });
-    D.on('lang', () => { labels(); render(); });
-    window.addEventListener('resize', () => { if (!root.hidden) center(wi); });
-    setInterval(() => { if (!root.hidden) labels(); }, 600);       // ▶/❚❚ acompanha a narração iniciada pela barra superior do site
+    D.on('open', () => { cur = null; spoken = null; setTimeout(() => sync(false), 40); });
+    D.on('close', () => { cur = null; spoken = null; root.hidden = true; setImmersive(false); });
+    D.on('mode', () => { cur = null; spoken = null; sync(true); });
+    D.on('lang', () => { asked = ''; labels(); render(); });
+    window.addEventListener('resize', () => { if (!root.hidden) place(wi); });
+    setInterval(() => { if (!root.hidden) labels(); }, 600);       // ▶/❚❚ acompanha a narração iniciada de fora
 
     /* ------------------------------------------------------------ controles */
     function go(n) { if (!n) return; cur = { p: n.p, s: n.s }; spoken = null; render(); D.startTts(n.p, n.s); }
     bPrev.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, -1)); });
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
-    bSwap.addEventListener('click', () => { D.postParent({ type: 'legend-swap' }); });
     bRate.addEventListener('click', () => { rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
-    bMin.addEventListener('click', () => { size = Math.max(0.6, Math.round((size - 0.1) * 10) / 10); saveSize(); render(); center(wi); });
-    bMax.addEventListener('click', () => { size = Math.min(1.7, Math.round((size + 0.1) * 10) / 10); saveSize(); render(); center(wi); });
-    bExit.addEventListener('click', () => { D.setMode('single'); const s = D.$('lb-read-mode'); if (s) s.value = 'single'; });
+    bMin.addEventListener('click', () => { size = Math.max(0.6, Math.round((size - 0.1) * 10) / 10); saveSize(); render(); place(wi); });
+    bMax.addEventListener('click', () => { size = Math.min(1.7, Math.round((size + 0.1) * 10) / 10); saveSize(); render(); place(wi); });
+    bExit.addEventListener('click', () => { D.stopTts(); D.setMode('single'); });
     window.addEventListener('keydown', (e) => {
         if (root.hidden || (e.target && /^(input|textarea|select)$/i.test(e.target.tagName))) return;
         if (e.key === ' ') { e.preventDefault(); bPlay.click(); }
@@ -179,11 +212,10 @@
         else if (e.key === '-') bMin.click();
         else if (e.key === 'Escape') bExit.click();
     });
-    // toque numa palavra da linha grande: mesmo cartão do texto (significado, pronúncia, salvar)
+    // toque numa palavra da linha: mesmo cartão do texto (significado, pronúncia, salvar)
     track.addEventListener('click', (e) => {
         if (!cur || !D.doc) return;
-        const lang = track.dataset.lang || D.state.audioLang;
-        D.emit('tap', { e, sp: track, p: cur.p, s: cur.s, handled: false, wlang: lang, sentHere: track.textContent.trim(), sentOther: sub.classList.contains('wait') ? '' : sub.textContent.trim() });
+        D.emit('tap', { e, sp: track, p: cur.p, s: cur.s, handled: false, wlang: track.dataset.lang || D.state.readLang, sentHere: track.textContent.trim(), sentOther: sub.classList.contains('wait') ? '' : sub.textContent.trim() });
     });
     labels();
 })();

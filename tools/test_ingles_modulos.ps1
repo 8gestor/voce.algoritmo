@@ -671,49 +671,62 @@ $test = @'
       await wait(2600);
       var s2 = JSON.parse(W().localStorage.getItem('dd-ingles-log')), m2 = W().__ddProg.log.d[skey];
       ok('S2 os tempos (total, lendo, ouvindo) são gravados em até 2 s, sem esperar ocultar nem fechar a aba', s2.d[skey].sec === m2.sec && s2.d[skey].rd === m2.rd && s2.d[skey].ls === m2.ls && s2.d[skey].sec >= 5 && s2.d[skey].ls >= 3, JSON.stringify(s2.d[skey]));
-      await W().__ddProg.resetAll(); await wait(300);      // ===================== U. modo Teleprompter: uma linha grande, palavra a palavra, tradução embaixo =====================
-      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      await W().__ddProg.resetAll(); await wait(300);      // ===================== U. teleprompter: legenda corrida (direita para esquerda), ler num idioma e ouvir em outro =====================
       var ubk = [1, 2, 3, 4].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart and to act only on what truly depends on us number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');
       await D().addText('Teleprompter teste', ubk);
       await until(function () { return D().doc && D().doc.title === 'Teleprompter teste'; }, 20000);
       await wait(700);
+      var utimer = null, uw = W();
+      uw.speechSynthesis.cancel = function () { clearInterval(utimer); if (uw.__cur) { var u0 = uw.__cur; uw.__cur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      uw.speechSynthesis.speak = function (u) {
+        var ws = u.text.split(/\s+/), ix = 0, ci = 0; uw.__cur = u; u.onstart && u.onstart();
+        utimer = setInterval(function () { if (ix >= ws.length) { clearInterval(utimer); uw.__cur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 400);
+      };
+      post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'en' }); await wait(400);
       var usel = idoc().getElementById('lb-read-mode');
-      ok('U1 o seletor de modos ganhou o Teleprompter como quinta opção', Array.prototype.map.call(usel.options, function (o) { return o.value; }).join(',') === 'single,wide,side,focus,tele' && /Teleprompter/.test(usel.options[4].textContent));
+      ok('U1 o seletor de modos tem o Teleprompter como quinta opção', Array.prototype.map.call(usel.options, function (o) { return o.value; }).join(',') === 'single,wide,side,focus,tele' && /Teleprompter/.test(usel.options[4].textContent));
       usel.value = 'tele'; usel.dispatchEvent(new Event('change'));
       await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 5; }, 40000);
       var ust = idoc().createElement('style'); ust.textContent = '.tl-track { transition: none !important; }'; idoc().head.appendChild(ust);   // em tempo virtual a transição não termina antes da medição
-      var utele = idoc().getElementById('lb-tele'), ur = utele.getBoundingClientRect(), uvw = idoc().documentElement.clientWidth, uvh = idoc().documentElement.clientHeight;
-      ok('U2 o modo teleprompter cobre a janela inteira e guarda a escolha', !utele.hidden && idoc().body.classList.contains('lb-tele-open') && Math.abs(ur.width - uvw) < 3 && Math.abs(ur.height - uvh) < 3 && W().localStorage.getItem('dd-ingles-modo') === 'tele', Math.round(ur.width) + 'x' + Math.round(ur.height));
-      var utrack = idoc().getElementById('lb-tele-line'), ufs = parseFloat(W().getComputedStyle(utrack).fontSize), uh = utrack.getBoundingClientRect().height;
-      ok('U3 a frase aparece em UMA linha só, com letras grandes', W().getComputedStyle(utrack).whiteSpace === 'nowrap' && ufs >= 40 && uh < ufs * 1.6 && /^Of things some/.test(utrack.textContent.trim()), 'fonte=' + Math.round(ufs) + 'px altura=' + Math.round(uh) + 'px');
-      var utxt = utrack.textContent;
-      var uci = utxt.indexOf('power'), uprev = ufs;
-      D().emit('piece', { p: 0, s: 0, text: utxt, lang: 'en' }); D().emit('wordpos', { ci: uci, len: 5, text: utxt }); await wait(400);
-      var unow = idoc().querySelectorAll('#lb-tele-line .tl-w.now'), upast = idoc().querySelectorAll('#lb-tele-line .tl-w.past');
-      ok('U4 a palavra falada é destacada, as anteriores esmaecem e só uma está marcada', unow.length === 1 && unow[0].textContent === 'power' && upast.length === 6 && idoc().querySelectorAll('#lb-tele-line .tl-w').length > 10, 'now=' + (unow[0] && unow[0].textContent) + ' passadas=' + upast.length);
-      D().emit('wordpos', { ci: utxt.indexOf('apart'), len: 5, text: utxt }); await wait(300);   // palavra do meio da frase: as primeiras ficam à esquerda por desenho
-      unow = idoc().querySelectorAll('#lb-tele-line .tl-w.now');
-      var uvr = idoc().querySelector('#lb-tele .tl-view').getBoundingClientRect(), unr = unow[0].getBoundingClientRect(), utr = utrack.getBoundingClientRect();
-      var ucentered = Math.abs((unr.left + unr.width / 2) - (uvr.left + uvr.width / 2)) < 60, ufits = utr.width <= uvr.width - 90;
-      ok('U5 a linha rola para manter a palavra falada no centro (ou fica inteira e centralizada quando cabe)', ucentered || ufits, 'palavra a ' + Math.round(Math.abs((unr.left + unr.width / 2) - (uvr.left + uvr.width / 2))) + ' px do centro; linha ' + Math.round(utr.width) + ' px em ' + Math.round(uvr.width));
-      var ulast = utxt.lastIndexOf('them'), ux1 = utrack.style.transform;
-      D().emit('wordpos', { ci: ulast, len: 4, text: utxt }); await wait(400);
-      var ux2 = utrack.style.transform, unow2 = idoc().querySelector('#lb-tele-line .tl-w.now');
-      ok('U6 avançar a palavra move o destaque e a rolagem', !!unow2 && unow2.textContent === 'them' && (ux2 !== ux1 || ufits), ux1 + ' -> ' + ux2);
-      await until(function () { var s = idoc().getElementById('lb-tele-sub'); return s && !s.classList.contains('wait') && s.textContent.length > 5; }, 20000);
-      var usub = idoc().getElementById('lb-tele-sub');
-      ok('U7 a tradução da frase aparece embaixo, no outro idioma, como na legenda', /^\[pt\]/.test(usub.textContent) && !usub.classList.contains('wait'), usub.textContent.slice(0, 60));
-      var ucount = idoc().getElementById('lb-tele-count').textContent;
-      idoc().querySelectorAll('#lb-tele .tl-b')[3].click();   // lê o contador na hora: a voz simulada do teste termina cada frase instantaneamente
-      var ucount2 = idoc().getElementById('lb-tele-count').textContent; D().stopTts(); await wait(300);
-      ok('U8 próxima frase avança o contador', /Frase 1 de/.test(ucount) && /Frase 2 de/.test(ucount2) && /\d+%/.test(ucount2), ucount + ' -> ' + ucount2);
+      await until(function () { return idoc().getElementById('lb-tele').getBoundingClientRect().width > window.innerWidth - 20; }, 20000);   // o site pai esconde o menu e a janela cresce
+      var utele = idoc().getElementById('lb-tele'), ur = utele.getBoundingClientRect();
+      var hid = function (sel) { var e = document.querySelector(sel); return !!e && W && getComputedStyle(e).display === 'none'; };
+      ok('U2 o resto da tela some: menu, barra de comandos e rodapé do site escondem, e a legenda cobre a janela', !utele.hidden && document.body.classList.contains('imersivo') && hid('.master-header') && hid('footer.bottom-hud') && hid('#sidebar') && Math.abs(ur.width - idoc().documentElement.clientWidth) < 3 && ur.height > window.innerHeight * 0.9 && W().localStorage.getItem('dd-ingles-modo') === 'tele', Math.round(ur.width) + 'x' + Math.round(ur.height) + ' janela ' + window.innerWidth + 'x' + window.innerHeight);
+      await until(function () { return D().tts.playing; }, 8000);
+      ok('U3 a narração começa sozinha ao escolher o modo', D().tts.playing === true);
+      await until(function () { return /^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent) && !/^<</.test(idoc().getElementById('lb-tele-sub').textContent); }, 20000);
+      var utrack = idoc().getElementById('lb-tele-line'), usub = idoc().getElementById('lb-tele-sub'), ufs = parseFloat(W().getComputedStyle(utrack).fontSize);
+      ok('U4 ler em português e ouvir em inglês: a linha grande está em português (idioma de leitura), de uma linha só e letras grandes, e embaixo está o inglês que se ouve', /^\[pt\]/.test(utrack.textContent) && /^Of things some/.test(usub.textContent) && D().state.readLang === 'pt' && D().state.audioLang === 'en' && W().getComputedStyle(utrack).whiteSpace === 'nowrap' && ufs >= 40 && utrack.getBoundingClientRect().height < ufs * 1.6, 'fonte=' + Math.round(ufs) + 'px | ' + utrack.textContent.slice(0, 40));
+      D().stopTts(); await wait(300);
+      var uspoken = usub.textContent, uen = D().doc.paras[0].s[0], uptxt = utrack.textContent;
+      D().emit('piece', { p: 0, s: 0, text: uen, lang: 'en' }); D().emit('wordpos', { ci: Math.floor(uen.length * 0.6), len: uen.length, text: uen }); await wait(200);
+      var unow = idoc().querySelector('#lb-tele-line .tl-w.now'), ufrac = unow ? uptxt.indexOf(unow.textContent, 0) / uptxt.length : -1;
+      var upos = 0, uidx = -1; Array.prototype.forEach.call(idoc().querySelectorAll('#lb-tele-line .tl-w'), function (w, i) { if (w === unow) uidx = i; });
+      ok('U5 a palavra destacada na linha em português acompanha a voz em inglês (posição proporcional entre os idiomas)', !!unow && uidx > 3 && Math.abs(((uptxt.indexOf(unow.textContent)) / uptxt.length) - 0.6) < 0.2, 'palavra "' + (unow && unow.textContent) + '" na posição ' + (Math.round(ufrac * 100)) + '% (esperado ~60%)');
+      var utx1 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
+      D().emit('wordpos', { ci: Math.floor(uen.length * 0.9), len: uen.length, text: uen }); await wait(100);
+      var utx2 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
+      ok('U6 a linha corre da direita para a esquerda: avançar a voz move o texto para a esquerda, mantendo a palavra no ponto de leitura', utx2 < utx1 && idoc().querySelector('.tl-head').style.left === '30%', utx1 + ' -> ' + utx2);
+      D().emit('sentence', { p: 0, s: 1 });
+      var uenter = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10), uvw = idoc().querySelector('#lb-tele .tl-view').clientWidth;
+      ok('U7 a frase seguinte entra pela direita da tela', uenter >= uvw - 2, 'começa em ' + uenter + ' px; a janela tem ' + uvw);
+      idoc().getElementById('lb-tele-read-en').click();
+      await until(function () { return D().state.readLang === 'en'; }, 10000);
+      idoc().getElementById('lb-tele-listen-pt').click();
+      await until(function () { return D().state.audioLang === 'pt'; }, 10000);
+      await until(function () { return /^Nobody can compel/.test(idoc().getElementById('lb-tele-line').textContent) && /^\[pt\]/.test(idoc().getElementById('lb-tele-sub').textContent); }, 20000);
+      var u8 = { estado: D().state.readLang === 'en' && D().state.audioLang === 'pt', linha: /^Nobody can compel/.test(idoc().getElementById('lb-tele-line').textContent), sub: /^\[pt\]/.test(idoc().getElementById('lb-tele-sub').textContent), botoes: idoc().getElementById('lb-tele-read-en').classList.contains('on') && idoc().getElementById('lb-tele-listen-pt').classList.contains('on'), site: document.querySelector('.lang-btn[data-opt="readLang"][data-val="en"]').classList.contains('on') || document.querySelector('.lang-btn[data-opt="readLang"][data-val="en"]').getAttribute('aria-pressed') === 'true' };
+      ok('U8 trocar para ler em inglês e ouvir em português (e o contrário) pelos botões da própria legenda, que também atualizam o site', u8.estado && u8.linha && u8.sub && u8.botoes && u8.site, JSON.stringify(u8) + ' | linha=' + idoc().getElementById('lb-tele-line').textContent.slice(0, 30) + ' | sub=' + idoc().getElementById('lb-tele-sub').textContent.slice(0, 30));
+      var uc1 = idoc().getElementById('lb-tele-count').textContent;
+      idoc().querySelectorAll('#lb-tele .tl-bar > .tl-b')[3].click();   // botões diretos da barra: sair, anterior, ler, PRÓXIMA...
+      var uc2 = idoc().getElementById('lb-tele-count').textContent; D().stopTts();   // lê na hora: a voz simulada avançaria sozinha
       var usz = parseFloat(W().getComputedStyle(utrack).fontSize);
       Array.prototype.filter.call(idoc().querySelectorAll('#lb-tele .tl-b'), function (b) { return b.textContent === 'A+'; })[0].click(); await wait(200);
-      ok('U9 A+ aumenta a letra e o tamanho fica guardado', parseFloat(W().getComputedStyle(utrack).fontSize) > usz && W().localStorage.getItem('dd-ingles-tele-size') !== null);
-      ok('U10 o menu do site recolhe no teleprompter', document.getElementById('sidebar').classList.contains('collapsed'));
+      ok('U9 próxima frase avança o contador, e A+ aumenta a letra com o tamanho guardado', /(Frase|Sentence) 2 (de|of)/.test(uc1) && /(Frase|Sentence) 3 (de|of)/.test(uc2) && parseFloat(W().getComputedStyle(utrack).fontSize) > usz && W().localStorage.getItem('dd-ingles-tele-size') !== null, uc1 + ' -> ' + uc2);
       D().stopTts();
-      idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); await wait(400);
-      ok('U11 Esc sai do teleprompter, volta à coluna única e reabre o menu', idoc().getElementById('lb-tele').hidden && !idoc().body.classList.contains('lb-tele-open') && idoc().getElementById('lb-read-mode').value === 'single' && !document.getElementById('sidebar').classList.contains('collapsed'));
+      idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); await wait(500);
+      ok('U10 Esc sai do teleprompter: o site volta (menu, comandos e rodapé), o modo volta a coluna única e o seletor acompanha', idoc().getElementById('lb-tele').hidden && !document.body.classList.contains('imersivo') && !hid('.master-header') && !hid('footer.bottom-hud') && idoc().getElementById('lb-read-mode').value === 'single' && D().state.mode === 'single');
+      post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ===================== V. versos: estrofes e linhas no acompanhamento da narração =====================
       post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
       var vpoema = ['Shall I compare thee to a summer\'s day?', 'Thou art more lovely and more temperate:', 'Rough winds do shake the darling buds of May,', 'And summer\'s lease hath all too short a date;', '', 'Sometime too hot the eye of heaven shines,', 'And often is his gold complexion dimm\'d;', 'And every fair from fair sometime declines,', 'By chance or nature\'s changing course untrimm\'d;', '', 'But thy eternal summer shall not fade,', 'Nor lose possession of that fair thou ow\'st;', 'Nor shall death brag thou wander\'st in his shade,', 'When in eternal lines to time thou grow\'st.'].join('\n');
@@ -750,6 +763,80 @@ $test = @'
       ok('V7 acabando o último verso da estrofe, a marca de estrofe passa para a seguinte', idoc().querySelectorAll('.lb-para')[1].classList.contains('speaking') && !idoc().querySelectorAll('.lb-para')[0].classList.contains('speaking') && idoc().querySelectorAll('.lb-para.speaking').length === 1);
       D().stopTts(); await wait(200);
       ok('V8 a estrofe falada ganha a barra de destaque mais forte que as demais', W().getComputedStyle(idoc().querySelectorAll('.lb-para.lb-verse')[2]).borderLeftWidth === '3px' && W().getComputedStyle(idoc().querySelectorAll('.lb-para.lb-verse')[2]).borderLeftStyle === 'solid');
+      D().$('lb-back').click(); await wait(300);      // ===================== W. marcas da narração em cores diferentes (frase, linha, palavra) em todos os temas e modos =====================
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      var wbk = [1, 2, 3, 4, 5, 6].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');
+      await D().addText('Cores teste', wbk);
+      await until(function () { return D().doc && D().doc.title === 'Cores teste'; }, 20000);
+      await wait(800);
+      var wst = idoc().createElement('style'); wst.textContent = '* { transition: none !important; }'; idoc().head.appendChild(wst);
+      var wtimer = null, ww = W();
+      ww.speechSynthesis.cancel = function () { clearInterval(wtimer); if (ww.__cur) { var u0 = ww.__cur; ww.__cur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      ww.speechSynthesis.speak = function (u) {
+        var ws = u.text.split(/\s+/), ix = 0, ci = 0; ww.__cur = u; u.onstart && u.onstart();
+        wtimer = setInterval(function () { if (ix >= ws.length) { clearInterval(wtimer); ww.__cur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 700);
+      };
+      var rgba = function (s) { var m = (s.match(/[\d.]+/g) || []).map(Number); return { r: m[0], g: m[1], b: m[2], a: m.length > 3 ? m[3] : 1 }; };
+      var hue = function (c) { var r = c.r / 255, g = c.g / 255, b = c.b / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; if (!d) return 0; var h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; return h < 0 ? h + 360 : h; };
+      var hdist = function (a, b) { var d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
+      D().startTts(0, 0);
+      await until(function () { return idoc().querySelector('.lb-s.seg .wd.now'); }, 30000);
+      var wfalhas = [], wlinhas = [];
+      for (var wth of ['paper', 'dark', 'light', 'sepia']) {
+        for (var wmd of ['single', 'wide', 'side', 'focus']) {
+          post({ type: 'theme', value: wth }); D().setMode(wmd); await wait(700);
+          await until(function () { return idoc().querySelector('.lb-s.seg .wd.now') && idoc().getElementById('lb-band').style.display === 'block'; }, 30000);
+          var wseg = idoc().querySelector('.lb-s.seg'), wword = idoc().querySelector('.wd.now'), wband = idoc().getElementById('lb-band');
+          if (!wseg || !wword || !wband) { wfalhas.push(wth + '/' + wmd + ': sem marcas'); continue; }
+          var cs = rgba(W().getComputedStyle(wseg).backgroundColor), cl = rgba(W().getComputedStyle(wband).backgroundColor), cw = rgba(W().getComputedStyle(wword).backgroundColor);
+          var why = [];
+          if (cs.a < 0.15) why.push('frase quase invisível'); if (cl.a < 0.1) why.push('linha quase invisível'); if (cw.a < 0.95) why.push('palavra sem cor forte');
+          if (hdist(hue(cs), hue(cl)) < 40) why.push('frase e linha parecidas'); if (hdist(hue(cs), hue(cw)) < 40) why.push('frase e palavra parecidas'); if (hdist(hue(cl), hue(cw)) < 40) why.push('linha e palavra parecidas');
+          wlinhas.push(wth + '/' + wmd + ' frase=' + Math.round(hue(cs)) + '° linha=' + Math.round(hue(cl)) + '° palavra=' + Math.round(hue(cw)) + '°');
+          if (why.length) wfalhas.push(wth + '/' + wmd + ': ' + why.join(', '));
+          if (wmd === 'side') {
+            var wts = idoc().querySelector('.lb-t.seg');
+            if (!wts) wfalhas.push(wth + '/side: a tradução da frase falada não está marcada'); else if (W().getComputedStyle(wts).backgroundColor !== W().getComputedStyle(wseg).backgroundColor) wfalhas.push(wth + '/side: a coluna da tradução usa outra cor de frase');
+          }
+        }
+      }
+      ok('W1 em 4 temas x 4 modos (coluna única, larga, lado a lado, foco): a frase destacada, a linha e a palavra sincronizada têm cores visíveis e de famílias diferentes', wfalhas.length === 0, wfalhas.length ? wfalhas.join(' | ') : wlinhas.slice(0, 4).join(' ; ') + ' ...');
+      D().stopTts(); D().setMode('single'); post({ type: 'theme', value: 'paper' }); await wait(300);
+      D().$('lb-back').click(); await wait(300);
+      // ===================== X. teleprompter: as 4 combinações de ler x ouvir (PT/EN) =====================
+      await D().addText('Combos teste', [1, 2, 3].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n'));
+      await until(function () { return D().doc && D().doc.title === 'Combos teste'; }, 20000);
+      await wait(600);
+      var xw = W(), xl = null, xt = null;
+      xw.speechSynthesis.cancel = function () { clearInterval(xt); if (xw.__cur) { var u0 = xw.__cur; xw.__cur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      xw.speechSynthesis.speak = function (u) { xl = (u.lang || '').slice(0, 2); xw.__cur = u; u.onstart && u.onstart(); var ws = u.text.split(/\s+/), ix = 0, ci = 0; xt = setInterval(function () { if (ix >= ws.length) { clearInterval(xt); xw.__cur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 400); };
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      D().setMode('tele');
+      await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 5; }, 40000);
+      var xfal = [];
+      for (var xr of ['pt', 'en']) { for (var xa of ['pt', 'en']) {
+        xl = null; D().stopTts();
+        idoc().getElementById('lb-tele-read-' + xr).click(); idoc().getElementById('lb-tele-listen-' + xa).click();
+        await until(function () { return D().state.readLang === xr && D().state.audioLang === xa; }, 10000);
+        D().startTts(0, 0);
+        await until(function () { return xl && /^\[pt\]|^Of things/.test(idoc().getElementById('lb-tele-line').textContent) && !/^<</.test(idoc().getElementById('lb-tele-sub').textContent) && idoc().getElementById('lb-tele-sub').textContent.length > 20 && !idoc().getElementById('lb-tele-sub').classList.contains('wait'); }, 30000);
+        var xm = idoc().getElementById('lb-tele-line').textContent, xs = idoc().getElementById('lb-tele-sub').textContent;
+        var xmLang = /^\[pt\]/.test(xm) ? 'pt' : 'en', xsLang = /^\[pt\]/.test(xs) ? 'pt' : 'en';
+        if (xmLang !== xr) xfal.push('ler ' + xr + '/ouvir ' + xa + ': linha grande em ' + xmLang);
+        if (xsLang === xmLang) xfal.push('ler ' + xr + '/ouvir ' + xa + ': legenda de baixo no mesmo idioma');
+        if (xl !== (xa === 'pt' ? 'pt' : 'en')) xfal.push('ler ' + xr + '/ouvir ' + xa + ': voz em ' + xl);
+      } }
+      ok('X1 teleprompter: ler PT/ouvir PT, ler PT/ouvir EN, ler EN/ouvir PT, ler EN/ouvir EN (linha grande no idioma de leitura, voz no de áudio, o outro idioma embaixo)', xfal.length === 0, xfal.join(' | '));
+      // troca ao vivo: com a narração tocando, mudar Ouvir e Ler muda a voz e a linha na hora
+      idoc().getElementById('lb-tele-read-pt').click(); idoc().getElementById('lb-tele-listen-en').click();
+      await until(function () { return D().state.readLang === 'pt' && D().state.audioLang === 'en'; }, 10000);
+      xl = null; D().startTts(0, 0); await until(function () { return xl === 'en' && D().tts.playing; }, 20000);
+      idoc().getElementById('lb-tele-listen-pt').click();
+      await until(function () { return xl === 'pt' && D().tts.playing; }, 20000);
+      var xv1 = xl;
+      idoc().getElementById('lb-tele-read-en').click();
+      await until(function () { return !/^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent) && /^\[pt\]/.test(idoc().getElementById('lb-tele-sub').textContent); }, 20000);
+      ok('X2 com a narração tocando, trocar Ouvir muda a voz na hora e trocar Ler muda a linha na hora, sem parar o modo', xv1 === 'pt' && D().tts.playing && !/^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent));      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
