@@ -10,10 +10,12 @@
     const L = {
         pt: { h: 'SEU PROGRESSO', streak: 'sequência', day: 'dia', days: 'dias', today: 'hoje', min: 'min de estudo', heard: 'palavras ouvidas', saved: 'palavras salvas',
               rev: 'revisões', dict: 'ditados', week: 'Últimos 7 dias (minutos)', total: 'Total', none: 'Comece a ler ou ouvir um texto: seu progresso aparece aqui.',
-              wd: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'] },
+              wd: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+              reset: 'Zerar estatísticas', ask: 'Zerar minutos de estudo, sequência de dias, palavras ouvidas e o histórico de livros lidos? A posição de leitura, os livros e as palavras salvas não mudam.', yes: 'Sim, zerar', no: 'Cancelar' },
         en: { h: 'YOUR PROGRESS', streak: 'streak', day: 'day', days: 'days', today: 'today', min: 'min studied', heard: 'words heard', saved: 'words saved',
               rev: 'reviews', dict: 'dictations', week: 'Last 7 days (minutes)', total: 'Total', none: 'Start reading or listening to a text: your progress shows up here.',
-              wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] }
+              wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              reset: 'Reset statistics', ask: 'Reset study minutes, day streak, words heard and the history of books read? Your reading position, books and saved words stay as they are.', yes: 'Yes, reset', no: 'Cancel' }
     };
     const t = (k) => L[D.state.readLang][k];
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
@@ -45,6 +47,7 @@
     }, 1000);
     setInterval(save, 10000);
     window.addEventListener('pagehide', save);
+    window.addEventListener('beforeunload', save);
     document.addEventListener('visibilitychange', save);
 
     D.on('heard', (e) => add('heard', e.words || 0));
@@ -57,7 +60,36 @@
     const h2 = el('h2'); h2.id = 'lb-h-prog';
     const tiles = el('div', 'lb-prog-tiles');
     const chart = el('div', 'lb-prog-chart');
-    sec.append(h2, tiles, chart);
+    // zerar: só estatísticas (log de estudo, palavras ouvidas por livro, histórico do roteiro); posição, livros e palavras salvas ficam
+    const actions = el('div', 'lb-prog-actions'); actions.id = 'lb-prog-actions'; actions.hidden = true;
+    const bReset = el('button', 'lb-btn', ''); bReset.type = 'button'; bReset.id = 'lb-prog-reset';
+    const ask = el('div', 'lb-prog-ask'); ask.hidden = true; ask.id = 'lb-prog-ask';
+    const askText = el('p', 'lb-note'), bYes = el('button', 'lb-btn lb-primary', ''), bNo = el('button', 'lb-btn', '');
+    bYes.type = 'button'; bYes.id = 'lb-prog-reset-yes'; bNo.type = 'button'; bNo.id = 'lb-prog-reset-no';
+    ask.append(askText, bYes, bNo); actions.append(bReset, ask);
+    bReset.addEventListener('click', () => { ask.hidden = false; bReset.hidden = true; });
+    bNo.addEventListener('click', () => { ask.hidden = true; bReset.hidden = false; });
+    async function resetAll() {
+        log = { d: {} }; dirty = true; save();
+        try {
+            const metas = await D.db.all('meta');
+            for (const m of metas) { if (m.heard) { m.heard = 0; m.savedAt = Date.now(); await D.db.put('meta', m); } }
+            if (D.doc) D.doc.heard = 0;
+        } catch (e) { /* sem banco */ }
+        try { localStorage.removeItem('dd-ingles-semana-hist'); localStorage.removeItem('dd-ingles-sessao'); } catch (e) { /* ignora */ }
+        ask.hidden = true; bReset.hidden = false;
+        D.emit('stats-reset');
+        render();
+    }
+    bYes.addEventListener('click', resetAll);
+    async function updReset() {
+        bReset.textContent = t('reset'); askText.textContent = t('ask'); bYes.textContent = t('yes'); bNo.textContent = t('no');
+        let any = Object.keys(log.d).some((k) => active(log.d[k]));
+        if (!any) { try { any = (await D.db.all('meta')).some((m) => m.heard > 0); } catch (e) { /* ignora */ } }
+        if (!any) { try { any = JSON.parse(localStorage.getItem('dd-ingles-semana-hist') || '[]').length > 0; } catch (e) { /* ignora */ } }
+        actions.hidden = !any;
+    }
+    sec.append(h2, tiles, chart, actions);
     const anchor = D.$('lb-vocab') || D.$('lb-h-engine');
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
 
@@ -65,6 +97,7 @@
     const tile = (big, small) => { const x = el('div', 'lb-tile'); x.append(el('div', 'lb-tile-big', big), el('div', 'lb-tile-small', small)); return x; };
     function render() {
         save();
+        updReset();
         h2.textContent = t('h');
         const td = log.d[dayKey()] || { sec: 0, heard: 0, saved: 0, rev: 0, dict: 0 };
         const all = Object.keys(log.d).map((k) => log.d[k]);
@@ -96,5 +129,5 @@
     }
     D.on('close', render); D.on('lang', render); D.on('imported', () => {});
     render();
-    window.__ddProg = { add, streak, render, dayKey, get log() { return log; } };
+    window.__ddProg = { add, streak, render, dayKey, get log() { return log; }, resetAll };
 })();

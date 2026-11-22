@@ -469,7 +469,7 @@ $test = @'
       var w1 = idoc().body.getBoundingClientRect().width;
       msel.value = 'wide'; msel.dispatchEvent(new Event('change')); await wait(150);
       var w2 = idoc().body.getBoundingClientRect().width;
-      ok('M3 coluna larga: o cartão de leitura fica mais largo e a escolha é guardada', idoc().body.classList.contains('lb-wide-open') && w2 > w1 + 10 && w2 <= idoc().documentElement.clientWidth && W().localStorage.getItem('dd-ingles-modo') === 'wide', Math.round(w1) + ' px -> ' + Math.round(w2) + ' px');
+      ok('M3 coluna larga: o cartão de leitura fica mais largo e a escolha é guardada', idoc().body.classList.contains('lb-wide-open') && (idoc().documentElement.clientWidth < 1200 ? w2 >= w1 : w2 > w1 + 40) && w2 <= idoc().documentElement.clientWidth && W().localStorage.getItem('dd-ingles-modo') === 'wide', Math.round(w1) + ' px -> ' + Math.round(w2) + ' px');
       msel.value = 'side'; msel.dispatchEvent(new Event('change'));
       await until(function () { return idoc().querySelectorAll('.lb-col-tr:not(.pending)').length >= 2; }, 15000);
       var s1 = idoc().querySelector('.lb-para:not(.lb-head)');
@@ -488,7 +488,40 @@ $test = @'
       msel.value = 'single'; msel.dispatchEvent(new Event('change')); await wait(300);
       ok('M9 sair do modo foco reabre o menu do site e esconde o painel', !document.getElementById('sidebar').classList.contains('collapsed') && !/lb-focus-open/.test(idoc().body.className) && idoc().getElementById('lb-focus-panel').getBoundingClientRect().width === 0);
       W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-modo');
-      D().$('lb-back').click(); await wait(200);      // ==== PROXIMAS ====
+      D().$('lb-back').click(); await wait(200);      // ===================== N. gravar a leitura ao fechar a aba e zerar estatísticas =====================
+      var nbook = [1, 2, 3, 4, 5, 6, 7, 8].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');
+      await D().addText('Salvar leitura teste', nbook);
+      await until(function () { return D().doc && D().doc.title === 'Salvar leitura teste'; }, 20000);
+      var nid2 = D().doc.id; await wait(700);   // deixa o evento de rolagem da abertura terminar
+      D().doc.pos = 4; D().doc.heard = 120;
+      Object.defineProperty(W().document, 'visibilityState', { get: function () { return 'hidden'; }, configurable: true });
+      W().document.dispatchEvent(new (W().Event)('visibilitychange'));
+      Object.defineProperty(W().document, 'visibilityState', { get: function () { return 'visible'; }, configurable: true });
+      await wait(400);
+      var mir = JSON.parse(W().localStorage.getItem('dd-ingles-sessao') || 'null'), mdb = await D().db.get('meta', nid2);
+      ok('N1 ao ocultar ou fechar a aba, a posição e as palavras ouvidas são gravadas na hora (espelho síncrono e banco)', !!mir && mir.id === nid2 && mir.pos === 4 && mir.heard === 120 && mdb.pos === 4 && mdb.heard === 120 && mdb.savedAt > 0, JSON.stringify(mir));
+      D().$('lb-back').click(); await wait(250);
+      var mold = await D().db.get('meta', nid2); mold.pos = 1; mold.heard = 10; mold.savedAt = 1000; await D().db.put('meta', mold);
+      await D().openDoc(nid2); await until(function () { return D().doc && D().doc.id === nid2; }, 5000);
+      ok('N2 se o banco ficou para trás (aba fechada antes de gravar), ao reabrir vale o espelho mais novo', D().doc.pos === 4 && D().doc.heard === 120, 'pos=' + D().doc.pos + ' ouvidas=' + D().doc.heard);
+      D().$('lb-back').click(); await wait(250);
+      W().__ddProg.add('sec', 600); W().__ddProg.add('heard', 300); W().__ddProg.render();
+      var mh = await D().db.get('meta', nid2); mh.heard = 500; mh.pos = 5; await D().db.put('meta', mh);
+      W().localStorage.setItem('dd-ingles-semana-hist', JSON.stringify([{ slug: 'x', days: 3 }]));
+      var vBefore = (await D().db.all('vocab')).length, dBefore = (await D().db.all('meta')).length;
+      W().__ddProg.render();
+      await until(function () { return idoc().getElementById('lb-prog-actions') && !idoc().getElementById('lb-prog-actions').hidden; }, 5000);
+      ok('N3 o botão Zerar estatísticas aparece quando há o que zerar', !!idoc().getElementById('lb-prog-reset') && !idoc().getElementById('lb-prog-actions').hidden && /Zerar estatísticas/.test(idoc().getElementById('lb-prog-reset').textContent));
+      idoc().getElementById('lb-prog-reset').click();
+      ok('N4 pede confirmação explicando o que será zerado e o que fica, e cancelar não apaga nada', !idoc().getElementById('lb-prog-ask').hidden && /posição de leitura/.test(idoc().getElementById('lb-prog-ask').textContent) && Object.keys(W().__ddProg.log.d).length > 0);
+      idoc().getElementById('lb-prog-reset-no').click();
+      ok('N4b cancelar volta ao botão e mantém as estatísticas', idoc().getElementById('lb-prog-ask').hidden && !idoc().getElementById('lb-prog-reset').hidden && Object.keys(W().__ddProg.log.d).length > 0);
+      idoc().getElementById('lb-prog-reset').click(); idoc().getElementById('lb-prog-reset-yes').click();
+      var mz = await D().db.get('meta', nid2);
+      for (var rt = 0; rt < 60 && mz.heard !== 0; rt++) { await wait(100); mz = await D().db.get('meta', nid2); }   // espera o banco terminar de gravar (o IndexedDB não anda com o tempo virtual)
+      await until(function () { return Object.keys(W().__ddProg.log.d).length === 0; }, 5000);
+      ok('N5 zerar apaga minutos, palavras ouvidas, contadores dos livros e histórico, e mantém posição, livros e palavras salvas', Object.keys(JSON.parse(W().localStorage.getItem('dd-ingles-log')).d).length === 0 && mz.heard === 0 && mz.pos === 5 && W().localStorage.getItem('dd-ingles-semana-hist') === null && W().localStorage.getItem('dd-ingles-sessao') === null && (await D().db.all('vocab')).length === vBefore && (await D().db.all('meta')).length === dBefore, 'ouvidas=' + mz.heard + ' pos=' + mz.pos);
+      ok('N6 depois de zerar o botão some e o painel volta ao convite inicial', idoc().getElementById('lb-prog-actions').hidden && /Comece a ler/.test(idoc().getElementById('lb-prog').textContent));      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

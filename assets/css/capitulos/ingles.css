@@ -237,3 +237,8 @@ body.lb-focus-open #lb-reader > .lb-focus-panel { display: block; grid-column: 2
     body.lb-focus-open #lb-reader { display: block; }
     body.lb-focus-open .lb-focus-panel { display: none; }
 }
+
+/* zerar estatísticas */
+.lb-prog-actions { margin-top: 12px; }
+.lb-prog-ask { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lb-prog-ask p { flex: 1 1 100%; margin: 0; }

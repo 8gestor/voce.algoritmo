@@ -211,7 +211,7 @@
         }
         body.appendChild(roteiroList(plan, metas, true));
     }
-    D.on('close', render); D.on('lang', render); D.on('imported', render);
+    D.on('close', render); D.on('lang', render); D.on('imported', render); D.on('stats-reset', render);
     render();
     // estado do plano para o livro aberto (painel do modo foco): cota de hoje e palavras lidas hoje; null se não há plano para ele
     async function status(docId, pos) {

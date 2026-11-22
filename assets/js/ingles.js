@@ -474,12 +474,18 @@
         return new Promise((res) => { (waiters[i] = waiters[i] || []).push(res); pump(); });
     }
 
+    // Espelho síncrono da leitura em andamento (localStorage): o banco grava de forma assíncrona e pode ser cortado se a aba fechar.
+    // Ao reabrir o livro, vale o mais recente entre o banco (meta.savedAt) e o espelho.
+    const MIRROR = 'dd-ingles-sessao';
+    function mirror() { if (!doc) return; try { localStorage.setItem(MIRROR, JSON.stringify({ id: doc.id, pos: doc.pos || 0, heard: doc.heard || 0, t: Date.now() })); } catch (e) { /* sem storage */ } }
+    function flush() { mirror(); saveMeta(); }
     function scheduleMetaSave() {
+        mirror();
         clearTimeout(trSaveTimer);
         trSaveTimer = setTimeout(saveMeta, 1500);
     }
     function metaOf() {
-        return { id: doc.id, title: doc.title, lang: doc.lang, pages: doc.pages, sentences: doc.sentences, words: doc.words, added: doc.added, trDone: trCount(), trTotal: doc.paras.length, pos: doc.pos, heard: doc.heard || 0, lastOpened: doc.lastOpened || 0, x: doc.x || {} };
+        return { id: doc.id, title: doc.title, lang: doc.lang, pages: doc.pages, sentences: doc.sentences, words: doc.words, added: doc.added, trDone: trCount(), trTotal: doc.paras.length, pos: doc.pos, heard: doc.heard || 0, lastOpened: doc.lastOpened || 0, x: doc.x || {}, savedAt: Date.now() };
     }
     function saveMeta() { if (doc && persist) dbPut('meta', metaOf()).catch(() => {}); }
 
@@ -1002,7 +1008,13 @@
             const src = d.paras[i] && d.paras[i].s;
             if (!src || src.every((s, k) => tr[i][k] === s && /\p{L}{3}/u.test(s))) { delete tr[i]; if (persist) dbDel('tr', id + ':' + i).catch(() => {}); }
         });
-        enterDoc({ id, title: m.title, lang: d.lang, pages: m.pages, paras: d.paras, tr, words: m.words, sentences: m.sentences, added: m.added, pos: m.pos || 0, heard: m.heard || 0, lastOpened: m.lastOpened || 0, x: m.x || {} });
+        let pos = m.pos || 0, heard = m.heard || 0, restored = false;
+        try {   // o espelho mais novo que o banco (aba fechada antes de gravar) vale mais
+            const s = JSON.parse(localStorage.getItem(MIRROR) || 'null');
+            if (s && s.id === id && s.t > (m.savedAt || 0)) { pos = Math.max(0, Math.min((s.pos | 0), d.paras.length - 1)); heard = Math.max(heard, s.heard || 0); restored = pos !== (m.pos || 0) || heard !== (m.heard || 0); }
+        } catch (e) { /* espelho inválido */ }
+        enterDoc({ id, title: m.title, lang: d.lang, pages: m.pages, paras: d.paras, tr, words: m.words, sentences: m.sentences, added: m.added, pos, heard, lastOpened: m.lastOpened || 0, x: m.x || {} });
+        if (restored) saveMeta();
     }
 
     function enterDoc(d) {
@@ -1120,7 +1132,10 @@
         if (d.type === 'rate') { const v = Number(d.value); if (v > 0 && v !== state.rate) { state.rate = v; restartCurrent(); } }
         if (d.type === 'tts-toggle') { if (tts.playing) stopTts(); else if (doc) startTts(); }
     });
-    window.addEventListener('pagehide', () => { stopTts(); saveMeta(); });
+    // gravar ao sair, ao ocultar a aba (celular, troca de aba) e antes de descarregar a página
+    window.addEventListener('pagehide', () => { stopTts(); flush(); });
+    window.addEventListener('beforeunload', flush);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
     if (synth) { synth.getVoices(); synth.addEventListener && synth.addEventListener('voiceschanged', renderVoice); }
 
     applyUi();
@@ -1148,7 +1163,7 @@
         state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },
-        renderDocs, setStatus, ensureTr, setMode, MODES, repaintAll, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
+        renderDocs, setStatus, ensureTr, flush, setMode, MODES, repaintAll, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
     };
 
     // gancho de teste
