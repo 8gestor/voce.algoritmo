@@ -1,7 +1,7 @@
 /*
  * ingles-teleprompter.js — modo de leitura Teleprompter: uma LEGENDA CORRIDA, como as de TV e cinema.
  * - A linha grande mostra a frase no idioma de LEITURA ("Ler") e corre da direita para a esquerda: a frase nova entra pela direita e a palavra
- *   falada fica sempre no ponto de leitura (centro da tela, 50% da largura), destacada, em sincronia com a narração.
+ *   falada fica sempre no ponto de leitura (um pouco à direita do centro, 62% da largura), destacada, em sincronia com a narração.
  * - A narração fala no idioma de ÁUDIO ("Ouvir"), que pode ser outro: ler em português e ouvir em inglês, ou o contrário. Como o texto da
  *   linha e o texto falado têm tamanhos diferentes, a posição da palavra falada é mapeada proporcionalmente (igual ao texto corrido).
  * - Embaixo, em letra menor, a frase no outro idioma (o que se ouve, ou a tradução).
@@ -15,7 +15,7 @@
     'use strict';
     const D = window.DDLab;
     if (!D || !D.setMode) return;
-    const KEY = 'dd-ingles-tele-size', RATES = [0.75, 1, 1.25, 1.5], READ_AT = 0.5;
+    const KEY = 'dd-ingles-tele-size', RATES = [0.75, 1, 1.25, 1.5], READ_AT = 0.62;
     const L = {
         pt: { prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Letra menor', bigger: 'Letra maior', exit: 'Sair do teleprompter', wait: 'traduzindo…', read: 'Ler', listen: 'Ouvir', count: (a, b, p) => 'Frase ' + a + ' de ' + b + ' · ' + p + '%', group: 'Teleprompter' },
         en: { prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Bigger text', exit: 'Leave the teleprompter', wait: 'translating…', read: 'Read', listen: 'Listen', count: (a, b, p) => 'Sentence ' + a + ' of ' + b + ' · ' + p + '%', group: 'Teleprompter' }
@@ -223,7 +223,7 @@
     D.on('wordpos', (ev) => {
         if (!active() || !words.length || !spoken || spoken.text !== ev.text) return;
         const text = track.dataset.text || '';
-        const pos = text === ev.text ? ev.ci : (ev.ci / Math.max(1, ev.len || ev.text.length)) * text.length;   // outro idioma: posição proporcional
+        const pos = text === ev.text ? ev.ci : (D.mapPos ? D.mapPos(ev.text, ev.ci, text, ev.lang || D.state.audioLang) : (ev.ci / Math.max(1, ev.len || ev.text.length)) * text.length);   // outro idioma: alinhamento palavra a palavra
         let k = 0;
         while (k < words.length - 1 && words[k].e <= pos) k++;
         mark(k);

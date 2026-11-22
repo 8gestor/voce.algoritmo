@@ -803,13 +803,14 @@
         if (r.top < 90 || r.bottom > window.innerHeight - 110) el.scrollIntoView({ block: 'center', behavior: state.mode === 'tele' ? 'auto' : 'smooth' });   // no teleprompter o texto está coberto: rolagem suave só competiria com a animação da legenda
     }
     // charIndex dentro do texto falado -> palavra da frase na tela (mesma posição, ou proporcional se o idioma da tela é outro)
-    function setWordAt(charIndex, len, spokenText) {
+    function setWordAt(charIndex, len, spokenText, spokenLang) {
         const sp = curSpan();
         if (!sp || !len) return;
         const words = wrapWords(sp);
         if (!words.length) return;
         const D = sp._orig.length;
-        const pos = sp._orig === spokenText ? charIndex : (charIndex / len) * D;
+        // idioma da tela diferente do falado: alinha palavra a palavra (adjetivo e substantivo trocam de lugar), senão proporcional
+        const pos = sp._orig === spokenText ? charIndex : (window.DDLab && window.DDLab.mapPos ? window.DDLab.mapPos(spokenText, charIndex, sp._orig, spokenLang) : (charIndex / len) * D);
         let k = 0;
         while (k < words.length - 1 && words[k].e <= pos) k++;
         if (k === tts.word) return;
@@ -878,7 +879,7 @@
             if (resume && resume.p === c.p && resume.s === c.s && resume.text === piece.text) { off = piece.text.lastIndexOf(' ', Math.max(0, resume.ci - 1)) + 1; }
             resume = null;
             let lastCi = off;
-            const r = await speakOne(off ? piece.text.slice(off) : piece.text, piece.lang, (ci, len) => { if (token === tts.token) { lastCi = ci + off; setWordAt(lastCi, piece.text.length, piece.text); emit('wordpos', { ci: lastCi, len: piece.text.length, text: piece.text }); } }, () => nextPiece(c.p, c.s));
+            const r = await speakOne(off ? piece.text.slice(off) : piece.text, piece.lang, (ci, len) => { if (token === tts.token) { lastCi = ci + off; setWordAt(lastCi, piece.text.length, piece.text, piece.lang); emit('wordpos', { ci: lastCi, len: piece.text.length, text: piece.text, lang: piece.lang }); } }, () => nextPiece(c.p, c.s));
             if (token !== tts.token) return;
             if (r === 'end') { const hw = piece.text.split(/\s+/).length; doc.heard = (doc.heard || 0) + hw; scheduleMetaSave(); emit('heard', { words: hw, p: c.p, s: c.s }); }
             if (r === 'restart') { resume = { p: c.p, s: c.s, text: piece.text, ci: lastCi }; continue; }

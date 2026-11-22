@@ -707,7 +707,7 @@ $test = @'
       var utx1 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
       D().emit('wordpos', { ci: Math.floor(uen.length * 0.9), len: uen.length, text: uen }); await wait(100);
       var utx2 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
-      ok('U6 a linha corre da direita para a esquerda: avançar a voz move o texto para a esquerda, mantendo a palavra no ponto de leitura', utx2 < utx1 && idoc().querySelector('.tl-head').style.left === '50%', utx1 + ' -> ' + utx2);
+      ok('U6 a linha corre da direita para a esquerda: avançar a voz move o texto para a esquerda, mantendo a palavra no ponto de leitura', utx2 < utx1 && idoc().querySelector('.tl-head').style.left === '62%', utx1 + ' -> ' + utx2);
       var upre = idoc().querySelector('#lb-tele-line .tl-nx'), upreOk = !!upre && /^\[pt\]/.test(upre.textContent);
       D().emit('sentence', { p: 0, s: 1 });
       var uenter = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10), uvw = idoc().querySelector('#lb-tele .tl-view').clientWidth;
@@ -856,7 +856,7 @@ $test = @'
         if (!znow) { zerr.push('sem palavra em ' + zi); continue; }
         var zr = znow.getBoundingClientRect(), zv = zview.getBoundingClientRect();
         var znext = idoc().querySelectorAll('#lb-tele-line .tl-w')[zk + 1], zstep = znext ? Math.abs((znext.getBoundingClientRect().left + znext.getBoundingClientRect().width / 2) - (zr.left + zr.width / 2)) / 2 : 0;
-        zerr.push(Math.max(0, Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.5)) - zstep));      // a linha mira o meio caminho até a próxima palavra: o erro é o que passa dessa meia passada
+        zerr.push(Math.max(0, Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.62)) - zstep));      // a linha mira o meio caminho até a próxima palavra: o erro é o que passa dessa meia passada
       }
       var zmax = Math.max.apply(null, zerr.filter(function (x) { return typeof x === 'number'; }));
       ok('Z1 a palavra falada fica sempre no ponto de leitura (erro máximo de centragem em px) e o destaque nunca volta atrás, com voz em um idioma e legenda em outro', zerr.length > 8 && zerr.every(function (x) { return typeof x === 'number'; }) && zmax <= 2 && zmono, 'palavras=' + zerr.length + ' erro máx=' + zmax.toFixed(2) + 'px monótono=' + zmono);
@@ -933,6 +933,40 @@ $test = @'
       var ymono = true; for (var yi = 1; yi < ynb.length; yi++) if (ynb[yi] < ynb[yi - 1]) ymono = false;
       ok('Y3 sem evento de palavra da voz, o destaque avança por estimativa, sem voltar atrás e chegando perto do fim da frase', ymono && ynb.slice(-1)[0] > yfull.length * 0.6, 'avanços=' + ynb.length + ' último=' + ynb.slice(-1)[0] + '/' + yfull.length);
       D().stopTts(); await wait(300);
+      D().$('lb-back').click(); await wait(300);
+      // ===================== A. alinhamento de palavras entre idiomas (ordem diferente: laborious diligence = diligência laboriosa) =====================
+      var aen = 'The laborious diligence of the old merchant wins every single day.', apt = 'A diligência laboriosa do velho comerciante vence todos os dias.';
+      var aat = function (txt, w) { return txt.indexOf(w); };
+      var aEnPt = function (w) { return D().mapPos(aen, aen.indexOf(w), apt, 'en'); }, aPtEn = function (w) { return D().mapPos(apt, apt.indexOf(w), aen, 'pt'); };
+      ok('AL1 EN falado, PT na tela: "laborious" cai em "laboriosa" e "diligence" em "diligência" (adjetivo e substantivo trocados)', aEnPt('laborious') === aat(apt, 'laboriosa') && aEnPt('diligence') === aat(apt, 'diligência') && aEnPt('merchant') === aat(apt, 'comerciante'), 'laborious->' + aEnPt('laborious') + ' (esperado ' + aat(apt, 'laboriosa') + ') diligence->' + aEnPt('diligence') + ' (esperado ' + aat(apt, 'diligência') + ') merchant->' + aEnPt('merchant') + ' (esperado ' + aat(apt, 'comerciante') + ')');
+      ok('AL2 PT falado, EN na tela: "diligência" cai em "diligence" e "laboriosa" em "laborious"', aPtEn('diligência') === aat(aen, 'diligence') && aPtEn('laboriosa') === aat(aen, 'laborious') && aPtEn('comerciante') === aat(aen, 'merchant'), 'diligência->' + aPtEn('diligência') + ' (esperado ' + aat(aen, 'diligence') + ') laboriosa->' + aPtEn('laboriosa') + ' (esperado ' + aat(aen, 'laborious') + ')');
+      var aord = true, alast = -1; aen.replace(/[A-Za-z]+/g, function (m0, off) { var q = D().mapPos(aen, off, apt, 'en'); if (q < alast - 20) aord = false; alast = Math.max(alast, q); return m0; });
+      ok('AL3 o resto da frase segue em ordem (sem saltos para trás além da troca das vizinhas)', aord);
+      // ponta a ponta no teleprompter: a palavra acesa é a certa quando a voz diz "diligence"
+      await D().addText('Alinhar teste', aen + '\n\n' + aen);
+      await until(function () { return D().doc && D().doc.title === 'Alinhar teste'; }, 20000);
+      await wait(600);
+      D().doc.tr[0] = [apt]; D().doc.tr[1] = [apt];
+      post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      D().setMode('tele');
+      await until(function () { return /^A dilig/.test((idoc().getElementById('lb-tele-line').dataset || {}).text || ''); }, 30000);
+      D().stopTts();
+      D().emit('piece', { p: 0, s: 0, text: aen, lang: 'en' });
+      var ahit = {};
+      ['laborious', 'diligence', 'merchant'].forEach(function (w) {
+        D().emit('wordpos', { ci: aen.indexOf(w), len: aen.length, text: aen, lang: 'en' });
+        var nw = idoc().querySelector('#lb-tele-line .tl-w.now'); ahit[w] = nw ? nw.textContent : null;
+      });
+      ok('AL4 no teleprompter, quando a voz diz "laborious" acende "laboriosa", em "diligence" acende "diligência" e em "merchant" acende "comerciante"', ahit.laborious === 'laboriosa' && ahit.diligence === 'diligência' && ahit.merchant === 'comerciante', JSON.stringify(ahit));
+      // palavras sem parentesco de grafia (big = grande): o alinhamento usa a tradução da palavra solta pelo tradutor local
+      var tdict = { house: 'casa', stands: 'fica', here: 'aqui', today: 'hoje', big: 'grande' }, tOrig = D().translateText;
+      D().translateText = async function (w) { return tdict[w] || null; };
+      var ben = 'The big house stands here today.', bpt = 'A casa grande fica aqui hoje.';
+      var bBefore = D().mapPos(ben, ben.indexOf('big'), bpt, 'en');
+      await D().alignPrepare(ben, 'en');
+      var bBig = D().mapPos(ben, ben.indexOf('big'), bpt, 'en'), bHouse = D().mapPos(ben, ben.indexOf('house'), bpt, 'en');
+      D().translateText = tOrig;
+      ok('AL5 palavras sem parentesco de grafia: com a tradução da palavra solta, big cai em grande e house em casa', bBig === bpt.indexOf('grande') && bHouse === bpt.indexOf('casa'), 'antes=' + bBefore + ' big->' + bBig + ' (esperado ' + bpt.indexOf('grande') + ') house->' + bHouse + ' (esperado ' + bpt.indexOf('casa') + ')');      D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
       ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);
