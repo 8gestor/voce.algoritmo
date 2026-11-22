@@ -1057,13 +1057,79 @@ $test = @'
       ok('TC3 mostra o tempo usado, a média para concluir e o que falta, com o ritmo em palavras por minuto', /(usado|used) \d+:\d\d \/ (média|average)/.test(tcT1) && /(faltam|left) .*min/.test(tcv('lb-tele-time-2')) && /\d+ (palavras\/min|wpm)/.test(tcv('lb-tele-time-2')), tcT1 + ' | ' + tcv('lb-tele-time-2'));
       ok('TC4 mostra o que se trabalha agora: lendo e ouvindo, idiomas de leitura e de escuta, livro e frase', /(Lendo e ouvindo)/.test(tcN1) && /PT/.test(tcN1) && /EN/.test(tcN1) && /Andamento teste/.test(tcN2) && /frase \d+\/\d+/.test(tcN2), tcN1 + ' | ' + tcN2);
       D().stopTts(); await wait(1500);
-      var tcUsed1 = tcv('lb-tele-time').match(/(\d+):(\d\d)/); await wait(3200);
+      var tcSecs = function () { var m0 = tcv('lb-tele-time').match(/(\d+):(\d\d)/); return m0 ? +m0[1] * 60 + +m0[2] : -1; }; var tcBase = tcSecs(); var tcUsed1 = tcv('lb-tele-time').match(/(\d+):(\d\d)/);
+      await until(function () { return tcSecs() > tcBase; }, 60000);
       var tcUsed2 = tcv('lb-tele-time').match(/(\d+):(\d\d)/);
       var tcS1 = tcUsed1 ? +tcUsed1[1] * 60 + +tcUsed1[2] : -1, tcS2 = tcUsed2 ? +tcUsed2[1] * 60 + +tcUsed2[2] : -1;
       ok('TC5 o tempo usado corre enquanto o leitor está na tarefa (mesmo parado, com atividade recente)', tcS2 > tcS1, tcS1 + 's -> ' + tcS2 + 's');
       ok('TC6 o tempo usado fica guardado para o livro (continua na próxima vez)', !!W().localStorage.getItem('dd-ingles-tele-tempo'));
       D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
-      D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
+      D().$('lb-back').click(); await wait(300);
+      // ===================== SY. sincronização do progresso entre aparelhos (nuvem simulada) =====================
+      var syS = W().DDLab.sync;
+      W().DD_SYNC = { url: '', key: '' }; D().emit('lang', D().state.readLang); await wait(100);      // o site tem a configuração real; o teste começa sem ela
+      ok('SY1 a tela Conta e sincronização existe na Biblioteca e, sem configuração, diz que a sincronização não está ativada (o site segue normal)', !!idoc().getElementById('lb-sync') && idoc().getElementById('lb-sync').dataset.state !== undefined && /(ainda não foi ativada|has not been turned on)/.test(idoc().getElementById('lb-sync').textContent) && idoc().getElementById('lb-sync-email').hidden, idoc().getElementById('lb-sync').dataset.state);
+      var ma = syS.merge({ log: { d: { '2026-01-01': { sec: 100, heard: 5 } } }, vocab: [{ id: 'en:a', reps: 1 }, { id: 'en:b', reps: 4 }], semHist: [{ n: 1 }], escrita: [{ date: 'x', title: 't', text: 'um' }], docs: { 'livro|en': { title: 'Livro', lang: 'en', pos: 10, heard: 50, savedAt: 100 } } },
+                         { log: { d: { '2026-01-01': { sec: 80, heard: 9 }, '2026-01-02': { sec: 30 } } }, vocab: [{ id: 'en:a', reps: 3 }, { id: 'en:b', reps: 2 }, { id: 'en:c', reps: 0 }], semHist: [{ n: 1 }, { n: 2 }], escrita: [{ date: 'x', title: 't', text: 'um' }, { date: 'y', title: 't', text: 'dois' }], docs: { 'livro|en': { title: 'Livro', lang: 'en', pos: 70, heard: 20, savedAt: 200 } } });
+      var mv = {}; ma.vocab.forEach(function (c) { mv[c.id] = c.reps; });
+      ok('SY2 mesclar não perde nada: dia/campo = maior valor, cartão = o mais revisado, listas = união, livro = posição mais recente com o maior número de palavras ouvidas', ma.log.d['2026-01-01'].sec === 100 && ma.log.d['2026-01-01'].heard === 9 && ma.log.d['2026-01-02'].sec === 30 && mv['en:a'] === 3 && mv['en:b'] === 4 && mv['en:c'] === 0 && ma.semHist.length === 2 && ma.escrita.length === 2 && ma.docs['livro|en'].pos === 70 && ma.docs['livro|en'].heard === 50, JSON.stringify([ma.log.d['2026-01-01'], mv, ma.docs['livro|en']]));
+      // nuvem simulada (Supabase): login por código, uma linha por pessoa, gravação condicionada ao updated_at
+      var srv = { row: null, calls: [], bump: false }, syW = W();
+      var syMk = function (status, body) { return { ok: status >= 200 && status < 300, status: status, json: async function () { if (body === undefined) throw new Error('vazio'); return body; } }; };
+      syW.fetch = async function (url, opt) {
+        var u = new URL(url), p = u.pathname, m = (opt && opt.method) || 'GET', b = opt && opt.body ? JSON.parse(opt.body) : null;
+        srv.calls.push(m + ' ' + p);
+        if (p === '/auth/v1/otp') return syMk(200, {});
+        if (p === '/auth/v1/verify') return b.token === '123456' ? syMk(200, { access_token: 'A1', refresh_token: 'R1', expires_in: 3600, user: { id: 'u1', email: b.email } }) : syMk(400, { msg: 'bad' });
+        if (p === '/rest/v1/progress') {
+          if (m === 'GET') return syMk(200, srv.row ? [{ data: srv.row.data, updated_at: srv.row.updated_at }] : []);
+          if (m === 'POST') { if (srv.row) return syMk(409, {}); srv.row = { data: b.data, updated_at: b.updated_at }; return syMk(201); }
+          if (m === 'PATCH') {
+            var want = u.searchParams.get('updated_at').replace(/^eq\./, '');
+            if (srv.bump) { srv.bump = false; srv.row.updated_at = '2099-01-01T00:00:00.000Z'; return syMk(200, []); }
+            if (!srv.row || srv.row.updated_at !== want) return syMk(200, []);
+            srv.row = { data: b.data, updated_at: b.updated_at }; return syMk(200, [srv.row]);
+          }
+        }
+        return syMk(404, {});
+      };
+      syW.DD_SYNC = { url: 'https://mock.supabase.test', key: 'anon-public-key' };
+      // dados locais para subir
+      await D().db.put('vocab', { id: 'en:syncword', word: 'syncword', lang: 'en', reps: 2, lapses: 0, due: 1, ivl: 3, ease: 2.5, added: 1 });
+      syW.localStorage.setItem('dd-ingles-log', JSON.stringify({ d: { '2026-02-01': { sec: 300, heard: 40, saved: 1, rev: 2, dict: 0, rd: 100, ls: 200 } } }));
+      D().emit('lang', D().state.readLang); await wait(100);
+      var syEmail = idoc().getElementById('lb-sync-email'), syCode = idoc().getElementById('lb-sync-code');
+      ok('SY3 com a configuração presente, aparece o campo de e-mail para entrar', !syEmail.hidden && idoc().getElementById('lb-sync').dataset.state === 'out');
+      syEmail.value = 'leitor@example.com'; idoc().getElementById('lb-sync-send').click();
+      await until(function () { return !idoc().getElementById('lb-sync-code').hidden; }, 60000);
+      ok('SY4 enviar o código chama o login por código e abre o campo do código', srv.calls.indexOf('POST /auth/v1/otp') >= 0 && !syCode.hidden);
+      syCode.value = '000000'; idoc().getElementById('lb-sync-enter').click();
+      await until(function () { return /(inválido|Invalid)/.test(idoc().getElementById('lb-sync').textContent); }, 60000);
+      syCode.value = '123456'; idoc().getElementById('lb-sync-enter').click();
+      await until(function () { return srv.row !== null; }, 90000);
+      var up = srv.row.data;
+      ok('SY5 código errado é recusado; o certo entra e o progresso local sobe para a nuvem (estatísticas e vocabulário), sem o texto dos livros', /(Conectado|Signed in)/.test(idoc().getElementById('lb-sync').textContent) && up.log.d['2026-02-01'].sec === 300 && up.vocab.some(function (c) { return c.id === 'en:syncword'; }) && !JSON.stringify(up).match(/laborious diligence|Setas teste.*text/) && !('paras' in up) && Object.keys(up.docs).length > 0, Object.keys(up).join(','));
+      // outro aparelho gravou na nuvem: dia com mais tempo, cartão novo e posição mais recente de um livro
+      var metas = await D().db.all('meta'), mt = metas.filter(function (m) { return m.title === 'Setas teste'; })[0], mkey = 'setas teste|en';
+      var rem = JSON.parse(JSON.stringify(srv.row.data));
+      rem.log.d['2026-02-01'].sec = 999; rem.log.d['2026-02-02'] = { sec: 60, heard: 6 };
+      rem.vocab.push({ id: 'en:fromphone', word: 'fromphone', lang: 'en', reps: 5, lapses: 0, due: 9, ivl: 9, ease: 2.5, added: 2 });
+      rem.docs[mkey] = { title: 'Setas teste', lang: 'en', pos: 3, heard: 777, savedAt: Date.now() + 100000, words: 1, sentences: 1 };
+      srv.row = { data: rem, updated_at: '2026-03-01T10:00:00.000Z' };
+      await D().db.put('vocab', { id: 'en:localonly', word: 'localonly', lang: 'en', reps: 1, lapses: 0, due: 1, ivl: 1, ease: 2.5, added: 3 });      // algo só daqui, que precisa subir
+      srv.bump = true;                                                           // e o primeiro PATCH vai colidir com outro aparelho
+      idoc().getElementById('lb-sync-now').click();
+      await until(function () { var d = JSON.parse(syW.localStorage.getItem('dd-ingles-log') || '{}'); return d.d && d.d['2026-02-02']; }, 90000);
+      await until(function () { return !idoc().getElementById('lb-sync-now').disabled; }, 90000);
+      var lg = JSON.parse(syW.localStorage.getItem('dd-ingles-log')), vc = await D().db.all('vocab'), mt2 = (await D().db.all('meta')).filter(function (m) { return m.title === 'Setas teste'; })[0];
+      ok('SY6 o que veio de outro aparelho entra aqui sem perder o local: dia com o maior tempo, cartão novo, posição e palavras ouvidas do livro mais recentes', lg.d['2026-02-01'].sec === 999 && !!lg.d['2026-02-02'] && vc.some(function (c) { return c.id === 'en:fromphone'; }) && vc.some(function (c) { return c.id === 'en:syncword'; }) && !!mt2 && mt2.pos === 3 && mt2.heard >= 777, 'sec=' + lg.d['2026-02-01'].sec + ' pos=' + (mt2 && mt2.pos) + ' heard=' + (mt2 && mt2.heard));
+      var pat = srv.calls.filter(function (c) { return c === 'PATCH /rest/v1/progress'; }).length;
+      ok('SY7 se outro aparelho gravar no meio, a sincronização relê, mescla e tenta de novo (conflito resolvido) e a nuvem fica com tudo', pat >= 2 && srv.row.data.log.d['2026-02-01'].sec === 999 && srv.row.data.vocab.some(function (c) { return c.id === 'en:fromphone'; }) && srv.row.data.vocab.some(function (c) { return c.id === 'en:localonly'; }), 'PATCH=' + pat);
+      idoc().getElementById('lb-sync-out').click(); await wait(200);
+      ok('SY8 sair da conta não apaga nada do aparelho (estatísticas, vocabulário e livros continuam)', idoc().getElementById('lb-sync').dataset.state === 'out' && !!syW.localStorage.getItem('dd-ingles-log') && (await D().db.all('vocab')).length >= 2 && syW.localStorage.getItem('dd-sync-sess') === null);
+      syW.fetch = async function () { throw new Error('offline'); };
+      syW.DD_SYNC = { url: '', key: '' }; D().emit('lang', D().state.readLang); await wait(100);
+      ok('SY9 sem configuração o site volta ao normal (nada é chamado)', /(ainda não foi ativada|has not been turned on)/.test(idoc().getElementById('lb-sync').textContent));      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
       ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
@@ -1081,7 +1147,7 @@ $testFile = "$tmp\__test.html"
 $prof = Join-Path $tmp 'profile'
 $outFile = Join-Path $tmp 'out.txt'
 Start-Process -FilePath $Chrome -ArgumentList @('--headless=new', '--disable-gpu', '--no-first-run', '--autoplay-policy=no-user-gesture-required', "--user-data-dir=`"$prof`"",
-    '--window-size=1400,900', '--virtual-time-budget=2400000', '--allow-file-access-from-files', '--dump-dom',
+    '--window-size=1400,900', '--virtual-time-budget=4200000', '--allow-file-access-from-files', '--dump-dom',
     "`"file:///$($testFile.Replace('\','/'))`"") -Wait -NoNewWindow -RedirectStandardOutput $outFile -RedirectStandardError "$tmp\err.txt"
 $dom = [IO.File]::ReadAllText($outFile)
 $m = [regex]::Match($dom, '(?s)<pre id="result"[^>]*>(.*?)</pre>')

@@ -362,3 +362,11 @@ html body[class] .wd2.now2, html body[class] .tl-sw.now2, html body[class] .lg-s
 .tl-v { font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .tl-v2 { color: var(--c-dim); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 @media (max-width: 700px) { .tl-foot { grid-template-columns: 1fr 1fr; padding: 8px 12px; font-size: 0.74rem; } }
+
+/* conta e sincronização do progresso (campos grandes o bastante para toque, TV e teclado) */
+.lb-sync { margin: 28px 0 8px; padding-top: 6px; border-top: 1px solid var(--lb-line); }
+.lb-sync-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+.lb-sync-form .lb-input { flex: 1 1 220px; min-width: 0; min-height: 44px; }
+.lb-sync-form .lb-btn { min-height: 44px; }
+.lb-sync-form [hidden] { display: none; }
+.lb-sync-line, .lb-sync-status { margin: 6px 0; color: var(--c-dim); font-size: 0.92rem; overflow-wrap: anywhere; }

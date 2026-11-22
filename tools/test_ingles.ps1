@@ -172,9 +172,9 @@ $test = @'
       var mlinks = document.querySelectorAll('.chapter-link'); mlinks[mlinks.length - 1].click();
       await until(function () { try { return ifr().contentDocument.getElementById('mn-pt') && ifr().contentDocument.readyState === 'complete'; } catch (e) { return false; } }, 10000);
       var md = ifr().contentDocument;
-      var ptOn = !md.getElementById('mn-pt').hidden && md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-pt h2').length === 9;
+      var ptOn = !md.getElementById('mn-pt').hidden && md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-pt h2').length === 10;
       post({ type: 'readlang', value: 'en' }); await wait(300);
-      ok('M1 o Manual da Biblioteca abre pelo menu em português (9 seções) e troca para inglês com o idioma de leitura', ptOn && md.getElementById('mn-pt').hidden && !md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-en h2').length === 9, 'PT visível=' + ptOn);
+      ok('M1 o Manual da Biblioteca abre pelo menu em português (10 seções) e troca para inglês com o idioma de leitura', ptOn && md.getElementById('mn-pt').hidden && !md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-en h2').length === 10, 'PT visível=' + ptOn);
       post({ type: 'readlang', value: 'pt' });
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
