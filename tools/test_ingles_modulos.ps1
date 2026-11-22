@@ -521,7 +521,46 @@ $test = @'
       for (var rt = 0; rt < 60 && mz.heard !== 0; rt++) { await wait(100); mz = await D().db.get('meta', nid2); }   // espera o banco terminar de gravar (o IndexedDB não anda com o tempo virtual)
       await until(function () { return Object.keys(W().__ddProg.log.d).length === 0; }, 5000);
       ok('N5 zerar apaga minutos, palavras ouvidas, contadores dos livros e histórico, e mantém posição, livros e palavras salvas', Object.keys(JSON.parse(W().localStorage.getItem('dd-ingles-log')).d).length === 0 && mz.heard === 0 && mz.pos === 5 && W().localStorage.getItem('dd-ingles-semana-hist') === null && W().localStorage.getItem('dd-ingles-sessao') === null && (await D().db.all('vocab')).length === vBefore && (await D().db.all('meta')).length === dBefore, 'ouvidas=' + mz.heard + ' pos=' + mz.pos);
-      ok('N6 depois de zerar o botão some e o painel volta ao convite inicial', idoc().getElementById('lb-prog-actions').hidden && /Comece a ler/.test(idoc().getElementById('lb-prog').textContent));      // ==== PROXIMAS ====
+      ok('N6 depois de zerar o botão some e o painel volta ao convite inicial', idoc().getElementById('lb-prog-actions').hidden && /Comece a ler/.test(idoc().getElementById('lb-prog').textContent));      // ===================== O. sessão do dia (4 blocos a partir do plano da semana) =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      await W().__ddProg.resetAll();
+      ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana'].forEach(function (k) { W().localStorage.removeItem(k); });
+      var obk = function (k) { return 'Surveillance capitalism harvests behavioural surplus from ordinary people every single day, and platforms predict what citizens will do tomorrow morning. Nobody explains how these hidden systems really work, so people rarely notice this quiet economic exchange number ' + k + '.'; };
+      await D().addText('Sessão do dia teste', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(obk).join('\n\n'));
+      await until(function () { return D().doc && D().doc.title === 'Sessão do dia teste'; }, 20000);
+      var oid = D().doc.id;
+      await D().db.put('vocab', { id: 'en:testdue', word: 'testdue', lang: 'en', tr: 'teste', sent: '', doc: 'Sessão do dia teste', added: Date.now(), due: Date.now() - 1000, ivl: 0, ease: 2.5, reps: 0, lapses: 0 });
+      D().$('lb-back').click(); await wait(300); await W().__ddDia.render();
+      ok('O1 sem plano da semana, a sessão do dia explica que nasce do plano e não mostra blocos', !!idoc().getElementById('lb-sess') && /nasce do plano/.test(idoc().getElementById('lb-sess').textContent) && idoc().querySelectorAll('.lb-sess-row').length === 0);
+      W().__ddWeek.store({ docId: oid, title: 'Sessão do dia teste', start: W().__ddWeek.dayKey(), startWords: 0 });
+      await W().__ddDia.render();
+      var orows = idoc().querySelectorAll('.lb-sess-row');
+      ok('O2 com plano: 4 blocos (leitura 25, vocabulário 10, shadowing 8, escrita 7 min = 50) com metas do dia', orows.length === 4 && Array.prototype.map.call(orows, function (r) { return r.dataset.block; }).join(',') === 'read,vocab,shadow,write' && /25 min/.test(orows[0].textContent) && /10 min/.test(orows[1].textContent) && /8 min/.test(orows[2].textContent) && /7 min/.test(orows[3].textContent) && /50 minutos/.test(idoc().getElementById('lb-sess').textContent) && /Cota de hoje: 0 de \d+ palavras/.test(orows[0].textContent) && !!idoc().getElementById('lb-sess-text') && idoc().querySelectorAll('.lb-sess-row.done').length === 0, orows[0].textContent.replace(/\s+/g, ' '));
+      var om = await D().db.get('meta', oid); om.pos = 7; await D().db.put('meta', om); await W().__ddDia.render();
+      ok('O3 ler a cota do dia fecha o bloco de leitura sozinho', idoc().querySelector('.lb-sess-row[data-block="read"]').classList.contains('done'));
+      var odia = JSON.parse(W().localStorage.getItem('dd-ingles-dia')), vt = odia.vocabTarget;
+      ok('O4 o bloco de vocabulário usa as palavras que vencem hoje como meta e abre a revisão', vt >= 1 && vt <= 15 && /Revisões: 0 de/.test(idoc().querySelector('.lb-sess-row[data-block="vocab"]').textContent) && !!idoc().querySelector('[data-act="vocab"]') && !idoc().querySelector('.lb-sess-row[data-block="vocab"]').classList.contains('done'), 'meta=' + vt);
+      W().__ddProg.add('rev', vt); await W().__ddDia.render();
+      ok('O5 cumprir as revisões fecha o bloco de vocabulário', idoc().querySelector('.lb-sess-row[data-block="vocab"]').classList.contains('done'));
+      idoc().querySelector('[data-mark="shadow"]').click(); await until(function () { return idoc().querySelector('.lb-sess-row[data-block="shadow"]').classList.contains('done'); }, 15000);
+      ok('O6 "Marcar como feito" fecha o shadowing e fica guardado no dia', idoc().querySelector('.lb-sess-row[data-block="shadow"]').classList.contains('done') && JSON.parse(W().localStorage.getItem('dd-ingles-dia')).manual.shadow === true);
+      idoc().getElementById('lb-sess-text').value = 'ok'; idoc().getElementById('lb-sess-check').click();
+      ok('O7 escrita curta recebe dicas (palavras, vocabulário do livro e objeção) e não é salva', /pelo menos 15 palavras/.test(idoc().getElementById('lb-sess-out').textContent) && /palavra do livro/.test(idoc().getElementById('lb-sess-out').textContent) && /objeção/.test(idoc().getElementById('lb-sess-out').textContent) && JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]').length === 0);
+      idoc().getElementById('lb-sess-text').value = 'Surveillance capitalism harvests behavioural surplus from ordinary people every day; however, I disagree that citizens never notice this quiet economic exchange at all.';
+      idoc().getElementById('lb-sess-check').click(); await until(function () { return !!idoc().getElementById('lb-sess-fin'); }, 15000);
+      var oent = JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]');
+      ok('O8 escrita completa é salva, fecha o bloco e aparece em "Seus textos"', oent.length === 1 && oent[0].words >= 15 && oent[0].docId === oid && idoc().querySelector('.lb-sess-row[data-block="write"]').classList.contains('done') && /Seus textos \(1\)/.test(idoc().getElementById('lb-sess-journal').textContent));
+      var ohist = JSON.parse(W().localStorage.getItem('dd-ingles-dia-hist') || '[]');
+      ok('O9 com os 4 blocos feitos: sessão concluída, dia registrado uma vez e sequência de 1 dia', !!idoc().getElementById('lb-sess-fin') && ohist.length === 1 && ohist[0] === W().__ddDia.dayKey() && /1 dia seguido/.test(idoc().getElementById('lb-sess-streak').textContent));
+      await W().__ddDia.render();
+      ok('O10 renderizar de novo não duplica o registro do dia', JSON.parse(W().localStorage.getItem('dd-ingles-dia-hist')).length === 1);
+      var ody = JSON.parse(W().localStorage.getItem('dd-ingles-dia')); ody.date = '2000-01-01'; ody.manual = { shadow: true, read: true }; W().localStorage.setItem('dd-ingles-dia', JSON.stringify(ody));
+      await W().__ddDia.render();
+      ok('O11 em um novo dia o estado recomeça (marcas manuais zeradas) e o histórico fica', JSON.parse(W().localStorage.getItem('dd-ingles-dia')).date === W().__ddDia.dayKey() && Object.keys(JSON.parse(W().localStorage.getItem('dd-ingles-dia')).manual).length === 0 && JSON.parse(W().localStorage.getItem('dd-ingles-dia-hist')).length === 1 && !idoc().querySelector('.lb-sess-row[data-block="shadow"]').classList.contains('done'));
+      ok('O12 a sequência conta dias seguidos e ignora buracos', W().__ddDia.streak([W().__ddDia.dayKey(), W().__ddDia.dayKey(new Date(Date.now() - 86400000)), W().__ddDia.dayKey(new Date(Date.now() - 3 * 86400000))]) === 2 && W().__ddDia.streak([W().__ddDia.dayKey(new Date(Date.now() - 86400000))]) === 1 && W().__ddDia.streak([]) === 0);
+      await W().__ddProg.resetAll(); await wait(300);
+      ok('O13 Zerar estatísticas apaga as sessões do dia, mas mantém os textos escritos', W().localStorage.getItem('dd-ingles-dia-hist') === null && (W().localStorage.getItem('dd-ingles-dia') === null || (JSON.parse(W().localStorage.getItem('dd-ingles-dia')).written === false && Object.keys(JSON.parse(W().localStorage.getItem('dd-ingles-dia')).manual).length === 0)) && JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]').length === 1);
+      ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana'].forEach(function (k) { W().localStorage.removeItem(k); });      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

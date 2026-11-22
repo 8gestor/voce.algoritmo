@@ -11,11 +11,11 @@
         pt: { h: 'SEU PROGRESSO', streak: 'sequência', day: 'dia', days: 'dias', today: 'hoje', min: 'min de estudo', heard: 'palavras ouvidas', saved: 'palavras salvas',
               rev: 'revisões', dict: 'ditados', week: 'Últimos 7 dias (minutos)', total: 'Total', none: 'Comece a ler ou ouvir um texto: seu progresso aparece aqui.',
               wd: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
-              reset: 'Zerar estatísticas', ask: 'Zerar minutos de estudo, sequência de dias, palavras ouvidas e o histórico de livros lidos? A posição de leitura, os livros e as palavras salvas não mudam.', yes: 'Sim, zerar', no: 'Cancelar' },
+              reset: 'Zerar estatísticas', ask: 'Zerar minutos de estudo, sequência de dias, palavras ouvidas, o histórico de livros lidos e as sessões do dia? A posição de leitura, os livros e as palavras salvas não mudam.', yes: 'Sim, zerar', no: 'Cancelar' },
         en: { h: 'YOUR PROGRESS', streak: 'streak', day: 'day', days: 'days', today: 'today', min: 'min studied', heard: 'words heard', saved: 'words saved',
               rev: 'reviews', dict: 'dictations', week: 'Last 7 days (minutes)', total: 'Total', none: 'Start reading or listening to a text: your progress shows up here.',
               wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-              reset: 'Reset statistics', ask: 'Reset study minutes, day streak, words heard and the history of books read? Your reading position, books and saved words stay as they are.', yes: 'Yes, reset', no: 'Cancel' }
+              reset: 'Reset statistics', ask: 'Reset study minutes, day streak, words heard, the history of books read and daily sessions? Your reading position, books, saved words and written texts stay as they are.', yes: 'Yes, reset', no: 'Cancel' }
     };
     const t = (k) => L[D.state.readLang][k];
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
@@ -76,7 +76,7 @@
             for (const m of metas) { if (m.heard) { m.heard = 0; m.savedAt = Date.now(); await D.db.put('meta', m); } }
             if (D.doc) D.doc.heard = 0;
         } catch (e) { /* sem banco */ }
-        try { localStorage.removeItem('dd-ingles-semana-hist'); localStorage.removeItem('dd-ingles-sessao'); } catch (e) { /* ignora */ }
+        try { localStorage.removeItem('dd-ingles-semana-hist'); localStorage.removeItem('dd-ingles-sessao'); localStorage.removeItem('dd-ingles-dia'); localStorage.removeItem('dd-ingles-dia-hist'); } catch (e) { /* ignora */ }
         ask.hidden = true; bReset.hidden = false;
         D.emit('stats-reset');
         render();
@@ -86,7 +86,7 @@
         bReset.textContent = t('reset'); askText.textContent = t('ask'); bYes.textContent = t('yes'); bNo.textContent = t('no');
         let any = Object.keys(log.d).some((k) => active(log.d[k]));
         if (!any) { try { any = (await D.db.all('meta')).some((m) => m.heard > 0); } catch (e) { /* ignora */ } }
-        if (!any) { try { any = JSON.parse(localStorage.getItem('dd-ingles-semana-hist') || '[]').length > 0; } catch (e) { /* ignora */ } }
+        if (!any) { try { any = JSON.parse(localStorage.getItem('dd-ingles-semana-hist') || '[]').length > 0 || JSON.parse(localStorage.getItem('dd-ingles-dia-hist') || '[]').length > 0; } catch (e) { /* ignora */ } }
         actions.hidden = !any;
     }
     sec.append(h2, tiles, chart, actions);

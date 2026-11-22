@@ -222,5 +222,12 @@
         const daysLeft = Math.max(1, DAYS - Math.min(idx, DAYS) + 1);
         return { quota: Math.ceil((info.words - plan.snap.words) / daysLeft), readToday: Math.max(0, r - plan.snap.words), read: r, words: info.words, idx };
     }
-    window.__ddWeek = { render, bookInfo, readWords, load, store, dayKey, status };
+    // plano de hoje para a sessão do dia: cota, palavras lidas hoje e o plano; null sem plano ou sem o livro
+    async function today() {
+        const plan = load(); if (!plan) return null;
+        const m = await D.db.get('meta', plan.docId); if (!m) return null;
+        const st = await status(plan.docId, m.pos || 0); if (!st) return null;
+        return Object.assign({ plan }, st);
+    }
+    window.__ddWeek = { render, bookInfo, readWords, load, store, dayKey, status, today };
 })();
