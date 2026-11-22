@@ -399,7 +399,38 @@ $test = @'
       ok('J17 traduz uma frase isolada sem esperar o parágrafo', typeof sq === 'string' && sq.length > 0 && Date.now() - t0s < 1500, String(sq));
       idoc().querySelector('.lg-off').click(); await wait(200);
       w.speechSynthesis.speak = oldSpeak;
-      // ==== PROXIMAS ====
+      // ===================== L. livro da semana =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(300);
+      var lbk = function (k) { return 'Surveillance capitalism harvests behavioural surplus from ordinary people every single day, and platforms predict what citizens will do tomorrow morning. Nobody explains how these hidden systems really work, so people rarely notice this quiet economic exchange number ' + k + '.'; };
+      await D().addText('Livro da semana teste', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(lbk).join('\n\n'));
+      await until(function () { return D().doc && D().doc.title === 'Livro da semana teste'; }, 20000);
+      var lid = D().doc.id; W().localStorage.removeItem('dd-ingles-semana');
+      D().$('lb-back').click(); await wait(300); await W().__ddWeek.render();
+      await until(function () { return idoc().getElementById('lb-week-src'); }, 5000);
+      ok('L1 livro da semana: oferece os livros em inglês da biblioteca e o botão de começar', !!idoc().getElementById('lb-week') && !!idoc().getElementById('lb-week-start') && Array.prototype.some.call(idoc().querySelectorAll('#lb-week-src option'), function (o) { return o.textContent === 'Livro da semana teste'; }) && /7 dias/.test(idoc().getElementById('lb-week').textContent));
+      idoc().getElementById('lb-week-src').value = lid; idoc().getElementById('lb-week-start').click();
+      await until(function () { return idoc().getElementById('lb-week-title'); }, 5000);
+      var winfo = await W().__ddWeek.bookInfo(lid);
+      var quotaTxt = idoc().getElementById('lb-week-quota').textContent;
+      ok('L2 começar a semana (ainda sem ler): título, dia 1 de 7, progresso zerado, cota = livro dividido em 7 e ritmo em dia (não atrasado)', idoc().getElementById('lb-week-title').textContent === 'Livro da semana teste' && /Dia 1 de 7/.test(idoc().getElementById('lb-week-day').textContent) && /\(0%\)/.test(idoc().getElementById('lb-week-prog').textContent) && quotaTxt.indexOf(String(Math.ceil(winfo.words / 7)).replace(/\B(?=(\d{3})+(?!\d))/g, '.')) >= 0 && /No ritmo/.test(idoc().getElementById('lb-week-pace').textContent), quotaTxt + ' | ' + idoc().getElementById('lb-week-pace').textContent);
+      ok('L3 o plano fica guardado no navegador e as palavras difíceis aparecem para ver antes de ler', JSON.parse(W().localStorage.getItem('dd-ingles-semana')).docId === lid && !!idoc().getElementById('lb-week-hard') && idoc().querySelectorAll('.lb-week-chip').length >= 3 && Array.prototype.some.call(idoc().querySelectorAll('.lb-week-chip'), function (c) { return c.textContent === 'surveillance'; }) && !Array.prototype.some.call(idoc().querySelectorAll('.lb-week-chip'), function (c) { return /['’]/.test(c.textContent) || c.textContent.length < 6; }), idoc().querySelectorAll('.lb-week-chip').length + ' palavras');
+      var wm = await D().db.get('meta', lid); wm.pos = 7; await D().db.put('meta', wm); await W().__ddWeek.render();
+      ok('L4 ler metade do livro: progresso sobe para ~50% e a cota de hoje fica cumprida', /\((4[5-9]|5[0-5])%\)/.test(idoc().getElementById('lb-week-prog').textContent) && /cumprida/.test(idoc().getElementById('lb-week-today').textContent) && /Adiantado/.test(idoc().getElementById('lb-week-pace').textContent), idoc().getElementById('lb-week-prog').textContent + ' | ' + idoc().getElementById('lb-week-pace').textContent);
+      var wp = W().__ddWeek.load(); wp.start = W().__ddWeek.dayKey(new Date(Date.now() - 3 * 86400000)); wp.snap = null; wp.startWords = 0; W().__ddWeek.store(wp);
+      wm.pos = 1; await D().db.put('meta', wm); await W().__ddWeek.render();
+      ok('L5 no dia 4 com pouca leitura: mostra atraso e a cota sobe para o que falta dividido pelos dias que restam', /Dia 4 de 7/.test(idoc().getElementById('lb-week-day').textContent) && /Atrasado/.test(idoc().getElementById('lb-week-pace').textContent) && /Faltam/.test(idoc().getElementById('lb-week-today').textContent), idoc().getElementById('lb-week-quota').textContent);
+      wm.pos = winfo.n - 1; await D().db.put('meta', wm); await W().__ddWeek.render();
+      ok('L6 chegar ao fim do livro mostra livro concluído e a escolha do próximo', !!idoc().getElementById('lb-week-fin') && /(100%)/.test(idoc().getElementById('lb-week-prog').textContent) && !idoc().getElementById('lb-week-open'));
+      var nxt = Array.prototype.filter.call(idoc().querySelectorAll('#lb-week-body button'), function (b) { return /próximo livro/.test(b.textContent); })[0];
+      nxt.click(); await until(function () { return idoc().getElementById('lb-week-src'); }, 5000);
+      ok('L7 escolher o próximo livro apaga o plano e volta à seleção', W().localStorage.getItem('dd-ingles-semana') === null && !!idoc().getElementById('lb-week-start'));
+      var nbook = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(lbk).join('\n\n') + '\n\nNotes\n\n' + [1, 2, 3, 4, 5].map(function (k) { return k + '. A long footnote about the sources of the passage, with the references and the editorial comments that nobody reads as part of the book itself number ' + k + '.'; }).join('\n\n');
+      await D().addText('Livro com notas teste', nbook);
+      await until(function () { return D().doc && D().doc.title === 'Livro com notas teste'; }, 20000);
+      var nid = D().doc.id, ndoc = await D().db.get('docs', nid), ninfo = await W().__ddWeek.bookInfo(nid);
+      var allWords = ndoc.paras.reduce(function (a, p) { return a + p.s.join(' ').split(/\s+/).length; }, 0);
+      ok('L8 as notas de rodapé no fim do livro não entram no total nem na cota', ninfo.n === 10 && ninfo.words < allWords && ninfo.words === ninfo.cum[10] && ndoc.paras.length >= 15, ninfo.n + ' parágrafos de corpo de ' + ndoc.paras.length + ' | ' + ninfo.words + ' de ' + allWords + ' palavras');
+      D().$('lb-back').click(); await wait(200);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

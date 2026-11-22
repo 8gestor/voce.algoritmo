@@ -172,3 +172,18 @@ body:not(.paper-mode) #lb-title { border-bottom: 1px solid var(--lb-line); }
 .lg-spacer { width: 100%; }
 @media (max-height: 520px) { .lg-main { max-height: 30vh; } .lg-ctx { display: none; } }
 @media (prefers-reduced-motion: no-preference) { .lg-w { transition: background-color .08s; } }
+
+/* Livro da semana */
+.lb-week { border: 2px solid var(--c-text); border-radius: 8px; padding: 14px 18px 16px; margin: 20px 0; }
+.lb-week h2 { margin: 0 0 8px; }
+.lb-week-title { font-weight: 700; font-size: 1.2rem; overflow-wrap: anywhere; }
+.lb-week-day { font-family: var(--font-tech); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-dim); margin: 2px 0 10px; }
+.lb-week-prog { margin: 4px 0 6px; font-size: 0.9rem; }
+.lb-week-quota { font-weight: 600; margin: 12px 0 4px; }
+.lb-week-pace { margin: 4px 0 10px; font-size: 0.9rem; color: var(--c-dim); }
+.lb-week-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.lb-week-row select { flex: 1 1 240px; }
+.lb-week-hard { margin-top: 12px; }
+.lb-week-hard summary { cursor: pointer; font-weight: 600; }
+.lb-week-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.lb-week-chip { border: 1px solid var(--lb-line); border-radius: 999px; padding: 2px 10px; font-family: var(--font-tech); font-size: 0.78rem; }
