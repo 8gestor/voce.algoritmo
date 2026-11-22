@@ -325,7 +325,7 @@ body.lb-tele-open .lg, body.lb-tele-open .lg-spacer { display: none !important; 
 .tl-w.past { opacity: 0.35; }
 .tl-gap { display: inline-block; width: 2.4em; }
 .tl-nx { opacity: 0.38; font-weight: 500; }   /* a próxima frase, já carregada à direita */
-html body[class] .tl-w.now { background: var(--mk-word); color: var(--mk-word-fg); opacity: 1; }
+html body[class] .tl-w.now { background: var(--mk-word); color: var(--mk-word-fg); opacity: 1; box-shadow: 0 0 0 0.07em var(--mk-word); }
 .tl-sub { text-align: center; padding: 20px 6vw 0; font-size: calc(clamp(1.1rem, 2.6vw, 2rem) * var(--tl-size, 1)); line-height: 1.35; color: var(--c-dim, #888); min-height: 3em; }
 .tl-sub.wait { opacity: 0.5; font-style: italic; }
 .tl-prog { height: 5px; background: var(--lb-line); }

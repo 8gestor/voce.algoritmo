@@ -707,7 +707,7 @@ $test = @'
       var utx1 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
       D().emit('wordpos', { ci: Math.floor(uen.length * 0.9), len: uen.length, text: uen }); await wait(100);
       var utx2 = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10);
-      ok('U6 a linha corre da direita para a esquerda: avançar a voz move o texto para a esquerda, mantendo a palavra no ponto de leitura', utx2 < utx1 && idoc().querySelector('.tl-head').style.left === '30%', utx1 + ' -> ' + utx2);
+      ok('U6 a linha corre da direita para a esquerda: avançar a voz move o texto para a esquerda, mantendo a palavra no ponto de leitura', utx2 < utx1 && idoc().querySelector('.tl-head').style.left === '50%', utx1 + ' -> ' + utx2);
       var upre = idoc().querySelector('#lb-tele-line .tl-nx'), upreOk = !!upre && /^\[pt\]/.test(upre.textContent);
       D().emit('sentence', { p: 0, s: 1 });
       var uenter = parseInt(utrack.style.transform.replace(/[^-\d]/g, ''), 10), uvw = idoc().querySelector('#lb-tele .tl-view').clientWidth;
@@ -856,7 +856,7 @@ $test = @'
         if (!znow) { zerr.push('sem palavra em ' + zi); continue; }
         var zr = znow.getBoundingClientRect(), zv = zview.getBoundingClientRect();
         var znext = idoc().querySelectorAll('#lb-tele-line .tl-w')[zk + 1], zstep = znext ? Math.abs((znext.getBoundingClientRect().left + znext.getBoundingClientRect().width / 2) - (zr.left + zr.width / 2)) / 2 : 0;
-        zerr.push(Math.max(0, Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.3)) - zstep));      // a linha mira o meio caminho até a próxima palavra: o erro é o que passa dessa meia passada
+        zerr.push(Math.max(0, Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.5)) - zstep));      // a linha mira o meio caminho até a próxima palavra: o erro é o que passa dessa meia passada
       }
       var zmax = Math.max.apply(null, zerr.filter(function (x) { return typeof x === 'number'; }));
       ok('Z1 a palavra falada fica sempre no ponto de leitura (erro máximo de centragem em px) e o destaque nunca volta atrás, com voz em um idioma e legenda em outro', zerr.length > 8 && zerr.every(function (x) { return typeof x === 'number'; }) && zmax <= 2 && zmono, 'palavras=' + zerr.length + ' erro máx=' + zmax.toFixed(2) + 'px monótono=' + zmono);
