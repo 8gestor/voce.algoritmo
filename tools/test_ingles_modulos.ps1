@@ -837,7 +837,19 @@ $test = @'
       idoc().getElementById('lb-tele-read-en').click();
       await until(function () { return !/^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent) && /^\[pt\]/.test(idoc().getElementById('lb-tele-sub').textContent); }, 20000);
       ok('X2 com a narração tocando, trocar Ouvir muda a voz na hora e trocar Ler muda a linha na hora, sem parar o modo', xv1 === 'pt' && D().tts.playing && !/^\[pt\]/.test(idoc().getElementById('lb-tele-line').textContent));      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
+      // ===================== T. botão Teleprompter no lugar do Raio-X (moldura do site) =====================
+      await until(function () { return !$('btn-tele').hidden; }, 4000);
+      ok('T1 na Biblioteca, com documento aberto, o Raio-X some e aparece o botão Teleprompter', $('btn-raiox').hidden && !$('btn-tele').hidden && /Teleprompter/.test($('btn-tele').textContent));
+      var tmode0 = D().state.mode;
+      $('btn-tele').click();
+      await until(function () { return D().state.mode !== tmode0; }, 3000);
+      ok('T2 clicar em Teleprompter alterna o modo (tele liga, tele de novo desliga)', tmode0 === 'tele' ? D().state.mode === 'single' : D().state.mode === 'tele', tmode0 + ' -> ' + D().state.mode);
+      $('btn-tele').click();
+      await until(function () { return D().state.mode === tmode0; }, 3000);
+      ok('T3 clicar de novo volta ao modo anterior', D().state.mode === tmode0);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
+      document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
+      ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();
