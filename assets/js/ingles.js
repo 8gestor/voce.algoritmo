@@ -587,12 +587,40 @@
         }
         return ans;
     }
+    // A rolagem em pixels não acompanha o refluxo do texto. Quando a largura muda (o menu do site recolhe no modo foco, a janela é
+    // redimensionada, o modo de leitura troca) o texto continua reflundo por algumas centenas de milissegundos (transições de CSS), o parágrafo
+    // visível muda sozinho e o app gravaria a posição errada por cima da certa. Então: enquanto o layout não assenta, nenhuma posição é gravada;
+    // quando a altura do documento fica estável, volta ao parágrafo que estava em leitura.
+    let stableW = 0, settling = false, settleTimer = null;   // stableW: largura da página quando a posição foi aceita pela última vez
+    const pageW = () => document.documentElement.clientWidth;
+    function keepPlace(i) { const el = doc && paraEl(Math.max(0, Math.min(i | 0, doc.paras.length - 1))); if (el) el.scrollIntoView({ block: 'start' }); }
+    function settleAndKeep(keep) {
+        settling = true; clearTimeout(settleTimer); clearTimeout(scrollTimer);
+        let lastH = -1, still = 0, tries = 0;
+        const step = () => {
+            if (!doc || $('lb-reader').hidden) { settling = false; return; }
+            const h = document.documentElement.scrollHeight;
+            if (h === lastH) still++; else { still = 0; lastH = h; }
+            if (still >= 3 || ++tries > 30) { keepPlace(keep); stableW = pageW(); settling = false; return; }
+            settleTimer = setTimeout(step, 80);
+        };
+        step();
+    }
+    window.addEventListener('resize', () => {
+        if (!doc || $('lb-reader').hidden) return;
+        if (!settling) keepPos = doc.pos || 0;
+        settleAndKeep(keepPos);
+    });
+    let keepPos = 0;
     let scrollTimer = null;
     window.addEventListener('scroll', () => {
-        if (!doc || $('lb-reader').hidden) return;
+        if (!doc || $('lb-reader').hidden || settling) return;
         clearTimeout(scrollTimer);
         scrollTimer = setTimeout(() => {
+            // a largura mudou desde a última posição aceita: o texto refluiu e o parágrafo visível mudou sozinho. Não grava esse parágrafo.
+            if (stableW && Math.abs(pageW() - stableW) > 1) { keepPos = doc.pos || 0; settleAndKeep(keepPos); return; }
             const i = firstVisible();
+            stableW = pageW();
             doc.pos = i;
             emit('progress', { pos: i });
             if (!tts.playing) { anchor = i; pump(); }
@@ -1033,6 +1061,7 @@
         buildText();
         const el = paraEl(Math.min(anchor, d.paras.length - 1));
         if (el) el.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);
+        stableW = pageW();
         setStatus();
         pump();
         sendHud();
@@ -1048,7 +1077,7 @@
         state.mode = MODES.indexOf(m) >= 0 ? m : 'single'; state.side = state.mode === 'side';
         try { localStorage.setItem('dd-ingles-modo', state.mode); } catch (e) { /* sem storage */ }
         applyMode();
-        if (doc) { repaintAll(); pump(); setStatus(); }
+        if (doc) { const keep = doc.pos || 0; repaintAll(); pump(); setStatus(); keepPos = keep; settleAndKeep(keep); }
     }
     function closeDoc() {
         MODES.forEach((m) => document.body.classList.remove('lb-' + m + '-open'));

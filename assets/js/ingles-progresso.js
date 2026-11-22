@@ -29,6 +29,8 @@
         const k = day || dayKey();
         const r = log.d[k] || (log.d[k] = { sec: 0, heard: 0, saved: 0, rev: 0, dict: 0, rd: 0, ls: 0 });
         r[field] = (r[field] || 0) + n; dirty = true;
+        // eventos (palavras ouvidas, salvas, revisões, ditados) gravam na hora: se a aba cair, nada se perde. Os tempos (sec, rd, ls) entram a cada segundo e são gravados a cada 2 s.
+        if (field !== 'sec' && field !== 'rd' && field !== 'ls') save();
     }
     const active = (r) => r && (r.sec >= 30 || r.heard > 0 || r.rev > 0 || r.saved > 0 || r.dict > 0);
     function streak() {
@@ -47,7 +49,7 @@
         if (D.tts.playing) add('ls', 1);                       // ouvindo: narração tocando
         if (Date.now() - lastAct < 30000) add('rd', 1);        // lendo: mexeu na página nos últimos 30 s
     }, 1000);
-    setInterval(save, 10000);
+    setInterval(save, 2000);     // perda máxima de ~2 s de tempo de estudo se a aba cair sem passar por pagehide
     window.addEventListener('pagehide', save);
     window.addEventListener('beforeunload', save);
     document.addEventListener('visibilitychange', save);
@@ -96,6 +98,7 @@
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
 
     const fmt = (n) => D.nf().format(n);
+    const dur = (s) => (s < 60 ? Math.round(s) + ' s' : Math.floor(s / 60) + ' min');   // abaixo de 1 minuto mostra segundos
     const tile = (big, small) => { const x = el('div', 'lb-tile'); x.append(el('div', 'lb-tile-big', big), el('div', 'lb-tile-small', small)); return x; };
     function render() {
         save();
@@ -109,7 +112,7 @@
         tiles.append(
             tile(fmt(st), t('streak') + ' (' + (st === 1 ? t('day') : t('days')) + ')'),
             tile(Math.floor(td.sec / 60) + ' ' + t('min').split(' ')[0], t('today') + ' · ' + t('min').split(' ').slice(1).join(' ')),
-            tile(Math.floor((td.rd || 0) / 60) + ' / ' + Math.floor((td.ls || 0) / 60) + ' min', t('rdls')),
+            tile(dur(td.rd || 0) + ' / ' + dur(td.ls || 0), t('rdls')),
             tile(fmt(td.heard), t('heard') + ' · ' + t('today')),
             tile(fmt(td.saved), t('saved') + ' · ' + t('today')),
             tile(fmt(td.rev + td.dict), t('rev') + ' + ' + t('dict') + ' · ' + t('today'))

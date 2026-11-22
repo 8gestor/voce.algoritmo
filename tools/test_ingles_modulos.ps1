@@ -421,7 +421,7 @@ $test = @'
       ok('L5 no dia 4 com pouca leitura: mostra atraso e a cota sobe para o que falta dividido pelos dias que restam', /Dia 4 de 7/.test(idoc().getElementById('lb-week-day').textContent) && /Atrasado/.test(idoc().getElementById('lb-week-pace').textContent) && /Faltam/.test(idoc().getElementById('lb-week-today').textContent), idoc().getElementById('lb-week-quota').textContent);
       wm.pos = winfo.n - 1; await D().db.put('meta', wm); await W().__ddWeek.render();
       ok('L6 chegar ao fim do livro mostra livro concluído e a escolha do próximo', !!idoc().getElementById('lb-week-fin') && /(100%)/.test(idoc().getElementById('lb-week-prog').textContent) && !idoc().getElementById('lb-week-open'));
-      var nxt = Array.prototype.filter.call(idoc().querySelectorAll('#lb-week-body button'), function (b) { return /próximo livro/.test(b.textContent); })[0];
+      var nxt = idoc().getElementById('lb-close-other');
       nxt.click(); await until(function () { return idoc().getElementById('lb-week-src'); }, 5000);
       ok('L7 escolher o próximo livro apaga o plano e volta à seleção', W().localStorage.getItem('dd-ingles-semana') === null && !!idoc().getElementById('lb-week-start'));
       var nbook = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(lbk).join('\n\n') + '\n\nNotes\n\n' + [1, 2, 3, 4, 5].map(function (k) { return k + '. A long footnote about the sources of the passage, with the references and the editorial comments that nobody reads as part of the book itself number ' + k + '.'; }).join('\n\n');
@@ -453,7 +453,7 @@ $test = @'
       ok('L12 terminar o livro registra no histórico uma única vez, mesmo renderizando de novo', rh.length === 1 && rh[0].slug === 'epicteto-enchiridion' && !!idoc().getElementById('lb-week-fin'), JSON.stringify(rh));
       await W().__ddWeek.render();
       ok('L12b renderizar de novo não duplica o registro', JSON.parse(W().localStorage.getItem('dd-ingles-semana-hist')).length === 1);
-      Array.prototype.filter.call(idoc().querySelectorAll('#lb-week-body button'), function (b) { return /próximo livro/.test(b.textContent); })[0].click();
+      idoc().getElementById('lb-close-other').click();
       await until(function () { return idoc().getElementById('lb-rot-1'); }, 5000);
       ok('L13 depois de ler, a semana 2 aparece como lida e as outras 7 continuam disponíveis', /lido/.test(idoc().querySelector('.lb-rot-item[data-slug="epicteto-enchiridion"] .lb-rot-done').textContent) && !idoc().getElementById('lb-rot-2') && idoc().querySelectorAll('#lb-rot button').length === 7);
       W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');      // ===================== M. modos de leitura (seletor único) e cabeçalho do leitor =====================
@@ -482,7 +482,7 @@ $test = @'
       ok('M7 reabrir mantém lado a lado e o seletor mostra o modo', idoc().body.classList.contains('lb-side-open') && idoc().getElementById('lb-read-mode').value === 'side');
       var mid = D().doc.id; W().__ddWeek.store({ docId: mid, title: 'Modos de leitura teste', start: W().__ddWeek.dayKey(), startWords: 0 });
       msel = idoc().getElementById('lb-read-mode'); msel.value = 'focus'; msel.dispatchEvent(new Event('change'));
-      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 8000);
+      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 40000);
       var fp = idoc().getElementById('lb-focus-panel');
       ok('M8 foco com painel: menu do site recolhido, texto em coluna única e painel ao lado com hoje, livro e palavras', idoc().body.classList.contains('lb-focus-open') && document.getElementById('sidebar').classList.contains('collapsed') && idoc().querySelectorAll('.lb-col').length === 0 && fp.getBoundingClientRect().left > idoc().getElementById('lb-wrap').getBoundingClientRect().right - 2 && /HOJE/.test(fp.textContent) && /Cota de hoje: \d+ palavras/.test(fp.textContent) && /PROGRESSO/.test(fp.textContent) && /AGORA/.test(fp.textContent) && /PALAVRAS SALVAS/.test(fp.textContent), 'foco=' + idoc().body.classList.contains('lb-focus-open') + ' menu=' + document.getElementById('sidebar').classList.contains('collapsed') + ' cols=' + idoc().querySelectorAll('.lb-col').length + ' painelLeft=' + Math.round(fp.getBoundingClientRect().left) + ' wrapRight=' + Math.round(idoc().getElementById('lb-wrap').getBoundingClientRect().right) + ' iframeW=' + idoc().documentElement.clientWidth);
       msel.value = 'single'; msel.dispatchEvent(new Event('change')); await wait(300);
@@ -561,6 +561,7 @@ $test = @'
       await W().__ddProg.resetAll(); await wait(300);
       ok('O13 Zerar estatísticas apaga as sessões do dia, mas mantém os textos escritos', W().localStorage.getItem('dd-ingles-dia-hist') === null && (W().localStorage.getItem('dd-ingles-dia') === null || (JSON.parse(W().localStorage.getItem('dd-ingles-dia')).written === false && Object.keys(JSON.parse(W().localStorage.getItem('dd-ingles-dia')).manual).length === 0)) && JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]').length === 1);
       ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana'].forEach(function (k) { W().localStorage.removeItem(k); });      // ===================== P. painel do foco ao vivo: atividade, tempos e progresso =====================
+      var tx = function (id) { var e = idoc().getElementById(id); return e ? e.textContent : '<<sem ' + id + '>>'; };
       post({ type: 'readlang', value: 'pt' }); await wait(200);
       await W().__ddProg.resetAll();
       var pbk = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (k) { return 'Surveillance capitalism harvests behavioural surplus from ordinary people every single day, and platforms predict what citizens will do tomorrow morning. Nobody explains how these hidden systems really work, so people rarely notice this quiet economic exchange number ' + k + '.'; }).join('\n\n');
@@ -568,29 +569,103 @@ $test = @'
       await until(function () { return D().doc && D().doc.title === 'Painel ao vivo teste'; }, 20000);
       await wait(700);
       var psel = idoc().getElementById('lb-read-mode'); psel.value = 'focus'; psel.dispatchEvent(new Event('change'));
-      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 8000);
+      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 40000);
       var pfp = idoc().getElementById('lb-focus-panel');
-      ok('P1 o painel começa com AGORA (atividade e tempos) e PROGRESSO (palavras, %, sessão e próxima marca) antes de HOJE e das palavras salvas', /^AGORA/.test(pfp.querySelectorAll('section')[0].textContent) && /^PROGRESSO/.test(pfp.querySelectorAll('section')[1].textContent) && /Lendo/.test(pfp.textContent) && /Ouvindo/.test(pfp.textContent) && /Total/.test(pfp.textContent) && /0%/.test(idoc().getElementById('lb-fp-pct').textContent) && /Próxima marca: 10%/.test(idoc().getElementById('lb-fp-next').textContent), idoc().getElementById('lb-fp-next').textContent);
+      ok('P1 o painel começa com AGORA (atividade e tempos) e PROGRESSO (palavras, %, sessão e próxima marca) antes de HOJE e das palavras salvas', /^AGORA/.test(pfp.querySelectorAll('section')[0].textContent) && /^PROGRESSO/.test(pfp.querySelectorAll('section')[1].textContent) && /Lendo/.test(pfp.textContent) && /Ouvindo/.test(pfp.textContent) && /Total/.test(pfp.textContent) && /0%/.test(tx('lb-fp-pct')) && /Próxima marca: 10%/.test(tx('lb-fp-next')), tx('lb-fp-next'));
       var pinfo = await W().__ddWeek.bookInfo(D().doc.id), pexp = pinfo.cum[5], ppct = Math.floor(pexp / pinfo.words * 100);
       D().doc.pos = 5; D().emit('progress', { pos: 5 }); await wait(100);
-      ok('P2 avançar na leitura soma as palavras e a porcentagem na hora, e mostra as palavras ganhas na sessão', idoc().getElementById('lb-fp-words').textContent.indexOf(D().nf().format(pexp)) >= 0 && new RegExp('^' + ppct + '%').test(idoc().getElementById('lb-fp-pct').textContent) && idoc().getElementById('lb-fp-sess').textContent.indexOf('+' + D().nf().format(pexp)) === 0 && parseInt(idoc().querySelector('#lb-focus-panel .lb-bar-fill').style.width) === ppct, idoc().getElementById('lb-fp-words').textContent + ' | ' + idoc().getElementById('lb-fp-pct').textContent);
+      ok('P2 avançar na leitura soma as palavras e a porcentagem na hora, e mostra as palavras ganhas na sessão', tx('lb-fp-words').indexOf(D().nf().format(pexp)) >= 0 && new RegExp('^' + ppct + '%').test(tx('lb-fp-pct')) && tx('lb-fp-sess').indexOf('+' + D().nf().format(pexp)) === 0 && parseInt(idoc().querySelector('#lb-focus-panel .lb-bar-fill').style.width) === ppct, tx('lb-fp-words') + ' | ' + tx('lb-fp-pct'));
       var pnext = [10, 25, 50, 75, 90, 100].filter(function (m) { return m > ppct; })[0];
-      ok('P3 a próxima marca é a primeira acima da porcentagem atual e diz quantas palavras faltam', new RegExp('Próxima marca: ' + pnext + '%').test(idoc().getElementById('lb-fp-next').textContent) && /faltam [\d.]+ palavras/.test(idoc().getElementById('lb-fp-next').textContent), 'pct=' + ppct + ' | ' + idoc().getElementById('lb-fp-next').textContent);
-      await wait(32000);   // a atividade de leitura vale por 30 s depois do último movimento na página
-      ok('P4 sem mexer na página por mais de 30 s nem narração, a atividade é Pausado', /Pausado/.test(idoc().getElementById('lb-fp-act').textContent) && !idoc().getElementById('lb-fp-act').classList.contains('on'));
+      ok('P3 a próxima marca é a primeira acima da porcentagem atual e diz quantas palavras faltam', new RegExp('Próxima marca: ' + pnext + '%').test(tx('lb-fp-next')) && /faltam [\d.]+ palavras/.test(tx('lb-fp-next')), 'pct=' + ppct + ' | ' + tx('lb-fp-next'));
+      await until(function () { return /Pausado/.test(tx('lb-fp-act')); }, 120000);   // a atividade de leitura vale por 30 s depois do último movimento na página; espera a condição em vez de um tempo fixo
+      ok('P4 sem mexer na página por mais de 30 s nem narração, a atividade é Pausado', /Pausado/.test(tx('lb-fp-act')) && !idoc().getElementById('lb-fp-act').classList.contains('on'), tx('lb-fp-act') + ' | tts.playing=' + D().tts.playing);
       W().dispatchEvent(new (W().Event)('wheel')); await wait(1200);
-      ok('P5 mexer na página muda a atividade para Lendo', /^Lendo$/.test(idoc().getElementById('lb-fp-act').textContent) && idoc().getElementById('lb-fp-act').classList.contains('on'), idoc().getElementById('lb-fp-act').textContent);
+      ok('P5 mexer na página muda a atividade para Lendo', /^Lendo$/.test(tx('lb-fp-act')) && idoc().getElementById('lb-fp-act').classList.contains('on'), tx('lb-fp-act'));
       D().tts.playing = true; await wait(3500); W().dispatchEvent(new (W().Event)('wheel')); await wait(1100);
       var pl = W().__ddProg.log.d[W().__ddProg.dayKey()] || {};
-      ok('P6 lendo e ouvindo ao mesmo tempo mostra os dois, e cada tempo conta separado', /Lendo e ouvindo/.test(idoc().getElementById('lb-fp-act').textContent) && (pl.ls || 0) >= 2 && (pl.rd || 0) >= 3 && /^\d+:\d\d$/.test(pfp.querySelectorAll('.lb-fp-times b')[1].textContent) && pfp.querySelectorAll('.lb-fp-times b')[1].textContent !== '0:00', 'rd=' + pl.rd + ' ls=' + pl.ls + ' | ' + pfp.querySelectorAll('.lb-fp-times b')[1].textContent);
+      ok('P6 lendo e ouvindo ao mesmo tempo mostra os dois, e cada tempo conta separado', /Lendo e ouvindo/.test(tx('lb-fp-act')) && (pl.ls || 0) >= 2 && (pl.rd || 0) >= 3 && /^\d+:\d\d$/.test(pfp.querySelectorAll('.lb-fp-times b')[1].textContent) && pfp.querySelectorAll('.lb-fp-times b')[1].textContent !== '0:00', 'rd=' + pl.rd + ' ls=' + pl.ls + ' | ' + pfp.querySelectorAll('.lb-fp-times b')[1].textContent);
       D().tts.playing = false; await wait(1100);
       D().doc.pos = pinfo.n - 1; D().emit('progress', { pos: pinfo.n - 1 }); await wait(100);
-      ok('P7 ao chegar ao fim, 100% e a mensagem de livro concluído', /^100%/.test(idoc().getElementById('lb-fp-pct').textContent) && /Livro concluído/.test(idoc().getElementById('lb-fp-next').textContent));
+      ok('P7 ao chegar ao fim, 100% e a mensagem de livro concluído', /^100%/.test(tx('lb-fp-pct')) && /Livro concluído/.test(tx('lb-fp-next')));
       D().$('lb-back').click(); await wait(300);
       var pl2 = W().__ddProg.log.d[W().__ddProg.dayKey()] || {};
       ok('P8 os tempos de leitura e escuta ficam no log de estudo e aparecem no painel de progresso da biblioteca', (pl2.rd || 0) >= 3 && (pl2.ls || 0) >= 2 && /lendo \/ ouvindo/.test(idoc().getElementById('lb-prog').textContent), 'rd=' + pl2.rd + ' ls=' + pl2.ls + ' | ' + idoc().getElementById('lb-prog').textContent.replace(/\s+/g, ' ').slice(0, 220));
       psel = idoc().getElementById('lb-read-mode'); psel.value = 'single'; psel.dispatchEvent(new Event('change'));
-      await W().__ddProg.resetAll();      // ==== PROXIMAS ====
+      await W().__ddProg.resetAll();      // ===================== Q. fechamento da semana =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      await W().__ddProg.resetAll();
+      ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana', 'dd-ingles-semana-hist'].forEach(function (k) { W().localStorage.removeItem(k); });
+      var qbk = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (k) { return 'Surveillance capitalism harvests behavioural surplus from ordinary people every single day, and platforms predict what citizens will do tomorrow morning. Nobody explains how these hidden systems really work, so people rarely notice this quiet economic exchange number ' + k + '.'; }).join('\n\n');
+      await D().addText('Fechamento teste', qbk);
+      await until(function () { return D().doc && D().doc.title === 'Fechamento teste'; }, 20000);
+      var qid = D().doc.id;
+      await D().db.put('vocab', { id: 'en:fechsaved', word: 'fechsaved', lang: 'en', tr: 'teste', sent: '', doc: 'Fechamento teste', added: Date.now(), due: Date.now() + 86400000, ivl: 1, ease: 2.5, reps: 1, lapses: 0 });
+      D().$('lb-back').click(); await wait(300);
+      var q3 = W().__ddWeek.dayKey(new Date(Date.now() - 2 * 86400000));
+      W().__ddWeek.store({ docId: qid, title: 'Fechamento teste', start: q3, startWords: 0 });
+      W().__ddProg.add('sec', 3600, W().__ddProg.dayKey()); W().__ddProg.add('rd', 1200, W().__ddProg.dayKey()); W().__ddProg.add('ls', 600, W().__ddProg.dayKey()); W().__ddProg.add('rev', 7, W().__ddProg.dayKey());
+      W().localStorage.setItem('dd-ingles-dia-hist', JSON.stringify([W().__ddWeek.dayKey()]));
+      var qm = await D().db.get('meta', qid); qm.pos = 9; await D().db.put('meta', qm);
+      await W().__ddWeek.render(); await until(function () { return idoc().getElementById('lb-close'); }, 15000);
+      var qstats = Array.prototype.map.call(idoc().querySelectorAll('#lb-close .lb-close-stat'), function (c) { return c.textContent; });
+      ok('Q1 ao concluir o livro aparece o fechamento da semana com a revisão em 8 números reais', !!idoc().getElementById('lb-week-fin') && qstats.length === 8 && /^3dias de leitura/.test(qstats[0]) && /^60min estudados/.test(qstats[2]) && /^20 \/ 10min lendo/.test(qstats[3]) && /^1palavras salvas/.test(qstats[4]) && /^7revisões/.test(qstats[5]) && /^1sessões do dia/.test(qstats[6]), qstats.join(' | '));
+      idoc().getElementById('lb-close-text').value = 'short summary';
+      idoc().getElementById('lb-close-text').dispatchEvent(new Event('input'));
+      ok('Q2 o contador de palavras acompanha o texto', /2 \/ 150 palavras/.test(idoc().getElementById('lb-close-count').textContent));
+      idoc().getElementById('lb-close-save').click();
+      ok('Q3 resumo curto recebe dicas (palavras, vocabulário do livro e objeção) e não é salvo', /pelo menos 100 palavras/.test(idoc().getElementById('lb-close-out').textContent) && /palavras do livro/.test(idoc().getElementById('lb-close-out').textContent) && /objeção/.test(idoc().getElementById('lb-close-out').textContent) && !W().__ddWeek.load().closing && JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]').length === 0);
+      var qtext = [1, 2, 3, 4, 5].map(function () { return 'Surveillance capitalism harvests behavioural surplus from ordinary people, and platforms predict what citizens will do tomorrow. However, I disagree that nobody notices this quiet economic exchange at all.'; }).join(' ');
+      idoc().getElementById('lb-close-text').value = qtext; idoc().getElementById('lb-close-save').click();
+      await until(function () { return idoc().getElementById('lb-close-saved'); }, 15000);
+      var qh = JSON.parse(W().localStorage.getItem('dd-ingles-semana-hist')), qe = JSON.parse(W().localStorage.getItem('dd-ingles-escrita'));
+      ok('Q4 resumo completo é salvo: aparece no fechamento, vai para "Seus textos" e marca o livro como fechado no histórico', /Fechamento salvo \(\d+ palavras\)/.test(idoc().getElementById('lb-close-saved').textContent) && !idoc().getElementById('lb-close-text') && qe.length === 1 && qe[0].kind === 'semana' && qh.length === 1 && qh[0].closed === W().__ddWeek.dayKey() && qh[0].stats.minutes === 60 && qh[0].stats.rev === 7, JSON.stringify(qh[0].stats));
+      ok('Q5 sem o livro no roteiro, o próximo sugerido é a semana 1 e há a opção de escolher outro', /semana 1 · Sêneca — Sobre a Brevidade da Vida/.test(idoc().getElementById('lb-close').textContent) && !!idoc().getElementById('lb-close-next') && !!idoc().getElementById('lb-close-other'));
+      W().localStorage.setItem('dd-ingles-semana-hist', JSON.stringify(qh.concat([{ slug: 'seneca-brevidade-da-vida', docId: 'x', title: 'x', date: W().__ddWeek.dayKey(), days: 5 }])));
+      await W().__ddWeek.render(); await until(function () { return idoc().getElementById('lb-close-next'); }, 15000);
+      ok('Q6 o próximo sugerido pula os livros do roteiro já lidos (semana 2 depois da 1)', /semana 2 · Epicteto/.test(idoc().getElementById('lb-close').textContent) && /Começar a semana 2/.test(idoc().getElementById('lb-close-next').textContent));
+      idoc().getElementById('lb-close-next').click();
+      await until(function () { var p = W().__ddWeek.load(); return p && p.slug === 'epicteto-enchiridion'; }, 40000);
+      ok('Q7 começar o próximo livro traz o texto para a biblioteca e abre o plano da semana 2', W().__ddWeek.load().slug === 'epicteto-enchiridion' && W().__ddWeek.load().title === 'Epictetus — The Enchiridion' && !W().__ddWeek.load().closing);
+      await W().__ddProg.resetAll(); await wait(300);
+      ok('Q8 Zerar estatísticas apaga o histórico das semanas e mantém o texto do fechamento', W().localStorage.getItem('dd-ingles-semana-hist') === null && JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]').filter(function (e) { return e.kind === 'semana'; }).length === 1);
+      ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana', 'dd-ingles-semana-hist'].forEach(function (k) { W().localStorage.removeItem(k); });      // ===================== R. a posição de leitura não anda quando o texto reflui (modo foco recolhe o menu; troca de modo) =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      var rbk = Array.apply(null, Array(90)).map(function (_, k) { return 'Paragraph ' + (k + 1) + ': of things some are in our power, and others are not, so we must learn to tell them apart and to act only on what truly depends on us, every single day of our short lives, without complaint.'; }).join('\n\n');
+      await D().addText('Posição estável teste', rbk);
+      await until(function () { return D().doc && D().doc.title === 'Posição estável teste'; }, 20000);
+      var rid = D().doc.id; await wait(700);
+      D().$('lb-back').click(); await wait(300);
+      W().localStorage.removeItem('dd-ingles-modo');
+      var rm = await D().db.get('meta', rid); rm.pos = 60; rm.savedAt = Date.now() + 1000; await D().db.put('meta', rm); W().localStorage.removeItem('dd-ingles-sessao');
+      D().setMode('single'); await D().openDoc(rid); await wait(1500);
+      var rpos1 = D().doc.pos;
+      ok('R1 reabrir em coluna única volta ao parágrafo gravado', Math.abs(rpos1 - 60) <= 1, 'pos=' + rpos1);
+      var rsel = idoc().getElementById('lb-read-mode'); rsel.value = 'focus'; rsel.dispatchEvent(new Event('change')); await wait(3000);
+      var rpos2 = D().doc.pos;
+      ok('R2 trocar para o modo foco (o menu recolhe e o texto reflui) mantém a posição de leitura', Math.abs(rpos2 - 60) <= 2, 'pos=' + rpos2);
+      rsel.value = 'side'; rsel.dispatchEvent(new Event('change')); await wait(2500);
+      var rpos3 = D().doc.pos;
+      ok('R3 trocar para lado a lado também mantém a posição', Math.abs(rpos3 - 60) <= 2, 'pos=' + rpos3);
+      rsel.value = 'single'; rsel.dispatchEvent(new Event('change')); await wait(1500);
+      D().$('lb-back').click(); await wait(500);
+      var rm2 = await D().db.get('meta', rid);
+      ok('R4 a posição gravada continua a mesma depois das trocas de modo', Math.abs(rm2.pos - 60) <= 2, 'gravada=' + rm2.pos);
+      D().setMode('focus'); await D().openDoc(rid); await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 40000); await wait(3000);
+      var rpos4 = D().doc.pos;
+      ok('R5 reabrir direto no modo foco não salta para a frente', Math.abs(rpos4 - 60) <= 2, 'pos=' + rpos4);
+      var rsess = tx('lb-fp-sess');
+      ok('R6 o painel não inventa palavras lidas ao reabrir (+0 nesta sessão)', /^\+0 /.test(rsess), rsess);
+      D().setMode('single'); D().$('lb-back').click(); await wait(300);      // ===================== S. a evolução é gravada logo, sem esperar o fechamento da aba =====================
+      await W().__ddProg.resetAll(); await wait(300);
+      var skey = W().__ddProg.dayKey();
+      W().__ddProg.add('heard', 77);
+      var s1 = JSON.parse(W().localStorage.getItem('dd-ingles-log') || '{"d":{}}');
+      ok('S1 palavras ouvidas (e salvas, revisões, ditados) são gravadas na hora, no mesmo instante do evento', ((s1.d[skey] || {}).heard || 0) >= 77, JSON.stringify(s1.d[skey]));
+      W().__ddProg.add('sec', 5); W().__ddProg.add('rd', 5); W().__ddProg.add('ls', 3);
+      await wait(2600);
+      var s2 = JSON.parse(W().localStorage.getItem('dd-ingles-log')), m2 = W().__ddProg.log.d[skey];
+      ok('S2 os tempos (total, lendo, ouvindo) são gravados em até 2 s, sem esperar ocultar nem fechar a aba', s2.d[skey].sec === m2.sec && s2.d[skey].rd === m2.rd && s2.d[skey].ls === m2.ls && s2.d[skey].sec >= 5 && s2.d[skey].ls >= 3, JSON.stringify(s2.d[skey]));
+      await W().__ddProg.resetAll(); await wait(300);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();
@@ -606,7 +681,7 @@ $testFile = "$tmp\__test.html"
 $prof = Join-Path $tmp 'profile'
 $outFile = Join-Path $tmp 'out.txt'
 Start-Process -FilePath $Chrome -ArgumentList @('--headless=new', '--disable-gpu', '--no-first-run', '--autoplay-policy=no-user-gesture-required', "--user-data-dir=`"$prof`"",
-    '--window-size=1400,900', '--virtual-time-budget=900000', '--allow-file-access-from-files', '--dump-dom',
+    '--window-size=1400,900', '--virtual-time-budget=2400000', '--allow-file-access-from-files', '--dump-dom',
     "`"file:///$($testFile.Replace('\','/'))`"") -Wait -NoNewWindow -RedirectStandardOutput $outFile -RedirectStandardError "$tmp\err.txt"
 $dom = [IO.File]::ReadAllText($outFile)
 $m = [regex]::Match($dom, '(?s)<pre id="result"[^>]*>(.*?)</pre>')

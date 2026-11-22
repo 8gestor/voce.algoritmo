@@ -100,8 +100,7 @@
 
     // partes que pedem leitura no banco (cota de hoje e palavras salvas): refeitas com folga depois dos eventos
     async function paintPanel() {
-        panel.textContent = ''; ui = null;
-        const d = D.doc; if (!d || D.state.mode !== 'focus') return;
+        const d = D.doc; if (!d || D.state.mode !== 'focus') { panel.textContent = ''; ui = null; return; }
         if (!cum) prepare();
         const s1 = el('section'); s1.append(el('h3', null, t('hNow')));
         const act = el('p', 'lb-fp-act', ''); act.id = 'lb-fp-act';
@@ -114,7 +113,7 @@
         const wd = el('p', 'lb-fp-line', ''), ss = el('p', 'lb-fp-sess', ''), nx = el('p', 'lb-note lb-fp-next', '');
         wd.id = 'lb-fp-words'; ss.id = 'lb-fp-sess'; nx.id = 'lb-fp-next';
         s2.append(pct, bar, wd, ss, nx);
-        ui = { act, rd, ls, tot, pct, fill, words: wd, sess: ss, next: nx };
+        const nextUi = { act, rd, ls, tot, pct, fill, words: wd, sess: ss, next: nx };
         const s3 = el('section'); s3.append(el('h3', null, t('hToday')));
         const st = window.__ddWeek && window.__ddWeek.status ? await window.__ddWeek.status(d.id, d.pos || 0) : null;
         if (st) s3.append(el('p', 'lb-fp-line', t('quota')(fmt(st.quota))), el('p', st.readToday >= st.quota ? 'lb-ok' : 'lb-note', st.readToday >= st.quota ? t('done') : t('left')(fmt(st.quota - st.readToday))), el('small', null, t('readToday')(fmt(st.readToday))));
@@ -125,7 +124,7 @@
         if (!cards.length) s4.append(el('p', 'lb-note', t('none')));
         else { const ul = el('ul', 'lb-fp-words'); cards.slice(0, 12).forEach((c) => ul.appendChild(el('li', null, c.word + (c.tr ? ' = ' + c.tr : '')))); s4.appendChild(ul); }
         if (D.state.mode !== 'focus' || D.doc !== d) return;
-        panel.append(s1, s2, s3, s4);
+        panel.textContent = ''; panel.append(s1, s2, s3, s4); ui = nextUi;   // troca atômica: o painel nunca fica vazio
         tick();
     }
     let panelTimer = null;

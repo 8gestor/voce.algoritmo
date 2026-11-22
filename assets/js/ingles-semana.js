@@ -23,6 +23,10 @@
             cont: 'Continuar a leitura', end: 'Encerrar a semana', gone: 'O livro da semana não está mais na biblioteca.',
             finished: (d) => 'Livro concluído em ' + d + (d === 1 ? ' dia' : ' dias') + '. Boa leitura!', next: 'Escolher o próximo livro',
             rotH: 'Roteiro de 8 semanas', rotNote: 'Edições de domínio público (Standard Ebooks). Cada livro cabe em uma semana com 50 minutos por dia.', week: 'Semana', words: 'mil palavras', startThis: 'Começar esta semana', preparing: 'Preparando o livro…', reading: 'em andamento', doneTag: 'lido', other: 'Ou escolha outro livro da sua biblioteca (por exemplo, um PDF que você enviou):', rotFail: 'Não consegui carregar o livro: ',
+            closeH: 'Fechamento da semana', cDays: 'dias de leitura', cWords: 'palavras lidas', cMin: 'min estudados', cRdLs: 'min lendo / ouvindo', cSaved: 'palavras salvas', cRev: 'revisões feitas', cSess: 'sessões do dia completas', cTexts: 'textos escritos',
+            closeAsk: 'Escreva, em inglês, um resumo de cerca de 150 palavras: o argumento central do livro e uma objeção sua.', counter: (n) => n + ' / 150 palavras', closeSave: 'Salvar o fechamento', saveAnyway: 'Salvar assim mesmo',
+            needWords: (n) => 'Escreva pelo menos ' + n + ' palavras.', needBook: (n) => 'Use pelo menos ' + n + ' palavras do livro (veja a lista da semana).', needObj: 'Inclua uma objeção sua (however, but, although, I disagree…).',
+            closeSaved: (n) => 'Fechamento salvo (' + n + ' palavras).', nextH: 'Próximo livro', nextSuggest: (n, a, ti) => 'Segue no roteiro: semana ' + n + ' · ' + a + ' — ' + ti, nextStart: (n) => 'Começar a semana ' + n, nextOther: 'Escolher outro livro', nextDone: 'Você concluiu os 8 livros do roteiro. Escolha outro livro da sua biblioteca.',
             hard: 'Palavras para ver antes de ler', hardNote: 'As mais frequentes e menos comuns do livro. Toque nas palavras durante a leitura para salvar as que importam.'
         },
         en: {
@@ -38,6 +42,10 @@
             cont: 'Continue reading', end: 'End the week', gone: 'This week\'s book is no longer in the library.',
             finished: (d) => 'Book finished in ' + d + (d === 1 ? ' day' : ' days') + '. Well read!', next: 'Pick the next book',
             rotH: '8-week reading plan', rotNote: 'Public-domain editions (Standard Ebooks). Each book fits in a week at 50 minutes a day.', week: 'Week', words: 'k words', startThis: 'Start this week', preparing: 'Preparing the book…', reading: 'in progress', doneTag: 'read', other: 'Or pick another book from your library (for example, a PDF you uploaded):', rotFail: 'Could not load the book: ',
+            closeH: 'Week closing', cDays: 'reading days', cWords: 'words read', cMin: 'min studied', cRdLs: 'min reading / listening', cSaved: 'words saved', cRev: 'reviews done', cSess: 'full daily sessions', cTexts: 'texts written',
+            closeAsk: 'Write a summary of about 150 words in English: the book\'s central argument and an objection of your own.', counter: (n) => n + ' / 150 words', closeSave: 'Save the closing', saveAnyway: 'Save anyway',
+            needWords: (n) => 'Write at least ' + n + ' words.', needBook: (n) => 'Use at least ' + n + ' words from the book (see the week\'s list).', needObj: 'Include an objection of your own (however, but, although, I disagree…).',
+            closeSaved: (n) => 'Closing saved (' + n + ' words).', nextH: 'Next book', nextSuggest: (n, a, ti) => 'Next in the plan: week ' + n + ' · ' + a + ' — ' + ti, nextStart: (n) => 'Start week ' + n, nextOther: 'Pick another book', nextDone: 'You finished all 8 books of the plan. Pick another book from your library.',
             hard: 'Words to preview before reading', hardNote: 'The most frequent and least common words in the book. Tap words while reading to save the ones that matter.'
         }
     };
@@ -106,6 +114,10 @@
     const anchor = D.$('lb-drop');
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
 
+    async function startItem(it, metas) {
+        const id = await addRoteiro(it, metas), m = await D.db.get('meta', id), info2 = await bookInfo(id);
+        store({ docId: id, title: m ? m.title : it.doc, slug: it.slug, start: dayKey(), startWords: readWords(info2, (m && m.pos) || 0) });
+    }
     function roteiroList(plan, metas, collapsed) {
         const done = hist(), wrap = collapsed ? el('details', 'lb-rot') : el('div', 'lb-rot'); wrap.id = 'lb-rot';
         const head = collapsed ? el('summary', null, t('rotH')) : el('h3', 'lb-rot-h', t('rotH'));
@@ -124,8 +136,7 @@
                     wrap.querySelectorAll('button').forEach((x) => { x.disabled = true; });
                     msg.textContent = t('preparing');
                     try {
-                        const id = await addRoteiro(it, metas), m = (await D.db.get('meta', id)), info2 = await bookInfo(id);
-                        store({ docId: id, title: m ? m.title : it.doc, slug: it.slug, start: dayKey(), startWords: readWords(info2, (m && m.pos) || 0) });
+                        await startItem(it, metas);
                         render();
                     } catch (e) { msg.textContent = t('rotFail') + (e && e.message ? e.message : e); wrap.querySelectorAll('button').forEach((x) => { x.disabled = false; }); }
                 }, 'lb-primary'); b.id = 'lb-rot-' + it.n; act.appendChild(b);
@@ -135,6 +146,82 @@
         wrap.appendChild(msg);
         return wrap;
     }
+
+    /* fechamento da semana: revisão com números reais, resumo de ~150 palavras com objeção e o próximo livro */
+    const OBJ = /\b(however|but|although|though|yet|on the other hand|i disagree|i think|i believe|i would argue|nevertheless)\b/i;
+    const jget = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } };
+    const inWeek = (key, plan) => { const n = dayNum(key); return n >= dayNum(plan.start) && n <= dayNum(dayKey()); };
+    async function weekStats(plan, days) {
+        const log = (window.__ddProg && window.__ddProg.log && window.__ddProg.log.d) || {}, s = { sec: 0, rd: 0, ls: 0, rev: 0 };
+        Object.keys(log).forEach((k) => { if (inWeek(k, plan)) { s.sec += log[k].sec || 0; s.rd += log[k].rd || 0; s.ls += log[k].ls || 0; s.rev += log[k].rev || 0; } });
+        const since = new Date(plan.start + 'T00:00:00').getTime();
+        let saved = 0; try { saved = (await D.db.all('vocab')).filter((c) => c.doc === plan.title && (c.added || 0) >= since).length; } catch (e) { /* sem banco */ }
+        const texts = jget('dd-ingles-escrita', []).filter((e) => e.kind !== 'semana' && inWeek(e.date, plan)).length;
+        const sess = jget('dd-ingles-dia-hist', []).filter((k) => inWeek(k, plan)).length;
+        return { days, sec: s.sec, rd: s.rd, ls: s.ls, rev: s.rev, saved, texts, sess };
+    }
+    function closingCard(plan, info, metas, st) {
+        const card = el('div', 'lb-close'); card.id = 'lb-close';
+        card.appendChild(el('h3', 'lb-close-h', t('closeH')));
+        const grid = el('div', 'lb-close-grid');
+        [[st.days, t('cDays')], [fmtN(info.words), t('cWords')], [Math.round(st.sec / 60), t('cMin')], [Math.round(st.rd / 60) + ' / ' + Math.round(st.ls / 60), t('cRdLs')], [st.saved, t('cSaved')], [st.rev, t('cRev')], [st.sess, t('cSess')], [st.texts, t('cTexts')]].forEach((p) => {
+            const c = el('div', 'lb-close-stat'); c.append(el('strong', null, String(p[0])), el('small', null, p[1])); grid.appendChild(c);
+        });
+        card.appendChild(grid);
+        if (plan.closing) {
+            const done = el('p', 'lb-ok', t('closeSaved')(plan.closing.words)); done.id = 'lb-close-saved';
+            card.append(done, el('blockquote', 'lb-close-quote', plan.closing.text));
+        } else {
+            card.appendChild(el('p', 'lb-note', t('closeAsk')));
+            const ta = el('textarea', 'lb-input'); ta.id = 'lb-close-text'; ta.rows = 7; ta.spellcheck = false;
+            const cnt = el('p', 'lb-close-count', t('counter')(0)); cnt.id = 'lb-close-count';
+            const out = el('div', 'lb-close-out'); out.id = 'lb-close-out';
+            const words = (s) => s.trim().split(/\s+/).filter(Boolean).length;
+            ta.addEventListener('input', () => { cnt.textContent = t('counter')(words(ta.value)); });
+            let tries = 0;
+            const save = () => {
+                const text = ta.value.trim(), n = words(text);
+                plan.closing = { date: dayKey(), words: n, text }; store(plan);
+                const h = hist(); for (let i = h.length - 1; i >= 0; i--) { if (h[i].docId === plan.docId) { h[i].closed = dayKey(); h[i].stats = { days: st.days, minutes: Math.round(st.sec / 60), saved: st.saved, rev: st.rev, sess: st.sess }; break; } }
+                try { localStorage.setItem(HKEY, JSON.stringify(h)); } catch (e) { /* sem storage */ }
+                const entries = jget('dd-ingles-escrita', []); entries.push({ date: dayKey(), docId: plan.docId, title: plan.title, text, words: n, kind: 'semana' });
+                try { localStorage.setItem('dd-ingles-escrita', JSON.stringify(entries.slice(-200))); } catch (e) { /* sem storage */ }
+                D.emit('written', { words: n });
+                render();
+            };
+            const check = btn(t('closeSave'), () => {
+                tries++;
+                const text = ta.value, n = words(text), need = Math.min(3, info.hard.length);
+                const hits = info.hard.filter((w) => new RegExp('\\b' + w + '\\b', 'i').test(text)).length;
+                const msgs = [];
+                if (n < 100) msgs.push(t('needWords')(100));
+                if (hits < need) msgs.push(t('needBook')(need));
+                if (!OBJ.test(text)) msgs.push(t('needObj'));
+                out.textContent = '';
+                if (!msgs.length) { save(); return; }
+                msgs.forEach((m) => out.appendChild(el('p', 'lb-miss', m)));
+                if (tries >= 2 && n >= 20 && !out.querySelector('#lb-close-force')) { const f = btn(t('saveAnyway'), save); f.id = 'lb-close-force'; out.appendChild(f); }
+            }, 'lb-primary'); check.id = 'lb-close-save';
+            card.append(ta, cnt, check, out);
+        }
+        // próximo livro: o primeiro do roteiro que ainda não foi lido
+        const lido = hist(), nxt = ROTEIRO.find((it) => !lido.some((h) => h.slug === it.slug) && it.slug !== plan.slug);
+        const nb = el('div', 'lb-close-next'); nb.appendChild(el('h3', 'lb-close-h', t('nextH')));
+        const msg = el('p', 'lb-note'); msg.id = 'lb-close-msg';
+        if (nxt) {
+            const names = nxt[D.state.readLang];
+            nb.appendChild(el('p', null, t('nextSuggest')(nxt.n, names[0], names[1])));
+            const go = btn(t('nextStart')(nxt.n), async () => {
+                go.disabled = true; msg.textContent = t('preparing');
+                try { await startItem(nxt, metas); render(); } catch (e) { msg.textContent = t('rotFail') + (e && e.message ? e.message : e); go.disabled = false; }
+            }, 'lb-primary'); go.id = 'lb-close-next';
+            nb.appendChild(go);
+        } else nb.appendChild(el('p', 'lb-note', t('nextDone')));
+        const other = btn(t('nextOther'), () => { store(null); render(); }); other.id = 'lb-close-other';
+        nb.append(other, msg); card.appendChild(nb);
+        return card;
+    }
+    const fmtN = (n) => D.nf().format(n);
 
     let seq = 0;
     async function render() {
@@ -186,7 +273,9 @@
             if (!plan.logged) { addHist({ slug: plan.slug || null, docId: plan.docId, title: plan.title, date: today, days: used }); plan.logged = true; store(plan); }
             const fin = el('p', 'lb-ok', t('finished')(used)); fin.id = 'lb-week-fin';
             body.appendChild(fin);
-            body.appendChild(btn(t('next'), () => { store(null); render(); }, 'lb-primary'));
+            const wst = await weekStats(plan, used);
+            if (my !== seq) return;
+            body.appendChild(closingCard(plan, info, metas, wst));
             return;
         }
         // cota de hoje: o que falta no início do dia dividido pelos dias que restam (hoje incluído)
@@ -229,5 +318,5 @@
         const st = await status(plan.docId, m.pos || 0); if (!st) return null;
         return Object.assign({ plan }, st);
     }
-    window.__ddWeek = { render, bookInfo, readWords, load, store, dayKey, status, today };
+    window.__ddWeek = { render, bookInfo, readWords, load, store, dayKey, status, today, hist };
 })();

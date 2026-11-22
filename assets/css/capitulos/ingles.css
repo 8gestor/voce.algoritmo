@@ -275,3 +275,16 @@ body.lb-focus-open #lb-reader > .lb-focus-panel { display: block; grid-column: 2
 .lb-fp-times b { font-family: var(--font-tech); font-weight: 600; }
 .lb-fp-sess { font-size: 0.84rem; font-weight: 600; margin: 4px 0; }
 .lb-fp-next { font-size: 0.78rem; }
+
+/* fechamento da semana */
+.lb-close { margin-top: 14px; border-top: 1px solid var(--lb-line); padding-top: 12px; }
+.lb-close-h { font-size: 1rem; margin: 10px 0 8px; }
+.lb-close-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.lb-close-stat { border: 1px solid var(--lb-line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; }
+.lb-close-stat strong { font-size: 1.25rem; }
+.lb-close-stat small { color: var(--c-dim); }
+.lb-close textarea { width: 100%; }
+.lb-close-count { font-family: var(--font-tech); font-size: 0.72rem; color: var(--c-dim); margin: 4px 0 8px; }
+.lb-close-out p { margin: 2px 0; }
+.lb-close-quote { margin: 8px 0 14px; padding: 8px 14px; border-left: 3px solid var(--lb-line); font-size: 0.92rem; white-space: pre-wrap; }
+.lb-close-next .lb-btn { margin: 4px 8px 0 0; }
