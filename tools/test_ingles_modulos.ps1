@@ -463,7 +463,7 @@ $test = @'
       await D().addText('Modos de leitura teste', sbook);
       await until(function () { return D().doc && D().doc.title === 'Modos de leitura teste'; }, 20000);
       var msel = idoc().getElementById('lb-read-mode');
-      ok('M1 um seletor reúne os 4 modos de leitura, começa em coluna única e o corpo não tem classe de modo', !!msel && idoc().querySelector('.lb-toolbar').contains(msel) && Array.prototype.map.call(msel.options, function (o) { return o.value; }).join(',') === 'single,wide,side,focus' && msel.value === 'single' && !/lb-(wide|side|focus)-open/.test(idoc().body.className) && /Coluna única/.test(msel.options[0].textContent));
+      ok('M1 um seletor reúne os 4 modos de leitura, começa em coluna única e o corpo não tem classe de modo', !!msel && idoc().querySelector('.lb-toolbar').contains(msel) && Array.prototype.map.call(msel.options, function (o) { return o.value; }).join(',') === 'single,wide,side,focus,tele' && msel.value === 'single' && !/lb-(wide|side|focus)-open/.test(idoc().body.className) && /Coluna única/.test(msel.options[0].textContent));
       var tb = idoc().querySelector('.lb-toolbar').getBoundingClientRect(), bk = idoc().getElementById('lb-back').getBoundingClientRect(), md = idoc().getElementById('lb-readmode').getBoundingClientRect(), stu = idoc().getElementById('lb-study').getBoundingClientRect();
       ok('M2 cabeçalho simétrico: voltar encosta na esquerda, o modo na direita e a barra de estudo ocupa a largura toda', Math.abs(bk.left - tb.left) < 3 && Math.abs(md.right - tb.right) < 3 && stu.width >= tb.width - 3 && Math.abs(stu.left - tb.left) < 3, 'toolbar ' + Math.round(tb.width) + 'px | estudo ' + Math.round(stu.width) + 'px');
       var w1 = idoc().body.getBoundingClientRect().width;
@@ -489,21 +489,23 @@ $test = @'
       ok('M9 sair do modo foco reabre o menu do site e esconde o painel', !document.getElementById('sidebar').classList.contains('collapsed') && !/lb-focus-open/.test(idoc().body.className) && idoc().getElementById('lb-focus-panel').getBoundingClientRect().width === 0);
       W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-modo');
       D().$('lb-back').click(); await wait(200);      // ===================== N. gravar a leitura ao fechar a aba e zerar estatísticas =====================
-      var nbook = [1, 2, 3, 4, 5, 6, 7, 8].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');
+      var nbook = Array.apply(null, Array(60)).map(function (_, k) { return 'Paragraph ' + (k + 1) + ': of things some are in our power, and others are not, so we must learn to tell them apart and to act only on what truly depends on us, every single day of our short lives, without complaint.'; }).join('\n\n');
       await D().addText('Salvar leitura teste', nbook);
       await until(function () { return D().doc && D().doc.title === 'Salvar leitura teste'; }, 20000);
-      var nid2 = D().doc.id; await wait(700);   // deixa o evento de rolagem da abertura terminar
-      D().doc.pos = 4; D().doc.heard = 120;
+      var nid2 = D().doc.id; await wait(1200);   // deixa os eventos da abertura terminarem
+      var npos = 4; D().doc.pos = npos; D().doc.heard = 120;   // (no teste com tempo virtual a rolagem por código não gera evento; o teste de ponta a ponta, tools/test_autosave.ps1, rola de verdade)
       Object.defineProperty(W().document, 'visibilityState', { get: function () { return 'hidden'; }, configurable: true });
       W().document.dispatchEvent(new (W().Event)('visibilitychange'));
       Object.defineProperty(W().document, 'visibilityState', { get: function () { return 'visible'; }, configurable: true });
-      await wait(400);
-      var mir = JSON.parse(W().localStorage.getItem('dd-ingles-sessao') || 'null'), mdb = await D().db.get('meta', nid2);
-      ok('N1 ao ocultar ou fechar a aba, a posição e as palavras ouvidas são gravadas na hora (espelho síncrono e banco)', !!mir && mir.id === nid2 && mir.pos === 4 && mir.heard === 120 && mdb.pos === 4 && mdb.heard === 120 && mdb.savedAt > 0, JSON.stringify(mir));
+      var mirRaw = W().localStorage.getItem('dd-ingles-sessao'), mir = JSON.parse(mirRaw || 'null');   // lido no mesmo instante da gravação (um evento tardio de rolagem poderia regravar depois)
+      await wait(300);
+      var mdb = await D().db.get('meta', nid2);
+      ok('N1 ao ocultar ou fechar a aba, a posição e as palavras ouvidas são gravadas na hora (espelho síncrono e banco)', !!mir && mir.id === nid2 && mir.pos === npos && mir.heard === 120 && mdb.pos === npos && mdb.heard === 120 && mdb.savedAt > 0, JSON.stringify(mir));
       D().$('lb-back').click(); await wait(250);
       var mold = await D().db.get('meta', nid2); mold.pos = 1; mold.heard = 10; mold.savedAt = 1000; await D().db.put('meta', mold);
+      W().localStorage.setItem('dd-ingles-sessao', mirRaw);   // o espelho gravado na hora, intacto, como depois de uma queda
       await D().openDoc(nid2); await until(function () { return D().doc && D().doc.id === nid2; }, 5000);
-      ok('N2 se o banco ficou para trás (aba fechada antes de gravar), ao reabrir vale o espelho mais novo', D().doc.pos === 4 && D().doc.heard === 120, 'pos=' + D().doc.pos + ' ouvidas=' + D().doc.heard);
+      ok('N2 se o banco ficou para trás (aba fechada antes de gravar), ao reabrir vale o espelho mais novo', D().doc.pos === npos && D().doc.heard === 120, 'esperado=' + npos + ' pos=' + D().doc.pos + ' ouvidas=' + D().doc.heard);
       D().$('lb-back').click(); await wait(250);
       W().__ddProg.add('sec', 600); W().__ddProg.add('heard', 300); W().__ddProg.render();
       var mh = await D().db.get('meta', nid2); mh.heard = 500; mh.pos = 5; await D().db.put('meta', mh);
@@ -665,7 +667,86 @@ $test = @'
       await wait(2600);
       var s2 = JSON.parse(W().localStorage.getItem('dd-ingles-log')), m2 = W().__ddProg.log.d[skey];
       ok('S2 os tempos (total, lendo, ouvindo) são gravados em até 2 s, sem esperar ocultar nem fechar a aba', s2.d[skey].sec === m2.sec && s2.d[skey].rd === m2.rd && s2.d[skey].ls === m2.ls && s2.d[skey].sec >= 5 && s2.d[skey].ls >= 3, JSON.stringify(s2.d[skey]));
-      await W().__ddProg.resetAll(); await wait(300);      // ==== PROXIMAS ====
+      await W().__ddProg.resetAll(); await wait(300);      // ===================== U. modo Teleprompter: uma linha grande, palavra a palavra, tradução embaixo =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      var ubk = [1, 2, 3, 4].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart and to act only on what truly depends on us number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');
+      await D().addText('Teleprompter teste', ubk);
+      await until(function () { return D().doc && D().doc.title === 'Teleprompter teste'; }, 20000);
+      await wait(700);
+      var usel = idoc().getElementById('lb-read-mode');
+      ok('U1 o seletor de modos ganhou o Teleprompter como quinta opção', Array.prototype.map.call(usel.options, function (o) { return o.value; }).join(',') === 'single,wide,side,focus,tele' && /Teleprompter/.test(usel.options[4].textContent));
+      usel.value = 'tele'; usel.dispatchEvent(new Event('change'));
+      await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 5; }, 40000);
+      var ust = idoc().createElement('style'); ust.textContent = '.tl-track { transition: none !important; }'; idoc().head.appendChild(ust);   // em tempo virtual a transição não termina antes da medição
+      var utele = idoc().getElementById('lb-tele'), ur = utele.getBoundingClientRect(), uvw = idoc().documentElement.clientWidth, uvh = idoc().documentElement.clientHeight;
+      ok('U2 o modo teleprompter cobre a janela inteira e guarda a escolha', !utele.hidden && idoc().body.classList.contains('lb-tele-open') && Math.abs(ur.width - uvw) < 3 && Math.abs(ur.height - uvh) < 3 && W().localStorage.getItem('dd-ingles-modo') === 'tele', Math.round(ur.width) + 'x' + Math.round(ur.height));
+      var utrack = idoc().getElementById('lb-tele-line'), ufs = parseFloat(W().getComputedStyle(utrack).fontSize), uh = utrack.getBoundingClientRect().height;
+      ok('U3 a frase aparece em UMA linha só, com letras grandes', W().getComputedStyle(utrack).whiteSpace === 'nowrap' && ufs >= 40 && uh < ufs * 1.6 && /^Of things some/.test(utrack.textContent.trim()), 'fonte=' + Math.round(ufs) + 'px altura=' + Math.round(uh) + 'px');
+      var utxt = utrack.textContent;
+      var uci = utxt.indexOf('power'), uprev = ufs;
+      D().emit('piece', { p: 0, s: 0, text: utxt, lang: 'en' }); D().emit('wordpos', { ci: uci, len: 5, text: utxt }); await wait(400);
+      var unow = idoc().querySelectorAll('#lb-tele-line .tl-w.now'), upast = idoc().querySelectorAll('#lb-tele-line .tl-w.past');
+      ok('U4 a palavra falada é destacada, as anteriores esmaecem e só uma está marcada', unow.length === 1 && unow[0].textContent === 'power' && upast.length === 6 && idoc().querySelectorAll('#lb-tele-line .tl-w').length > 10, 'now=' + (unow[0] && unow[0].textContent) + ' passadas=' + upast.length);
+      D().emit('wordpos', { ci: utxt.indexOf('apart'), len: 5, text: utxt }); await wait(300);   // palavra do meio da frase: as primeiras ficam à esquerda por desenho
+      unow = idoc().querySelectorAll('#lb-tele-line .tl-w.now');
+      var uvr = idoc().querySelector('#lb-tele .tl-view').getBoundingClientRect(), unr = unow[0].getBoundingClientRect(), utr = utrack.getBoundingClientRect();
+      var ucentered = Math.abs((unr.left + unr.width / 2) - (uvr.left + uvr.width / 2)) < 60, ufits = utr.width <= uvr.width - 90;
+      ok('U5 a linha rola para manter a palavra falada no centro (ou fica inteira e centralizada quando cabe)', ucentered || ufits, 'palavra a ' + Math.round(Math.abs((unr.left + unr.width / 2) - (uvr.left + uvr.width / 2))) + ' px do centro; linha ' + Math.round(utr.width) + ' px em ' + Math.round(uvr.width));
+      var ulast = utxt.lastIndexOf('them'), ux1 = utrack.style.transform;
+      D().emit('wordpos', { ci: ulast, len: 4, text: utxt }); await wait(400);
+      var ux2 = utrack.style.transform, unow2 = idoc().querySelector('#lb-tele-line .tl-w.now');
+      ok('U6 avançar a palavra move o destaque e a rolagem', !!unow2 && unow2.textContent === 'them' && (ux2 !== ux1 || ufits), ux1 + ' -> ' + ux2);
+      await until(function () { var s = idoc().getElementById('lb-tele-sub'); return s && !s.classList.contains('wait') && s.textContent.length > 5; }, 20000);
+      var usub = idoc().getElementById('lb-tele-sub');
+      ok('U7 a tradução da frase aparece embaixo, no outro idioma, como na legenda', /^\[pt\]/.test(usub.textContent) && !usub.classList.contains('wait'), usub.textContent.slice(0, 60));
+      var ucount = idoc().getElementById('lb-tele-count').textContent;
+      idoc().querySelectorAll('#lb-tele .tl-b')[3].click();   // lê o contador na hora: a voz simulada do teste termina cada frase instantaneamente
+      var ucount2 = idoc().getElementById('lb-tele-count').textContent; D().stopTts(); await wait(300);
+      ok('U8 próxima frase avança o contador', /Frase 1 de/.test(ucount) && /Frase 2 de/.test(ucount2) && /\d+%/.test(ucount2), ucount + ' -> ' + ucount2);
+      var usz = parseFloat(W().getComputedStyle(utrack).fontSize);
+      Array.prototype.filter.call(idoc().querySelectorAll('#lb-tele .tl-b'), function (b) { return b.textContent === 'A+'; })[0].click(); await wait(200);
+      ok('U9 A+ aumenta a letra e o tamanho fica guardado', parseFloat(W().getComputedStyle(utrack).fontSize) > usz && W().localStorage.getItem('dd-ingles-tele-size') !== null);
+      ok('U10 o menu do site recolhe no teleprompter', document.getElementById('sidebar').classList.contains('collapsed'));
+      D().stopTts();
+      idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); await wait(400);
+      ok('U11 Esc sai do teleprompter, volta à coluna única e reabre o menu', idoc().getElementById('lb-tele').hidden && !idoc().body.classList.contains('lb-tele-open') && idoc().getElementById('lb-read-mode').value === 'single' && !document.getElementById('sidebar').classList.contains('collapsed'));
+      D().$('lb-back').click(); await wait(300);      // ===================== V. versos: estrofes e linhas no acompanhamento da narração =====================
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      var vpoema = ['Shall I compare thee to a summer\'s day?', 'Thou art more lovely and more temperate:', 'Rough winds do shake the darling buds of May,', 'And summer\'s lease hath all too short a date;', '', 'Sometime too hot the eye of heaven shines,', 'And often is his gold complexion dimm\'d;', 'And every fair from fair sometime declines,', 'By chance or nature\'s changing course untrimm\'d;', '', 'But thy eternal summer shall not fade,', 'Nor lose possession of that fair thou ow\'st;', 'Nor shall death brag thou wander\'st in his shade,', 'When in eternal lines to time thou grow\'st.'].join('\n');
+      var vprosa = 'Surveillance capitalism harvests behavioural surplus from ordinary people every single day, and\nplatforms predict what citizens will do tomorrow morning. Nobody explains how these hidden\nsystems really work, so people rarely notice this quiet economic exchange at all.';
+      await D().addText('Soneto teste', vpoema + '\n\n' + vprosa + '\n\nHello.\nHi there.');
+      await until(function () { return D().doc && D().doc.title === 'Soneto teste'; }, 20000);
+      var vp = D().doc.paras;
+      ok('V1 poema: cada estrofe vira um bloco de versos com uma linha por unidade', vp.length === 5 && vp[0].t === 'v' && vp[0].s.length === 4 && vp[1].t === 'v' && vp[2].t === 'v' && vp[0].s[1] === 'Thou art more lovely and more temperate:' && vp[2].s[3].indexOf('grow') >= 0, vp.map(function (q) { return q.t + ':' + q.s.length; }).join(' '));
+      ok('V2 prosa quebrada em colunas e diálogo curto continuam sendo prosa, não verso', vp[3].t === 'p' && vp[4].t === 'p' && D().looksVerse(['Hello.', 'Hi there.']) === false && D().looksVerse(['A line', 'Another line']) === true && D().looksVerse(['a line that starts low', 'and goes on in the middle', 'of a long sentence wrapped here']) === false);
+      await wait(400);
+      var vst = idoc().querySelectorAll('.lb-para.lb-verse');
+      var vtops = Array.prototype.map.call(vst[0].querySelectorAll('.lb-s'), function (s) { return Math.round(s.getBoundingClientRect().top); });
+      ok('V3 na tela, 3 estrofes e cada verso numa linha própria', vst.length === 3 && vtops.length === 4 && vtops[0] < vtops[1] && vtops[1] < vtops[2] && vtops[2] < vtops[3] && W().getComputedStyle(vst[0].querySelector('.lb-s')).display === 'block' && idoc().querySelectorAll('.lb-para:not(.lb-verse):not(.lb-head)').length === 2, vtops.join(','));
+      // voz simulada com fronteira de palavra: dá para ver a estrofe, a linha e a palavra em movimento
+      var vtimer = null, vw = W();
+      vw.speechSynthesis.cancel = function () { clearInterval(vtimer); if (vw.__cur) { var u0 = vw.__cur; vw.__cur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      vw.speechSynthesis.speak = function (u) {
+        var ws = u.text.split(/\s+/), ix = 0, ci = 0; vw.__cur = u; u.onstart && u.onstart();
+        vtimer = setInterval(function () { if (ix >= ws.length) { clearInterval(vtimer); vw.__cur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 90);
+      };
+      D().startTts(0, 1);
+      await until(function () { return idoc().querySelector('.lb-para.lb-verse.speaking .lb-s.seg .wd.now'); }, 20000);
+      var vsp = idoc().querySelectorAll('.lb-para.speaking'), vseg = idoc().querySelectorAll('.lb-para.lb-verse.speaking .lb-s.seg'), vnow = idoc().querySelector('.lb-s.seg .wd.now');
+      ok('V4 durante a narração: só a estrofe falada fica marcada, só a linha falada (o 2º verso) e uma palavra dessa linha', vsp.length === 1 && vsp[0] === vst[0] && vseg.length === 1 && vseg[0].dataset.k === '1' && !!vnow && vseg[0].contains(vnow), 'estrofes marcadas=' + vsp.length + ' linha=' + (vseg[0] && vseg[0].dataset.k) + ' palavra=' + (vnow && vnow.textContent));
+      var vk0 = vnow.textContent;
+      await until(function () { var n = idoc().querySelector('.lb-s.seg .wd.now'); return n && n.textContent !== vk0; }, 20000);
+      var vseg2 = idoc().querySelectorAll('.lb-para.lb-verse.speaking .lb-s.seg');
+      ok('V5 a palavra destacada avança dentro da linha, em sincronia com a voz', !!idoc().querySelector('.lb-s.seg .wd.now') && idoc().querySelector('.lb-s.seg .wd.now').textContent !== vk0 && vseg2.length === 1 && vseg2[0].dataset.k === '1', vk0 + ' -> ' + idoc().querySelector('.lb-s.seg .wd.now').textContent);
+      await until(function () { var s = idoc().querySelector('.lb-para.lb-verse.speaking .lb-s.seg'); return s && s.dataset.k === '2'; }, 30000);
+      ok('V6 terminada uma linha, a marca passa para o verso seguinte (3º) na mesma estrofe', idoc().querySelectorAll('.lb-para.lb-verse.speaking .lb-s.seg').length === 1 && idoc().querySelector('.lb-para.lb-verse.speaking .lb-s.seg').dataset.k === '2' && idoc().querySelectorAll('.lb-para.speaking').length === 1);
+      D().stopTts(); await wait(200);
+      D().startTts(0, 3);
+      await until(function () { var q = idoc().querySelectorAll('.lb-para')[1]; return q && q.classList.contains('speaking'); }, 40000);
+      ok('V7 acabando o último verso da estrofe, a marca de estrofe passa para a seguinte', idoc().querySelectorAll('.lb-para')[1].classList.contains('speaking') && !idoc().querySelectorAll('.lb-para')[0].classList.contains('speaking') && idoc().querySelectorAll('.lb-para.speaking').length === 1);
+      D().stopTts(); await wait(200);
+      ok('V8 a estrofe falada ganha a barra de destaque mais forte que as demais', W().getComputedStyle(idoc().querySelectorAll('.lb-para.lb-verse')[2]).borderLeftWidth === '3px' && W().getComputedStyle(idoc().querySelectorAll('.lb-para.lb-verse')[2]).borderLeftStyle === 'solid');
+      D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

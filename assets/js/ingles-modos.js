@@ -4,6 +4,7 @@
  *   wide    Coluna larga (cartão mais largo, menos fundo vazio nas laterais)
  *   side    Lado a lado (original numa coluna e tradução na outra; o desenho das colunas fica no núcleo, em paintPara)
  *   focus   Foco com painel (recolhe o menu do site e mostra, ao lado do texto, o que está acontecendo agora)
+ *   tele    Teleprompter (uma linha grande que rola com a palavra falada; módulo ingles-teleprompter.js)
  * Painel do foco, de cima para baixo:
  *   AGORA       lendo, ouvindo, os dois ou pausado, e o tempo de cada um (lendo, ouvindo, total) contando desde que o livro abriu
  *   PROGRESSO   palavras lidas, % do texto, palavras ganhas nesta sessão e a próxima marca (10, 25, 50, 75, 90, 100%)
@@ -19,7 +20,7 @@
     const WPM = 150, MARKS = [10, 25, 50, 75, 90, 100], ACTIVE_MS = 30000;
     const L = {
         pt: {
-            label: 'Modo de leitura', single: 'Coluna única', wide: 'Coluna larga', side: 'Lado a lado', focus: 'Foco com painel',
+            label: 'Modo de leitura', single: 'Coluna única', wide: 'Coluna larga', side: 'Lado a lado', focus: 'Foco com painel', tele: 'Teleprompter',
             hNow: 'AGORA', hProg: 'PROGRESSO', hToday: 'HOJE', hWords: 'PALAVRAS SALVAS',
             reading: 'Lendo', listening: 'Ouvindo', both: 'Lendo e ouvindo', idle: 'Pausado',
             tRead: 'Lendo', tListen: 'Ouvindo', tTotal: 'Total', sessionTimes: 'nesta sessão',
@@ -29,7 +30,7 @@
             noPlan: 'Sem plano de 7 dias para este livro. Comece uma semana na Biblioteca.', none: 'Toque numa palavra do texto para salvar.'
         },
         en: {
-            label: 'Reading mode', single: 'Single column', wide: 'Wide column', side: 'Side by side', focus: 'Focus with panel',
+            label: 'Reading mode', single: 'Single column', wide: 'Wide column', side: 'Side by side', focus: 'Focus with panel', tele: 'Teleprompter',
             hNow: 'NOW', hProg: 'PROGRESS', hToday: 'TODAY', hWords: 'SAVED WORDS',
             reading: 'Reading', listening: 'Listening', both: 'Reading and listening', idle: 'Paused',
             tRead: 'Reading', tListen: 'Listening', tTotal: 'Total', sessionTimes: 'this session',

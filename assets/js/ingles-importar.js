@@ -77,6 +77,11 @@
                 if (b.querySelector(BLOCKS)) return;                          // só o bloco mais interno
                 const txt = b.textContent.replace(/\s+/g, ' ').trim();
                 if (txt.length < 2 || !/\p{L}/u.test(txt)) return;
+                if (!/^H[1-6]$/.test(b.tagName) && b.querySelector('br') && D.looksVerse) {       // estrofe: linhas separadas por <br> viram versos
+                    const c = b.cloneNode(true); c.querySelectorAll('br').forEach((br) => br.replaceWith('\n'));
+                    const lines = c.textContent.split('\n').map((x) => x.replace(/\s+/g, ' ').trim()).filter(Boolean);
+                    if (D.looksVerse(lines)) { paras.push({ t: 'v', lines, text: lines.join(' ') }); return; }
+                }
                 paras.push({ t: /^H[1-6]$/.test(b.tagName) && txt.length < 140 ? 'h' : 'p', text: txt });
             });
             if (i % 4 === 3) await new Promise((r) => setTimeout(r, 0));

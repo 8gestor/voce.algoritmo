@@ -23,7 +23,7 @@
     const other = (l) => (l === 'en' ? 'pt' : 'en');
     const $ = (id) => document.getElementById(id);
 
-    const MODES = ['single', 'wide', 'side', 'focus'];   // modos de leitura: coluna única, larga, lado a lado, foco com painel (ver ingles-modos.js)
+    const MODES = ['single', 'wide', 'side', 'focus', 'tele'];   // modos de leitura: coluna única, larga, lado a lado, foco com painel (ver ingles-modos.js)
     const state = { readLang: 'pt', audioLang: 'pt', voices: { pt: '', en: '' }, rate: 1, mode: (() => { try { const m = localStorage.getItem('dd-ingles-modo'); return MODES.indexOf(m) >= 0 ? m : 'single'; } catch (e) { return 'single'; } })() };
     state.side = state.mode === 'side';
 
@@ -172,7 +172,7 @@
 
     const PAGE_NUM = /^(page|p\.|pág\.?|página)?\s*\d+(\s*(of|de|\/)\s*\d+)?$/i;
 
-    // Páginas (com linhas) -> parágrafos { t: 'p'|'h', text }
+    // Páginas (com linhas) -> parágrafos { t: 'p'|'h'|'v', text } ('v' = estrofe de versos, com lines[])
     function buildParagraphs(pages) {
         const n = pages.length;
         // cabeçalhos e rodapés: texto que se repete nas margens de várias páginas, e números de página
@@ -253,12 +253,24 @@
         return { title, pageCount: pdf.numPages, paras: buildParagraphs(pages) };
     }
 
+    // Versos: bloco de linhas curtas, quase todas começando em maiúscula e poucas terminando em ponto final (poema, letra, soneto).
+    // Cada linha vira uma unidade narrada e o bloco é a estrofe. Texto corrido quebrado em colunas (linhas ~70 caracteres, que
+    // começam no meio da frase) e diálogos curtos terminados em ponto continuam sendo prosa.
+    function looksVerse(lines) {
+        const L = lines.map((x) => String(x).trim()).filter(Boolean);
+        if (L.length < 2 || L.length > 40) return false;
+        const len = L.map((x) => x.length), avg = len.reduce((a, b) => a + b, 0) / L.length, max = Math.max.apply(null, len);
+        const cap = L.filter((x) => /^[\p{Lu}"“'‘(\[¡¿—-]/u.test(x)).length / L.length;
+        const ender = L.filter((x) => /[.!?]["”')\]]*$/.test(x)).length / L.length;
+        return avg <= 62 && max <= 90 && cap >= 0.8 && ender < 0.75;
+    }
     async function extractTxt(file) {
         const raw = (await file.text()).replace(/\r\n?/g, '\n');
         const paras = raw.split(/\n\s*\n/).map((b) => {
+            const L = b.split('\n').map((x) => x.trim()).filter(Boolean);
+            if (looksVerse(L)) return { t: 'v', lines: L, text: L.join(' ') };
             let t = '';
-            b.split('\n').forEach((ln) => {
-                ln = ln.trim(); if (!ln) return;
+            L.forEach((ln) => {
                 if (/\p{L}-$/u.test(t) && LOWER_START.test(ln)) t = t.slice(0, -1) + ln; else t += (t ? ' ' : '') + ln;
             });
             return { t: 'p', text: t };
@@ -401,7 +413,7 @@
     let trSaveTimer = null;
 
     let wantBoth = false;                                  // a legenda pede sempre os dois idiomas
-    const needTranslation = () => doc && (state.readLang !== doc.lang || state.audioLang !== doc.lang || fullMode || wantBoth || state.side);
+    const needTranslation = () => doc && (state.readLang !== doc.lang || state.audioLang !== doc.lang || fullMode || wantBoth || state.side || state.mode === 'tele');
     const trCount = () => (doc ? Object.keys(doc.tr).length : 0);
 
     function nextPending() {
@@ -532,7 +544,7 @@
             const colL = document.createElement('span'), colR = document.createElement('span');
             colL.className = 'lb-col lb-col-src'; colR.className = 'lb-col lb-col-tr' + (tr ? '' : ' pending');
             p.s.forEach((src, k) => { const sp = document.createElement('span'); sp.className = 'lb-s'; sp.dataset.k = String(k); sp.textContent = src; colL.append(sp, ' '); });
-            if (tr) colR.textContent = tr.join(' ');
+            if (tr) colR.textContent = tr.join(p.t === 'v' ? '\n' : ' ');
             el.append(colL, colR);
             if (tts.mark && tts.mark.p === i) { tts.word = -1; markSpan(true); }
             return;
@@ -554,7 +566,7 @@
         const frag = document.createDocumentFragment();
         doc.paras.forEach((p, i) => {
             const el = document.createElement(p.t === 'h' ? 'h2' : 'p');
-            el.className = 'lb-para' + (p.t === 'h' ? ' lb-head' : '');
+            el.className = 'lb-para' + (p.t === 'h' ? ' lb-head' : '') + (p.t === 'v' ? ' lb-verse' : '');
             el.dataset.i = String(i);
             frag.appendChild(el);
         });
@@ -1002,7 +1014,7 @@
             showProgress(tx('saving'), 1);
             await tick();
             const lang = detectLang(ex.paras);
-            const paras = ex.paras.map((p) => ({ t: p.t, pg: p.pg, s: p.t === 'h' ? [p.text] : splitSentences(p.text, lang) })).filter((p) => p.s.length);
+            const paras = ex.paras.map((p) => ({ t: p.t, pg: p.pg, s: p.t === 'h' ? [p.text] : p.t === 'v' ? p.lines.slice() : splitSentences(p.text, lang) })).filter((p) => p.s.length);
             const words = paras.reduce((a, p) => a + p.s.join(' ').split(/\s+/).length, 0);
             const d = {
                 id: 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -1078,6 +1090,7 @@
         try { localStorage.setItem('dd-ingles-modo', state.mode); } catch (e) { /* sem storage */ }
         applyMode();
         if (doc) { const keep = doc.pos || 0; repaintAll(); pump(); setStatus(); keepPos = keep; settleAndKeep(keep); }
+        emit('mode', state.mode);
     }
     function closeDoc() {
         MODES.forEach((m) => document.body.classList.remove('lb-' + m + '-open'));
@@ -1193,7 +1206,7 @@
         state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },
-        renderDocs, setStatus, ensureTr, flush, setMode, MODES, repaintAll, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
+        renderDocs, setStatus, ensureTr, flush, looksVerse, setMode, MODES, repaintAll, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))
     };
 
     // gancho de teste

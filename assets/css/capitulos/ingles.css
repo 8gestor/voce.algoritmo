@@ -6,6 +6,7 @@ body {
 }
 
 .meta-tag { border: 1px solid var(--lb-line); color: var(--c-dim); }
+body:not(.paper-mode) { max-width: 800px; }   /* Terminal, Claro e Sépia: coluna de leitura (as margens em papel.css a ajustam) */
 .lab h2 { font-family: var(--font-tech); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 2.2em 0 0.8em; }
 /* cabeçalho da Biblioteca: mesmo padrão dos capítulos (selo preenchido, título forte com filete), com subtítulo e texto de apoio em hierarquia clara */
 body:not(.paper-mode) #lb-title { border-bottom: 1px solid var(--lb-line); }
@@ -210,14 +211,14 @@ body:not(.paper-mode) #lb-title { border-bottom: 1px solid var(--lb-line); }
 .lb-side-head, .lb-focus-panel { display: none; }
 /* coluna larga */
 body.paper-mode.lb-wide-open { --paper-pad-x: 48px; max-width: min(1040px, calc(100vw - 2 * var(--paper-pad-x) - 32px)); }
-body.lb-wide-open:not(.paper-mode) .lab { max-width: 1040px; margin: 0 auto; }
+body.lb-wide-open:not(.paper-mode), html[data-margin] body.lb-wide-open:not(.paper-mode) { max-width: 1040px; }
 /* lado a lado */
 body.lb-side-open .lb-side-head { display: grid; grid-template-columns: 1fr 1fr; gap: 0 36px; font-family: var(--font-tech); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--c-dim); border-bottom: 1px solid var(--lb-line); padding-bottom: 6px; margin-bottom: 14px; }
 body.lb-side-open .lb-para:not(.lb-head) { display: grid; grid-template-columns: 1fr 1fr; gap: 0 36px; }
 body.lb-side-open .lb-col-tr { color: var(--c-dim); font-size: 0.94em; }
 body.lb-side-open .lb-col-tr.pending::after { content: '…'; opacity: 0.6; }
 body.paper-mode.lb-side-open, body.paper-mode.lb-focus-open { --paper-pad-x: 40px; max-width: min(1180px, calc(100vw - 2 * var(--paper-pad-x) - 32px)); }
-body.lb-side-open:not(.paper-mode) .lab, body.lb-focus-open:not(.paper-mode) .lab { max-width: 1280px; margin: 0 auto; }
+body.lb-side-open:not(.paper-mode), body.lb-focus-open:not(.paper-mode), html[data-margin] body.lb-side-open:not(.paper-mode), html[data-margin] body.lb-focus-open:not(.paper-mode) { max-width: 1280px; }
 /* foco com painel: texto numa coluna e painel fixo ao lado */
 body.lb-focus-open #lb-reader { display: grid; grid-template-columns: minmax(0, 1fr) 250px; column-gap: 36px; }
 body.lb-focus-open #lb-reader > * { grid-column: 1 / -1; }
@@ -288,3 +289,32 @@ body.lb-focus-open #lb-reader > .lb-focus-panel { display: block; grid-column: 2
 .lb-close-out p { margin: 2px 0; }
 .lb-close-quote { margin: 8px 0 14px; padding: 8px 14px; border-left: 3px solid var(--lb-line); font-size: 0.92rem; white-space: pre-wrap; }
 .lb-close-next .lb-btn { margin: 4px 8px 0 0; }
+
+/* modo Teleprompter: uma linha grande que rola com a palavra falada, tradução embaixo */
+.lb-tele { display: none; }
+body.lb-tele-open { overflow: hidden; }
+body.lb-tele-open #lb-tele { display: flex; flex-direction: column; position: fixed; inset: 0; z-index: 90; background: inherit; color: inherit; font-family: inherit; }
+body.lb-tele-open .lg, body.lb-tele-open .lg-spacer { display: none !important; }
+.tl-bar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--lb-line); }
+.tl-count { flex: 1; font-family: var(--font-tech); font-size: 0.78rem; color: var(--c-dim); padding: 0 8px; }
+.tl-b { min-width: 44px; height: 40px; padding: 0 10px; border: 1px solid var(--lb-line); background: transparent; color: inherit; border-radius: 6px; cursor: pointer; font: inherit; font-size: 0.9rem; }
+.tl-b:hover { background: var(--lb-soft, rgba(128, 128, 128, 0.15)); }
+.tl-stage { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+.tl-view { overflow: hidden; width: 100%; }
+.tl-track { display: inline-block; white-space: nowrap; font-size: calc(clamp(2.6rem, 9vw, 7rem) * var(--tl-size, 1)); line-height: 1.25; font-weight: 600; transition: transform 0.28s ease-out; will-change: transform; }
+.tl-w { padding: 0 0.08em; border-radius: 0.12em; transition: background 0.12s, color 0.12s, opacity 0.2s; cursor: pointer; }
+.tl-w.past { opacity: 0.35; }
+.tl-w.now { background: #ffd400; color: #111; opacity: 1; }
+.tl-sub { text-align: center; padding: 20px 6vw 0; font-size: calc(clamp(1.1rem, 2.6vw, 2rem) * var(--tl-size, 1)); line-height: 1.35; color: var(--c-dim, #888); min-height: 3em; }
+.tl-sub.wait { opacity: 0.5; font-style: italic; }
+.tl-prog { height: 5px; background: var(--lb-line); }
+.tl-prog-fill { height: 100%; width: 0; background: currentColor; }
+@media (prefers-reduced-motion: reduce) { .tl-track { transition: none; } }
+@media (max-width: 600px) { .tl-bar { flex-wrap: wrap; } .tl-count { flex: 1 1 100%; order: 9; } }
+
+/* versos: a estrofe é o bloco, cada linha é uma unidade narrada (a linha falada, a palavra e a faixa seguem por cima, como no texto corrido) */
+.lb-para.lb-verse { margin: 1.5em 0; padding-left: 1.1em; border-left: 3px solid var(--lb-line); }
+.lb-para.lb-verse .lb-s { display: block; }
+.lb-para.lb-verse.speaking { border-left-color: var(--c-text); }
+.lb-verse .lb-col-tr { white-space: pre-line; }
+body.lb-side-open .lb-para.lb-verse { padding-left: 0; border-left: 0; }

@@ -235,3 +235,11 @@ body.paper-mode .prob-fill { background: repeating-linear-gradient(45deg, #1A1A1
 body.paper-mode .prob-val { color: #1A1A18; }
 body.paper-mode .pos-card { background: #F3F1EA !important; border: 1.5px solid #1A1A18 !important; border-top: 4px solid #1A1A18 !important; border-radius: 0 !important; color: #1A1A18 !important; }
 body.paper-mode .pos-title { font-family: 'JetBrains Mono', monospace; color: #1A1A18; }
+
+/* Margens e ajuste de texto também nos temas Terminal, Claro e Sépia (no Papel valem as regras acima).
+   Cada página tem a própria largura máxima (700 a 1000 px), então a margem age por preenchimento lateral:
+   largas = texto mais estreito; estreitas = limite maior e preenchimento pequeno. */
+html[data-margin="narrow"] body:not(.paper-mode) { max-width: 920px; padding-left: 14px; padding-right: 14px; }
+html[data-margin="wide"] body:not(.paper-mode) { box-sizing: border-box; padding-left: clamp(20px, 9vw, 90px); padding-right: clamp(20px, 9vw, 90px); }
+html[data-align="left"] body:not(.paper-mode) p { text-align: left; hyphens: manual; }
+html[data-align="justify"] body:not(.paper-mode) p { text-align: justify; hyphens: auto; }
