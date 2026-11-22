@@ -11,11 +11,11 @@
         pt: { h: 'SEU PROGRESSO', streak: 'sequência', day: 'dia', days: 'dias', today: 'hoje', min: 'min de estudo', heard: 'palavras ouvidas', saved: 'palavras salvas',
               rev: 'revisões', dict: 'ditados', week: 'Últimos 7 dias (minutos)', total: 'Total', none: 'Comece a ler ou ouvir um texto: seu progresso aparece aqui.',
               wd: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
-              reset: 'Zerar estatísticas', ask: 'Zerar minutos de estudo, sequência de dias, palavras ouvidas, o histórico de livros lidos e as sessões do dia? A posição de leitura, os livros e as palavras salvas não mudam.', yes: 'Sim, zerar', no: 'Cancelar' },
+              rdls: 'lendo / ouvindo · hoje', reset: 'Zerar estatísticas', ask: 'Zerar minutos de estudo, sequência de dias, palavras ouvidas, o histórico de livros lidos e as sessões do dia? A posição de leitura, os livros e as palavras salvas não mudam.', yes: 'Sim, zerar', no: 'Cancelar' },
         en: { h: 'YOUR PROGRESS', streak: 'streak', day: 'day', days: 'days', today: 'today', min: 'min studied', heard: 'words heard', saved: 'words saved',
               rev: 'reviews', dict: 'dictations', week: 'Last 7 days (minutes)', total: 'Total', none: 'Start reading or listening to a text: your progress shows up here.',
               wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-              reset: 'Reset statistics', ask: 'Reset study minutes, day streak, words heard, the history of books read and daily sessions? Your reading position, books, saved words and written texts stay as they are.', yes: 'Yes, reset', no: 'Cancel' }
+              rdls: 'reading / listening · today', reset: 'Reset statistics', ask: 'Reset study minutes, day streak, words heard, the history of books read and daily sessions? Your reading position, books, saved words and written texts stay as they are.', yes: 'Yes, reset', no: 'Cancel' }
     };
     const t = (k) => L[D.state.readLang][k];
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
@@ -27,7 +27,7 @@
     function save() { if (!dirty) return; dirty = false; try { localStorage.setItem(KEY, JSON.stringify(log)); } catch (e) { /* ignora */ } }
     function add(field, n, day) {
         const k = day || dayKey();
-        const r = log.d[k] || (log.d[k] = { sec: 0, heard: 0, saved: 0, rev: 0, dict: 0 });
+        const r = log.d[k] || (log.d[k] = { sec: 0, heard: 0, saved: 0, rev: 0, dict: 0, rd: 0, ls: 0 });
         r[field] = (r[field] || 0) + n; dirty = true;
     }
     const active = (r) => r && (r.sec >= 30 || r.heard > 0 || r.rev > 0 || r.saved > 0 || r.dict > 0);
@@ -44,6 +44,8 @@
     setInterval(() => {
         if (!D.doc || document.visibilityState !== 'visible') return;
         if (D.tts.playing || Date.now() - lastAct < 60000) add('sec', 1);
+        if (D.tts.playing) add('ls', 1);                       // ouvindo: narração tocando
+        if (Date.now() - lastAct < 30000) add('rd', 1);        // lendo: mexeu na página nos últimos 30 s
     }, 1000);
     setInterval(save, 10000);
     window.addEventListener('pagehide', save);
@@ -99,7 +101,7 @@
         save();
         updReset();
         h2.textContent = t('h');
-        const td = log.d[dayKey()] || { sec: 0, heard: 0, saved: 0, rev: 0, dict: 0 };
+        const td = log.d[dayKey()] || { sec: 0, heard: 0, saved: 0, rev: 0, dict: 0, rd: 0, ls: 0 };
         const all = Object.keys(log.d).map((k) => log.d[k]);
         tiles.textContent = ''; chart.textContent = '';
         if (!all.some(active)) { tiles.append(el('p', 'lb-empty', t('none'))); return; }
@@ -107,6 +109,7 @@
         tiles.append(
             tile(fmt(st), t('streak') + ' (' + (st === 1 ? t('day') : t('days')) + ')'),
             tile(Math.floor(td.sec / 60) + ' ' + t('min').split(' ')[0], t('today') + ' · ' + t('min').split(' ').slice(1).join(' ')),
+            tile(Math.floor((td.rd || 0) / 60) + ' / ' + Math.floor((td.ls || 0) / 60) + ' min', t('rdls')),
             tile(fmt(td.heard), t('heard') + ' · ' + t('today')),
             tile(fmt(td.saved), t('saved') + ' · ' + t('today')),
             tile(fmt(td.rev + td.dict), t('rev') + ' + ' + t('dict') + ' · ' + t('today'))

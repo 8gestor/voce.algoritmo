@@ -594,6 +594,7 @@
         scrollTimer = setTimeout(() => {
             const i = firstVisible();
             doc.pos = i;
+            emit('progress', { pos: i });
             if (!tts.playing) { anchor = i; pump(); }
             scheduleMetaSave();
             sendHud();

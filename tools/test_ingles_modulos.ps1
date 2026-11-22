@@ -202,7 +202,7 @@ $test = @'
       ok('E1 eventos do estudo entram no registro do dia', today.heard === before + 40 && today.saved >= 1 && today.rev >= 1 && today.dict >= 1, JSON.stringify(today));
       ok('E2 sequência conta dias seguidos até hoje', P.streak() === 3, P.streak() + ' dias');
       P.render();
-      ok('E3 painel mostra a sequência e os blocos do dia', idoc().querySelectorAll('.lb-prog .lb-tile').length === 5 && /^3/.test(idoc().querySelector('.lb-prog .lb-tile-big').textContent), idoc().querySelector('.lb-prog .lb-tile-big').textContent);
+      ok('E3 painel mostra a sequência e os blocos do dia', idoc().querySelectorAll('.lb-prog .lb-tile').length === 6 && /^3/.test(idoc().querySelector('.lb-prog .lb-tile-big').textContent), idoc().querySelector('.lb-prog .lb-tile-big').textContent);
       ok('E4 gráfico dos últimos 7 dias', idoc().querySelectorAll('.lb-prog-col').length === 7);
       ok('E5 grava no navegador', (function () { P.render(); try { return JSON.parse(localStorage.getItem('dd-ingles-log')).d[dk(1)].sec === 900; } catch (e) { return false; } })());
       // tempo de estudo corre com o documento aberto e atividade
@@ -482,9 +482,9 @@ $test = @'
       ok('M7 reabrir mantém lado a lado e o seletor mostra o modo', idoc().body.classList.contains('lb-side-open') && idoc().getElementById('lb-read-mode').value === 'side');
       var mid = D().doc.id; W().__ddWeek.store({ docId: mid, title: 'Modos de leitura teste', start: W().__ddWeek.dayKey(), startWords: 0 });
       msel = idoc().getElementById('lb-read-mode'); msel.value = 'focus'; msel.dispatchEvent(new Event('change'));
-      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 3; }, 8000);
+      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 8000);
       var fp = idoc().getElementById('lb-focus-panel');
-      ok('M8 foco com painel: menu do site recolhido, texto em coluna única e painel ao lado com hoje, livro e palavras', idoc().body.classList.contains('lb-focus-open') && document.getElementById('sidebar').classList.contains('collapsed') && idoc().querySelectorAll('.lb-col').length === 0 && fp.getBoundingClientRect().left > idoc().getElementById('lb-wrap').getBoundingClientRect().right - 2 && /HOJE/.test(fp.textContent) && /Cota de hoje: \d+ palavras/.test(fp.textContent) && /ESTE LIVRO/.test(fp.textContent) && /PALAVRAS SALVAS/.test(fp.textContent), 'foco=' + idoc().body.classList.contains('lb-focus-open') + ' menu=' + document.getElementById('sidebar').classList.contains('collapsed') + ' cols=' + idoc().querySelectorAll('.lb-col').length + ' painelLeft=' + Math.round(fp.getBoundingClientRect().left) + ' wrapRight=' + Math.round(idoc().getElementById('lb-wrap').getBoundingClientRect().right) + ' iframeW=' + idoc().documentElement.clientWidth);
+      ok('M8 foco com painel: menu do site recolhido, texto em coluna única e painel ao lado com hoje, livro e palavras', idoc().body.classList.contains('lb-focus-open') && document.getElementById('sidebar').classList.contains('collapsed') && idoc().querySelectorAll('.lb-col').length === 0 && fp.getBoundingClientRect().left > idoc().getElementById('lb-wrap').getBoundingClientRect().right - 2 && /HOJE/.test(fp.textContent) && /Cota de hoje: \d+ palavras/.test(fp.textContent) && /PROGRESSO/.test(fp.textContent) && /AGORA/.test(fp.textContent) && /PALAVRAS SALVAS/.test(fp.textContent), 'foco=' + idoc().body.classList.contains('lb-focus-open') + ' menu=' + document.getElementById('sidebar').classList.contains('collapsed') + ' cols=' + idoc().querySelectorAll('.lb-col').length + ' painelLeft=' + Math.round(fp.getBoundingClientRect().left) + ' wrapRight=' + Math.round(idoc().getElementById('lb-wrap').getBoundingClientRect().right) + ' iframeW=' + idoc().documentElement.clientWidth);
       msel.value = 'single'; msel.dispatchEvent(new Event('change')); await wait(300);
       ok('M9 sair do modo foco reabre o menu do site e esconde o painel', !document.getElementById('sidebar').classList.contains('collapsed') && !/lb-focus-open/.test(idoc().body.className) && idoc().getElementById('lb-focus-panel').getBoundingClientRect().width === 0);
       W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-modo');
@@ -560,7 +560,37 @@ $test = @'
       ok('O12 a sequência conta dias seguidos e ignora buracos', W().__ddDia.streak([W().__ddDia.dayKey(), W().__ddDia.dayKey(new Date(Date.now() - 86400000)), W().__ddDia.dayKey(new Date(Date.now() - 3 * 86400000))]) === 2 && W().__ddDia.streak([W().__ddDia.dayKey(new Date(Date.now() - 86400000))]) === 1 && W().__ddDia.streak([]) === 0);
       await W().__ddProg.resetAll(); await wait(300);
       ok('O13 Zerar estatísticas apaga as sessões do dia, mas mantém os textos escritos', W().localStorage.getItem('dd-ingles-dia-hist') === null && (W().localStorage.getItem('dd-ingles-dia') === null || (JSON.parse(W().localStorage.getItem('dd-ingles-dia')).written === false && Object.keys(JSON.parse(W().localStorage.getItem('dd-ingles-dia')).manual).length === 0)) && JSON.parse(W().localStorage.getItem('dd-ingles-escrita') || '[]').length === 1);
-      ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana'].forEach(function (k) { W().localStorage.removeItem(k); });      // ==== PROXIMAS ====
+      ['dd-ingles-dia', 'dd-ingles-dia-hist', 'dd-ingles-escrita', 'dd-ingles-semana'].forEach(function (k) { W().localStorage.removeItem(k); });      // ===================== P. painel do foco ao vivo: atividade, tempos e progresso =====================
+      post({ type: 'readlang', value: 'pt' }); await wait(200);
+      await W().__ddProg.resetAll();
+      var pbk = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (k) { return 'Surveillance capitalism harvests behavioural surplus from ordinary people every single day, and platforms predict what citizens will do tomorrow morning. Nobody explains how these hidden systems really work, so people rarely notice this quiet economic exchange number ' + k + '.'; }).join('\n\n');
+      await D().addText('Painel ao vivo teste', pbk);
+      await until(function () { return D().doc && D().doc.title === 'Painel ao vivo teste'; }, 20000);
+      await wait(700);
+      var psel = idoc().getElementById('lb-read-mode'); psel.value = 'focus'; psel.dispatchEvent(new Event('change'));
+      await until(function () { return idoc().querySelectorAll('#lb-focus-panel section').length === 4; }, 8000);
+      var pfp = idoc().getElementById('lb-focus-panel');
+      ok('P1 o painel começa com AGORA (atividade e tempos) e PROGRESSO (palavras, %, sessão e próxima marca) antes de HOJE e das palavras salvas', /^AGORA/.test(pfp.querySelectorAll('section')[0].textContent) && /^PROGRESSO/.test(pfp.querySelectorAll('section')[1].textContent) && /Lendo/.test(pfp.textContent) && /Ouvindo/.test(pfp.textContent) && /Total/.test(pfp.textContent) && /0%/.test(idoc().getElementById('lb-fp-pct').textContent) && /Próxima marca: 10%/.test(idoc().getElementById('lb-fp-next').textContent), idoc().getElementById('lb-fp-next').textContent);
+      var pinfo = await W().__ddWeek.bookInfo(D().doc.id), pexp = pinfo.cum[5], ppct = Math.floor(pexp / pinfo.words * 100);
+      D().doc.pos = 5; D().emit('progress', { pos: 5 }); await wait(100);
+      ok('P2 avançar na leitura soma as palavras e a porcentagem na hora, e mostra as palavras ganhas na sessão', idoc().getElementById('lb-fp-words').textContent.indexOf(D().nf().format(pexp)) >= 0 && new RegExp('^' + ppct + '%').test(idoc().getElementById('lb-fp-pct').textContent) && idoc().getElementById('lb-fp-sess').textContent.indexOf('+' + D().nf().format(pexp)) === 0 && parseInt(idoc().querySelector('#lb-focus-panel .lb-bar-fill').style.width) === ppct, idoc().getElementById('lb-fp-words').textContent + ' | ' + idoc().getElementById('lb-fp-pct').textContent);
+      var pnext = [10, 25, 50, 75, 90, 100].filter(function (m) { return m > ppct; })[0];
+      ok('P3 a próxima marca é a primeira acima da porcentagem atual e diz quantas palavras faltam', new RegExp('Próxima marca: ' + pnext + '%').test(idoc().getElementById('lb-fp-next').textContent) && /faltam [\d.]+ palavras/.test(idoc().getElementById('lb-fp-next').textContent), 'pct=' + ppct + ' | ' + idoc().getElementById('lb-fp-next').textContent);
+      await wait(32000);   // a atividade de leitura vale por 30 s depois do último movimento na página
+      ok('P4 sem mexer na página por mais de 30 s nem narração, a atividade é Pausado', /Pausado/.test(idoc().getElementById('lb-fp-act').textContent) && !idoc().getElementById('lb-fp-act').classList.contains('on'));
+      W().dispatchEvent(new (W().Event)('wheel')); await wait(1200);
+      ok('P5 mexer na página muda a atividade para Lendo', /^Lendo$/.test(idoc().getElementById('lb-fp-act').textContent) && idoc().getElementById('lb-fp-act').classList.contains('on'), idoc().getElementById('lb-fp-act').textContent);
+      D().tts.playing = true; await wait(3500); W().dispatchEvent(new (W().Event)('wheel')); await wait(1100);
+      var pl = W().__ddProg.log.d[W().__ddProg.dayKey()] || {};
+      ok('P6 lendo e ouvindo ao mesmo tempo mostra os dois, e cada tempo conta separado', /Lendo e ouvindo/.test(idoc().getElementById('lb-fp-act').textContent) && (pl.ls || 0) >= 2 && (pl.rd || 0) >= 3 && /^\d+:\d\d$/.test(pfp.querySelectorAll('.lb-fp-times b')[1].textContent) && pfp.querySelectorAll('.lb-fp-times b')[1].textContent !== '0:00', 'rd=' + pl.rd + ' ls=' + pl.ls + ' | ' + pfp.querySelectorAll('.lb-fp-times b')[1].textContent);
+      D().tts.playing = false; await wait(1100);
+      D().doc.pos = pinfo.n - 1; D().emit('progress', { pos: pinfo.n - 1 }); await wait(100);
+      ok('P7 ao chegar ao fim, 100% e a mensagem de livro concluído', /^100%/.test(idoc().getElementById('lb-fp-pct').textContent) && /Livro concluído/.test(idoc().getElementById('lb-fp-next').textContent));
+      D().$('lb-back').click(); await wait(300);
+      var pl2 = W().__ddProg.log.d[W().__ddProg.dayKey()] || {};
+      ok('P8 os tempos de leitura e escuta ficam no log de estudo e aparecem no painel de progresso da biblioteca', (pl2.rd || 0) >= 3 && (pl2.ls || 0) >= 2 && /lendo \/ ouvindo/.test(idoc().getElementById('lb-prog').textContent), 'rd=' + pl2.rd + ' ls=' + pl2.ls + ' | ' + idoc().getElementById('lb-prog').textContent.replace(/\s+/g, ' ').slice(0, 220));
+      psel = idoc().getElementById('lb-read-mode'); psel.value = 'single'; psel.dispatchEvent(new Event('change'));
+      await W().__ddProg.resetAll();      // ==== PROXIMAS ====
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     live();

@@ -263,3 +263,15 @@ body.lb-focus-open #lb-reader > .lb-focus-panel { display: block; grid-column: 2
 .lb-sess-entry { margin: 8px 0 0; padding: 6px 12px; border-left: 3px solid var(--lb-line); font-size: 0.9rem; }
 .lb-sess-entry small { display: block; color: var(--c-dim); font-family: var(--font-tech); font-size: 0.66rem; }
 @media (max-width: 600px) { .lb-sess-row { grid-template-columns: 24px 1fr; } .lb-sess-acts { grid-column: 2; justify-content: flex-start; } }
+
+/* painel do foco: atividade e tempos ao vivo */
+.lb-fp-act { font-weight: 700; font-size: 1.05rem; margin: 2px 0 6px; color: var(--c-dim); }
+.lb-fp-act.on { color: var(--c-text); }
+.lb-fp-act.on::before { content: '●'; font-size: 0.7em; margin-right: 6px; animation: lb-fp-pulse 1.4s ease-in-out infinite; }
+@keyframes lb-fp-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .lb-fp-act.on::before { animation: none; } }
+.lb-fp-times { display: grid; grid-template-columns: 1fr; gap: 2px; margin-bottom: 4px; }
+.lb-fp-times > div { display: flex; justify-content: space-between; font-size: 0.84rem; }
+.lb-fp-times b { font-family: var(--font-tech); font-weight: 600; }
+.lb-fp-sess { font-size: 0.84rem; font-weight: 600; margin: 4px 0; }
+.lb-fp-next { font-size: 0.78rem; }
