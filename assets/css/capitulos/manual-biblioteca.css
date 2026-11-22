@@ -1,0 +1,25 @@
+/* Manual da Biblioteca: página de leitura simples; herda o tema (Papel, Terminal, Claro, Sépia) e as marcas de cor da Biblioteca */
+.mn-page { padding-bottom: 80px; }
+.mn[hidden] { display: none; }
+.mn h1 { font-size: 1.7rem; margin: 10px 0 8px; }
+.mn h2 { scroll-margin-top: 70px; }
+.mn p, .mn li { line-height: 1.6; }
+.mn ul, .mn ol { padding-left: 1.3em; }
+.mn li { margin: 0.35em 0; }
+.mn-toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
+.mn-toc a { font-family: var(--font-tech); font-size: 0.74rem; letter-spacing: 0.04em; padding: 6px 10px; border: 1px solid var(--lb-line); border-radius: 999px; color: var(--c-text); text-decoration: none; }
+.mn-toc a:hover { background: var(--lb-soft, rgba(128, 128, 128, 0.15)); }
+.mn-note { border-left: 3px solid var(--mk-line-edge, #2878ff); padding: 8px 12px; background: var(--mk-line, rgba(40, 120, 255, 0.12)); border-radius: 4px; font-size: 0.94em; }
+.mn-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.95em; }
+.mn-table th, .mn-table td { text-align: left; vertical-align: top; padding: 9px 10px; border-bottom: 1px solid var(--lb-line); }
+.mn-table th { font-family: var(--font-tech); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-dim); }
+.mn-keys { max-width: 420px; }
+kbd { font-family: var(--font-tech); font-size: 0.82em; padding: 2px 7px; border: 1px solid var(--lb-line); border-bottom-width: 2px; border-radius: 5px; }
+.mn-legend { list-style: none; padding-left: 0; }
+.mn-legend li { display: block; }
+.mn-sw { display: inline-block; vertical-align: middle; width: 44px; height: 22px; margin-right: 12px; border-radius: 4px; border: 1px solid var(--lb-line); }
+.mn-sw-stanza { background: var(--mk-stanza); }
+.mn-sw-seg { background: var(--mk-seg); }
+.mn-sw-line { background: var(--mk-line); border-left: 3px solid var(--mk-line-edge); border-right: 3px solid var(--mk-line-edge); }
+.mn-sw-word { background: var(--mk-word); }
+@media (max-width: 600px) { .mn-table th, .mn-table td { padding: 7px 6px; } }

@@ -13,7 +13,7 @@ $tmp = Join-Path ([IO.Path]::GetTempPath()) ('dd-lang-' + [guid]::NewGuid().ToSt
 New-Item -ItemType Directory $tmp | Out-Null
 robocopy $repo $tmp /E /XD .git .github /NFL /NDL /NJH /NJS /NP | Out-Null
 
-$pages = (Get-ChildItem "$repo\*.html" | Where-Object { $_.Name -ne 'index.html' } | Sort-Object Name | ForEach-Object { "'" + $_.Name + "'" }) -join ','
+$pages = (Get-ChildItem "$repo\*.html" | Where-Object { $_.Name -notin @('index.html', 'manual-biblioteca.html') } | Sort-Object Name | ForEach-Object { "'" + $_.Name + "'" }) -join ','
 $harness = @"
 <!doctype html><meta charset="utf-8"><body><pre id="out">...</pre><iframe id="f" style="width:1000px;height:800px"></iframe>
 <script>

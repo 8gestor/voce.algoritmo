@@ -128,7 +128,7 @@
         bPrev.title = bPrev.ariaLabel = t('prev'); bNext.title = bNext.ariaLabel = t('next');
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
-        bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
+        rate = D.state.rate; bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
         bSwap.title = bSwap.ariaLabel = t('swap');
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bOff.title = bOff.ariaLabel = t('off');
         dock.setAttribute('aria-label', t('group'));
@@ -171,7 +171,7 @@
     D.on('open', () => { cur = null; spoken = null; setTimeout(sync, 40); });
     D.on('close', () => { cur = null; spoken = null; dock.hidden = true; spacer.hidden = true; if (D.needBoth) D.needBoth(false); });
     D.on('lang', () => { labels(); render(); });
-    setInterval(() => { if (!dock.hidden) labels(); }, 600);       // ▶/❚❚ acompanha a narração iniciada pelo texto ou pela barra superior
+    D.on('playstate', () => { if (!dock.hidden) labels(); });       // ▶/❚❚ acompanha a narração iniciada pelo texto ou pela barra superior
 
     /* ------------------------------------------------------------ controles */
     function go(n) { if (!n) return; cur = { p: n.p, s: n.s }; spoken = null; render(); D.startTts(n.p, n.s); }
@@ -179,7 +179,7 @@
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
     bSwap.addEventListener('click', () => { D.postParent({ type: 'legend-swap' }); });
-    bRate.addEventListener('click', () => { rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
+    bRate.addEventListener('click', () => { const i0 = RATES.reduce((b, x, i) => (Math.abs(x - D.state.rate) < Math.abs(RATES[b] - D.state.rate) ? i : b), 0); rate = RATES[(i0 + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
     bMin.addEventListener('click', () => { size = Math.max(0.8, Math.round((size - 0.1) * 10) / 10); save(); render(); fit(); });
     bMax.addEventListener('click', () => { size = Math.min(1.8, Math.round((size + 0.1) * 10) / 10); save(); render(); fit(); });
     bOff.addEventListener('click', () => { on = false; save(); sync(); });

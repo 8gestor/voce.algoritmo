@@ -153,7 +153,7 @@
         bPrev.title = bPrev.ariaLabel = t('prev'); bNext.title = bNext.ariaLabel = t('next');
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
-        bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
+        rate = D.state.rate; bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bExit.title = bExit.ariaLabel = t('exit');
         Object.keys(groups).forEach((k) => {
             const g = groups[k]; g.lab.textContent = t(g.key);
@@ -192,14 +192,14 @@
     D.on('mode', () => { cur = null; spoken = null; sync(true); });
     D.on('lang', () => { asked = ''; labels(); render(); });
     window.addEventListener('resize', () => { if (!root.hidden) place(wi); });
-    setInterval(() => { if (!root.hidden) labels(); }, 600);       // ▶/❚❚ acompanha a narração iniciada de fora
+    D.on('playstate', () => { if (!root.hidden) labels(); });      // ▶/❚❚ acompanha a narração iniciada de fora (sem sondar a cada instante)
 
     /* ------------------------------------------------------------ controles */
     function go(n) { if (!n) return; cur = { p: n.p, s: n.s }; spoken = null; render(); D.startTts(n.p, n.s); }
     bPrev.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, -1)); });
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
-    bRate.addEventListener('click', () => { rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
+    bRate.addEventListener('click', () => { const i0 = RATES.reduce((b, x, i) => (Math.abs(x - D.state.rate) < Math.abs(RATES[b] - D.state.rate) ? i : b), 0); rate = RATES[(i0 + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
     bMin.addEventListener('click', () => { size = Math.max(0.6, Math.round((size - 0.1) * 10) / 10); saveSize(); render(); place(wi); });
     bMax.addEventListener('click', () => { size = Math.min(1.7, Math.round((size + 0.1) * 10) / 10); saveSize(); render(); place(wi); });
     bExit.addEventListener('click', () => { D.stopTts(); D.setMode('single'); });

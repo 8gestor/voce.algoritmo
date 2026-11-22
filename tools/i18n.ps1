@@ -26,7 +26,7 @@ $srcDir = Join-Path $repo 'assets\i18n\src'
 $outDir = Join-Path $repo 'assets\i18n\en'
 
 function Get-Pages {
-    Get-ChildItem "$repo\*.html" | Where-Object { $_.Name -ne 'index.html' } |
+    Get-ChildItem "$repo\*.html" | Where-Object { $_.Name -notin @('index.html', 'manual-biblioteca.html') } |
         ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_.Name) } | Sort-Object
 }
 

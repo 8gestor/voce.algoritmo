@@ -38,7 +38,7 @@ $test = @'
   window.addEventListener('load', async function () {
     try {
       await wait(1200);
-      var links = document.querySelectorAll('.chapter-link'); links[links.length - 1].click();
+      var links = document.querySelectorAll('.chapter-link'); links[links.length - 2].click();   // Biblioteca (o último é o Manual)
       await until(function () { return ifr().contentWindow.DDLab; }, 8000);
       var w = W(), spoken = [];
       w.DD_TRANSLATOR_FACTORY = function (a, b) { return { translate: async function (t) { await wait(2); return '[' + b + '] ' + t; } }; };
@@ -847,6 +847,35 @@ $test = @'
       $('btn-tele').click();
       await until(function () { return D().state.mode === tmode0; }, 3000);
       ok('T3 clicar de novo volta ao modo anterior', D().state.mode === tmode0);
+      D().$('lb-back').click(); await wait(300);      // ===================== Y. velocidade: retomar da palavra e estimativa sem eventos de palavra =====================
+      await D().addText('Velocidade teste', 'We must learn to tell the things apart, and then act only on what depends on us, because nobody can compel you unless you let it happen. Second sentence here stays short.');
+      await until(function () { return D().doc && D().doc.title === 'Velocidade teste'; }, 20000);
+      await wait(600);
+      var yw = W(), ytxt = [], ytm = null, ycur = null;
+      yw.speechSynthesis.cancel = function () { clearInterval(ytm); if (ycur) { var u0 = ycur; ycur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      yw.speechSynthesis.speak = function (u) { ytxt.push(u.text); ycur = u; u.onstart && u.onstart(); var ws = u.text.split(/\s+/), ix = 0, ci = 0; ytm = setInterval(function () { if (ix >= ws.length) { clearInterval(ytm); ycur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 300); };
+      post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      var yfull = D().doc.paras[0].s[0], ycis = [];
+      D().on('wordpos', function (e) { ycis.push(e.ci); });
+      D().startTts(0, 0);
+      await until(function () { return ycis.length >= 6 && ycis.slice(-1)[0] > 50; }, 30000);
+      var yresumeAt = ycis.slice(-1)[0]; post({ type: 'rate', value: 1.5 });
+      await until(function () { return ytxt.length >= 2; }, 20000);
+      var yresume = ytxt[1];
+      ok('Y1 trocar a velocidade no meio da frase continua da palavra falada (antes recomeçava a frase do início)', yresume !== yfull && yfull.endsWith(yresume) && yfull.charAt(yfull.length - yresume.length - 1) === ' ' && yresume.length < yfull.length * 0.8, 'retomou com ' + yresume.length + ' de ' + yfull.length + ' caracteres');
+      var ylast = ycis.slice(-3);
+      ok('Y2 depois de retomar, o destaque continua a partir da posição já falada, sem voltar ao início da frase', ycis.length >= 7 && Math.min.apply(null, ycis.slice(ycis.indexOf(Math.max.apply(null, ycis.slice(0, 20))))) >= 0 && ycis.slice(-1)[0] >= yresumeAt - 1, 'último ci=' + ycis.slice(-1)[0] + ' (retomou perto de ' + yresumeAt + ')');
+      D().stopTts(); post({ type: 'rate', value: 1 });
+      // voz sem eventos de palavra: a posição vem da estimativa por tempo (pontuação conta como pausa) e avança sozinha até o fim
+      ytxt = []; var ynb = [];
+      yw.speechSynthesis.speak = function (u) { ytxt.push(u.text); ycur = u; u.onstart && u.onstart(); ytm = setTimeout(function () { ycur = null; u.onend && u.onend(); }, 2600); };
+      yw.speechSynthesis.cancel = function () { clearTimeout(ytm); if (ycur) { var u0 = ycur; ycur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      D().on('wordpos', function (e) { ynb.push(e.ci); });
+      D().startTts(0, 0);
+      await until(function () { return ynb.length >= 8 && ynb.slice(-1)[0] > yfull.length * 0.6; }, 30000);
+      var ymono = true; for (var yi = 1; yi < ynb.length; yi++) if (ynb[yi] < ynb[yi - 1]) ymono = false;
+      ok('Y3 sem evento de palavra da voz, o destaque avança por estimativa, sem voltar atrás e chegando perto do fim da frase', ymono && ynb.slice(-1)[0] > yfull.length * 0.6, 'avanços=' + ynb.length + ' último=' + ynb.slice(-1)[0] + '/' + yfull.length);
+      D().stopTts(); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
       ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);

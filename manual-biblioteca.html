@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Manual da Biblioteca</title>
+    <link rel="stylesheet" href="assets/fonts/fonts.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/capitulos/ingles.css">
+    <link rel="stylesheet" href="assets/css/capitulos/manual-biblioteca.css">
+    <link rel="stylesheet" href="assets/css/papel.css">
+</head>
+<body>
+<main class="lab mn-page" id="manual">
+    <span class="meta-tag">MANUAL // BIBLIOTECA</span>
+
+    <!-- PORTUGUÊS -->
+    <div class="mn" lang="pt-BR" id="mn-pt">
+        <h1>Manual da Biblioteca</h1>
+        <p class="lb-lead">Leia, ouça e escreva em inglês a partir de qualquer livro seu.</p>
+        <nav class="mn-toc" aria-label="Nesta página">
+            <a href="#pt-comecar">Começar</a><a href="#pt-modos">Modos de leitura</a><a href="#pt-narracao">Narração e cores</a><a href="#pt-idiomas">Ler e ouvir</a><a href="#pt-tele">Teleprompter</a><a href="#pt-estudo">Ferramentas de estudo</a><a href="#pt-rotina">Rotina</a><a href="#pt-privacidade">Privacidade</a><a href="#pt-problemas">Problemas</a>
+        </nav>
+
+        <h2 id="pt-comecar">1. Começar</h2>
+        <ol>
+            <li><b>Traga um texto:</b> arraste um PDF, um .txt ou um EPUB para a área de envio, cole um texto, ou use o <b>Livro da semana</b> (livros de domínio público já incluídos). PDFs são lidos no seu aparelho.</li>
+            <li><b>Abra o livro</b> na lista. A biblioteca guarda a posição, as palavras ouvidas e a tradução já feita; você volta exatamente de onde parou.</li>
+            <li><b>Toque numa frase</b> para ouvi-la dali em diante. Toque numa palavra para ver o significado, a pronúncia e salvá-la no vocabulário.</li>
+        </ol>
+        <p class="mn-note">Poemas e letras enviados em .txt, colados ou em EPUB mantêm as linhas e as estrofes. PDFs não preservam linhas: poemas em PDF viram prosa.</p>
+
+        <h2 id="pt-modos">2. Modos de leitura</h2>
+        <p>O seletor no cabeçalho do leitor tem cinco modos. A escolha fica guardada.</p>
+        <table class="mn-table">
+            <tr><th>Modo</th><th>Para quê</th></tr>
+            <tr><td><b>Coluna única</b></td><td>Padrão. Texto confortável, ideal para o celular.</td></tr>
+            <tr><td><b>Coluna larga</b></td><td>Aproveita melhor telas grandes.</td></tr>
+            <tr><td><b>Lado a lado</b></td><td>Original à esquerda, tradução à direita; a frase narrada é marcada nas duas colunas. Precisa do tradutor do navegador.</td></tr>
+            <tr><td><b>Foco com painel</b></td><td>Recolhe o menu e mostra, ao vivo: o que você está fazendo (lendo, ouvindo, os dois), tempos, palavras lidas, porcentagem do livro, próxima marca (10, 25, 50, 75, 90, 100%) e a cota do dia.</td></tr>
+            <tr><td><b>Teleprompter</b></td><td>Legenda corrida em tela cheia. Veja a seção própria abaixo.</td></tr>
+        </table>
+
+        <h2 id="pt-narracao">3. Narração e cores</h2>
+        <p>Aperte <b>▶</b> na barra (ou toque numa frase). A narração acompanha o texto em quatro camadas, cada uma de uma cor, em qualquer modo e tema:</p>
+        <ul class="mn-legend">
+            <li><span class="mn-sw mn-sw-stanza"></span><b>Parágrafo ou estrofe</b>: fundo suave, mostra onde você está.</li>
+            <li><span class="mn-sw mn-sw-seg"></span><b>Frase</b> (texto destacado): âmbar.</li>
+            <li><span class="mn-sw mn-sw-line"></span><b>Linha</b>: faixa azul que desce com a leitura.</li>
+            <li><span class="mn-sw mn-sw-word"></span><b>Palavra sincronizada</b>: magenta forte, acompanha a voz.</li>
+        </ul>
+        <ul>
+            <li><b>Velocidade</b> (0,75× a 1,5×) pode mudar a qualquer momento: a voz continua da palavra em que estava.</li>
+            <li><b>Voz:</b> escolha em <b>Voz</b>. Vozes "Natural" do Edge são as melhores. Há também uma voz neural local opcional (cerca de 60 MB por idioma, baixada uma vez).</li>
+            <li>Algumas vozes não avisam a palavra falada; nelas o destaque é estimado pelo tempo (com pausas em vírgulas e pontos) e se ajusta a cada frase.</li>
+        </ul>
+
+        <h2 id="pt-idiomas">4. Ler e ouvir, em qualquer combinação</h2>
+        <p>Na barra do site, <b>LER</b> e <b>OUVIR</b> são independentes, em português (do Brasil) ou inglês:</p>
+        <table class="mn-table">
+            <tr><th>Ler</th><th>Ouvir</th><th>Uso típico</th></tr>
+            <tr><td>EN</td><td>EN</td><td>Imersão total: leia e ouça o original.</td></tr>
+            <tr><td>PT</td><td>EN</td><td>Entenda pelo português enquanto treina o ouvido em inglês.</td></tr>
+            <tr><td>EN</td><td>PT</td><td>Leia o original com a voz em português guiando o sentido.</td></tr>
+            <tr><td>PT</td><td>PT</td><td>Revisar o conteúdo na língua materna.</td></tr>
+        </table>
+        <p>Pode trocar com a narração tocando; a voz e o texto mudam na hora. A tradução é feita frase a frase pelo Tradutor embutido do Chrome (no seu aparelho). A frase falada vem primeiro e o restante traduz atrás.</p>
+
+        <h2 id="pt-tele">5. Teleprompter (legenda corrida)</h2>
+        <ul>
+            <li>A frase corre da direita para a esquerda, no idioma de <b>Ler</b>; a palavra falada fica no ponto de leitura (marca a 30% da largura) e acende em sincronia com a voz, que fala no idioma de <b>Ouvir</b>.</li>
+            <li>Embaixo, em letra menor, o outro idioma. O resto da tela some (menu, barra e rodapé).</li>
+            <li>A narração começa ao escolher o modo. Botões na própria legenda: Ler PT/EN, Ouvir PT/EN, ⏮ ▶ ⏭, velocidade, A−/A+, ✕.</li>
+            <li>Toque numa palavra da legenda para o cartão de significado.</li>
+        </ul>
+        <table class="mn-table mn-keys">
+            <tr><th>Tecla</th><th>Ação</th></tr>
+            <tr><td><kbd>Espaço</kbd></td><td>Ler / pausar</td></tr>
+            <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Frase anterior / próxima</td></tr>
+            <tr><td><kbd>+</kbd> <kbd>−</kbd></td><td>Letra maior / menor</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Sair do teleprompter</td></tr>
+        </table>
+        <p>A <b>Legenda</b> (botão no grupo Estudo) é a versão compacta: uma faixa fixa embaixo, com a frase falada, a tradução e as frases vizinhas esmaecidas.</p>
+
+        <h2 id="pt-estudo">6. Ferramentas de estudo</h2>
+        <ul>
+            <li><b>Palavras:</b> toque numa palavra, salve, revise com repetição espaçada e exporte para Anki (TSV).</li>
+            <li><b>Dificuldade:</b> cada livro mostra o nível estimado (palavras comuns e tamanho das frases). <b>Destacar incomuns</b> pinta as palavras raras no texto.</li>
+            <li><b>Treino:</b> <b>Repetir frase</b> (ouve de novo, mais devagar), <b>Shadowing</b> (ouça a frase e repita em voz alta na sua vez) e <b>Ditado</b> (escreva o que ouviu).</li>
+            <li><b>Perguntas</b> sobre o trecho, quando o Chrome tem o modelo local; o botão só aparece nesse caso.</li>
+            <li><b>Traduzir tudo agora</b> prepara a tradução do livro inteiro para ler sem espera.</li>
+        </ul>
+
+        <h2 id="pt-rotina">7. Rotina e progresso</h2>
+        <ul>
+            <li><b>Livro da semana:</b> roteiro de 8 semanas com plano de 7 dias, cota diária de palavras, ritmo (em dia, adiantado, atrasado) e palavras difíceis para ver antes. Ao terminar, há o fechamento da semana: números reais, resumo com objeção e sugestão do próximo livro.</li>
+            <li><b>Sessão do dia (50 min):</b> leitura densa, vocabulário, shadowing e escrita, nessa ordem, com marcação do que já foi feito.</li>
+            <li><b>Progresso:</b> sequência de dias, minutos, tempo lendo e ouvindo (separados), palavras ouvidas e salvas e gráfico de 7 dias. É salvo na hora; se a aba cair, perde-se no máximo cerca de 2 segundos.</li>
+            <li><b>Zerar estatísticas</b> (com confirmação) apaga o histórico e mantém livros, posições e palavras salvas.</li>
+        </ul>
+
+        <h2 id="pt-privacidade">8. Privacidade</h2>
+        <p>Seus textos, traduções, vocabulário e progresso ficam <b>no seu navegador</b>. A tradução, a lista de dificuldade e as perguntas rodam localmente. Nada do que você importa é enviado a servidores. Livros protegidos por direitos autorais que você enviar nunca entram no site.</p>
+
+        <h2 id="pt-problemas">9. Problemas comuns</h2>
+        <table class="mn-table">
+            <tr><th>Sintoma</th><th>O que fazer</th></tr>
+            <tr><td>Sem tradução ou "traduzindo…" parado</td><td>Use o Chrome atualizado; o Tradutor embutido baixa o idioma na primeira vez.</td></tr>
+            <tr><td>Sem som</td><td>Aperte ▶ (o navegador exige um toque antes de falar) e confira o volume e a voz em <b>Voz</b>.</td></tr>
+            <tr><td>Destaque da palavra adiantado ou atrasado</td><td>A voz não informa a palavra; troque de voz ou use uma "Natural". O ajuste automático melhora a cada frase.</td></tr>
+            <tr><td>Poema virou parágrafo</td><td>PDF não guarda linhas. Importe em .txt ou EPUB; livros já importados precisam ser importados de novo.</td></tr>
+            <tr><td>Lado a lado sem a coluna da direita</td><td>Esse modo precisa do tradutor do navegador.</td></tr>
+        </table>
+    </div>
+
+    <!-- ENGLISH -->
+    <div class="mn" lang="en" id="mn-en" hidden>
+        <h1>Library Manual</h1>
+        <p class="lb-lead">Read, listen and write in English from any book of yours.</p>
+        <nav class="mn-toc" aria-label="On this page">
+            <a href="#en-start">Getting started</a><a href="#en-modes">Reading modes</a><a href="#en-narration">Narration and colors</a><a href="#en-langs">Read and listen</a><a href="#en-tele">Teleprompter</a><a href="#en-study">Study tools</a><a href="#en-routine">Routine</a><a href="#en-privacy">Privacy</a><a href="#en-trouble">Troubleshooting</a>
+        </nav>
+
+        <h2 id="en-start">1. Getting started</h2>
+        <ol>
+            <li><b>Bring a text:</b> drag a PDF, a .txt or an EPUB onto the upload area, paste text, or use the <b>Book of the week</b> (public-domain books are included). PDFs are read on your device.</li>
+            <li><b>Open the book</b> from the list. The library keeps your position, heard words and finished translation, so you resume exactly where you stopped.</li>
+            <li><b>Tap a sentence</b> to hear it from there on. Tap a word to see its meaning and pronunciation and save it to your vocabulary.</li>
+        </ol>
+        <p class="mn-note">Poems and lyrics sent as .txt, pasted or in EPUB keep their lines and stanzas. PDFs do not preserve lines: poems in PDF become prose.</p>
+
+        <h2 id="en-modes">2. Reading modes</h2>
+        <p>The selector in the reader header has five modes. Your choice is remembered.</p>
+        <table class="mn-table">
+            <tr><th>Mode</th><th>Use</th></tr>
+            <tr><td><b>Single column</b></td><td>Default. Comfortable text, ideal on a phone.</td></tr>
+            <tr><td><b>Wide column</b></td><td>Makes better use of large screens.</td></tr>
+            <tr><td><b>Side by side</b></td><td>Original on the left, translation on the right; the narrated sentence is marked in both columns. Needs the browser translator.</td></tr>
+            <tr><td><b>Focus with panel</b></td><td>Collapses the menu and shows live: what you are doing (reading, listening, both), times, words read, book percentage, next milestone (10, 25, 50, 75, 90, 100%) and today's quota.</td></tr>
+            <tr><td><b>Teleprompter</b></td><td>Full-screen running caption. See its own section below.</td></tr>
+        </table>
+
+        <h2 id="en-narration">3. Narration and colors</h2>
+        <p>Press <b>▶</b> in the bar (or tap a sentence). Narration follows the text in four layers, each its own color, in every mode and theme:</p>
+        <ul class="mn-legend">
+            <li><span class="mn-sw mn-sw-stanza"></span><b>Paragraph or stanza</b>: soft background that shows where you are.</li>
+            <li><span class="mn-sw mn-sw-seg"></span><b>Sentence</b> (highlighted text): amber.</li>
+            <li><span class="mn-sw mn-sw-line"></span><b>Line</b>: a blue band that moves down as it reads.</li>
+            <li><span class="mn-sw mn-sw-word"></span><b>Synchronized word</b>: strong magenta that follows the voice.</li>
+        </ul>
+        <ul>
+            <li><b>Speed</b> (0.75× to 1.5×) can change at any moment: the voice continues from the word it was on.</li>
+            <li><b>Voice:</b> choose it under <b>Voice</b>. Edge "Natural" voices are the best. An optional local neural voice is also available (about 60 MB per language, downloaded once).</li>
+            <li>Some voices do not report the spoken word; for them the highlight is estimated from timing (with pauses at commas and periods) and adapts every sentence.</li>
+        </ul>
+
+        <h2 id="en-langs">4. Read and listen, in any combination</h2>
+        <p>In the site bar, <b>READ</b> and <b>LISTEN</b> are independent, in Portuguese (Brazil) or English:</p>
+        <table class="mn-table">
+            <tr><th>Read</th><th>Listen</th><th>Typical use</th></tr>
+            <tr><td>EN</td><td>EN</td><td>Full immersion: read and hear the original.</td></tr>
+            <tr><td>PT</td><td>EN</td><td>Understand through Portuguese while training your ear in English.</td></tr>
+            <tr><td>EN</td><td>PT</td><td>Read the original with a Portuguese voice guiding the meaning.</td></tr>
+            <tr><td>PT</td><td>PT</td><td>Review the content in your native language.</td></tr>
+        </table>
+        <p>You can switch while narration plays; voice and text change immediately. Translation happens sentence by sentence in the browser's built-in Translator (on your device). The spoken sentence comes first and the rest translates behind it.</p>
+
+        <h2 id="en-tele">5. Teleprompter (running caption)</h2>
+        <ul>
+            <li>The sentence runs from right to left, in the <b>Read</b> language; the spoken word stays at the reading point (marker at 30% of the width) and lights up in sync with the voice, which speaks the <b>Listen</b> language.</li>
+            <li>Below, in smaller type, the other language. Everything else disappears (menu, bar and footer).</li>
+            <li>Narration starts when you choose the mode. Buttons on the caption itself: Read PT/EN, Listen PT/EN, ⏮ ▶ ⏭, speed, A−/A+, ✕.</li>
+            <li>Tap a word on the caption for the meaning card.</li>
+        </ul>
+        <table class="mn-table mn-keys">
+            <tr><th>Key</th><th>Action</th></tr>
+            <tr><td><kbd>Space</kbd></td><td>Play / pause</td></tr>
+            <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Previous / next sentence</td></tr>
+            <tr><td><kbd>+</kbd> <kbd>−</kbd></td><td>Bigger / smaller text</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Leave the teleprompter</td></tr>
+        </table>
+        <p>The <b>Captions</b> button (Study group) is the compact version: a fixed strip at the bottom with the spoken sentence, its translation and faded neighboring sentences.</p>
+
+        <h2 id="en-study">6. Study tools</h2>
+        <ul>
+            <li><b>Words:</b> tap a word, save it, review with spaced repetition and export to Anki (TSV).</li>
+            <li><b>Difficulty:</b> each book shows an estimated level (common words and sentence length). <b>Highlight uncommon</b> paints rare words in the text.</li>
+            <li><b>Training:</b> <b>Repeat sentence</b> (hear it again, slower), <b>Shadowing</b> (hear the sentence and repeat aloud on your turn) and <b>Dictation</b> (write what you heard).</li>
+            <li><b>Questions</b> about the passage, when Chrome has the local model; the button only appears in that case.</li>
+            <li><b>Translate all now</b> prepares the whole book's translation so you read without waiting.</li>
+        </ul>
+
+        <h2 id="en-routine">7. Routine and progress</h2>
+        <ul>
+            <li><b>Book of the week:</b> an 8-week roadmap with a 7-day plan, daily word quota, pace (on track, ahead, behind) and hard words to preview. When you finish there is a weekly wrap-up: real numbers, a summary with an objection and the next book suggested.</li>
+            <li><b>Daily session (50 min):</b> dense reading, vocabulary, shadowing and writing, in that order, marking what is done.</li>
+            <li><b>Progress:</b> day streak, minutes, time reading and listening (separate), words heard and saved and a 7-day chart. It saves instantly; if the tab crashes you lose about 2 seconds at most.</li>
+            <li><b>Reset statistics</b> (with confirmation) clears the history and keeps books, positions and saved words.</li>
+        </ul>
+
+        <h2 id="en-privacy">8. Privacy</h2>
+        <p>Your texts, translations, vocabulary and progress stay <b>in your browser</b>. Translation, the difficulty list and the questions run locally. Nothing you import is sent to servers. Copyrighted books you upload never enter the site.</p>
+
+        <h2 id="en-trouble">9. Troubleshooting</h2>
+        <table class="mn-table">
+            <tr><th>Symptom</th><th>What to do</th></tr>
+            <tr><td>No translation or "translating…" stuck</td><td>Use an up-to-date Chrome; the built-in Translator downloads the language the first time.</td></tr>
+            <tr><td>No sound</td><td>Press ▶ (the browser requires a tap before speaking) and check the volume and the voice under <b>Voice</b>.</td></tr>
+            <tr><td>Word highlight early or late</td><td>The voice does not report the word; switch voice or use a "Natural" one. The automatic adjustment improves each sentence.</td></tr>
+            <tr><td>A poem became a paragraph</td><td>PDF does not keep lines. Import it as .txt or EPUB; already-imported books must be imported again.</td></tr>
+            <tr><td>Side by side without the right column</td><td>That mode needs the browser translator.</td></tr>
+        </table>
+    </div>
+</main>
+<script src="assets/js/manual-biblioteca.js"></script>
+</body>
+</html>

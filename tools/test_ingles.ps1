@@ -49,9 +49,10 @@ $test = @'
       var cats = Array.prototype.map.call(document.querySelectorAll('.nav-cat'), function (e) { return e.textContent; });
       ok('1a seção ESTUDO DE INGLÊS é a última do menu', cats[cats.length - 1] === 'ESTUDO DE INGLÊS', cats.slice(-2).join(' | '));
       var links = document.querySelectorAll('.chapter-link');
-      ok('1b Biblioteca vem depois dos capítulos', links.length === structure.length + 1 && /Biblioteca/.test(links[links.length - 1].textContent), links.length + ' links');
+      var libLink = links[links.length - 2];   // últimos extras: Biblioteca e Manual da Biblioteca
+      ok('1b Biblioteca e Manual vêm depois dos capítulos', links.length === structure.length + 2 && /^Biblioteca/.test(libLink.textContent.trim()) && /Manual/.test(links[links.length - 1].textContent), links.length + ' links');
       ok('1c fora de structure', !structure.some(function (s) { return s.f === 'ingles.html'; }));
-      links[links.length - 1].click();
+      libLink.click();
       await until(function () { return ifr().contentWindow.__ddLab; }, 8000);
       ok('1d abre a página no quadro', !!lab(), ifr().src.slice(-12));
       ok('1e barra inferior de capítulo escondida', $('hud-live').style.display === 'none');
@@ -159,6 +160,14 @@ $test = @'
       ok('7b3 limpar a busca traz o documento de volta', idoc.querySelectorAll('.lb-doc').length === 1);
       await lab().openDoc(id); await wait(500);
       ok('7c reabrir recupera as traduções salvas', Object.keys(lab().doc.tr).length === lab().doc.paras.length, Object.keys(lab().doc.tr).length + '');
+      // manual da biblioteca: abre pelo menu, mostra PT e troca para EN com o idioma de leitura do site
+      var mlinks = document.querySelectorAll('.chapter-link'); mlinks[mlinks.length - 1].click();
+      await until(function () { try { return ifr().contentDocument.getElementById('mn-pt') && ifr().contentDocument.readyState === 'complete'; } catch (e) { return false; } }, 10000);
+      var md = ifr().contentDocument;
+      var ptOn = !md.getElementById('mn-pt').hidden && md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-pt h2').length === 9;
+      post({ type: 'readlang', value: 'en' }); await wait(300);
+      ok('M1 o Manual da Biblioteca abre pelo menu em português (9 seções) e troca para inglês com o idioma de leitura', ptOn && md.getElementById('mn-pt').hidden && !md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-en h2').length === 9, 'PT visível=' + ptOn);
+      post({ type: 'readlang', value: 'pt' });
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     var pre = document.createElement('pre'); pre.id = 'result'; pre.textContent = out.join('\n'); document.body.appendChild(pre);

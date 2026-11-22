@@ -233,7 +233,15 @@
         return paras;
     }
 
+    // o leitor de PDF (320 KB) só é baixado quando alguém importa um PDF: a biblioteca abre mais rápido
+    let pdfLoad = null;
+    function loadPdfjs() {
+        if (window.pdfjsLib) return Promise.resolve();
+        if (!pdfLoad) pdfLoad = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'assets/vendor/pdfjs/pdf.min.js'; s.onload = res; s.onerror = () => { pdfLoad = null; rej(new Error(tx('errPdfjs'))); }; document.head.appendChild(s); });
+        return pdfLoad;
+    }
     async function extractPdf(file, onProgress) {
+        await loadPdfjs();
         if (!window.pdfjsLib) throw new Error(tx('errPdfjs'));
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/vendor/pdfjs/pdf.worker.min.js';
         const data = new Uint8Array(await file.arrayBuffer());
@@ -672,7 +680,9 @@
     }
 
     // Velocidade média da fala (caracteres por segundo a 1×): começa num valor típico e se ajusta a cada frase.
-    const CPS = { pt: 14, en: 15 };
+    // Medida em caracteres ponderados (pausas de vírgula e ponto contam mais), por idioma e por voz.
+    const CPS = { pt: 16, en: 17 };
+    const PAUSE = { ',': 4, ';': 4, ':': 4, '—': 4, '–': 4, '.': 8, '!': 8, '?': 8, '…': 8 };
 
     // onProg(charIndex, length): posição da fala dentro do texto falado (evento da voz ou estimativa por tempo)
     // Fala uma frase: voz neural local (módulo ingles-voz.js) quando ativa; senão (ou se falhar) a voz do navegador.
@@ -691,12 +701,15 @@
             u.lang = LANG_TAG[lang]; u.rate = rate;
             const v = pickVoice(lang); if (v) { u.voice = v; u.lang = v.lang; }
             let settled = false, t0 = 0, gotB = false, timer = null;
-            const est = text.length / (CPS[lang] * rate);
+            const ck = lang + '|' + (v ? v.name : ''), cps = CPS[ck] || CPS[lang];
+            const cum = new Float32Array(text.length + 1);                   // tempo acumulado esperado por caractere, com as pausas da pontuação
+            for (let i = 0; i < text.length; i++) cum[i + 1] = cum[i] + 1 + (PAUSE[text[i]] || 0);
+            const WT = cum[text.length];
             const done = (r) => {
                 if (settled) return; settled = true; clearInterval(timer);
                 if (r === 'end' && t0 && text.length > 25) {
                     const dur = (performance.now() - t0) / 1000;
-                    if (dur > 0.5) CPS[lang] = Math.max(6, Math.min(30, CPS[lang] * 0.7 + (text.length / (dur * rate)) * 0.3));
+                    if (dur > 0.5) CPS[ck] = Math.max(6, Math.min(40, cps * 0.7 + (WT / (dur * rate)) * 0.3));
                 }
                 resolve(tts.restart ? (tts.restart = false, 'restart') : r);
             };
@@ -705,8 +718,11 @@
                 timer = setInterval(() => {      // vozes sem evento de palavra: segue pelo tempo estimado
                     if (gotB || !onProg) return;
                     const el = (performance.now() - t0) / 1000;
-                    onProg(Math.min(text.length - 1, Math.floor(el / est * text.length)), text.length);
-                }, 80);
+                    const target = Math.min(WT, el * cps * rate);                  // posição esperada: busca binária no tempo acumulado
+                    let lo = 0, hi = text.length - 1;
+                    while (lo < hi) { const mid = (lo + hi) >> 1; if (cum[mid + 1] > target) hi = mid; else lo = mid + 1; }
+                    onProg(lo, text.length);
+                }, 60);
             };
             u.onboundary = (e) => { if (e && e.name && e.name !== 'word') return; gotB = true; if (onProg) onProg(e.charIndex || 0, text.length); };
             u.onend = () => done('end');
@@ -804,7 +820,7 @@
     }
 
     async function runTts(token) {
-        let errors = 0;
+        let errors = 0, resume = null;
         while (token === tts.token && doc) {
             const c = tts.cursor;
             if (c.p >= doc.paras.length) break;
@@ -821,10 +837,14 @@
                 if (nx) trSentence(nx[0], nx[1]);
             }
             const tStart = performance.now();
-            const r = await speakOne(piece.text, piece.lang, (ci, len) => { if (token === tts.token) { setWordAt(ci, len, piece.text); emit('wordpos', { ci, len, text: piece.text }); } });
+            let off = 0;                                                         // trocou velocidade/voz no meio da frase: continua da palavra falada
+            if (resume && resume.p === c.p && resume.s === c.s && resume.text === piece.text) { off = piece.text.lastIndexOf(' ', Math.max(0, resume.ci - 1)) + 1; }
+            resume = null;
+            let lastCi = off;
+            const r = await speakOne(off ? piece.text.slice(off) : piece.text, piece.lang, (ci, len) => { if (token === tts.token) { lastCi = ci + off; setWordAt(lastCi, piece.text.length, piece.text); emit('wordpos', { ci: lastCi, len: piece.text.length, text: piece.text }); } });
             if (token !== tts.token) return;
             if (r === 'end') { const hw = piece.text.split(/\s+/).length; doc.heard = (doc.heard || 0) + hw; scheduleMetaSave(); emit('heard', { words: hw, p: c.p, s: c.s }); }
-            if (r === 'restart') continue;
+            if (r === 'restart') { resume = { p: c.p, s: c.s, text: piece.text, ci: lastCi }; continue; }
             if (r === 'end' && window.DDLab && window.DDLab.afterSentence) {      // modos de treino: repetir, shadowing, ditado
                 const act = await window.DDLab.afterSentence({ p: c.p, s: c.s, text: piece.text, lang: piece.lang, ms: performance.now() - tStart });
                 if (token !== tts.token) return;
@@ -849,13 +869,14 @@
         tts.cursor = { p, s: s || 0 };
         tts.playing = true;
         postParent({ type: 'tts-state', isPlaying: true });
+        emit('playstate', { playing: true });
         runTts(tts.token);
     }
     function stopTts() {
         tts.token++;
         emit('stop');
         if (synth) synth.cancel();
-        if (tts.playing) { tts.playing = false; postParent({ type: 'tts-state', isPlaying: false }); }
+        if (tts.playing) { tts.playing = false; postParent({ type: 'tts-state', isPlaying: false }); emit('playstate', { playing: false }); }
         if (tts.mark) { markSpan(false); moveBand(null); tts.word = -1; markSpan(true); }
     }
     function restartCurrent() { if (tts.playing && synth) { tts.restart = true; synth.cancel(); emit('restartspeech'); } }

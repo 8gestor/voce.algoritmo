@@ -56,7 +56,8 @@ const structure = [
  * (não entram em ANT/PRÓX, nas estatísticas nem na contagem de capítulos).
  */
 const extras = [
-    { t: "Biblioteca", f: "ingles.html", cat: "ESTUDO DE INGLÊS" }
+    { t: "Biblioteca", f: "ingles.html", cat: "ESTUDO DE INGLÊS" },
+    { t: "Manual da Biblioteca", f: "manual-biblioteca.html", cat: "ESTUDO DE INGLÊS" }
 ];
 
 /* Títulos em inglês (usados quando o idioma de leitura é EN). Chave = arquivo. */
@@ -92,7 +93,8 @@ const TITLES_EN = {
     "cap15.html": "Glossary",
     "cap16.html": "Bibliography",
     "estatisticas.html": "Statistics",
-    "ingles.html": "Library"
+    "ingles.html": "Library",
+    "manual-biblioteca.html": "Library Manual"
 };
 const CATEGORIES_EN = {
     "INICIALIZAÇÃO": "INITIALIZATION",
