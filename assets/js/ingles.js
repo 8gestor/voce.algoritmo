@@ -910,6 +910,13 @@
         emit('playstate', { playing: true });
         runTts(tts.token);
     }
+    // F11: tela inteira (o site pai cuida; sem pai, a própria página)
+    window.addEventListener('keydown', (e) => {
+        if (e.key !== 'F11') return;
+        e.preventDefault();
+        if (window.parent && window.parent !== window) postParent({ type: 'dd-fullscreen' });
+        else if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {});
+    });
     // Setas ← →: frase anterior/próxima. Tocando, a voz segue de lá; parado, só a marca e a posição andam (▶ continua dali).
     function stepSentence(dir) {
         if (!doc) return;
@@ -926,7 +933,11 @@
     window.addEventListener('keydown', (e) => {
         if (!doc || state.mode === 'tele' || ($('lb-reader') && $('lb-reader').hidden)) return;
         if (e.altKey || e.ctrlKey || e.metaKey || /^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable)) return;
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); stepSentence(e.key === 'ArrowRight' ? 1 : -1); }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {          // seta = palavra a palavra (ingles-explorar.js); Shift + seta = frase a frase
+            e.preventDefault();
+            const dir = e.key === 'ArrowRight' ? 1 : -1;
+            if (e.shiftKey || !(window.DDLab && window.DDLab.explore)) stepSentence(dir); else window.DDLab.explore.step(dir);
+        }
     });
     function stopTts() {
         tts.token++;
@@ -1233,7 +1244,11 @@
 
     window.addEventListener('message', (e) => {
         const d = e.data || {};
-        if (d.type === 'step' && doc && (d.value === 1 || d.value === -1)) { if (state.mode === 'tele') emit('step', { d: d.value }); else stepSentence(d.value); }
+        if ((d.type === 'step' || d.type === 'step-sentence') && doc && (d.value === 1 || d.value === -1)) {       // setas do site (foco fora da página)
+            const word = d.type === 'step';
+            if (state.mode === 'tele') emit('step', { d: d.value, word });
+            else if (word && window.DDLab.explore) window.DDLab.explore.step(d.value); else stepSentence(d.value);
+        }
         if (d.type === 'lab-tele' && doc) setMode(state.mode === 'tele' ? 'single' : 'tele');   // botao Teleprompter do leitor
         if (d.type === 'theme') document.body.className = d.value + '-mode';
         if (d.type === 'font') root.style.setProperty('--base-size', d.value + 'px');
@@ -1284,7 +1299,7 @@
         },
         needBoth(on) { wantBoth = !!on; if (wantBoth) pump(); else setStatus(); },
         setRate(v) { v = Number(v); if (v > 0 && v !== state.rate) { state.rate = v; restartCurrent(); } },
-        state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
+        setMark, setWordAt, stepSentence, state, on, emit, importers, $, translateText, pickVoice, startTts, stopTts, paraEl, firstVisible, postParent, trSentence, other, langName, nf, tx, LANG_TAG,
         get doc() { return doc; }, tts,
         db: { get: dbGet, put: dbPut, all: dbAll, del: dbDel },
         renderDocs, setStatus, ensureTr, flush, looksVerse, setMode, MODES, repaintAll, importFile, saveMeta, openDoc, delRange: dbDelRange, addText: (title, text) => importFile(new File([text], (title || 'texto') + '.txt', { type: 'text/plain' }))

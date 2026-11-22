@@ -341,3 +341,13 @@ body.lb-side-open .lb-para.lb-verse { padding-left: 0; border-left: 0; }
 
 /* velocidade 0,25x a 3x: lista de escolha nas barras da legenda e do teleprompter */
 .tl-rate, .lg-rate { appearance: auto; background: var(--c-bg); color: var(--c-text); text-align: center; cursor: pointer; }
+
+/* palavra equivalente no outro idioma (setas e narração): segunda cor, de família diferente da frase, da linha e da palavra falada */
+body { --mk-word2: #00a88f; --mk-word2-fg: #ffffff; }
+body.paper-mode { --mk-word2: #00967f; --mk-word2-fg: #ffffff; }
+body.dark-mode { --mk-word2: #2ee6c1; --mk-word2-fg: #0b1f1a; }
+body.light-mode { --mk-word2: #00897b; --mk-word2-fg: #ffffff; }
+body.sepia-mode { --mk-word2: #2e7d5b; --mk-word2-fg: #fff8ec; }
+html body[class] .wd2.now2, html body[class] .tl-sw.now2, html body[class] .lg-sw.now2 { background: var(--mk-word2); color: var(--mk-word2-fg); border-radius: 3px; box-shadow: 0 0 0 2px var(--mk-word2); }
+.lb-gloss { position: absolute; z-index: 5; padding: 2px 9px; border-radius: 4px; font-family: var(--font-tech); font-size: 0.82rem; line-height: 1.4; white-space: nowrap; pointer-events: none; background: var(--mk-word2); color: var(--mk-word2-fg); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
+.lb-gloss[hidden] { display: none; }

@@ -973,7 +973,7 @@ $test = @'
       await until(function () { return D().doc && D().doc.title === 'Setas teste'; }, 20000);
       await wait(700);
       D().setMode('single'); post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
-      var arKey = function (k, target) { var ev = new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }); (target || idoc().body).dispatchEvent(ev); return ev; };
+      var arKey = function (k, target, shift) { var ev = new KeyboardEvent('keydown', { key: k, shiftKey: shift !== false, bubbles: true, cancelable: true }); (target || idoc().body).dispatchEvent(ev); return ev; };
       var arM = function () { var m = D().tts.mark; return m ? m.p + ':' + m.s : '-'; };
       arKey('ArrowRight'); var ar1 = arM(); arKey('ArrowRight'); var ar2 = arM(); arKey('ArrowRight'); var ar3 = arM(); arKey('ArrowLeft'); var ar4 = arM();
       ok('AR1 parado, seta direita avança a marca frase a frase (0:1, 0:2, 1:0) e a esquerda volta (0:2), passando de um parágrafo ao outro', ar1 === '0:1' && ar2 === '0:2' && ar3 === '1:0' && ar4 === '0:2', [ar1, ar2, ar3, ar4].join(' '));
@@ -1001,6 +1001,37 @@ $test = @'
       var arLeg = idoc().querySelector('#lb-legenda .lg-rate');
       ok('AR5 o botão de velocidade do teleprompter e da legenda vai de 0,25 a 3 em passos de 0,25 e aplica a escolha', arVals === '0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3' && D().state.rate === 2.25 && !!arLeg && arLeg.options.length === 12, arVals + ' | taxa=' + D().state.rate);
       D().stopTts(); post({ type: 'rate', value: 1 }); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
+      D().$('lb-back').click(); await wait(300);
+      // ===================== EX. setas palavra a palavra com a equivalente no outro idioma =====================
+      await D().addText('Palavras teste', 'The laborious diligence wins today. Another sentence follows here.\n\nA third one closes it.');
+      await until(function () { return D().doc && D().doc.title === 'Palavras teste'; }, 20000);
+      await wait(700);
+      D().doc.tr[0] = ['A diligência laboriosa vence hoje.', 'Outra frase segue aqui.']; D().doc.tr[1] = ['Uma terceira a fecha.'];
+      D().setMode('single'); post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(400);
+      var exK = function (k, shift) { var ev = new KeyboardEvent('keydown', { key: k, shiftKey: !!shift, bubbles: true, cancelable: true }); idoc().body.dispatchEvent(ev); return ev; };
+      var exNow = function () { var n = idoc().querySelector('#lb-text .wd.now'); return n ? n.textContent : null; };
+      var exGloss = function () { var g = idoc().getElementById('lb-gloss'); return g && !g.hidden ? g.textContent : null; };
+      var exEv = exK('ArrowRight'); var e1 = exNow(), g1 = exGloss(); exK('ArrowRight'); var e2 = exNow(), g2 = exGloss(); exK('ArrowRight'); var e3 = exNow(), g3 = exGloss();
+      ok('EX1 seta direita explora palavra a palavra com destaque principal (The, laborious, diligence) e a equivalente em português numa etiqueta de outra cor (a, laboriosa, diligência)', exEv.defaultPrevented && e1 === 'The' && e2 === 'laborious' && e3 === 'diligence' && g2 === 'laboriosa' && g3 === 'diligência', [e1, e2, e3].join(',') + ' | ' + [g1, g2, g3].join(','));
+      exK('ArrowLeft'); var e4 = exNow(), g4 = exGloss();
+      ok('EX2 seta esquerda volta uma palavra e a etiqueta acompanha', e4 === 'laborious' && g4 === 'laboriosa', e4 + ' | ' + g4);
+      var gcol = W().getComputedStyle(idoc().getElementById('lb-gloss')).backgroundColor, ncol = W().getComputedStyle(idoc().querySelector('#lb-text .wd.now')).backgroundColor;
+      ok('EX3 a cor da palavra equivalente é diferente da cor da palavra principal', gcol !== ncol && gcol !== 'rgba(0, 0, 0, 0)', gcol + ' x ' + ncol);
+      for (var exi = 0; exi < 4; exi++) exK('ArrowRight');
+      var eSent = D().tts.mark.p + ':' + D().tts.mark.s;
+      ok('EX4 passando do fim da frase a seta segue para a primeira palavra da próxima frase', eSent === '0:1' && exNow() === 'Another', eSent + ' ' + exNow());
+      exK('ArrowRight', true); var eShift = D().tts.mark.p + ':' + D().tts.mark.s;
+      ok('EX5 Shift + seta pula a frase inteira (continua valendo o passo por frase)', eShift === '1:0', eShift);
+      D().setMode('side'); await wait(500);
+      D().emit('mode', 'side'); exK('ArrowRight'); exK('ArrowRight');
+      var sideNow = idoc().querySelector('.lb-t .wd2.now2');
+      ok('EX6 no modo lado a lado a palavra equivalente fica marcada, em outra cor, na coluna da tradução', !!sideNow && sideNow.textContent.length > 0, sideNow ? sideNow.textContent : 'sem marca');
+      D().setMode('tele');
+      await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 2; }, 40000);
+      idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+      var tNow = idoc().querySelector('#lb-tele-line .tl-w.now'), tSub = idoc().querySelector('#lb-tele-sub .tl-sw.now2');
+      ok('EX7 no teleprompter as setas exploram palavra a palavra na linha grande e a equivalente do outro idioma acende embaixo', !!tNow && !!tSub && tSub.textContent.length > 0, (tNow && tNow.textContent) + ' -> ' + (tSub && tSub.textContent));
+      D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
       ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);

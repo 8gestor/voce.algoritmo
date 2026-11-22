@@ -442,6 +442,7 @@
         }, 30);
     }
     window.addEventListener('keydown', (e) => {
+        if (e.key === 'F11') { e.preventDefault(); postParent({ type: 'dd-fullscreen' }); return; }
         if (e.altKey || e.ctrlKey || e.metaKey || /^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '')) return;
         if (playing && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); step(e.key === 'ArrowRight' ? 1 : -1); }
     });
@@ -524,7 +525,7 @@
             if (v > 0 && v !== state.rate) { state.rate = v; refresh(); }
         }
         if (d.type === 'tts-toggle') toggle();
-        if (d.type === 'step' && (d.value === 1 || d.value === -1)) step(d.value);
+        if ((d.type === 'step' || d.type === 'step-sentence') && (d.value === 1 || d.value === -1)) step(d.value);
     });
 
     /* ------------------------------------------------------------ progresso (alimenta as estatísticas do leitor) */

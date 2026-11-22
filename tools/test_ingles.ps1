@@ -162,6 +162,11 @@ $test = @'
       ok('7c reabrir recupera as traduções salvas', Object.keys(lab().doc.tr).length === lab().doc.paras.length, Object.keys(lab().doc.tr).length + '');
       var spd = Array.prototype.map.call($('speed-select').options, function (o) { return o.value; }).join(',');
       ok('V1 o menu de velocidade do site vai de 0,25 a 3 em passos de 0,25 (12 opções)', spd === '0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3', spd);
+      var fsCalls = 0; document.documentElement.requestFullscreen = function () { fsCalls++; return Promise.resolve(); };
+      var f11 = new KeyboardEvent('keydown', { key: 'F11', bubbles: true, cancelable: true }); window.dispatchEvent(f11);
+      var fsShell = fsCalls;
+      ifr().contentWindow.dispatchEvent(new KeyboardEvent('keydown', { key: 'F11', bubbles: true, cancelable: true })); await wait(300);
+      ok('V2 F11 liga a tela inteira no site e também quando apertado dentro da página (Biblioteca)', f11.defaultPrevented && fsShell === 1 && fsCalls === 2, 'chamadas=' + fsCalls);
       // manual da biblioteca: abre pelo menu, mostra PT e troca para EN com o idioma de leitura do site
       var mlinks = document.querySelectorAll('.chapter-link'); mlinks[mlinks.length - 1].click();
       await until(function () { try { return ifr().contentDocument.getElementById('mn-pt') && ifr().contentDocument.readyState === 'complete'; } catch (e) { return false; } }, 10000);

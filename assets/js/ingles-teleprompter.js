@@ -24,7 +24,7 @@
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
     const WORD = /[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}'’-]*/gu;
 
-    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set(), painted = null, lastArr = 0, cpsEst = 0.013;
+    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set(), painted = null, lastArr = 0, cpsEst = 0.013, subWords = [], subTxt = '', exK = -1;
     try { size = Math.min(1.7, Math.max(0.6, Number(localStorage.getItem(KEY)) || 1)); } catch (e) { /* sem storage */ }
     const saveSize = () => { try { localStorage.setItem(KEY, String(size)); } catch (e) { /* ignora */ } };
 
@@ -143,6 +143,34 @@
         track.append(el('span', 'tl-gap'));
         nx = el('span', 'tl-nx', nextText); nx.dataset.text = nextText; track.append(nx);
     }
+    // a linha de baixo (outro idioma) em palavras, para destacar a equivalente da palavra falada ou explorada, em outra cor
+    function paintSub(text) {
+        sub.textContent = ''; subWords = []; subTxt = text || '';
+        let pos = 0, m; WORD.lastIndex = 0;
+        while ((m = WORD.exec(subTxt))) {
+            if (m.index > pos) sub.append(subTxt.slice(pos, m.index));
+            const w = el('span', 'tl-sw', m[0]); sub.append(w); subWords.push({ el: w, s: m.index, e: m.index + m[0].length });
+            pos = m.index + m[0].length;
+        }
+        if (pos < subTxt.length) sub.append(subTxt.slice(pos));
+    }
+    function markSub(k) {
+        subWords.forEach((w) => w.el.classList.remove('now2'));
+        if (!subWords.length || sub.classList.contains('wait') || k < 0 || !words[k]) return;
+        const txt = track.dataset.text || '', c = D.mapPos ? D.mapPos(txt, words[k].s, subTxt, track.dataset.lang || D.state.readLang) : 0;
+        let j = 0; subWords.forEach((w, i) => { if (w.s <= c) j = i; });
+        subWords[j].el.classList.add('now2');
+    }
+    // setas: palavra a palavra, parando a narração (Shift + seta = frase)
+    function exploreStep(dir) {
+        if (!cur || !words.length) return;
+        if (D.tts.playing) D.stopTts();
+        let k = (exK >= 0 ? exK : (wi >= 0 ? wi : (dir > 0 ? -1 : words.length))) + dir;
+        if (k < 0) { const n = neighbour(cur.p, cur.s, -1); if (!n) k = 0; else { cur = { p: n.p, s: n.s }; spoken = null; render(); k = words.length - 1; } }
+        else if (k >= words.length) { const n = neighbour(cur.p, cur.s, 1); if (!n) k = words.length - 1; else { cur = { p: n.p, s: n.s }; spoken = null; render(); k = 0; } }
+        exK = Math.max(0, k);
+        mark(exK); markSub(exK);
+    }
     function mark(k) {
         if (k === wi) return;
         words.forEach((w, i) => { w.el.classList.toggle('now', i === k); w.el.classList.toggle('past', i < k); });
@@ -170,8 +198,9 @@
         lastBase = base; pendingNext = nb && nbText != null ? nb.p + ':' + nb.s + ':' + rl : '';
         prefetch(nb); if (nb) prefetch(neighbour(nb.p, nb.s, 1));
         const otherLang = D.other(mainLang), subText = textIn(cur.p, cur.s, otherLang);
-        sub.textContent = subText != null ? subText : t('wait');
+        paintSub(subText != null ? subText : t('wait'));
         sub.classList.toggle('wait', subText == null); sub.lang = otherLang;
+        if (wi >= 0) markSub(wi);
         if ((subText == null || mainLang !== rl) && asked !== base) {     // traduz só esta frase (rápido); uma vez por frase, para não repetir sem tradutor
             asked = base;
             const want = { p: cur.p, s: cur.s };
@@ -220,14 +249,14 @@
 
     /* ------------------------------------------------------------ eventos do núcleo */
     D.on('sentence', (ev) => { cur = { p: ev.p, s: ev.s }; spoken = null; render(); });
-    D.on('piece', (ev) => { if (!cur || cur.p !== ev.p || cur.s !== ev.s) { cur = { p: ev.p, s: ev.s }; render(); } spoken = ev; });
+    D.on('piece', (ev) => { exK = -1; if (!cur || cur.p !== ev.p || cur.s !== ev.s) { cur = { p: ev.p, s: ev.s }; render(); } spoken = ev; });
     D.on('wordpos', (ev) => {
         if (!active() || !words.length || !spoken || spoken.text !== ev.text) return;
         const text = track.dataset.text || '';
         const pos = text === ev.text ? ev.ci : (D.mapPos ? D.mapPos(ev.text, ev.ci, text, ev.lang || D.state.audioLang) : (ev.ci / Math.max(1, ev.len || ev.text.length)) * text.length);   // outro idioma: alinhamento palavra a palavra
         let k = 0;
         while (k < words.length - 1 && words[k].e <= pos) k++;
-        mark(k);
+        mark(k); markSub(k);
     });
     D.on('stop', labels); D.on('restartspeech', labels);
     D.on('open', () => { cur = null; spoken = null; setTimeout(() => sync(false), 40); });
@@ -235,7 +264,7 @@
     D.on('mode', () => { cur = null; spoken = null; sync(true); });
     D.on('lang', () => { asked = ''; pf.clear(); labels(); render(); });
     window.addEventListener('resize', () => { if (!root.hidden) place(wi); });
-    D.on('step', (ev) => { if (!root.hidden) (ev.d > 0 ? bNext : bPrev).click(); });      // seta do site (quando o foco está fora da legenda)
+    D.on('step', (ev) => { if (root.hidden) return; if (ev.word) exploreStep(ev.d); else (ev.d > 0 ? bNext : bPrev).click(); });      // seta do site (quando o foco está fora da legenda)
     D.on('playstate', () => { if (!root.hidden) labels(); });      // ▶/❚❚ acompanha a narração iniciada de fora (sem sondar a cada instante)
 
     /* ------------------------------------------------------------ controles */
@@ -250,8 +279,9 @@
     window.addEventListener('keydown', (e) => {
         if (root.hidden || (e.target && /^(input|textarea|select)$/i.test(e.target.tagName))) return;
         if (e.key === ' ') { e.preventDefault(); bPlay.click(); }
-        else if (e.key === 'ArrowLeft') { e.preventDefault(); bPrev.click(); }
-        else if (e.key === 'ArrowRight') { e.preventDefault(); bNext.click(); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); if (e.shiftKey) bPrev.click(); else exploreStep(-1); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); if (e.shiftKey) bNext.click(); else exploreStep(1); }
+        else if (e.key === 'F11') { e.preventDefault(); D.postParent({ type: 'dd-fullscreen' }); }
         else if (e.key === '+' || e.key === '=') bMax.click();
         else if (e.key === '-') bMin.click();
         else if (e.key === 'Escape') bExit.click();

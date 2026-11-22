@@ -507,6 +507,7 @@ window.addEventListener('message', (e) => {
         statsDirty = true; saveStats(); updateHud();
     }
     if (e.data && e.data.type === 'dd-lab-sidebar' && !isMobile()) document.getElementById('sidebar').classList.toggle('collapsed', !!e.data.hide);   // modo foco da Biblioteca
+    if (e.data && e.data.type === 'dd-fullscreen') toggleFullScreen();      // F11 apertado dentro da página
     if (e.data && e.data.type === 'dd-lab-immersive') document.body.classList.toggle('imersivo', !!e.data.on);   // teleprompter: só a legenda na tela
     if (e.data && e.data.type === 'dd-set-option' && (e.data.key === 'readLang' || e.data.key === 'audioLang') && (e.data.value === 'pt' || e.data.value === 'en')) setOption(e.data.key, e.data.value);
     if (e.data && e.data.type === 'dd-lab-hud') { labHud = e.data.hud || null; if (inExtra) renderLabHud(); }
@@ -530,7 +531,8 @@ window.addEventListener('message', (e) => {
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { closePanels(); if (isMobile()) closeSidebarMobile(); }
     // setas: acompanham o texto frase a frase (a página aberta decide o que fazer); fora de campos de escolha e de digitação
-    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !e.altKey && !e.ctrlKey && !e.metaKey && !/^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '') && !(e.target && e.target.isContentEditable)) { e.preventDefault(); sendMsg('step', e.key === 'ArrowRight' ? 1 : -1); }
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !e.altKey && !e.ctrlKey && !e.metaKey && !/^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '') && !(e.target && e.target.isContentEditable)) { e.preventDefault(); sendMsg(e.shiftKey ? 'step-sentence' : 'step', e.key === 'ArrowRight' ? 1 : -1); }
+    if (e.key === 'F11') { e.preventDefault(); toggleFullScreen(); }      // tela inteira ligada e desligada no F11
 });
 
 init();

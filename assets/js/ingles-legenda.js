@@ -74,7 +74,28 @@
     const shortLine = (x) => (x == null ? '' : x.length > 140 ? x.slice(0, 137) + '…' : x);
 
     /* ------------------------------------------------------------ desenho */
+    let mainTxt = '', mainLn = '', subWords = [], subTxt = '';
+    function paintSub(text) {
+        sub.textContent = ''; subWords = []; subTxt = text || '';
+        let pos = 0, m; WORD.lastIndex = 0;
+        while ((m = WORD.exec(subTxt))) {
+            if (m.index > pos) sub.append(subTxt.slice(pos, m.index));
+            const w = el('span', 'lg-sw', m[0]); sub.append(w); subWords.push({ el: w, s: m.index, e: m.index + m[0].length });
+            pos = m.index + m[0].length;
+        }
+        if (pos < subTxt.length) sub.append(subTxt.slice(pos));
+        if (wi >= 0) markSub(wi);
+    }
+    // a palavra equivalente na linha de baixo (outro idioma), em outra cor
+    function markSub(k) {
+        subWords.forEach((w) => w.el.classList.remove('now2'));
+        if (!subWords.length || sub.classList.contains('wait') || k < 0 || !words[k]) return;
+        const c = D.mapPos ? D.mapPos(mainTxt, words[k].s, subTxt, mainLn || D.state.audioLang) : 0;
+        let j = 0; subWords.forEach((w, i) => { if (w.s <= c) j = i; });
+        subWords[j].el.classList.add('now2');
+    }
     function paintMain(text, lang) {
+        mainTxt = text || ''; mainLn = lang || '';
         main.textContent = ''; words = []; wi = -1; main.dataset.lang = lang || '';
         if (text == null) return;
         let pos = 0, m;
@@ -96,15 +117,15 @@
         if (mainText == null) { mainText = textIn(cur.p, cur.s, doc.lang); mainLang = doc.lang; }     // sem tradução ainda: o original
         paintMain(mainText, mainLang);
         const otherLang = D.other(mainLang), subText = textIn(cur.p, cur.s, otherLang);
-        sub.textContent = subText != null ? subText : t('wait');
         sub.classList.toggle('wait', subText == null);
+        paintSub(subText != null ? subText : t('wait'));
         sub.lang = otherLang;
         if (subText == null) {                                   // traduz só esta frase (rápido); o parágrafo continua atrás
             const want = { p: cur.p, s: cur.s };
             const job = D.trSentence ? D.trSentence(want.p, want.s) : D.ensureTr(want.p);
             job.then((x) => {
                 if (!cur || !on || cur.p !== want.p || cur.s !== want.s) return;
-                if (typeof x === 'string' && x) { sub.textContent = x; sub.classList.remove('wait'); }
+                if (typeof x === 'string' && x) { sub.classList.remove('wait'); paintSub(x); }
                 renderSubOnly();
             });
         }
@@ -120,7 +141,7 @@
     function renderSubOnly() {
         const doc = D.doc; if (!doc || !cur || !on) return;
         const ml = main.dataset.lang || D.state.audioLang, ol = D.other(ml), x = textIn(cur.p, cur.s, ol);
-        if (x != null) { sub.textContent = x; sub.classList.remove('wait'); }
+        if (x != null) { sub.classList.remove('wait'); paintSub(x); }
         const a = neighbour(cur.p, cur.s, -1), b = neighbour(cur.p, cur.s, 1);
         const ctx = (n) => (n ? shortLine(textIn(n.p, n.s, ml) != null ? textIn(n.p, n.s, ml) : textIn(n.p, n.s, doc.lang)) : '');
         lnPrev.textContent = ctx(a); lnNext.textContent = ctx(b);
@@ -165,7 +186,15 @@
         while (k < words.length - 1 && words[k].e <= ev.ci) k++;
         if (k === wi) return;
         if (wi >= 0 && words[wi]) words[wi].el.classList.remove('now');
-        wi = k; words[k].el.classList.add('now');
+        wi = k; words[k].el.classList.add('now'); markSub(k);
+    });
+    // setas (ingles-explorar.js): a palavra explorada acende na legenda e a equivalente, na outra cor, na linha de baixo
+    D.on('explore', (ev) => {
+        if (!on || !words.length) return;
+        const pos = ev.text === mainTxt ? ev.ci : (D.mapPos ? D.mapPos(ev.text, ev.ci, mainTxt, ev.lang) : 0);
+        let k = 0; while (k < words.length - 1 && words[k].e <= pos) k++;
+        if (wi >= 0 && words[wi]) words[wi].el.classList.remove('now');
+        wi = k; words[k].el.classList.add('now'); markSub(k);
     });
     D.on('stop', () => { labels(); });
     D.on('restartspeech', labels);
