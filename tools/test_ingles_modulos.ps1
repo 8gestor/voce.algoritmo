@@ -543,7 +543,8 @@ $test = @'
       var orows = idoc().querySelectorAll('.lb-sess-row');
       ok('O2 com plano: 4 blocos (leitura 25, vocabulário 10, shadowing 8, escrita 7 min = 50) com metas do dia', orows.length === 4 && Array.prototype.map.call(orows, function (r) { return r.dataset.block; }).join(',') === 'read,vocab,shadow,write' && /25 min/.test(orows[0].textContent) && /10 min/.test(orows[1].textContent) && /8 min/.test(orows[2].textContent) && /7 min/.test(orows[3].textContent) && /50 minutos/.test(idoc().getElementById('lb-sess').textContent) && /Cota de hoje: 0 de \d+ palavras/.test(orows[0].textContent) && !!idoc().getElementById('lb-sess-text') && idoc().querySelectorAll('.lb-sess-row.done').length === 0, orows[0].textContent.replace(/\s+/g, ' '));
       var om = await D().db.get('meta', oid); om.pos = 7; await D().db.put('meta', om); await W().__ddDia.render();
-      ok('O3 ler a cota do dia fecha o bloco de leitura sozinho', idoc().querySelector('.lb-sess-row[data-block="read"]').classList.contains('done'));
+      await until(function () { var r = idoc().querySelector('.lb-sess-row[data-block="read"]'); return r && r.classList.contains('done'); }, 8000);   // o painel redesenha de forma assíncrona (era a falha intermitente de textContent nulo)
+      ok('O3 ler a cota do dia fecha o bloco de leitura sozinho', !!idoc().querySelector('.lb-sess-row[data-block="read"].done'));
       var odia = JSON.parse(W().localStorage.getItem('dd-ingles-dia')), vt = odia.vocabTarget;
       ok('O4 o bloco de vocabulário usa as palavras que vencem hoje como meta e abre a revisão', vt >= 1 && vt <= 15 && /Revisões: 0 de/.test(idoc().querySelector('.lb-sess-row[data-block="vocab"]').textContent) && !!idoc().querySelector('[data-act="vocab"]') && !idoc().querySelector('.lb-sess-row[data-block="vocab"]').classList.contains('done'), 'meta=' + vt);
       W().__ddProg.add('rev', vt); await W().__ddDia.render();
@@ -854,7 +855,8 @@ $test = @'
         if (zk < zlast) zmono = false; zlast = zk;
         if (!znow) { zerr.push('sem palavra em ' + zi); continue; }
         var zr = znow.getBoundingClientRect(), zv = zview.getBoundingClientRect();
-        zerr.push(Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.3)));
+        var znext = idoc().querySelectorAll('#lb-tele-line .tl-w')[zk + 1], zstep = znext ? Math.abs((znext.getBoundingClientRect().left + znext.getBoundingClientRect().width / 2) - (zr.left + zr.width / 2)) / 2 : 0;
+        zerr.push(Math.max(0, Math.abs((zr.left + zr.width / 2) - (zv.left + zv.width * 0.3)) - zstep));      // a linha mira o meio caminho até a próxima palavra: o erro é o que passa dessa meia passada
       }
       var zmax = Math.max.apply(null, zerr.filter(function (x) { return typeof x === 'number'; }));
       ok('Z1 a palavra falada fica sempre no ponto de leitura (erro máximo de centragem em px) e o destaque nunca volta atrás, com voz em um idioma e legenda em outro', zerr.length > 8 && zerr.every(function (x) { return typeof x === 'number'; }) && zmax <= 2 && zmono, 'palavras=' + zerr.length + ' erro máx=' + zmax.toFixed(2) + 'px monótono=' + zmono);
@@ -888,11 +890,12 @@ $test = @'
       // estabilidade: uma atualização sem mudança (tradução chegando, troca de idioma igual) não refaz a linha, não perde o destaque e não faz a linha pular
       var zen = D().doc.paras[0].s[0];
       D().emit('piece', { p: 0, s: 0, text: zen, lang: 'en' }); D().emit('wordpos', { ci: Math.floor(zen.length * 0.5), len: zen.length, text: zen });
-      var zw0 = idoc().querySelector('#lb-tele-line .tl-w'), znow0 = idoc().querySelector('#lb-tele-line .tl-w.now'), ztx0 = idoc().getElementById('lb-tele-line').style.transform, zrb = 0;
+      var ztrA = idoc().getElementById('lb-tele-line').style.transition, zw0 = idoc().querySelector('#lb-tele-line .tl-w'), znow0 = idoc().querySelector('#lb-tele-line .tl-w.now'), ztx0 = idoc().getElementById('lb-tele-line').style.transform, zrb = 0;
       for (var zq2 = 0; zq2 < 5; zq2++) { D().emit('lang', D().state.readLang); }
       var znow1 = idoc().querySelector('#lb-tele-line .tl-w.now');
       ok('Z4 atualizações repetidas sem mudança não refazem a linha: mesmos elementos, mesma palavra destacada e a linha não se mexe (sem travada na transição)', !!znow0 && znow1 === znow0 && idoc().querySelector('#lb-tele-line .tl-w') === zw0 && idoc().getElementById('lb-tele-line').style.transform === ztx0, 'palavra mantida=' + (znow1 === znow0) + ' linha igual=' + (idoc().querySelector('#lb-tele-line .tl-w') === zw0));      D().stopTts(); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
-      await until(function () { return !$('btn-tele').hidden; }, 4000);
+      var zm, ztr = idoc().getElementById('lb-tele-line').style.transition, zm = ztrA.match(/([\d.]+)(ms|s)\b/) || [], zdur = parseFloat(zm[1]) * (zm[2] === 's' ? 1000 : 1);
+      ok('Z5 a linha desliza de forma contínua e linear no ritmo da fala (sem parar a cada palavra): duração entre 90 e 1400 ms', /linear/.test(ztrA) && zdur >= 90 && zdur <= 1400, 'logo após a palavra: [' + ztrA + '] depois: [' + ztr + ']');      await until(function () { return !$('btn-tele').hidden; }, 4000);
       ok('T1 na Biblioteca, com documento aberto, o Raio-X some e aparece o botão Teleprompter', $('btn-raiox').hidden && !$('btn-tele').hidden && /Teleprompter/.test($('btn-tele').textContent));
       var tmode0 = D().state.mode;
       $('btn-tele').click();

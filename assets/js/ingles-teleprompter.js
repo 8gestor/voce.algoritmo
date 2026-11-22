@@ -24,7 +24,7 @@
     const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
     const WORD = /[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}'’-]*/gu;
 
-    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set(), painted = null;
+    let size = 1, rate = 1, cur = null, spoken = null, words = [], wi = -1, immersive = false, cumSent = null, lastBase = '', pendingNext = '', asked = '', nx = null, pf = new Set(), painted = null, lastArr = 0, cpsEst = 0.013;
     try { size = Math.min(1.7, Math.max(0.6, Number(localStorage.getItem(KEY)) || 1)); } catch (e) { /* sem storage */ }
     const saveSize = () => { try { localStorage.setItem(KEY, String(size)); } catch (e) { /* ignora */ } };
 
@@ -95,14 +95,19 @@
         const vw = view.clientWidth;
         if (!words.length) return vw * READ_AT;
         if (k < 0 || !words[k]) return vw * READ_AT - words[0].el.offsetLeft;
-        const w = words[k].el;
-        return vw * READ_AT - (w.offsetLeft + w.offsetWidth / 2);
+        const c = (i) => words[i].el.offsetLeft + words[i].el.offsetWidth / 2;
+        // alvo = meio caminho entre esta palavra e a próxima: durante a fala da palavra a linha desliza até lá, então ela fica centrada em média
+        return vw * READ_AT - (words[k + 1] ? (c(k) + c(k + 1)) / 2 : c(k));
     }
-    function place(k) { track.style.transform = 'translateX(' + Math.round(target(k)) + 'px)'; }
+    // dur (ms) = deslize contínuo e linear até o alvo, no ritmo da fala; sem dur, a animação padrão (entrada de frase, redimensionar)
+    function place(k, dur) {
+        track.style.transition = dur ? 'transform ' + dur + 'ms linear' : '';
+        track.style.transform = 'translateX(' + Math.round(target(k)) + 'px)';
+    }
     // modo: 'slide' = frase nova entra pela direita; 'carry' = a frase que já aparecia à direita como prévia vira a atual e a linha segue contínua; 'stay' = só repinta
     function paintLine(text, lang, mode, nextText) {
         const carry = mode === 'carry' && nx ? new DOMMatrix(getComputedStyle(track).transform).m41 + nx.offsetLeft : null;   // onde a prévia estava na tela
-        track.textContent = ''; nx = null; words = []; wi = -1; track.dataset.lang = lang || ''; track.lang = lang || ''; track.dataset.text = text == null ? '' : text;
+        track.textContent = ''; nx = null; words = []; lastArr = 0; wi = -1; track.dataset.lang = lang || ''; track.lang = lang || ''; track.dataset.text = text == null ? '' : text;
         if (text != null) {
             let pos = 0, m;
             WORD.lastIndex = 0;
@@ -140,7 +145,14 @@
     function mark(k) {
         if (k === wi) return;
         words.forEach((w, i) => { w.el.classList.toggle('now', i === k); w.el.classList.toggle('past', i < k); });
-        wi = k; place(k);
+        const prev = wi, now = performance.now();
+        wi = k;
+        if (lastArr && prev >= 0 && k === prev + 1) {                    // aprende o ritmo da voz (caracteres por ms) para o deslize casar com a fala
+            const sample = (words[prev].e - words[prev].s + 1) / Math.max(1, now - lastArr);
+            cpsEst = 0.6 * cpsEst + 0.4 * Math.min(0.05, Math.max(0.004, sample));
+        }
+        lastArr = now;
+        place(k, Math.min(1400, Math.max(90, (words[k].e - words[k].s + 1) / cpsEst)));
     }
     function render() {
         const doc = D.doc;
