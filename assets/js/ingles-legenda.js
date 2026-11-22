@@ -11,7 +11,7 @@
     'use strict';
     const D = window.DDLab;
     if (!D) return;
-    const KEY = 'dd-ingles-legenda', RATES = Array.from({ length: 12 }, (_, i) => (i + 1) * 0.25);
+    const KEY = 'dd-ingles-legenda', RATES = Array.from({ length: 30 }, (_, i) => (i + 1) / 10);
     const L = {
         pt: { btn: 'Legenda', tip: 'Mostra a frase narrada embaixo, como legenda de filme', prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Diminuir a letra', bigger: 'Aumentar a letra', off: 'Fechar a legenda', swap: 'Inverter: trocar o idioma do texto e o da legenda/áudio', wait: 'traduzindo…', group: 'Legenda' },
         en: { btn: 'Captions', tip: 'Shows the narrated sentence at the bottom, like movie captions', prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Larger text', off: 'Close captions', swap: 'Swap: exchange the text language and the captions/audio language', wait: 'translating…', group: 'Captions' }

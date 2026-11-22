@@ -995,11 +995,13 @@ $test = @'
       // velocidade de 0,25 em 0,25 até 3x na legenda e no teleprompter
       D().setMode('tele');
       await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 3; }, 40000);
-      var arRate = idoc().querySelector('#lb-tele .tl-rate'), arVals = Array.prototype.map.call(arRate.options, function (o) { return o.value; }).join(',');
-      arRate.value = '2.25'; arRate.dispatchEvent(new Event('change'));
-      await until(function () { return D().state.rate === 2.25; }, 5000);
-      var arLeg = idoc().querySelector('#lb-legenda .lg-rate');
-      ok('AR5 o botão de velocidade do teleprompter e da legenda vai de 0,25 a 3 em passos de 0,25 e aplica a escolha', arVals === '0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3' && D().state.rate === 2.25 && !!arLeg && arLeg.options.length === 12, arVals + ' | taxa=' + D().state.rate);
+      var arUp = idoc().getElementById('lb-tele-rate-up'), arDown = idoc().getElementById('lb-tele-rate-down'), arR0 = D().state.rate;
+      for (var arq = 0; arq < 5; arq++) arUp.click();
+      var arR1 = D().state.rate; arDown.click(); var arR2 = D().state.rate;
+      for (var arw = 0; arw < 40; arw++) arUp.click(); var arMax = D().state.rate;
+      for (var arz = 0; arz < 60; arz++) arDown.click(); var arMin = D().state.rate;
+      var arLeg = idoc().querySelector('#lb-legenda .lg-rate'), arLegVals = arLeg ? Array.prototype.map.call(arLeg.options, function (o) { return o.value; }) : [];
+      ok('AR5 velocidade de 0,1 em 0,1 de 0,1x a 3x: + e − do teleprompter andam um décimo (1 -> 1,5 -> 1,4), param em 3 e em 0,1, e a legenda lista 30 valores', arR1 === Math.round((arR0 + 0.5) * 10) / 10 && arR2 === Math.round((arR1 - 0.1) * 10) / 10 && arMax === 3 && arMin === 0.1 && arLegVals.length === 30 && arLegVals[0] === '0.1' && arLegVals[29] === '3', arR0 + ' -> ' + arR1 + ' -> ' + arR2 + ' | max=' + arMax + ' min=' + arMin + ' | legenda=' + arLegVals.length);
       D().stopTts(); post({ type: 'rate', value: 1 }); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);
       // ===================== EX. setas palavra a palavra com a equivalente no outro idioma =====================
@@ -1031,6 +1033,35 @@ $test = @'
       idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' })); idoc().defaultView.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
       var tNow = idoc().querySelector('#lb-tele-line .tl-w.now'), tSub = idoc().querySelector('#lb-tele-sub .tl-sw.now2');
       ok('EX7 no teleprompter as setas exploram palavra a palavra na linha grande e a equivalente do outro idioma acende embaixo', !!tNow && !!tSub && tSub.textContent.length > 0, (tNow && tNow.textContent) + ' -> ' + (tSub && tSub.textContent));
+      D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
+      D().$('lb-back').click(); await wait(300);
+      // ===================== TC. painel de andamento do teleprompter: palavras, página, tempo e atividade =====================
+      await D().addText('Andamento teste', [1, 2, 3, 4, 5, 6].map(function (k) { return 'Of things some are in our power and others are not so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you today.'; }).join('\n\n'));
+      await until(function () { return D().doc && D().doc.title === 'Andamento teste'; }, 20000);
+      await wait(700);
+      var tcw = W(), tcT = null, tcCur = null;
+      tcw.speechSynthesis.cancel = function () { clearInterval(tcT); if (tcCur) { var u0 = tcCur; tcCur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      tcw.speechSynthesis.speak = function (u) { tcCur = u; u.onstart && u.onstart(); var ws = u.text.split(/\s+/), ix = 0, ci = 0; tcT = setInterval(function () { if (ix >= ws.length) { clearInterval(tcT); tcCur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 200); };
+      post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      D().setMode('tele');
+      await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 5; }, 40000);
+      var tcv = function (id) { return idoc().getElementById(id).textContent; };
+      var tcNum = function (s) { return parseInt(String(s).replace(/[^\d]/g, ''), 10); };
+      var tcW0 = tcv('lb-tele-words'), tcP0 = tcv('lb-tele-page');
+      await until(function () { return D().tts.playing; }, 10000);
+      await until(function () { return tcNum(tcv('lb-tele-words').split('/')[0]) > tcNum(tcW0.split('/')[0]) + 8; }, 40000);
+      var tcW1 = tcv('lb-tele-words'), tcA = tcv('lb-tele-words-2'), tcT1 = tcv('lb-tele-time'), tcN1 = tcv('lb-tele-now'), tcN2 = tcv('lb-tele-now-2'), tcPg = tcv('lb-tele-page'), tcPg2 = tcv('lb-tele-page-2');
+      var tcTot = tcNum(tcW1.split('/')[1]), tcRead = tcNum(tcW1.split('/')[0]), tcLeft = tcNum((tcA.match(/(?:faltam|left)\s+([\d.,]+)/) || [])[1]);
+      ok('TC1 o contador de palavras avança com o texto (lidas / total) e mostra quanto falta', tcRead > tcNum(tcW0.split('/')[0]) && tcTot > 100 && Math.abs(tcLeft - (tcTot - tcRead)) <= 1, tcW0 + ' -> ' + tcW1 + ' | ' + tcA);
+      ok('TC2 mostra a página em que o leitor está (de quantas) e quantas faltam', /^\d+ \/ \d+$/.test(tcPg) && /(faltam|left) \d+/.test(tcPg2), tcPg + ' · ' + tcPg2);
+      ok('TC3 mostra o tempo usado, a média para concluir e o que falta, com o ritmo em palavras por minuto', /(usado|used) \d+:\d\d \/ (média|average)/.test(tcT1) && /(faltam|left) .*min/.test(tcv('lb-tele-time-2')) && /\d+ (palavras\/min|wpm)/.test(tcv('lb-tele-time-2')), tcT1 + ' | ' + tcv('lb-tele-time-2'));
+      ok('TC4 mostra o que se trabalha agora: lendo e ouvindo, idiomas de leitura e de escuta, livro e frase', /(Lendo e ouvindo)/.test(tcN1) && /PT/.test(tcN1) && /EN/.test(tcN1) && /Andamento teste/.test(tcN2) && /frase \d+\/\d+/.test(tcN2), tcN1 + ' | ' + tcN2);
+      D().stopTts(); await wait(1500);
+      var tcUsed1 = tcv('lb-tele-time').match(/(\d+):(\d\d)/); await wait(3200);
+      var tcUsed2 = tcv('lb-tele-time').match(/(\d+):(\d\d)/);
+      var tcS1 = tcUsed1 ? +tcUsed1[1] * 60 + +tcUsed1[2] : -1, tcS2 = tcUsed2 ? +tcUsed2[1] * 60 + +tcUsed2[2] : -1;
+      ok('TC5 o tempo usado corre enquanto o leitor está na tarefa (mesmo parado, com atividade recente)', tcS2 > tcS1, tcS1 + 's -> ' + tcS2 + 's');
+      ok('TC6 o tempo usado fica guardado para o livro (continua na próxima vez)', !!W().localStorage.getItem('dd-ingles-tele-tempo'));
       D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);

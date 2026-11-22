@@ -15,7 +15,7 @@
     'use strict';
     const D = window.DDLab;
     if (!D || !D.setMode) return;
-    const KEY = 'dd-ingles-tele-size', RATES = Array.from({ length: 12 }, (_, i) => (i + 1) * 0.25), READ_AT = 0.62;
+    const KEY = 'dd-ingles-tele-size', RATES = Array.from({ length: 30 }, (_, i) => (i + 1) / 10), READ_AT = 0.62;
     const L = {
         pt: { prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Letra menor', bigger: 'Letra maior', exit: 'Sair do teleprompter', wait: 'traduzindo…', read: 'Ler', listen: 'Ouvir', count: (a, b, p) => 'Frase ' + a + ' de ' + b + ' · ' + p + '%', group: 'Teleprompter' },
         en: { prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Bigger text', exit: 'Leave the teleprompter', wait: 'translating…', read: 'Read', listen: 'Listen', count: (a, b, p) => 'Sentence ' + a + ' of ' + b + ' · ' + p + '%', group: 'Teleprompter' }
@@ -32,9 +32,9 @@
     const root = el('section', 'lb-tele'); root.id = 'lb-tele'; root.hidden = true; root.tabIndex = -1; root.setAttribute('role', 'region');
     const bar = el('div', 'tl-bar');
     const bExit = el('button', 'tl-b tl-exit', '✕'), bPrev = el('button', 'tl-b', '⏮'), bPlay = el('button', 'tl-b tl-play', '▶'), bNext = el('button', 'tl-b', '⏭');
-    const bRate = el('select', 'tl-b tl-rate'), bMin = el('button', 'tl-b', 'A−'), bMax = el('button', 'tl-b', 'A+');
-    [bExit, bPrev, bPlay, bNext, bMin, bMax].forEach((b) => { b.type = 'button'; });
-    RATES.forEach((v) => { const o = document.createElement('option'); o.value = String(v); bRate.appendChild(o); });
+    const rateBox = el('div', 'tl-rate-box'), bRd = el('button', 'tl-b', '−'), bRv = el('button', 'tl-b tl-rate', '1×'), bRu = el('button', 'tl-b', '+'), bMin = el('button', 'tl-b', 'A−'), bMax = el('button', 'tl-b', 'A+');
+    [bExit, bPrev, bPlay, bNext, bMin, bMax, bRd, bRv, bRu].forEach((b) => { b.type = 'button'; });
+    bRv.id = 'lb-tele-rate'; bRd.id = 'lb-tele-rate-down'; bRu.id = 'lb-tele-rate-up'; rateBox.append(bRd, bRv, bRu);
     // idiomas: ler num e ouvir em outro (e o contrário); o site pai guarda a escolha e atualiza os botões LER/OUVIR dele
     const langs = el('div', 'tl-langs'), groups = {};
     [['readLang', 'read'], ['audioLang', 'listen']].forEach((g) => {
@@ -46,12 +46,72 @@
         langs.appendChild(box);
     });
     const count = el('div', 'tl-count'); count.id = 'lb-tele-count';
-    bar.append(bExit, count, langs, bPrev, bPlay, bNext, bRate, bMin, bMax);
+    bar.append(bExit, count, langs, bPrev, bPlay, bNext, rateBox, bMin, bMax);
     const stage = el('div', 'tl-stage'), view = el('div', 'tl-view'), track = el('div', 'tl-track'), head = el('div', 'tl-head'), sub = el('div', 'tl-sub');
     track.id = 'lb-tele-line'; sub.id = 'lb-tele-sub'; head.style.left = (READ_AT * 100) + '%';
     view.append(head, track); stage.append(view, sub);
     const prog = el('div', 'tl-prog'), fill = el('div', 'tl-prog-fill'); prog.appendChild(fill);
-    root.append(bar, stage, prog);
+    /* ------------------------------------------------------------ painel de andamento: palavras, página, tempo e o que se trabalha agora */
+    const PAGE_WORDS = 250, TKEY = 'dd-ingles-tele-tempo';
+    const T2 = {
+        pt: { words: 'PALAVRAS', page: 'PÁGINA', time: 'TEMPO', now: 'AGORA', left: 'faltam', used: 'usado', avg: 'média para concluir', pageNote: 'página estimada de ~250 palavras', both: 'Lendo e ouvindo', reading: 'Lendo (pausado)', readIn: 'lê em', listenIn: 'ouve em', sent: 'frase' },
+        en: { words: 'WORDS', page: 'PAGE', time: 'TIME', now: 'NOW', left: 'left', used: 'used', avg: 'average to finish', pageNote: 'estimated page of ~250 words', both: 'Reading and listening', reading: 'Reading (paused)', readIn: 'reads in', listenIn: 'listens in', sent: 'sentence' }
+    };
+    const foot = el('div', 'tl-foot'), cells = {};
+    [['words', 'lb-tele-words'], ['page', 'lb-tele-page'], ['time', 'lb-tele-time'], ['now', 'lb-tele-now']].forEach((c) => {
+        const box = el('div', 'tl-cell'), k = el('span', 'tl-k'), v = el('span', 'tl-v'), v2 = el('span', 'tl-v2'); v.id = c[1]; v2.id = c[1] + '-2';
+        box.append(k, v, v2); foot.appendChild(box); cells[c[0]] = { k, v, v2 };
+    });
+    let wcum = null, rec = { used: 0, listen: 0 }, sess = null, lastAct = Date.now(), clock = null, tickN = 0;
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => window.addEventListener(ev, () => { lastAct = Date.now(); }, { passive: true }));
+    const wcOf = (x) => (x.match(/\S+/g) || []).length;
+    function buildWc() {
+        const doc = D.doc;
+        if (wcum && wcum.id === doc.id) return wcum;
+        const c = [0], first = []; let n = 0;
+        doc.paras.forEach((q) => { first.push(n); n += q.s.length; q.s.forEach((x) => c.push(c[c.length - 1] + wcOf(x))); });
+        wcum = { id: doc.id, c, first };
+        return wcum;
+    }
+    function wordsNow() {
+        if (!D.doc || !cur || !D.doc.paras[cur.p]) return { read: 0, total: 0 };
+        const w = buildWc(), flat = w.first[cur.p] + cur.s, base = w.c[flat], sw = w.c[flat + 1] - base;
+        return { read: Math.round(base + (words.length ? (wi + 1) / words.length : 0) * sw), total: w.c[w.c.length - 1] };
+    }
+    function fmtClock(ms) { const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60, p2 = (n) => String(n).padStart(2, '0'); return h ? h + ':' + p2(m) + ':' + p2(x) : m + ':' + p2(x); }
+    function fmtMin(min) { if (!(min >= 1)) return '<1 min'; const h = Math.floor(min / 60), m = Math.round(min % 60); return h ? h + ' h ' + String(m).padStart(2, '0') + ' min' : m + ' min'; }
+    function loadRec() {
+        try { const all = JSON.parse(localStorage.getItem(TKEY) || '{}'); rec = Object.assign({ used: 0, listen: 0 }, all[D.doc.id] || {}); } catch (e) { rec = { used: 0, listen: 0 }; }
+    }
+    function saveRec() {
+        if (!D.doc) return;
+        try { const all = JSON.parse(localStorage.getItem(TKEY) || '{}'); all[D.doc.id] = rec; const ks = Object.keys(all); if (ks.length > 60) delete all[ks[0]]; localStorage.setItem(TKEY, JSON.stringify(all)); } catch (e) { /* sem storage */ }
+    }
+    function paintStats() {
+        if (root.hidden || !D.doc || !cur) return;
+        const L2 = T2[D.state.readLang], nf = D.nf(), wn = wordsNow(), left = Math.max(0, wn.total - wn.read);
+        const pages = Math.max(1, Math.ceil(wn.total / PAGE_WORDS)), page = Math.min(pages, Math.floor(wn.read / PAGE_WORDS) + 1);
+        const adv = wn.read - (sess ? sess.w0 : wn.read), actMin = sess ? sess.act / 60000 : 0;
+        const wpm = Math.min(600, Math.max(30, actMin >= 0.5 && adv >= 15 ? adv / actMin : 150 * D.state.rate));       // ritmo medido; no começo, o esperado para a velocidade
+        const remMin = left / wpm, usedMin = rec.used / 60000, pct = wn.total ? Math.floor(wn.read / wn.total * 100) : 0;
+        cells.words.k.textContent = L2.words; cells.words.v.textContent = nf.format(wn.read) + ' / ' + nf.format(wn.total); cells.words.v2.textContent = pct + '% · ' + L2.left + ' ' + nf.format(left);
+        cells.page.k.textContent = L2.page; cells.page.v.textContent = nf.format(page) + ' / ' + nf.format(pages); cells.page.v2.textContent = L2.left + ' ' + nf.format(pages - page); cells.page.v.title = L2.pageNote;
+        cells.time.k.textContent = L2.time; cells.time.v.textContent = L2.used + ' ' + fmtClock(rec.used) + ' / ' + L2.avg + ' ' + fmtMin(usedMin + remMin); cells.time.v2.textContent = L2.left + ' ' + fmtMin(remMin) + ' · ' + Math.round(wpm) + ' ' + (D.state.readLang === 'en' ? 'wpm' : 'palavras/min');
+        const ix = sentIndex(cur.p, cur.s);
+        cells.now.k.textContent = L2.now;
+        cells.now.v.textContent = (D.tts.playing ? L2.both : L2.reading) + ' · ' + L2.readIn + ' ' + D.state.readLang.toUpperCase() + ' · ' + L2.listenIn + ' ' + D.state.audioLang.toUpperCase();
+        cells.now.v2.textContent = '“' + (D.doc.title || '') + '” · ' + L2.sent + ' ' + nf.format(ix.n) + '/' + nf.format(ix.total);
+    }
+    function tick() {
+        if (root.hidden || document.visibilityState !== 'visible') return;
+        if (D.tts.playing || Date.now() - lastAct < 60000) { rec.used += 1000; if (sess) sess.act += 1000; if (D.tts.playing) rec.listen += 1000; }
+        if (++tickN % 5 === 0) saveRec();
+        paintStats();
+    }
+    function startClock() { if (clock) return; loadRec(); sess = { w0: wordsNow().read, act: 0 }; clock = setInterval(tick, 1000); }
+    function stopClock() { if (clock) { clearInterval(clock); clock = null; saveRec(); sess = null; } }
+    window.addEventListener('pagehide', saveRec);
+    root.append(bar, stage, foot, prog);
     document.body.appendChild(root);
 
     function setOpt(key, val) {
@@ -175,7 +235,7 @@
         if (k === wi) return;
         words.forEach((w, i) => { w.el.classList.toggle('now', i === k); w.el.classList.toggle('past', i < k); });
         const prev = wi, now = performance.now();
-        wi = k;
+        wi = k; paintStats();
         if (lastArr && prev >= 0 && k === prev + 1) {                    // aprende o ritmo da voz (caracteres por ms) para o deslize casar com a fala
             const sample = (words[prev].e - words[prev].s + 1) / Math.max(1, now - lastArr);
             cpsEst = 0.6 * cpsEst + 0.4 * Math.min(0.05, Math.max(0.004, sample));
@@ -210,6 +270,7 @@
         const ix = sentIndex(cur.p, cur.s), pct = ix.total ? Math.round(ix.n / ix.total * 100) : 0;
         count.textContent = t('count')(D.nf().format(ix.n), D.nf().format(ix.total), pct);
         fill.style.width = pct + '%';
+        paintStats();
         root.style.setProperty('--tl-size', String(size));
         labels();
     }
@@ -225,7 +286,7 @@
         bPrev.title = bPrev.ariaLabel = t('prev'); bNext.title = bNext.ariaLabel = t('next');
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
-        { const sel = bRate, near = RATES.reduce((b, x) => (Math.abs(x - D.state.rate) < Math.abs(b - D.state.rate) ? x : b), RATES[0]); Array.prototype.forEach.call(sel.options, (o) => { o.textContent = String(o.value).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; }); sel.value = String(near); sel.title = sel.ariaLabel = t('speed'); }
+        { const r = Math.round(D.state.rate * 100) / 100; bRv.textContent = String(r).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRv.title = bRv.ariaLabel = t('speed'); bRd.title = bRd.ariaLabel = t('speed') + ' −0,1'; bRu.title = bRu.ariaLabel = t('speed') + ' +0,1'; }
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bExit.title = bExit.ariaLabel = t('exit');
         Object.keys(groups).forEach((k) => {
             const g = groups[k]; g.lab.textContent = t(g.key);
@@ -243,8 +304,9 @@
         if (show) {
             cur = cur && D.doc.paras[cur.p] ? cur : position(); spoken = null; lastBase = ''; painted = null; render();
             try { root.focus({ preventScroll: true }); } catch (e) { /* ignora */ }
+            startClock(); paintStats();
             if (autoplay && !D.tts.playing && cur) setTimeout(() => { if (active() && !D.tts.playing) D.startTts(cur.p, cur.s); }, 150);
-        } else labels();
+        } else { stopClock(); labels(); }
     }
 
     /* ------------------------------------------------------------ eventos do núcleo */
@@ -260,7 +322,7 @@
     });
     D.on('stop', labels); D.on('restartspeech', labels);
     D.on('open', () => { cur = null; spoken = null; setTimeout(() => sync(false), 40); });
-    D.on('close', () => { cur = null; spoken = null; pf.clear(); pendingNext = ''; painted = null; root.hidden = true; setImmersive(false); });
+    D.on('close', () => { stopClock(); cur = null; spoken = null; pf.clear(); pendingNext = ''; painted = null; root.hidden = true; setImmersive(false); });
     D.on('mode', () => { cur = null; spoken = null; sync(true); });
     D.on('lang', () => { asked = ''; pf.clear(); labels(); render(); });
     window.addEventListener('resize', () => { if (!root.hidden) place(wi); });
@@ -272,7 +334,11 @@
     bPrev.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, -1)); });
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
-    bRate.addEventListener('change', () => { if (D.setRate) D.setRate(Number(bRate.value)); labels(); bRate.blur(); });
+    // velocidade de 0,1 em 0,1, de 0,1x a 3x (botões − e +, ↑ e ↓; clicar no valor volta a 1x)
+    const setR = (v) => { v = Math.min(3, Math.max(0.1, Math.round(v * 10) / 10)); if (D.setRate) D.setRate(v); labels(); };
+    bRd.addEventListener('click', () => setR(D.state.rate - 0.1));
+    bRu.addEventListener('click', () => setR(D.state.rate + 0.1));
+    bRv.addEventListener('click', () => setR(1));
     bMin.addEventListener('click', () => { size = Math.max(0.6, Math.round((size - 0.1) * 10) / 10); saveSize(); render(); place(wi); });
     bMax.addEventListener('click', () => { size = Math.min(1.7, Math.round((size + 0.1) * 10) / 10); saveSize(); render(); place(wi); });
     bExit.addEventListener('click', () => { D.stopTts(); D.setMode('single'); });
@@ -281,6 +347,8 @@
         if (e.key === ' ') { e.preventDefault(); bPlay.click(); }
         else if (e.key === 'ArrowLeft') { e.preventDefault(); if (e.shiftKey) bPrev.click(); else exploreStep(-1); }
         else if (e.key === 'ArrowRight') { e.preventDefault(); if (e.shiftKey) bNext.click(); else exploreStep(1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); setR(D.state.rate + 0.1); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); setR(D.state.rate - 0.1); }
         else if (e.key === 'F11') { e.preventDefault(); D.postParent({ type: 'dd-fullscreen' }); }
         else if (e.key === '+' || e.key === '=') bMax.click();
         else if (e.key === '-') bMin.click();

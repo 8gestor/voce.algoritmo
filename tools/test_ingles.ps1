@@ -161,7 +161,8 @@ $test = @'
       await lab().openDoc(id); await wait(500);
       ok('7c reabrir recupera as traduções salvas', Object.keys(lab().doc.tr).length === lab().doc.paras.length, Object.keys(lab().doc.tr).length + '');
       var spd = Array.prototype.map.call($('speed-select').options, function (o) { return o.value; }).join(',');
-      ok('V1 o menu de velocidade do site vai de 0,25 a 3 em passos de 0,25 (12 opções)', spd === '0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3', spd);
+      var spdExp = []; for (var si = 1; si <= 30; si++) spdExp.push(String(si / 10));
+      ok('V1 o menu de velocidade do site vai de 0,1 a 3 em passos de 0,1 (30 opções)', spd === spdExp.join(','), spd.slice(0, 60) + '...');
       var fsCalls = 0; document.documentElement.requestFullscreen = function () { fsCalls++; return Promise.resolve(); };
       var f11 = new KeyboardEvent('keydown', { key: 'F11', bubbles: true, cancelable: true }); window.dispatchEvent(f11);
       var fsShell = fsCalls;

@@ -351,3 +351,14 @@ body.sepia-mode { --mk-word2: #2e7d5b; --mk-word2-fg: #fff8ec; }
 html body[class] .wd2.now2, html body[class] .tl-sw.now2, html body[class] .lg-sw.now2 { background: var(--mk-word2); color: var(--mk-word2-fg); border-radius: 3px; box-shadow: 0 0 0 2px var(--mk-word2); }
 .lb-gloss { position: absolute; z-index: 5; padding: 2px 9px; border-radius: 4px; font-family: var(--font-tech); font-size: 0.82rem; line-height: 1.4; white-space: nowrap; pointer-events: none; background: var(--mk-word2); color: var(--mk-word2-fg); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
 .lb-gloss[hidden] { display: none; }
+
+/* teleprompter: velocidade de 0,1 em 0,1 e painel de andamento (palavras, página, tempo, o que se trabalha) */
+.tl-rate-box { display: inline-flex; gap: 2px; align-items: center; }
+.tl-rate-box .tl-b { min-width: 34px; padding: 0 8px; }
+.tl-rate-box .tl-rate { min-width: 64px; font-family: var(--font-tech); font-variant-numeric: tabular-nums; }
+.tl-foot { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 6px 22px; padding: 10px 18px; border-top: 1px solid var(--lb-line); font-size: 0.82rem; }
+.tl-cell { display: flex; flex-direction: column; min-width: 0; gap: 1px; }
+.tl-k { font-family: var(--font-tech); font-size: 0.62rem; letter-spacing: 0.12em; color: var(--c-dim); }
+.tl-v { font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.tl-v2 { color: var(--c-dim); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .tl-foot { grid-template-columns: 1fr 1fr; padding: 8px 12px; font-size: 0.74rem; } }

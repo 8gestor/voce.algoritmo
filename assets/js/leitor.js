@@ -20,7 +20,7 @@ const OPT_TO_MSG = {
     theme: 'theme', face: 'typeface', margin: 'margins', align: 'align',
     readLang: 'readlang', audioLang: 'audiolang'
 };
-const SPEEDS = Array.from({ length: 12 }, (_, i) => (i + 1) * 0.25);     // 0,25x a 3x, de 0,25 em 0,25
+const SPEEDS = Array.from({ length: 30 }, (_, i) => (i + 1) / 10);     // 0,1x a 3x, de 0,1 em 0,1
 
 let settings = Object.assign({}, DEFAULTS);
 try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (e) { /* sem storage */ }
