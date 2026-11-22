@@ -455,8 +455,12 @@ $test = @'
       ok('L12b renderizar de novo não duplica o registro', JSON.parse(W().localStorage.getItem('dd-ingles-semana-hist')).length === 1);
       idoc().getElementById('lb-close-other').click();
       await until(function () { return idoc().getElementById('lb-rot-1'); }, 5000);
-      ok('L13 depois de ler, a semana 2 aparece como lida e as outras 7 continuam disponíveis', /lido/.test(idoc().querySelector('.lb-rot-item[data-slug="epicteto-enchiridion"] .lb-rot-done').textContent) && !idoc().getElementById('lb-rot-2') && idoc().querySelectorAll('#lb-rot button').length === 7);
-      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');      // ===================== M. modos de leitura (seletor único) e cabeçalho do leitor =====================
+      ok('L13 depois de ler, a semana 2 aparece como lida e as outras 7 continuam disponíveis', /lido/.test(idoc().querySelector('.lb-rot-item[data-slug="epicteto-enchiridion"] .lb-rot-done').textContent) && !idoc().getElementById('lb-rot-2') && idoc().querySelectorAll('#lb-rot button.lb-primary').length === 7 && !!idoc().getElementById('lb-rot-open-2') && !!idoc().getElementById('lb-rot-again-2'));
+      idoc().getElementById('lb-rot-again-2').click();
+      await until(function () { var p = W().__ddWeek.load(); return p && p.slug === 'epicteto-enchiridion'; }, 5000);
+
+      await until(function () { return idoc().getElementById('lb-week-open'); }, 5000);
+      ok('L14 livro concluído pode ser relido: nova semana começa do início e o histórico da anterior fica', !!idoc().getElementById('lb-week-open') && !idoc().getElementById('lb-week-fin') && /\b0 de /.test(idoc().getElementById('lb-week-prog').textContent) && JSON.parse(W().localStorage.getItem('dd-ingles-semana-hist')).length === 1, idoc().getElementById('lb-week-prog') && idoc().getElementById('lb-week-prog').textContent);      W().localStorage.removeItem('dd-ingles-semana'); W().localStorage.removeItem('dd-ingles-semana-hist');      // ===================== M. modos de leitura (seletor único) e cabeçalho do leitor =====================
       post({ type: 'readlang', value: 'pt' }); await wait(200);
       W().localStorage.removeItem('dd-ingles-modo');
       var sbook = [1, 2, 3, 4, 5, 6].map(function (k) { return 'Of things some are in our power, and others are not, so we must learn to tell them apart number ' + k + '. Nobody can compel you unless you let that happen to you.'; }).join('\n\n');

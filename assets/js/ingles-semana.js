@@ -22,7 +22,7 @@
             onPace: 'No ritmo da semana', behind: (n) => 'Atrasado em ' + n + ' palavras', ahead: (n) => 'Adiantado em ' + n + ' palavras',
             cont: 'Continuar a leitura', end: 'Encerrar a semana', gone: 'O livro da semana não está mais na biblioteca.',
             finished: (d) => 'Livro concluído em ' + d + (d === 1 ? ' dia' : ' dias') + '. Boa leitura!', next: 'Escolher o próximo livro',
-            rotH: 'Roteiro de 8 semanas', rotNote: 'Edições de domínio público (Standard Ebooks). Cada livro cabe em uma semana com 50 minutos por dia.', week: 'Semana', words: 'mil palavras', startThis: 'Começar esta semana', preparing: 'Preparando o livro…', reading: 'em andamento', doneTag: 'lido', other: 'Ou escolha outro livro da sua biblioteca (por exemplo, um PDF que você enviou):', rotFail: 'Não consegui carregar o livro: ',
+            rotH: 'Roteiro de 8 semanas', rotNote: 'Edições de domínio público (Standard Ebooks). Cada livro cabe em uma semana com 50 minutos por dia.', week: 'Semana', words: 'mil palavras', startThis: 'Começar esta semana', preparing: 'Preparando o livro…', reading: 'em andamento', doneTag: 'lido', openBook: 'Abrir o livro', reread: 'Reler (nova semana)', other: 'Ou escolha outro livro da sua biblioteca (por exemplo, um PDF que você enviou):', rotFail: 'Não consegui carregar o livro: ',
             closeH: 'Fechamento da semana', cDays: 'dias de leitura', cWords: 'palavras lidas', cMin: 'min estudados', cRdLs: 'min lendo / ouvindo', cSaved: 'palavras salvas', cRev: 'revisões feitas', cSess: 'sessões do dia completas', cTexts: 'textos escritos',
             closeAsk: 'Escreva, em inglês, um resumo de cerca de 150 palavras: o argumento central do livro e uma objeção sua.', counter: (n) => n + ' / 150 palavras', closeSave: 'Salvar o fechamento', saveAnyway: 'Salvar assim mesmo',
             needWords: (n) => 'Escreva pelo menos ' + n + ' palavras.', needBook: (n) => 'Use pelo menos ' + n + ' palavras do livro (veja a lista da semana).', needObj: 'Inclua uma objeção sua (however, but, although, I disagree…).',
@@ -41,7 +41,7 @@
             onPace: 'On pace for the week', behind: (n) => 'Behind by ' + n + ' words', ahead: (n) => 'Ahead by ' + n + ' words',
             cont: 'Continue reading', end: 'End the week', gone: 'This week\'s book is no longer in the library.',
             finished: (d) => 'Book finished in ' + d + (d === 1 ? ' day' : ' days') + '. Well read!', next: 'Pick the next book',
-            rotH: '8-week reading plan', rotNote: 'Public-domain editions (Standard Ebooks). Each book fits in a week at 50 minutes a day.', week: 'Week', words: 'k words', startThis: 'Start this week', preparing: 'Preparing the book…', reading: 'in progress', doneTag: 'read', other: 'Or pick another book from your library (for example, a PDF you uploaded):', rotFail: 'Could not load the book: ',
+            rotH: '8-week reading plan', rotNote: 'Public-domain editions (Standard Ebooks). Each book fits in a week at 50 minutes a day.', week: 'Week', words: 'k words', startThis: 'Start this week', preparing: 'Preparing the book…', reading: 'in progress', doneTag: 'read', openBook: 'Open the book', reread: 'Read again (new week)', other: 'Or pick another book from your library (for example, a PDF you uploaded):', rotFail: 'Could not load the book: ',
             closeH: 'Week closing', cDays: 'reading days', cWords: 'words read', cMin: 'min studied', cRdLs: 'min reading / listening', cSaved: 'words saved', cRev: 'reviews done', cSess: 'full daily sessions', cTexts: 'texts written',
             closeAsk: 'Write a summary of about 150 words in English: the book\'s central argument and an objection of your own.', counter: (n) => n + ' / 150 words', closeSave: 'Save the closing', saveAnyway: 'Save anyway',
             needWords: (n) => 'Write at least ' + n + ' words.', needBook: (n) => 'Use at least ' + n + ' words from the book (see the week\'s list).', needObj: 'Include an objection of your own (however, but, although, I disagree…).',
@@ -114,8 +114,11 @@
     const anchor = D.$('lb-drop');
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
 
-    async function startItem(it, metas) {
-        const id = await addRoteiro(it, metas), m = await D.db.get('meta', id), info2 = await bookInfo(id);
+    async function startItem(it, metas, again) {
+        const id = await addRoteiro(it, metas); let m = await D.db.get('meta', id);
+        // reler um livro concluído: a posição volta ao início (a semana anterior continua no histórico)
+        if (again && m) { m = Object.assign({}, m, { pos: 0 }); await D.db.put('meta', m); }
+        const info2 = await bookInfo(id);
         store({ docId: id, title: m ? m.title : it.doc, slug: it.slug, start: dayKey(), startWords: readWords(info2, (m && m.pos) || 0) });
     }
     function roteiroList(plan, metas, collapsed) {
@@ -129,7 +132,18 @@
             const info = el('div', 'lb-rot-info');
             info.append(el('strong', null, t('week') + ' ' + it.n + ' · ' + names[0] + ' — ' + names[1]), el('small', null, Math.round(it.w / 1000) + ' ' + t('words')));
             const act = el('div', 'lb-rot-act');
-            if (done.some((h) => h.slug === it.slug)) { const s = el('span', 'lb-ok', '✓ ' + t('doneTag')); s.className = 'lb-ok lb-rot-done'; act.appendChild(s); }
+            if (done.some((h) => h.slug === it.slug)) {
+                // livro concluído nunca fica trancado: dá para abrir e, sem plano em andamento, reler em uma nova semana
+                const s = el('span', 'lb-ok', '✓ ' + t('doneTag')); s.className = 'lb-ok lb-rot-done'; act.appendChild(s);
+                const bo = btn(t('openBook'), async () => { try { D.openDoc(await addRoteiro(it, metas)); } catch (e) { msg.textContent = t('rotFail') + (e && e.message ? e.message : e); } }); bo.id = 'lb-rot-open-' + it.n; act.appendChild(bo);
+                if (!plan) {
+                    const br = btn(t('reread'), async () => {
+                        wrap.querySelectorAll('button').forEach((x) => { x.disabled = true; });
+                        msg.textContent = t('preparing');
+                        try { await startItem(it, metas, true); render(); } catch (e) { msg.textContent = t('rotFail') + (e && e.message ? e.message : e); wrap.querySelectorAll('button').forEach((x) => { x.disabled = false; }); }
+                    }); br.id = 'lb-rot-again-' + it.n; act.appendChild(br);
+                }
+            }
             else if (plan && plan.slug === it.slug) act.appendChild(el('span', 'lb-rot-now', t('reading')));
             else if (!plan) {
                 const b = btn(t('startThis'), async () => {
@@ -218,7 +232,8 @@
             nb.appendChild(go);
         } else nb.appendChild(el('p', 'lb-note', t('nextDone')));
         const other = btn(t('nextOther'), () => { store(null); render(); }); other.id = 'lb-close-other';
-        nb.append(other, msg); card.appendChild(nb);
+        const reopen = btn(t('openBook'), () => D.openDoc(plan.docId)); reopen.id = 'lb-close-open';
+        nb.append(other, reopen, msg); card.appendChild(nb);
         return card;
     }
     const fmtN = (n) => D.nf().format(n);
