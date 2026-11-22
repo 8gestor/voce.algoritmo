@@ -429,6 +429,22 @@
         startUnit(qi + 1, 0);
     }
 
+    // Setas ← →: com a narração tocando, pula para a frase (trecho) anterior/seguinte; no fim ou no início da unidade, vai à vizinha
+    function step(dir) {
+        if (!playing || !plan) return;
+        const ci = chunkOf(Math.max(0, tok)), ti = ci + dir, my = ++serial;
+        stopTimer(); synth.cancel();
+        setTimeout(() => {
+            if (!playing || my !== serial) return;
+            if (ti >= plan.chunks.length) { nextUnit(); return; }
+            if (ti < 0) { if (qi > 0) { unwrapUnit(plan.id); plan = null; startUnit(qi - 1, 0); } else speakFrom(0); return; }
+            speakFrom(plan.chunks[ti].a);
+        }, 30);
+    }
+    window.addEventListener('keydown', (e) => {
+        if (e.altKey || e.ctrlKey || e.metaKey || /^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '')) return;
+        if (playing && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); step(e.key === 'ArrowRight' ? 1 : -1); }
+    });
     function halt() {
         playing = false;
         serial++;
@@ -508,6 +524,7 @@
             if (v > 0 && v !== state.rate) { state.rate = v; refresh(); }
         }
         if (d.type === 'tts-toggle') toggle();
+        if (d.type === 'step' && (d.value === 1 || d.value === -1)) step(d.value);
     });
 
     /* ------------------------------------------------------------ progresso (alimenta as estatísticas do leitor) */

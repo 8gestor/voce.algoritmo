@@ -910,6 +910,24 @@
         emit('playstate', { playing: true });
         runTts(tts.token);
     }
+    // Setas ← →: frase anterior/próxima. Tocando, a voz segue de lá; parado, só a marca e a posição andam (▶ continua dali).
+    function stepSentence(dir) {
+        if (!doc) return;
+        const cur = tts.mark || tts.cursor || { p: firstVisible(), s: 0 };
+        let p = cur.p, s = cur.s + dir;
+        for (let guard = 0; guard < 4; guard++) {
+            if (s < 0) { p--; if (p < 0) return; s = doc.paras[p].s.length - 1; }
+            else if (s >= doc.paras[p].s.length) { p++; if (p >= doc.paras.length) return; s = 0; }
+            if (s >= 0 && doc.paras[p].s[s] != null) break;
+        }
+        if (tts.playing) startTts(p, s);
+        else { tts.cursor = { p, s }; setMark(p, s); }
+    }
+    window.addEventListener('keydown', (e) => {
+        if (!doc || state.mode === 'tele' || ($('lb-reader') && $('lb-reader').hidden)) return;
+        if (e.altKey || e.ctrlKey || e.metaKey || /^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable)) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); stepSentence(e.key === 'ArrowRight' ? 1 : -1); }
+    });
     function stopTts() {
         tts.token++;
         emit('stop');
@@ -1215,6 +1233,7 @@
 
     window.addEventListener('message', (e) => {
         const d = e.data || {};
+        if (d.type === 'step' && doc && (d.value === 1 || d.value === -1)) { if (state.mode === 'tele') emit('step', { d: d.value }); else stepSentence(d.value); }
         if (d.type === 'lab-tele' && doc) setMode(state.mode === 'tele' ? 'single' : 'tele');   // botao Teleprompter do leitor
         if (d.type === 'theme') document.body.className = d.value + '-mode';
         if (d.type === 'font') root.style.setProperty('--base-size', d.value + 'px');

@@ -15,7 +15,7 @@
     'use strict';
     const D = window.DDLab;
     if (!D || !D.setMode) return;
-    const KEY = 'dd-ingles-tele-size', RATES = [0.75, 1, 1.25, 1.5], READ_AT = 0.62;
+    const KEY = 'dd-ingles-tele-size', RATES = Array.from({ length: 12 }, (_, i) => (i + 1) * 0.25), READ_AT = 0.62;
     const L = {
         pt: { prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Letra menor', bigger: 'Letra maior', exit: 'Sair do teleprompter', wait: 'traduzindo…', read: 'Ler', listen: 'Ouvir', count: (a, b, p) => 'Frase ' + a + ' de ' + b + ' · ' + p + '%', group: 'Teleprompter' },
         en: { prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Bigger text', exit: 'Leave the teleprompter', wait: 'translating…', read: 'Read', listen: 'Listen', count: (a, b, p) => 'Sentence ' + a + ' of ' + b + ' · ' + p + '%', group: 'Teleprompter' }
@@ -32,8 +32,9 @@
     const root = el('section', 'lb-tele'); root.id = 'lb-tele'; root.hidden = true; root.tabIndex = -1; root.setAttribute('role', 'region');
     const bar = el('div', 'tl-bar');
     const bExit = el('button', 'tl-b tl-exit', '✕'), bPrev = el('button', 'tl-b', '⏮'), bPlay = el('button', 'tl-b tl-play', '▶'), bNext = el('button', 'tl-b', '⏭');
-    const bRate = el('button', 'tl-b tl-rate', '1×'), bMin = el('button', 'tl-b', 'A−'), bMax = el('button', 'tl-b', 'A+');
-    [bExit, bPrev, bPlay, bNext, bRate, bMin, bMax].forEach((b) => { b.type = 'button'; });
+    const bRate = el('select', 'tl-b tl-rate'), bMin = el('button', 'tl-b', 'A−'), bMax = el('button', 'tl-b', 'A+');
+    [bExit, bPrev, bPlay, bNext, bMin, bMax].forEach((b) => { b.type = 'button'; });
+    RATES.forEach((v) => { const o = document.createElement('option'); o.value = String(v); bRate.appendChild(o); });
     // idiomas: ler num e ouvir em outro (e o contrário); o site pai guarda a escolha e atualiza os botões LER/OUVIR dele
     const langs = el('div', 'tl-langs'), groups = {};
     [['readLang', 'read'], ['audioLang', 'listen']].forEach((g) => {
@@ -195,7 +196,7 @@
         bPrev.title = bPrev.ariaLabel = t('prev'); bNext.title = bNext.ariaLabel = t('next');
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
-        rate = D.state.rate; bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
+        { const sel = bRate, near = RATES.reduce((b, x) => (Math.abs(x - D.state.rate) < Math.abs(b - D.state.rate) ? x : b), RATES[0]); Array.prototype.forEach.call(sel.options, (o) => { o.textContent = String(o.value).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; }); sel.value = String(near); sel.title = sel.ariaLabel = t('speed'); }
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bExit.title = bExit.ariaLabel = t('exit');
         Object.keys(groups).forEach((k) => {
             const g = groups[k]; g.lab.textContent = t(g.key);
@@ -234,6 +235,7 @@
     D.on('mode', () => { cur = null; spoken = null; sync(true); });
     D.on('lang', () => { asked = ''; pf.clear(); labels(); render(); });
     window.addEventListener('resize', () => { if (!root.hidden) place(wi); });
+    D.on('step', (ev) => { if (!root.hidden) (ev.d > 0 ? bNext : bPrev).click(); });      // seta do site (quando o foco está fora da legenda)
     D.on('playstate', () => { if (!root.hidden) labels(); });      // ▶/❚❚ acompanha a narração iniciada de fora (sem sondar a cada instante)
 
     /* ------------------------------------------------------------ controles */
@@ -241,7 +243,7 @@
     bPrev.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, -1)); });
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
-    bRate.addEventListener('click', () => { const i0 = RATES.reduce((b, x, i) => (Math.abs(x - D.state.rate) < Math.abs(RATES[b] - D.state.rate) ? i : b), 0); rate = RATES[(i0 + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
+    bRate.addEventListener('change', () => { if (D.setRate) D.setRate(Number(bRate.value)); labels(); bRate.blur(); });
     bMin.addEventListener('click', () => { size = Math.max(0.6, Math.round((size - 0.1) * 10) / 10); saveSize(); render(); place(wi); });
     bMax.addEventListener('click', () => { size = Math.min(1.7, Math.round((size + 0.1) * 10) / 10); saveSize(); render(); place(wi); });
     bExit.addEventListener('click', () => { D.stopTts(); D.setMode('single'); });

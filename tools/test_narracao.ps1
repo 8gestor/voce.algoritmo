@@ -130,7 +130,17 @@ $test = @'
       var minLen = Math.min.apply(null, p7.chunks.map(function (c) { return p7.tokens[c.b].e - p7.tokens[c.a].s; }));
       ok('7c nenhum trecho fica minúsculo', p7.chunks.length === sentEnds || minLen >= 20, 'menor trecho: ' + minLen + ' caracteres');
       post('tts-toggle'); await wait(200);
-    } catch (e) { fails++; out.push('FAIL exceção: ' + e); }
+      // 8. setas: pulam de trecho em trecho enquanto a narração toca
+      document.querySelector('[data-id="in-020"]').click(); await wait(600);
+      var l8 = window.__log.length, tx8 = window.__log[l8 - 1].text;
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+      await wait(500);
+      var tx8b = window.__log[window.__log.length - 1].text;
+      ok('8a seta direita pula para o trecho seguinte', window.__log.length > l8 && tx8b !== tx8 && !!window.__dd.plan && window.__dd.plan.id === 'in-020', tx8.slice(0, 20) + ' > ' + tx8b.slice(0, 20));
+      post('step', -1); await wait(500);
+      var tx8c = window.__log[window.__log.length - 1].text;
+      ok('8b seta esquerda (via mensagem do site) volta ao trecho anterior', tx8c === tx8, tx8c.slice(0, 20));
+      post('tts-toggle'); await wait(200);    } catch (e) { fails++; out.push('FAIL exceção: ' + e); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     var pre = document.createElement('pre'); pre.id = 'result'; pre.textContent = out.join('\n'); document.body.appendChild(pre);
   });

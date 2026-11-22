@@ -11,7 +11,7 @@
     'use strict';
     const D = window.DDLab;
     if (!D) return;
-    const KEY = 'dd-ingles-legenda', RATES = [0.75, 1, 1.25, 1.5];
+    const KEY = 'dd-ingles-legenda', RATES = Array.from({ length: 12 }, (_, i) => (i + 1) * 0.25);
     const L = {
         pt: { btn: 'Legenda', tip: 'Mostra a frase narrada embaixo, como legenda de filme', prev: 'Frase anterior', next: 'Próxima frase', play: 'Ler', pause: 'Pausar', speed: 'Velocidade', smaller: 'Diminuir a letra', bigger: 'Aumentar a letra', off: 'Fechar a legenda', swap: 'Inverter: trocar o idioma do texto e o da legenda/áudio', wait: 'traduzindo…', group: 'Legenda' },
         en: { btn: 'Captions', tip: 'Shows the narrated sentence at the bottom, like movie captions', prev: 'Previous sentence', next: 'Next sentence', play: 'Play', pause: 'Pause', speed: 'Speed', smaller: 'Smaller text', bigger: 'Larger text', off: 'Close captions', swap: 'Swap: exchange the text language and the captions/audio language', wait: 'translating…', group: 'Captions' }
@@ -33,8 +33,9 @@
     const bar = el('div', 'lg-bar');
     const bPrev = el('button', 'lg-b', '⏮'), bPlay = el('button', 'lg-b lg-play', '▶'), bNext = el('button', 'lg-b', '⏭');
     const bSwap = el('button', 'lg-b lg-swap', '⇄');
-    const bRate = el('button', 'lg-b lg-rate', '1×'), bMin = el('button', 'lg-b', 'A−'), bMax = el('button', 'lg-b', 'A+'), bOff = el('button', 'lg-b lg-off', '✕');
-    [bPrev, bPlay, bNext, bSwap, bRate, bMin, bMax, bOff].forEach((b) => { b.type = 'button'; });
+    const bRate = el('select', 'lg-b lg-rate'), bMin = el('button', 'lg-b', 'A−'), bMax = el('button', 'lg-b', 'A+'), bOff = el('button', 'lg-b lg-off', '✕');
+    [bPrev, bPlay, bNext, bSwap, bMin, bMax, bOff].forEach((b) => { b.type = 'button'; });
+    RATES.forEach((v) => { const o = document.createElement('option'); o.value = String(v); bRate.appendChild(o); });
     bar.append(bPrev, bPlay, bNext, el('span', 'lg-gap'), bSwap, bRate, bMin, bMax, bOff);
     const lnPrev = el('div', 'lg-ctx lg-prev'), main = el('div', 'lg-main'), sub = el('div', 'lg-sub'), lnNext = el('div', 'lg-ctx lg-next');
     main.id = 'lb-leg-main'; sub.id = 'lb-leg-sub';
@@ -128,7 +129,7 @@
         bPrev.title = bPrev.ariaLabel = t('prev'); bNext.title = bNext.ariaLabel = t('next');
         const pl = D.tts.playing;
         bPlay.textContent = pl ? '❚❚' : '▶'; bPlay.title = bPlay.ariaLabel = pl ? t('pause') : t('play');
-        rate = D.state.rate; bRate.textContent = String(rate).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; bRate.title = bRate.ariaLabel = t('speed');
+        { const sel = bRate, near = RATES.reduce((b, x) => (Math.abs(x - D.state.rate) < Math.abs(b - D.state.rate) ? x : b), RATES[0]); Array.prototype.forEach.call(sel.options, (o) => { o.textContent = String(o.value).replace('.', D.state.readLang === 'en' ? '.' : ',') + '×'; }); sel.value = String(near); sel.title = sel.ariaLabel = t('speed'); }
         bSwap.title = bSwap.ariaLabel = t('swap');
         bMin.title = bMin.ariaLabel = t('smaller'); bMax.title = bMax.ariaLabel = t('bigger'); bOff.title = bOff.ariaLabel = t('off');
         dock.setAttribute('aria-label', t('group'));
@@ -179,7 +180,7 @@
     bNext.addEventListener('click', () => { if (cur) go(neighbour(cur.p, cur.s, 1)); });
     bPlay.addEventListener('click', () => { if (D.tts.playing) D.stopTts(); else if (cur) D.startTts(cur.p, cur.s); labels(); });
     bSwap.addEventListener('click', () => { D.postParent({ type: 'legend-swap' }); });
-    bRate.addEventListener('click', () => { const i0 = RATES.reduce((b, x, i) => (Math.abs(x - D.state.rate) < Math.abs(RATES[b] - D.state.rate) ? i : b), 0); rate = RATES[(i0 + 1) % RATES.length]; if (D.setRate) D.setRate(rate); labels(); });
+    bRate.addEventListener('change', () => { if (D.setRate) D.setRate(Number(bRate.value)); labels(); bRate.blur(); });
     bMin.addEventListener('click', () => { size = Math.max(0.8, Math.round((size - 0.1) * 10) / 10); save(); render(); fit(); });
     bMax.addEventListener('click', () => { size = Math.min(1.8, Math.round((size + 0.1) * 10) / 10); save(); render(); fit(); });
     bOff.addEventListener('click', () => { on = false; save(); sync(); });

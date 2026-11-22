@@ -967,6 +967,40 @@ $test = @'
       var bBig = D().mapPos(ben, ben.indexOf('big'), bpt, 'en'), bHouse = D().mapPos(ben, ben.indexOf('house'), bpt, 'en');
       D().translateText = tOrig;
       ok('AL5 palavras sem parentesco de grafia: com a tradução da palavra solta, big cai em grande e house em casa', bBig === bpt.indexOf('grande') && bHouse === bpt.indexOf('casa'), 'antes=' + bBefore + ' big->' + bBig + ' (esperado ' + bpt.indexOf('grande') + ') house->' + bHouse + ' (esperado ' + bpt.indexOf('casa') + ')');      D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
+      D().$('lb-back').click(); await wait(300);
+      // ===================== AR. velocidade 0,25 a 3x e setas para acompanhar o texto =====================
+      await D().addText('Setas teste', 'First sentence here today. Second sentence here today. Third sentence here today.\n\nFourth sentence here today. Fifth sentence here today.');
+      await until(function () { return D().doc && D().doc.title === 'Setas teste'; }, 20000);
+      await wait(700);
+      D().setMode('single'); post({ type: 'readlang', value: 'en' }); post({ type: 'audiolang', value: 'en' }); await wait(300);
+      var arKey = function (k, target) { var ev = new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }); (target || idoc().body).dispatchEvent(ev); return ev; };
+      var arM = function () { var m = D().tts.mark; return m ? m.p + ':' + m.s : '-'; };
+      arKey('ArrowRight'); var ar1 = arM(); arKey('ArrowRight'); var ar2 = arM(); arKey('ArrowRight'); var ar3 = arM(); arKey('ArrowLeft'); var ar4 = arM();
+      ok('AR1 parado, seta direita avança a marca frase a frase (0:1, 0:2, 1:0) e a esquerda volta (0:2), passando de um parágrafo ao outro', ar1 === '0:1' && ar2 === '0:2' && ar3 === '1:0' && ar4 === '0:2', [ar1, ar2, ar3, ar4].join(' '));
+      ok('AR2 a frase marcada fica destacada no texto e o ▶ continua dali', !!idoc().querySelector('.lb-s.seg') && D().tts.cursor && D().tts.cursor.p === 0 && D().tts.cursor.s === 2);
+      var arSel = idoc().createElement('select'); idoc().body.appendChild(arSel); var arBefore = arM(); arKey('ArrowRight', arSel); var arIgn = arM() === arBefore; arSel.remove();
+      ok('AR3 as setas não interferem quando o foco está num campo de escolha ou de digitação', arIgn);
+      var arSaid = [], arTm = null, arCur = null, arW = W();
+      arW.speechSynthesis.cancel = function () { clearInterval(arTm); if (arCur) { var u0 = arCur; arCur = null; u0.onerror && u0.onerror({ error: 'canceled' }); } };
+      arW.speechSynthesis.speak = function (u) { arSaid.push(u.text); arCur = u; u.onstart && u.onstart(); var ws = u.text.split(/\s+/), ix = 0, ci = 0; arTm = setInterval(function () { if (ix >= ws.length) { clearInterval(arTm); arCur = null; u.onend && u.onend(); return; } u.onboundary && u.onboundary({ name: 'word', charIndex: ci }); ci += ws[ix].length + 1; ix++; }, 500); };
+      D().startTts(0, 0);
+      await until(function () { return arM() === '0:0' && arSaid.length >= 1; }, 20000);
+      arKey('ArrowRight');
+      await until(function () { return arM() === '0:1' && arSaid.some(function (s) { return /^Second sentence/.test(s); }); }, 20000);
+      var arOk1 = arM() === '0:1';
+      arKey('ArrowLeft');
+      await until(function () { return arM() === '0:0' && arSaid.filter(function (s) { return /^First sentence/.test(s); }).length >= 2; }, 20000);
+      ok('AR4 com a narração tocando, seta direita pula para a próxima frase e a voz segue dela; seta esquerda volta à anterior', arOk1 && arM() === '0:0', arSaid.map(function (s) { return s.slice(0, 6); }).join(' > '));
+      D().stopTts();
+      // velocidade de 0,25 em 0,25 até 3x na legenda e no teleprompter
+      D().setMode('tele');
+      await until(function () { return idoc().querySelectorAll('#lb-tele-line .tl-w').length > 3; }, 40000);
+      var arRate = idoc().querySelector('#lb-tele .tl-rate'), arVals = Array.prototype.map.call(arRate.options, function (o) { return o.value; }).join(',');
+      arRate.value = '2.25'; arRate.dispatchEvent(new Event('change'));
+      await until(function () { return D().state.rate === 2.25; }, 5000);
+      var arLeg = idoc().querySelector('#lb-legenda .lg-rate');
+      ok('AR5 o botão de velocidade do teleprompter e da legenda vai de 0,25 a 3 em passos de 0,25 e aplica a escolha', arVals === '0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3' && D().state.rate === 2.25 && !!arLeg && arLeg.options.length === 12, arVals + ' | taxa=' + D().state.rate);
+      D().stopTts(); post({ type: 'rate', value: 1 }); D().setMode('single'); post({ type: 'readlang', value: 'pt' }); post({ type: 'audiolang', value: 'pt' }); await wait(300);
       D().$('lb-back').click(); await wait(300);      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
       ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);

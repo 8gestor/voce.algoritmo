@@ -160,6 +160,8 @@ $test = @'
       ok('7b3 limpar a busca traz o documento de volta', idoc.querySelectorAll('.lb-doc').length === 1);
       await lab().openDoc(id); await wait(500);
       ok('7c reabrir recupera as traduções salvas', Object.keys(lab().doc.tr).length === lab().doc.paras.length, Object.keys(lab().doc.tr).length + '');
+      var spd = Array.prototype.map.call($('speed-select').options, function (o) { return o.value; }).join(',');
+      ok('V1 o menu de velocidade do site vai de 0,25 a 3 em passos de 0,25 (12 opções)', spd === '0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3', spd);
       // manual da biblioteca: abre pelo menu, mostra PT e troca para EN com o idioma de leitura do site
       var mlinks = document.querySelectorAll('.chapter-link'); mlinks[mlinks.length - 1].click();
       await until(function () { try { return ifr().contentDocument.getElementById('mn-pt') && ifr().contentDocument.readyState === 'complete'; } catch (e) { return false; } }, 10000);

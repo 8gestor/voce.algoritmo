@@ -338,3 +338,6 @@ html body[class] .tl-w.now { background: var(--mk-word); color: var(--mk-word-fg
 .lb-para.lb-verse.speaking { border-left-color: var(--c-text); }
 .lb-verse .lb-col-tr { white-space: pre-line; }
 body.lb-side-open .lb-para.lb-verse { padding-left: 0; border-left: 0; }
+
+/* velocidade 0,25x a 3x: lista de escolha nas barras da legenda e do teleprompter */
+.tl-rate, .lg-rate { appearance: auto; background: var(--c-bg); color: var(--c-text); text-align: center; cursor: pointer; }

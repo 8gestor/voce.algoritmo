@@ -134,6 +134,7 @@ No `index.html`, `ingles.html` NÃO entra em `structure` (ver `extras` em `sumar
 
 ### Narração: sincronia e velocidade (núcleo, `ingles.js`)
 
+- **Velocidade 0,25× a 3× em passos de 0,25** em todo o site (menu `#speed-select` do `index.html` e `SPEEDS` em `leitor.js`; legenda e teleprompter usam lista de escolha). **Setas ← →** andam frase a frase: no site (`leitor.js`) a seta vira a mensagem `step` (±1) para a página aberta; a Biblioteca trata em `stepSentence` (tocando, `startTts` da vizinha; parado, só `setMark`), o teleprompter tem as suas (evento `step` do núcleo) e `capitulo.js` pula de trecho (`step`) com a narração tocando. Testes: seção AR em `test_ingles_modulos.ps1`, 8 em `test_narracao.ps1`, V1 em `test_ingles.ps1`.
 - Sem evento de palavra da voz, o destaque é estimado por tempo com **pausas ponderadas** (vírgula/ponto contam mais), velocidade aprendida **por idioma e por voz** (`CPS`) e busca binária a cada 60 ms.
 - Trocar velocidade ou voz no meio da frase **retoma da palavra falada** (`resume` em `runTts`), não do início da frase.
 - Evento `playstate` `{playing}` (início/fim da narração) alimenta o ▶/❚❚ do teleprompter e da legenda; não há mais sondagem a cada 600 ms. A velocidade mostrada vem de `D.state.rate`.

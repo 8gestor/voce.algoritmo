@@ -20,7 +20,7 @@ const OPT_TO_MSG = {
     theme: 'theme', face: 'typeface', margin: 'margins', align: 'align',
     readLang: 'readlang', audioLang: 'audiolang'
 };
-const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5];
+const SPEEDS = Array.from({ length: 12 }, (_, i) => (i + 1) * 0.25);     // 0,25x a 3x, de 0,25 em 0,25
 
 let settings = Object.assign({}, DEFAULTS);
 try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch (e) { /* sem storage */ }
@@ -529,6 +529,8 @@ window.addEventListener('message', (e) => {
 
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { closePanels(); if (isMobile()) closeSidebarMobile(); }
+    // setas: acompanham o texto frase a frase (a página aberta decide o que fazer); fora de campos de escolha e de digitação
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !e.altKey && !e.ctrlKey && !e.metaKey && !/^(input|textarea|select)$/i.test((e.target && e.target.tagName) || '') && !(e.target && e.target.isContentEditable)) { e.preventDefault(); sendMsg('step', e.key === 'ArrowRight' ? 1 : -1); }
 });
 
 init();
