@@ -393,6 +393,7 @@ function init() {
         btn.className = 'chapter-link';
         btn.innerText = item.t;
         navItems.push({ el: btn, pt: item.t, en: TITLES_EN[item.f] });
+        if (item.ext) { btn.href = item.ext; nav.appendChild(btn); return; }   // site de inglês: link para o endereço próprio, sem iframe
         btn.href = '#' + item.f.replace('.html', '');
         btn.onclick = (e) => {
             e.preventDefault();
@@ -405,7 +406,9 @@ function init() {
     // abre direto no capítulo indicado na URL (#cap03), se houver
     const wanted = location.hash.replace('#', '');
     const start = structure.findIndex((s) => s.f.replace('.html', '') === wanted);
-    const startExtra = extras.findIndex((s) => s.f.replace('.html', '') === wanted);
+    const startExtra = extras.findIndex((s) => !s.ext && s.f.replace('.html', '') === wanted);
+    const goExt = extras.find((s) => s.ext && s.f.replace('.html', '') === wanted);   // endereço antigo (#ingles): leva ao site novo
+    if (goExt) { location.replace(goExt.ext); return; }
     refreshControls();
     populateVoices();
     if (start < 0 && startExtra >= 0) loadExtra(startExtra); else loadChapter(start >= 0 ? start : 0);

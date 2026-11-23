@@ -56,8 +56,8 @@ const structure = [
  * (não entram em ANT/PRÓX, nas estatísticas nem na contagem de capítulos).
  */
 const extras = [
-    { t: "Biblioteca", f: "ingles.html", cat: "ESTUDO DE INGLÊS" },
-    { t: "Manual da Biblioteca", f: "manual-biblioteca.html", cat: "ESTUDO DE INGLÊS" }
+    { t: "Biblioteca", f: "ingles.html", cat: "ESTUDO DE INGLÊS", ext: "https://ingles.vocealgoritmo.com.br/" },
+    { t: "Manual da Biblioteca", f: "manual-biblioteca.html", cat: "ESTUDO DE INGLÊS", ext: "https://ingles.vocealgoritmo.com.br/manual-biblioteca.html" }
 ];
 
 /* Títulos em inglês (usados quando o idioma de leitura é EN). Chave = arquivo. */

@@ -52,7 +52,8 @@ $test = @'
       var libLink = links[links.length - 2];   // últimos extras: Biblioteca e Manual da Biblioteca
       ok('1b Biblioteca e Manual vêm depois dos capítulos', links.length === structure.length + 2 && /^Biblioteca/.test(libLink.textContent.trim()) && /Manual/.test(links[links.length - 1].textContent), links.length + ' links');
       ok('1c fora de structure', !structure.some(function (s) { return s.f === 'ingles.html'; }));
-      libLink.click();
+      ok('1b2 Biblioteca e Manual são links para o site de inglês (ingles.vocealgoritmo.com.br), sem abrir no quadro', libLink.getAttribute('href') === 'https://ingles.vocealgoritmo.com.br/' && links[links.length - 1].getAttribute('href') === 'https://ingles.vocealgoritmo.com.br/manual-biblioteca.html', libLink.getAttribute('href'));
+      loadExtra(0);   // a página antiga continua no repositório; o teste a abre direto, sem o clique do menu (que agora sai do livro)
       await until(function () { return ifr().contentWindow.__ddLab; }, 8000);
       ok('1d abre a página no quadro', !!lab(), ifr().src.slice(-12));
       ok('1e barra inferior de capítulo escondida', $('hud-live').style.display === 'none');
@@ -169,7 +170,7 @@ $test = @'
       ifr().contentWindow.dispatchEvent(new KeyboardEvent('keydown', { key: 'F11', bubbles: true, cancelable: true })); await wait(300);
       ok('V2 F11 liga a tela inteira no site e também quando apertado dentro da página (Biblioteca)', f11.defaultPrevented && fsShell === 1 && fsCalls === 2, 'chamadas=' + fsCalls);
       // manual da biblioteca: abre pelo menu, mostra PT e troca para EN com o idioma de leitura do site
-      var mlinks = document.querySelectorAll('.chapter-link'); mlinks[mlinks.length - 1].click();
+      loadExtra(1);
       await until(function () { try { return ifr().contentDocument.getElementById('mn-pt') && ifr().contentDocument.readyState === 'complete'; } catch (e) { return false; } }, 10000);
       var md = ifr().contentDocument;
       var ptOn = !md.getElementById('mn-pt').hidden && md.getElementById('mn-en').hidden && md.querySelectorAll('#mn-pt h2').length === 10;
