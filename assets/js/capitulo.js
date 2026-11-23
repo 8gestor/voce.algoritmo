@@ -264,11 +264,13 @@
             const chosen = voices.find((v) => v.name === state.voices[lang]);
             if (chosen) return chosen;
         }
+        // Mesma preferência do resto do site: neural ("Natural", Edge) > online/Google > locais; o idioma exato desempata.
         const rank = (v) =>
-            (v.lang.replace('_', '-') === tag ? 4 : 0) +
-            (/natural/i.test(v.name) ? 3 : 0) +
-            (v.localService ? 2 : 0) +
-            (/google/i.test(v.name) ? 1 : 0);
+            (/natural|neural/i.test(v.name) ? 10 : 0) +
+            (/online/i.test(v.name) ? 2 : 0) +
+            (v.lang.replace('_', '-').toLowerCase() === tag.toLowerCase() ? 4 : 0) +
+            (/google/i.test(v.name) ? 1 : 0) +
+            (v.localService ? 0.5 : 0);
         return mine.sort((a, b) => rank(b) - rank(a))[0] || null;
     }
 
@@ -323,28 +325,43 @@
         return plan.chunks.length - 1;
     }
 
+    /* Trecho seguinte já entregue ao motor de voz enquanto o atual toca: o motor emenda os dois sem lacuna
+       (e com a entonação contínua). Só vale com a mesma `serial`; qualquer cancelamento o descarta. */
+    let pre = null;            // { ci, run }
+    let curRun = null;         // trecho que a vigia acompanha
+    let lastRetry = '';        // evita repetir sem fim o mesmo trecho que não começa
+
     function speakFrom(k) {
         if (!playing || !plan) return;
         if (!plan.tokens.length) { nextUnit(); return; }
         const my = ++serial;
-        const ci = chunkOf(k);
+        pre = null;
+        const run = makeRun(chunkOf(k), k, my, false);
+        curRun = run;
+        mark(run.startTok);
+        markSeg(run.ci);
+        synth.speak(run.ut);
+    }
+
+    function makeRun(ci, k, my, queued) {
         const chunk = plan.chunks[ci];
         const startTok = Math.max(k, chunk.a);
         const base = plan.tokens[startTok].s;
         const endChar = plan.tokens[chunk.b].e;
         const piece = plan.text.slice(base, endChar);
+        const pl = plan;                                   // este trecho pertence a ESTA unidade
 
         const ut = new SpeechSynthesisUtterance(piece);
-        ut.lang = LANG_TAG[plan.speechLang];
+        ut.lang = LANG_TAG[pl.speechLang];
         ut.rate = state.rate;
-        const v = pickVoice(plan.speechLang);
+        const v = pickVoice(pl.speechLang);
         if (v) { ut.voice = v; ut.lang = v.lang; }
 
         const tokenAt = (abs) => {
-            let lo = 0, hi = plan.tokens.length - 1;
+            let lo = 0, hi = pl.tokens.length - 1;
             while (lo < hi) {
                 const mid = (lo + hi + 1) >> 1;
-                if (plan.tokens[mid].s <= abs) lo = mid; else hi = mid - 1;
+                if (pl.tokens[mid].s <= abs) lo = mid; else hi = mid - 1;
             }
             return lo;
         };
@@ -353,74 +370,131 @@
         // começa, contando caracteres, velocidade da voz e pausas de pontuação.
         const rate = state.rate;
         const n = chunk.b - startTok + 1;
-        const cps1 = cpsFor(plan.speechLang, v);
         const cum = new Array(n + 1);
-        cum[0] = 0;
         let pauses = 0;
-        for (let j = 0; j < n; j++) {
-            const w = plan.tokens[startTok + j].w;
-            const p = j < n - 1 ? tokenPause(w) : 0;
-            pauses += p;
-            cum[j + 1] = cum[j] + (w.length + 1) / (cps1 * rate) + p / rate;
-        }
+        // Refeita quando a voz de fato começa: um trecho emendado é criado antes de o anterior terminar
+        // e só aí a velocidade aprendida (learnCps) já está atualizada.
+        const timeline = () => {
+            const cps1 = cpsFor(pl.speechLang, v);
+            cum[0] = 0; pauses = 0;
+            for (let j = 0; j < n; j++) {
+                const w = pl.tokens[startTok + j].w;
+                const p = j < n - 1 ? tokenPause(w) : 0;
+                pauses += p;
+                cum[j + 1] = cum[j] + (w.length + 1) / (cps1 * rate) + p / rate;
+            }
+        };
+        timeline();
         let scale = 1;           // ajuste do tempo previsto, corrigido a cada evento de palavra
         let t0 = 0;              // instante em que a voz começou
         let curJ = 0;            // palavra atual dentro do trecho (só avança)
         let lastB = -1;          // última palavra confirmada por evento da voz
         let gapAvg = 1;          // distância média, em palavras, entre eventos
+        let dtAvg = 0;           // intervalo médio, em ms, entre eventos
+        let lastEv = 0;          // instante do último evento
         let gotB = false;
+        let myTimer = null;
 
-        stopTimer();
-        mark(startTok);
-        markSeg(ci);
+        const run = { ci: ci, my: my, ut: ut, startTok: startTok, t: performance.now(), started: false, t0: 0, lastEv: 0, expect: () => cum[n] * scale };
 
         const advance = (j) => { if (j > curJ) { curJ = j; mark(startTok + j); } };
 
         ut.onstart = () => {
             if (my !== serial) return;
             t0 = performance.now();
+            if (queued) timeline();
+            run.started = true; run.t0 = t0; run.lastEv = t0;
+            curRun = run;
+            if (queued) { mark(startTok); markSeg(ci); }          // o trecho emendado só ganha a cor quando a voz chega nele
             stopTimer();
-            timer = setInterval(() => {
+            myTimer = timer = setInterval(() => {
                 if (my !== serial) { stopTimer(); return; }
-                const el = (performance.now() - t0) / 1000;
+                const now = performance.now();
+                const el = (now - t0) / 1000;
                 let j = curJ;
                 while (j + 1 < n && cum[j + 1] * scale <= el) j++;
-                // Se a voz envia eventos, a estimativa só interpola entre eles (não corre à frente).
-                if (gotB) j = Math.min(j, lastB + Math.max(1, Math.round(gapAvg * 1.2)));
+                if (gotB) {
+                    // A voz envia eventos: a estimativa só preenche o que o evento atrasou, nunca corre à frente.
+                    // Com evento por palavra (gapAvg ~ 1) ela só age se o evento estiver atrasado.
+                    const stale = now - lastEv > Math.max(350, dtAvg * 1.6);
+                    const room = stale ? Math.max(1, Math.round(gapAvg * 1.2)) : Math.max(0, Math.round(gapAvg) - 1);
+                    j = Math.min(j, lastB + room);
+                }
                 advance(j);
             }, 50);
+            // Entrega o próximo trecho da mesma unidade ao motor agora, para a voz emendar sem lacuna.
+            if (!pre && ci + 1 < pl.chunks.length && !synth.pending && plan === pl) {
+                const nxt = makeRun(ci + 1, pl.chunks[ci + 1].a, my, true);
+                pre = { ci: ci + 1, run: nxt };
+                synth.speak(nxt.ut);
+            }
         };
         ut.onboundary = (e) => {
             if (my !== serial) return;
             if (e.name && e.name !== 'word') return;
-            if (!t0) t0 = performance.now();
+            const now = performance.now();
+            if (!t0) t0 = now;
             const j = Math.max(0, Math.min(n - 1, tokenAt(base + e.charIndex) - startTok));
-            const el = (performance.now() - t0) / 1000;
+            const el = (now - t0) / 1000;
             if (cum[j] > 0.4) scale = Math.min(2.2, Math.max(0.5, scale * 0.4 + (el / cum[j]) * 0.6));
-            if (gotB && j > lastB) gapAvg = gapAvg * 0.7 + (j - lastB) * 0.3;
+            if (gotB && j > lastB) {
+                gapAvg = gapAvg * 0.7 + (j - lastB) * 0.3;
+                dtAvg = dtAvg ? dtAvg * 0.7 + (now - lastEv) * 0.3 : (now - lastEv);
+            }
             gotB = true;
+            lastEv = now; run.lastEv = now;
             if (j > lastB) lastB = j;
             advance(j);
         };
         ut.onend = () => {
             if (my !== serial) return;
-            stopTimer();
+            if (timer === myTimer) stopTimer();
             if (t0 && n >= 4) {                                  // aprende a velocidade real desta voz
                 const speech = (performance.now() - t0) / 1000 - pauses / rate;
-                if (speech > 0.5) learnCps(plan.speechLang, v, piece.length / (speech * rate));
+                if (speech > 0.5) learnCps(pl.speechLang, v, piece.length / (speech * rate));
             }
-            if (t0) postParent({ type: 'dd-listen', page: pageKey, lang: plan.speechLang, words: n });   // estatísticas: palavras ouvidas
-            if (ci + 1 < plan.chunks.length) speakFrom(plan.chunks[ci + 1].a);
-            else nextUnit();
+            if (t0) postParent({ type: 'dd-listen', page: pageKey, lang: pl.speechLang, words: n });   // estatísticas: palavras ouvidas
+            if (ci + 1 < pl.chunks.length) {
+                if (pre && pre.run.my === my && pre.ci === ci + 1) {   // já está na fila do motor: só passa a vigiá-lo
+                    curRun = pre.run; curRun.t = performance.now();
+                    pre = null;
+                } else speakFrom(pl.chunks[ci + 1].a);
+            } else nextUnit();
         };
         ut.onerror = (e) => {
             if (my !== serial) return;
-            stopTimer();
+            if (timer === myTimer) stopTimer();
             if (e && (e.error === 'canceled' || e.error === 'interrupted')) return;
-            if (ci + 1 < plan.chunks.length) speakFrom(plan.chunks[ci + 1].a); else nextUnit();
+            pre = null; synth.cancel();
+            if (ci + 1 < pl.chunks.length) speakFrom(pl.chunks[ci + 1].a); else nextUnit();
         };
-        synth.speak(ut);
+        return run;
     }
+
+    // Vigia contra travamento (motor que engole o speak(), voz de rede que morre no meio, motor pausado sozinho).
+    setInterval(() => {
+        const r = curRun;
+        if (!playing || !plan || !r || r.my !== serial || !synth) return;
+        if (synth.paused) synth.resume();
+        const now = performance.now();
+        const after = (c) => (plan.chunks[c].b + 1 < plan.tokens.length ? plan.chunks[c].b + 1 : plan.tokens.length);
+        const resumeAt = (tokenIdx) => {
+            const s = ++serial;
+            stopTimer(); pre = null; synth.cancel();
+            setTimeout(() => {
+                if (!playing || !plan || s !== serial) return;
+                if (tokenIdx < plan.tokens.length) speakFrom(tokenIdx); else nextUnit();
+            }, 60);
+        };
+        if (!r.started) {
+            if (now - r.t < 5000) return;
+            const key = plan.id + ':' + r.ci;
+            if (lastRetry !== key) { lastRetry = key; resumeAt(r.startTok); }      // 1ª vez: tenta o mesmo trecho de novo
+            else resumeAt(after(r.ci));                                            // 2ª: pula este trecho
+        } else if (now - r.t0 > (r.expect() * 2.2 + 6) * 1000 && now - r.lastEv > 6000) {
+            resumeAt(after(r.ci));                                                 // começou e emudeceu: segue adiante
+        }
+    }, 500);
 
     function nextUnit() {
         if (!playing) return;
@@ -570,13 +644,14 @@
         if (!target) return;
         const i = queue.indexOf(target);
         if (i === -1) return;
-        serial++;
+        const my = ++serial;
         stopTimer();
         synth.cancel();
         if (plan) { unwrapUnit(plan.id); plan = null; }
         playing = true;
         report(true);
-        startUnit(i, 0);
+        // alguns motores engolem um speak() feito no mesmo instante do cancel(): dá um respiro curto
+        setTimeout(() => { if (playing && my === serial) startUnit(i, 0); }, 40);
     });
 
     window.addEventListener('beforeunload', () => synth.cancel());

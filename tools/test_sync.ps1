@@ -40,7 +40,7 @@ $stub = @'
     esparsa: { cps: 14,   p: [0.18, 0.26, 0.40], bound: 3 },
     palavra: { cps: 13,   p: [0.16, 0.26, 0.40], bound: 1 }
   })['__SCEN__'];
-  var cur = null, timers = [];
+  var cur = null, timers = [], q = [];
   window.__T = { active: false, start: 0, ws: [], off: 0 };
   window.DD_PAGE = '__PAGE__';
   function Utt(text) { this.text = text; this.rate = 1; this.lang = ''; this.voice = null; }
@@ -51,9 +51,16 @@ $stub = @'
     if (/,["'”’)\]]*$/.test(w)) return SC.p[0];
     return 0;
   }
+  function start(u) { stub._start(u); }
   var stub = {
     getVoices: function () { return [{ name: 'Fake PT', lang: 'pt-BR', localService: true }, { name: 'Fake EN', lang: 'en-US', localService: true }]; },
+    get pending() { return q.length > 0; },
+    get speaking() { return !!cur; },
     speak: function (u) {
+      if (cur) { q.push(u); return; }          // como um motor real: a fala seguinte espera a atual terminar
+      start(u);
+    },
+    _start: function (u) {
       cur = u;
       var ws = [], re = /\S+/g, m;
       while ((m = re.exec(u.text))) ws.push({ ci: m.index, w: m[0] });
@@ -69,10 +76,10 @@ $stub = @'
         if (i % SC.bound !== 0) return;
         timers.push(setTimeout(function () { if (u.onboundary) u.onboundary({ name: 'word', charIndex: x.ci }); }, LAT + x.t * 1000));
       });
-      timers.push(setTimeout(function () { window.__T.active = false; if (cur === u && u.onend) u.onend({}); }, LAT + total * 1000));
+      timers.push(setTimeout(function () { window.__T.active = false; if (cur === u) { cur = null; if (u.onend) u.onend({}); if (!cur && q.length) start(q.shift()); } }, LAT + total * 1000));
     },
     cancel: function () {
-      var u = cur; timers.forEach(clearTimeout); timers = []; cur = null; window.__T.active = false;
+      var u = cur; timers.forEach(clearTimeout); timers = []; q = []; cur = null; window.__T.active = false;
       if (u && u.onend) setTimeout(function () { u.onend({}); }, 0);
     },
     pause: function () {}, resume: function () {}

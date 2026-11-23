@@ -80,6 +80,7 @@
 
     /* ------------------------------------------------------------------ reprodução */
     let cur = null, tok = 0;
+    const PW = { ',': 4, ';': 4, ':': 4, '—': 4, '–': 4, '.': 8, '!': 8, '?': 8, '…': 8 };      // peso das pausas, como no núcleo
     function stopAudio() {
         tok++;
         if (cur) { const c = cur; cur = null; c.a.pause(); clearInterval(c.timer); c.res('cancel'); }
@@ -101,8 +102,18 @@
             const c = { a, res, timer: 0 };
             cur = c;
             const done = (r) => { clearInterval(c.timer); if (cur === c) cur = null; res(r); };
+            // posição no texto = fração do áudio sobre o texto PONDERADO (pausas da pontuação pesam mais), não só por caracteres
+            const cum = new Float32Array(text.length + 1);
+            for (let i = 0; i < text.length; i++) cum[i + 1] = cum[i] + 1 + (PW[text[i]] || 0);
             a.onplay = () => {
-                c.timer = setInterval(() => { if (onProg && a.duration) onProg(Math.min(text.length - 1, Math.floor(a.currentTime / a.duration * text.length)), text.length); }, 60);
+                clearInterval(c.timer);
+                c.timer = setInterval(() => {
+                    if (!onProg || !a.duration) return;
+                    const target = Math.min(1, a.currentTime / a.duration) * cum[text.length];
+                    let lo = 0, hi = text.length - 1;
+                    while (lo < hi) { const mid = (lo + hi) >> 1; if (cum[mid + 1] > target) hi = mid; else lo = mid + 1; }
+                    onProg(lo, text.length);
+                }, 40);
             };
             a.onended = () => done('end');
             a.onerror = () => { fail(lang, new Error('áudio')); done('fallback'); };
