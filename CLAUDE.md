@@ -150,6 +150,13 @@ No `index.html`, `ingles.html` NÃO entra em `structure` (ver `extras` em `sumar
 1. Voz neural: avaliar vozes melhores do Piper (só há 2 em PT-BR, ambas ~60 MB) ou outro motor; hoje a melhor voz continua sendo a "Natural" do Edge.
 2. Importar páginas web por URL: o navegador bloqueia (CORS); só com um serviço intermediário (fora da regra de privacidade).
 4. Perguntas de compreensão: avaliar com o modelo local quando a API de prompt estiver estável no Chrome.
+## Separação do Estudo de Inglês (decisão do autor, 2026-11-22)
+
+O **site de inglês passa a ser um projeto próprio**: repositório `8gestor/ingles-do-zero` (pasta `site/`), com endereço previsto `ingles.vocealgoritmo.com.br`.
+O código de inglês deste repositório (`ingles*.js`, `sync-config.js`, `manual-biblioteca.*`, `supabase/`) foi **copiado integralmente** para lá em 22/11/2026, com testes passando.
+**Daqui em diante a evolução do inglês acontece no outro repositório** (ver `docs/05-separacao-do-livro.md` e `docs/06-biblioteca-modulos.md` lá).
+Aqui, a aba "Estudo de Inglês" continua funcionando até o site novo estar no ar e conferido; então `extras` em `sumario.js` passa a ser um link para o site novo e o código de inglês é arquivado (não apagado).
+Enquanto isso, neste repositório só se corrige defeito da aba. **Única exceção (22/11/2026):** o bloco "Backup do progresso" em `ingles-sync.js` (botão **Baixar progresso**), para o aluno levar o progresso ao site novo. O arquivo é idêntico ao de `ingles-do-zero/site/` e os testes BK estão em `tools/test_ingles_modulos.ps1`. As seções "Estudo de Inglês", "Narração", "Regra de plataformas" e "Sincronização" abaixo ficam como registro histórico; o documento vivo é o do outro repositório.
 ## Regra de plataformas (vale para toda decisão nova)
 
 O site deve funcionar em **PC, smartphone, tablet, Kindle, TV e outros aparelhos, sem quebrar nada em nenhuma tecnologia** (regra do autor, 2026-11-22).

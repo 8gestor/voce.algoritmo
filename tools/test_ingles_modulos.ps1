@@ -1103,6 +1103,12 @@ $test = @'
       syEmail.value = 'leitor@example.com'; idoc().getElementById('lb-sync-send').click();
       await until(function () { return !idoc().getElementById('lb-sync-code').hidden; }, 60000);
       ok('SY4 enviar o código chama o login por código e abre o campo do código', srv.calls.indexOf('POST /auth/v1/otp') >= 0 && !syCode.hidden);
+      syW.fetch = (function (orig) { return async function (u, o) { return /\/auth\/v1\/otp/.test(u) && syW.__otp500 ? { ok: false, status: 500, json: async function () { return { msg: 'Error sending magic link email' }; } } : orig(u, o); }; })(syW.fetch);
+      syW.__otp500 = true; syEmail.value = 'leitor@example.com'; idoc().getElementById('lb-sync-send').click();
+      await until(function () { return /Error sending magic link email/.test(idoc().getElementById('lb-sync').textContent); }, 60000);
+      ok('SY4b quando o envio do código falha, a tela mostra o motivo técnico (ex.: 500: Error sending magic link email) para achar o problema', /500: Error sending magic link email/.test(idoc().getElementById('lb-sync').textContent));
+      syW.__otp500 = false; idoc().getElementById('lb-sync-send').click();
+      await until(function () { return !idoc().getElementById('lb-sync-code').hidden; }, 60000);
       syCode.value = '000000'; idoc().getElementById('lb-sync-enter').click();
       await until(function () { return /(inválido|Invalid)/.test(idoc().getElementById('lb-sync').textContent); }, 60000);
       syCode.value = '123456'; idoc().getElementById('lb-sync-enter').click();
@@ -1129,7 +1135,36 @@ $test = @'
       ok('SY8 sair da conta não apaga nada do aparelho (estatísticas, vocabulário e livros continuam)', idoc().getElementById('lb-sync').dataset.state === 'out' && !!syW.localStorage.getItem('dd-ingles-log') && (await D().db.all('vocab')).length >= 2 && syW.localStorage.getItem('dd-sync-sess') === null);
       syW.fetch = async function () { throw new Error('offline'); };
       syW.DD_SYNC = { url: '', key: '' }; D().emit('lang', D().state.readLang); await wait(100);
-      ok('SY9 sem configuração o site volta ao normal (nada é chamado)', /(ainda não foi ativada|has not been turned on)/.test(idoc().getElementById('lb-sync').textContent));      // ==== PROXIMAS ====
+      ok('SY9 sem configuração o site volta ao normal (nada é chamado)', /(ainda não foi ativada|has not been turned on)/.test(idoc().getElementById('lb-sync').textContent));            // ===================== BK. backup do progresso em arquivo: baixar, carregar e colar (levar do livro para o site novo) =====================
+      var bkS = D().sync, bkW = W(), bkTxt0 = await bkS.exportData(), bkO = JSON.parse(bkTxt0);
+      ok('BK1 o bloco Backup do progresso existe na Biblioteca, com baixar, carregar e colar', !!idoc().getElementById('lb-backup') && !!idoc().getElementById('lb-bk-down') && !!idoc().getElementById('lb-bk-up') && !!idoc().getElementById('lb-bk-paste'));
+      ok('BK2 exportar gera um arquivo do site (app, versão, data) com o progresso e SEM o corpo dos livros (só títulos, posição e contadores; o cartão da palavra guarda a frase de contexto, como na nuvem)', bkO.app === 'ingles-progresso' && bkO.v === 1 && !!bkO.exportedAt && !!bkO.data.log && Array.isArray(bkO.data.vocab) && !/"paras"/.test(bkTxt0) && !/The people who build these systems/.test(bkTxt0) && !/Nobody explains how they work/.test(bkTxt0), bkTxt0.length + ' bytes');
+      var bkLog = JSON.parse(bkW.localStorage.getItem('dd-ingles-log') || '{"d":{}}'); bkLog.d['2026-04-01'] = { sec: 900, heard: 10 }; bkW.localStorage.setItem('dd-ingles-log', JSON.stringify(bkLog));
+      var bkFile = { app: 'ingles-progresso', v: 1, exportedAt: '2026-04-02T10:00:00Z', data: { v: 1, log: { d: { '2026-04-01': { sec: 100, heard: 50 }, '2026-04-02': { sec: 300 } } }, diaHist: null, semHist: [{ n: 77 }], escrita: [{ date: '2026-04-02', kind: 'dia', title: 'Backup', text: 'texto do backup' }], vocab: [{ id: 'en:bk-novo', word: 'novo', lang: 'en', reps: 2, due: 1 }], docs: { 'livro do backup|en': { title: 'Livro do Backup', lang: 'en', pos: 1, heard: 33, words: 100, sentences: 5, savedAt: 1700000000000 } } } };
+      var bkBefore = await bkS.snapshot(), bkR = await bkS.importData(JSON.stringify(bkFile)), bkAfter = await bkS.snapshot();
+      ok('BK3 importar soma sem perder nada: dia/campo = maior valor (900 fica, 50 entra), dia novo entra, cartão novo, histórico e escrita em união', bkAfter.log.d['2026-04-01'].sec === 900 && bkAfter.log.d['2026-04-01'].heard === 50 && bkAfter.log.d['2026-04-02'].sec === 300 && bkAfter.vocab.some(function (c) { return c.id === 'en:bk-novo'; }) && bkAfter.vocab.length === bkBefore.vocab.length + 1 && bkAfter.semHist.some(function (x) { return x.n === 77; }) && bkAfter.escrita.some(function (x) { return x.title === 'Backup'; }), JSON.stringify(bkR));
+      ok('BK4 o que o arquivo traz de livro que ainda não está aqui fica guardado (posição e palavras ouvidas) e vai nos próximos backups', bkAfter.docs['livro do backup|en'] && bkAfter.docs['livro do backup|en'].heard === 33 && JSON.parse(bkW.localStorage.getItem('dd-ingles-pend-docs'))['livro do backup|en'].pos === 1 && /livro do backup/.test(await bkS.exportData()));
+      var bkR2 = await bkS.importData(JSON.stringify(bkFile)), bkAfter2 = await bkS.snapshot();
+      ok('BK5 carregar o mesmo arquivo de novo não duplica nada', bkAfter2.vocab.length === bkAfter.vocab.length && Object.keys(bkAfter2.log.d).length === Object.keys(bkAfter.log.d).length && bkAfter2.semHist.length === bkAfter.semHist.length && bkAfter2.escrita.length === bkAfter.escrita.length && bkR2.cards === 0 && bkR2.days === 0, JSON.stringify(bkR2));
+      var bkBad = 0; try { await bkS.importData('{"x":1}'); } catch (e) { bkBad = String(e.message) === 'formato' ? 1 : 2; } try { await bkS.importData('isso nao e json'); } catch (e) { bkBad += String(e.message) === 'formato' ? 10 : 20; }
+      var bkAfter3 = await bkS.snapshot();
+      ok('BK6 arquivo que não é backup do site é recusado e não muda nada', bkBad === 11 && bkAfter3.vocab.length === bkAfter2.vocab.length && Object.keys(bkAfter3.log.d).length === Object.keys(bkAfter2.log.d).length, 'cod=' + bkBad);
+      await D().addText('Livro do Backup', TEXT);
+      await until(function () { return D().doc && D().doc.title === 'Livro do Backup'; }, 20000);
+      ok('BK7 quando o livro do backup entra na biblioteca ele já abre na posição e com as palavras ouvidas guardadas, e a pendência some', D().doc && D().doc.pos === 1 && D().doc.heard >= 33 && !JSON.parse(bkW.localStorage.getItem('dd-ingles-pend-docs') || '{}')['livro do backup|en'], D().doc && ('pos=' + D().doc.pos + ' heard=' + D().doc.heard));
+      D().$('lb-back').click(); await wait(400);
+      bkW.URL.createObjectURL = undefined;                                   // aparelho que não baixa arquivos (leitor de e-books, TV): cai no texto para copiar
+      idoc().getElementById('lb-bk-down').click(); await until(function () { return !idoc().getElementById('lb-bk-text').hidden && /(não baixa|cannot download)/.test(idoc().getElementById('lb-bk-status').textContent); }, 60000);
+      var bkTa = idoc().getElementById('lb-bk-text'), bkSt = idoc().getElementById('lb-bk-status');
+      ok('BK8 sem suporte a download, o progresso aparece como texto para copiar (e é um backup válido)', !bkTa.hidden && JSON.parse(bkTa.value).app === 'ingles-progresso' && /(não baixa|cannot download)/.test(bkSt.textContent), bkSt.textContent.slice(0, 60));
+      var bkFile2 = JSON.parse(JSON.stringify(bkFile)); bkFile2.data.vocab = [{ id: 'en:bk-colado', word: 'colado', lang: 'en', reps: 1, due: 1 }];
+      bkTa.value = JSON.stringify(bkFile2); idoc().getElementById('lb-bk-go').click(); await until(function () { return /(Progresso carregado|Progress loaded)/.test(idoc().getElementById('lb-bk-status').textContent); }, 60000);
+      var bkV = await D().db.all('vocab');
+      ok('BK9 colar o texto de um backup e importar funciona e mostra o resumo', bkV.some(function (c) { return c.id === 'en:bk-colado'; }) && /(Progresso carregado|Progress loaded)/.test(idoc().getElementById('lb-bk-status').textContent), idoc().getElementById('lb-bk-status').textContent.slice(0, 90));
+      bkTa.value = '{"x":1}'; idoc().getElementById('lb-bk-go').click(); await until(function () { return /(não é um backup|not a progress backup)/.test(idoc().getElementById('lb-bk-status').textContent); }, 60000);
+      ok('BK10 texto colado que não é backup mostra aviso claro', /(não é um backup|not a progress backup)/.test(idoc().getElementById('lb-bk-status').textContent), idoc().getElementById('lb-bk-status').textContent.slice(0, 80));
+      ok('BK11 o backup funciona com a sincronização desligada (sem configuração, sem conta)', !bkW.DD_SYNC.url && !!bkV.length);
+      // ==== PROXIMAS ====
       document.querySelectorAll('.chapter-link')[0].click(); await wait(600);
       ok('T4 num capítulo do livro, o Raio-X volta e o Teleprompter some', !$('btn-raiox').hidden && $('btn-tele').hidden);
     } catch (e) { fails++; out.push('FAIL exceção: ' + e + ' ' + (e && e.stack ? e.stack.split('\n')[1] : '')); }
