@@ -21,26 +21,35 @@ robocopy $repo $tmp /E /XD .git .github /NFL /NDL /NJH /NJS /NP | Out-Null
 $stub = @'
 <script>
 (function () {
-  var log = [], cur = null, timers = [];
+  var log = [], cur = null, timers = [], q = [];
   window.__log = log; window.DD_PAGE = '__PAGE__';
   function Utt(text) { this.text = text; this.rate = 1; this.lang = ''; this.voice = null; }
   window.SpeechSynthesisUtterance = Utt;
+  function start(u) { stub._start(u); }
   var stub = {
     getVoices: function () { return [{ name: 'Fake PT', lang: 'pt-BR', localService: true }, { name: 'Fake EN', lang: 'en-US', localService: true }]; },
-    speak: function (u) {
+    get pending() { return q.length > 0; },
+    get speaking() { return !!cur; },
+    speak: function (u) {                                   // como um motor real: a fala seguinte espera a atual terminar
+      if (cur) { q.push(u); return; }
+      start(u);
+    },
+    _start: function (u) {
+      if (window.__swallow > 0) { window.__swallow--; cur = u; return; }                       // motor que engole o speak()
       log.push({ text: u.text, rate: u.rate, lang: u.lang });
       cur = u;
       var words = [], re = /\S+/g, m;
       while ((m = re.exec(u.text))) words.push(m.index);
       var step = Math.max(25, 300 / u.rate);
       timers.push(setTimeout(function () { if (u.onstart) u.onstart({}); }, 5));
+      if (window.__mute > 0) { window.__mute--; return; }                                         // voz que começa e emudece (sem eventos nem fim)
       words.forEach(function (ci, i) {
         timers.push(setTimeout(function () { if (u.onboundary) u.onboundary({ name: 'word', charIndex: ci }); }, 10 + i * step));
       });
-      timers.push(setTimeout(function () { if (cur === u && u.onend) u.onend({}); }, 10 + words.length * step + 10));
+      timers.push(setTimeout(function () { if (cur === u) { cur = null; if (u.onend) u.onend({}); if (!cur && q.length) start(q.shift()); } }, 10 + words.length * step + 10));
     },
     cancel: function () {                                   // como o navegador: cancelar também notifica o fim
-      var u = cur; timers.forEach(clearTimeout); timers = []; cur = null;
+      var u = cur; timers.forEach(clearTimeout); timers = []; q = []; cur = null;
       if (u && u.onend) setTimeout(function () { u.onend({}); }, 0);
     },
     pause: function () {}, resume: function () {}
@@ -140,7 +149,22 @@ $test = @'
       post('step', -1); await wait(500);
       var tx8c = window.__log[window.__log.length - 1].text;
       ok('8b seta esquerda (via mensagem do site) volta ao trecho anterior', tx8c === tx8, tx8c.slice(0, 20));
-      post('tts-toggle'); await wait(200);    } catch (e) { fails++; out.push('FAIL exceção: ' + e); }
+      post('tts-toggle'); await wait(200);
+      // 9. sem lacuna e sem travar
+      post('rate', 1); post('readlang', 'pt'); post('audiolang', 'pt'); await wait(100);
+      document.querySelector('[data-id="in-020"]').click(); await wait(700);
+      ok('9a o trecho seguinte já está na fila do motor enquanto o atual toca', window.speechSynthesis.pending === true && !!document.querySelector('.w.now'));
+      var seen9 = {}; for (var z = 0; z < 80; z++) { var sg = document.querySelector('.w.seg'); if (sg) seen9[sg.textContent] = 1; await wait(100); }
+      ok('9b a marca de trecho acompanha a voz ao longo dos trechos emendados', Object.keys(seen9).length > 1, Object.keys(seen9).length + ' trechos marcados');
+      post('tts-toggle'); await wait(300);
+      window.__swallow = 1; var l9 = window.__log.length;
+      document.querySelector('[data-id="in-020"]').click(); await wait(8000);
+      ok('9c motor que engole o speak(): a vigia tenta de novo e a narração segue', window.__log.length > l9 && !!document.querySelector('.w.now'), (window.__log.length - l9) + ' falas');
+      post('tts-toggle'); await wait(300);
+      window.__mute = 1; var l9b = window.__log.length;
+      document.querySelector('[data-id="in-020"]').click(); await wait(25000);
+      ok('9d voz que emudece no meio do trecho: a vigia segue adiante', window.__log.length > l9b + 1, (window.__log.length - l9b) + ' falas');
+      post('tts-toggle'); await wait(300);    } catch (e) { fails++; out.push('FAIL exceção: ' + e); }
     out.push('RESULTADO: ' + (fails ? fails + ' falha(s)' : 'tudo certo'));
     var pre = document.createElement('pre'); pre.id = 'result'; pre.textContent = out.join('\n'); document.body.appendChild(pre);
   });
@@ -158,7 +182,7 @@ $testFile = "$tmp\__test.html"
 $prof = Join-Path $tmp 'profile'
 $outFile = Join-Path $tmp 'out.txt'
 Start-Process -FilePath $Chrome -ArgumentList @('--headless=new', '--disable-gpu', '--no-first-run', "--user-data-dir=`"$prof`"",
-    '--window-size=1200,900', '--virtual-time-budget=60000', '--allow-file-access-from-files', '--dump-dom',
+    '--window-size=1200,900', '--virtual-time-budget=180000', '--allow-file-access-from-files', '--dump-dom',
     "`"file:///$($testFile.Replace('\','/'))`"") -Wait -NoNewWindow -RedirectStandardOutput $outFile -RedirectStandardError "$tmp\err.txt"
 $dom = [IO.File]::ReadAllText($outFile)
 $m = [regex]::Match($dom, '(?s)<pre id="result">(.*?)</pre>')

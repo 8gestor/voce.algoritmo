@@ -682,6 +682,7 @@
     // Velocidade média da fala (caracteres por segundo a 1×): começa num valor típico e se ajusta a cada frase.
     // Medida em caracteres ponderados (pausas de vírgula e ponto contam mais), por idioma e por voz.
     const CPS = { pt: 16, en: 17 };
+    let wdKey = '';           // frase que a vigia já tentou de novo (não repete sem fim)
     const PAUSE = { ',': 4, ';': 4, ':': 4, '—': 4, '–': 4, '.': 8, '!': 8, '?': 8, '…': 8 };
 
     // onProg(charIndex, length): posição da fala dentro do texto falado (evento da voz ou estimativa por tempo)
@@ -732,13 +733,15 @@
             tts.pre = null;                                              // a frase já estava na fila do motor: só assume os ganchos
             const fresh = !h; if (!h) h = newUtt(text, lang, rate);
             const v = h.v;
-            let settled = false, t0 = 0, gotB = false, timer = null;
+            let settled = false, t0 = 0, gotB = false, timer = null, wd = null;
+            let lastEv = 0, lastCi = 0, gapC = 6, dtAvg = 0;          // eventos de palavra: instante, posição, distância média (caracteres) e intervalo médio (ms)
             const ck = lang + '|' + (v ? v.name : ''), cps = CPS[ck] || CPS[lang];
             const cum = new Float32Array(text.length + 1);                   // tempo acumulado esperado por caractere, com as pausas da pontuação
             for (let i = 0; i < text.length; i++) cum[i + 1] = cum[i] + 1 + (PAUSE[text[i]] || 0);
             const WT = cum[text.length];
             const done = (r) => {
-                if (settled) return; settled = true; clearInterval(timer);
+                if (settled) return; settled = true; clearInterval(timer); clearTimeout(wd);
+                if (r === 'end') wdKey = '';
                 if (r === 'end' && t0 && text.length > 25) {
                     const dur = (performance.now() - t0) / 1000;
                     if (dur > 0.5) CPS[ck] = Math.max(6, Math.min(40, cps * 0.7 + (WT / (dur * rate)) * 0.3));
@@ -747,12 +750,19 @@
             };
             const begin = () => {
                 t0 = h.t0 || performance.now();
-                timer = setInterval(() => {      // vozes sem evento de palavra: segue pelo tempo estimado
-                    if (gotB || !onProg) return;
-                    const el = (performance.now() - t0) / 1000;
+                timer = setInterval(() => {      // segue pelo tempo estimado: sozinho sem evento de palavra; com evento, só cobre o que ele atrasou
+                    const now = performance.now(), el = (now - t0) / 1000;
+                    // vigia: a voz começou e emudeceu (voz de rede que morre no meio): cancela e a leitura segue para a frase seguinte
+                    if (now - t0 > (WT / (cps * rate) * 2.2 + 6) * 1000 && now - (lastEv || t0) > 6000) { tts.pre = null; synth.cancel(); return; }
+                    if (!onProg) return;
                     const target = Math.min(WT, el * cps * rate);                  // posição esperada: busca binária no tempo acumulado
                     let lo = 0, hi = text.length - 1;
                     while (lo < hi) { const mid = (lo + hi) >> 1; if (cum[mid + 1] > target) hi = mid; else lo = mid + 1; }
+                    if (gotB) {
+                        if (now - lastEv <= Math.max(350, dtAvg * 1.6)) return;    // o evento da voz está em dia: ele manda, a estimativa não corre à frente
+                        lo = Math.min(lo, lastCi + Math.max(8, Math.round(gapC * 1.2)));
+                        if (lo <= lastCi) return;
+                    }
                     onProg(lo, text.length);
                 }, 60);
                 if (ahead && !tts.pre && canQueueAhead()) {                      // buffer: a próxima frase entra na fila agora e o motor a fala sem lacuna
@@ -761,7 +771,21 @@
                 }
             };
             h.onstart = begin;
-            h.onboundary = (e) => { if (e && e.name && e.name !== 'word') return; gotB = true; if (onProg) onProg(e.charIndex || 0, text.length); };
+            h.onboundary = (e) => {
+                if (e && e.name && e.name !== 'word') return;
+                const now = performance.now(), ci = (e && e.charIndex) || 0;
+                if (gotB) { dtAvg = dtAvg ? dtAvg * 0.7 + (now - lastEv) * 0.3 : now - lastEv; if (ci > lastCi) gapC = gapC * 0.7 + (ci - lastCi) * 0.3; }
+                gotB = true; lastEv = now; lastCi = Math.max(lastCi, ci);
+                if (onProg) onProg(ci, text.length);
+            };
+            // vigia de partida: o motor engoliu o speak() (ou a voz não carregou): tenta a mesma frase de novo uma vez; se repetir, pula
+            wd = setTimeout(() => {
+                if (settled || h.started) return;
+                synth.cancel(); tts.pre = null;
+                const key = lang + '|' + text;
+                const again = wdKey !== key; wdKey = key;
+                done(again ? 'restart' : 'error');
+            }, 7000);
             h.onend = (r) => done(r);
             if (h.started) begin();
             if (h.ended) done(h.ended); else if (fresh) synth.speak(h.u);
